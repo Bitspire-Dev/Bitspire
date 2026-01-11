@@ -8,8 +8,8 @@ export default createMiddleware({
   // Used when no locale matches
   defaultLocale: 'pl',
   
-  // Don't redirect if locale is in pathname
-  localePrefix: 'as-needed'
+  // Always show locale in pathname for proper language switching
+  localePrefix: 'always'
 });
 
 export const config = {

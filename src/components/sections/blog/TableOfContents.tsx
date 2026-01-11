@@ -13,7 +13,7 @@ interface TableOfContentsProps {
     locale?: string;
 }
 
-export default function TableOfContents({ title, locale = 'pl' }: TableOfContentsProps) {
+export default function TableOfContents({ title, locale: _locale = 'pl' }: TableOfContentsProps) {
     const [headings, setHeadings] = useState<Heading[]>([]);
     const [activeId, setActiveId] = useState<string>('');
 

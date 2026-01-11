@@ -13,8 +13,8 @@ interface FAQItem {
 
 interface FAQProps {
   data?: {
-    title?: any;
-    description?: any;
+    title?: Record<string, unknown>;
+    description?: Record<string, unknown>;
     items?: FAQItem[] | null;
   };
   locale?: string;

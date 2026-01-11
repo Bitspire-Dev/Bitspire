@@ -17,8 +17,8 @@ interface ProcessStep {
 
 interface HowWeWorkProps {
   data?: {
-    title?: any;
-    description?: any;
+    title?: Record<string, unknown>;
+    description?: Record<string, unknown>;
     steps?: ProcessStep[] | null;
   };
   locale?: string;

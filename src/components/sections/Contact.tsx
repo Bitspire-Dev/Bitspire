@@ -7,8 +7,8 @@ import { useContactForm } from "@/hooks/useContactForm";
 import { RichText } from '../ui/RichTextPresets';
 
 interface ContactData {
-  title?: any;
-  description?: any;
+  title?: Record<string, unknown>;
+  description?: Record<string, unknown>;
   email?: string | null;
   phone?: string | null;
   address?: string | null;

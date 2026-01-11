@@ -10,7 +10,7 @@ interface PortfolioCardProps {
     link?: string | null;
     tags?: (string | null)[] | null;
     index: number;
-    data?: any;
+    data?: Record<string, unknown>;
     translations: {
         viewProject: string;
     };

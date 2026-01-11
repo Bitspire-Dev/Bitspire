@@ -1,9 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname as useNextPathname } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { locales } from '@/i18n/request';
 
 const flagMap = {
   pl: '/flags/pl.svg',
@@ -19,55 +18,24 @@ interface LanguageSwitcherProps {
 
 export function LanguageSwitcher({ labels }: LanguageSwitcherProps = {}) {
   const locale = useLocale();
-  const router = useRouter();
-  const pathname = usePathname();
+  const pathname = useNextPathname();
 
-  // Determine current locale from pathname for admin mode, otherwise use useLocale
-  const getCurrentLocale = (): string => {
-    const isAdmin = pathname.startsWith('/admin/');
-    
-    if (isAdmin) {
-      // Extract locale from pathname: /admin/pl/home -> 'pl'
-      const segments = pathname.split('/').filter(Boolean);
-      if (segments.length >= 2) {
-        return segments[1]; // admin, [locale], path...
-      }
-    }
-    
-    return locale;
-  };
+  const otherLocale = locale === 'pl' ? 'en' : 'pl';
 
-  const currentLocale = getCurrentLocale();
-  const otherLocale = currentLocale === 'pl' ? 'en' : 'pl';
-
-  const switchLanguage = (newLocale: string) => {
-    // Check if we're in TinaCMS admin mode
-    const isAdmin = pathname.startsWith('/admin/');
+  const handleSwitch = () => {
+    // Debug: check what locale is detected
+    console.log('Language Switcher Debug:', {
+      detectedLocale: locale,
+      currentURL: window.location.href,
+      otherLocale: otherLocale
+    });
     
-    if (isAdmin) {
-      // Extract current path structure: /admin/pl/home -> ['admin', 'pl', 'home']
-      const segments = pathname.split('/').filter(Boolean);
-      
-      // segments[0] = 'admin', segments[1] = current locale, segments[2+] = path
-      const pathSegments = segments.slice(2); // everything after locale
-      const newPath = `/admin/${newLocale}/${pathSegments.join('/')}`;
-      
-      router.push(newPath);
-      router.refresh();
-      return;
-    }
+    // Simply replace the current locale with the other one in the URL
+    const currentUrl = window.location.href;
+    const newUrl = currentUrl.replace(`/${locale}/`, `/${otherLocale}/`);
     
-    // Normal mode (production): Remove current locale from pathname
-    const segments = pathname.split('/').filter(Boolean);
-    const isLocaleInPath = locales.some(loc => loc === segments[0]);
-    
-    const pathWithoutLocale = isLocaleInPath 
-      ? '/' + segments.slice(1).join('/')
-      : pathname;
-
-    // Navigate to new locale
-    router.push(`/${newLocale}${pathWithoutLocale}`);
-    router.refresh();
+    console.log('Switching to:', newUrl);
+    window.location.href = newUrl;
   };
 
   const ariaLabel = otherLocale === 'pl' 
@@ -76,7 +44,7 @@ export function LanguageSwitcher({ labels }: LanguageSwitcherProps = {}) {
 
   return (
     <button
-      onClick={() => switchLanguage(otherLocale)}
+      onClick={handleSwitch}
       className="group relative w-10 h-10 rounded-lg overflow-hidden border-2 border-slate-600/40 hover:border-blue-400/60 bg-slate-800/40 hover:bg-slate-700/60 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-blue-500/20 hover:scale-110"
       aria-label={ariaLabel}
     >

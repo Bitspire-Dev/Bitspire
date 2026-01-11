@@ -11,9 +11,8 @@ interface HomePageData {
     [key: string]: unknown;
     locale?: string;
     hero?: {
-        title?: any;
-        subtitle?: any;
-        subtitle?: any;
+        title?: Record<string, unknown>;
+        subtitle?: Record<string, unknown>;
         image?: string;
     };
     offer?: {

@@ -17,8 +17,8 @@ interface Service {
 }
 
 interface OfferData {
-  title?: any;
-  subtitle?: any;
+  title?: Record<string, unknown>;
+  subtitle?: Record<string, unknown>;
   sectionLabel?: string | null;
   services?: (Service | null)[] | null;
   [key: string]: unknown;

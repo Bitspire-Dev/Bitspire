@@ -1,7 +1,7 @@
 interface MetaBadgeProps {
     label: string;
     variant?: 'blue' | 'cyan' | 'slate';
-    tinaField?: any;
+    tinaField?: string;
 }
 
 export default function MetaBadge({ label, variant = 'blue', tinaField }: MetaBadgeProps) {

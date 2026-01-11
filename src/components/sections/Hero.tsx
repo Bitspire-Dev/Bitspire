@@ -5,11 +5,11 @@ import Image from 'next/image';
 import { CTAButton } from '@/components/ui/buttons/CTA__button';
 import { BriefButton } from '@/components/ui/buttons/brief_button';
 import { tinaField } from 'tinacms/dist/react';
-import { RichText, Gradient } from '@/components/ui/RichTextPresets';
+import { RichText } from '@/components/ui/RichTextPresets';
 
 interface HeroData {
-  title?: any; // Rich-text content
-  subtitle?: any; // Rich-text content
+  title?: Record<string, unknown>; // Rich-text content
+  subtitle?: Record<string, unknown>; // Rich-text content
   image?: string | null;
   [key: string]: unknown;
 }

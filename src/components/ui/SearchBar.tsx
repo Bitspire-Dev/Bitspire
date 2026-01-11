@@ -26,7 +26,7 @@ interface SearchBarProps {
   translations?: SearchTranslations;
 }
 
-export function SearchBar({ allTags, onSearchChange, onTagsChange, locale, type = 'blog', translations }: SearchBarProps) {
+export function SearchBar({ allTags, onSearchChange, onTagsChange, locale: _locale, type: _type = 'blog', translations }: SearchBarProps) {
   const {
     searchQuery,
     selectedTags,
@@ -35,7 +35,7 @@ export function SearchBar({ allTags, onSearchChange, onTagsChange, locale, type 
     handleTagToggle,
     handleClearSearch,
     handleClearFilters,
-    handleClearTag,
+    handleClearTag: _handleClearTag,
     getDisplayedTags,
     getRemainingTagsCount,
     shouldShowMoreButton,

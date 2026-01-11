@@ -1,5 +1,4 @@
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { CursorLightProvider } from '@/components/features/Cursor-Light';
@@ -104,10 +103,12 @@ export default async function RootLayout({
 }) {
   // Pobierz locale z params (będzie ustawione przez middleware)
   const { locale } = await params;
-  const messages = await getMessages({ locale });
+  const currentLocale = locale || 'pl';
+  // Messages are stored directly in MDX content; keep provider only for hooks like useLocale
+  const messages = {};
 
   return (
-    <html lang={locale || 'pl'} suppressHydrationWarning data-scroll-behavior="smooth">
+    <html lang={currentLocale} suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
         {/* Podstawowa responsywność */}
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -126,7 +127,7 @@ export default async function RootLayout({
         <meta name="msapplication-config" content="/browserconfig.xml" />
       </head>
       <body className="antialiased bg-slate-950 text-slate-100 min-h-screen">
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider locale={currentLocale} messages={messages}>
           <CursorLightProvider>
             <Background />
             <Header />

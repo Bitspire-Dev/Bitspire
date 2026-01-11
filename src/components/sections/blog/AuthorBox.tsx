@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 
 interface AuthorBoxProps {
     author?: string;
@@ -12,7 +13,7 @@ interface AuthorBoxProps {
     locale?: string;
 }
 
-export default function AuthorBox({ author = 'Bitspire Team', authorBox, locale = 'pl' }: AuthorBoxProps) {
+export default function AuthorBox({ author = 'Bitspire Team', authorBox, locale: _locale = 'pl' }: AuthorBoxProps) {
 
     return (
         <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-6 backdrop-blur-sm shadow-lg">
@@ -28,7 +29,7 @@ export default function AuthorBox({ author = 'Bitspire Team', authorBox, locale 
             <p className="text-sm text-slate-300 leading-relaxed mb-4">
                 {authorBox?.bio}
             </p>
-            <a
+            <Link
                 href="/brief"
                 className="inline-flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 font-medium transition-colors group"
             >
@@ -36,7 +37,7 @@ export default function AuthorBox({ author = 'Bitspire Team', authorBox, locale 
                 <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-            </a>
+            </Link>
         </div>
     );
 }

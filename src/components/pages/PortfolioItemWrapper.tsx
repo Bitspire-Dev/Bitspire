@@ -1,6 +1,5 @@
 'use client';
 
-import Link from "next/link";
 import Image from "next/image";
 import { TinaMarkdown } from 'tinacms/dist/rich-text';
 import { tinaField } from 'tinacms/dist/react';
@@ -17,7 +16,7 @@ interface PortfolioItemData {
     image?: string | null;
     imageAlt?: string | null;
     link?: string | null;
-    body: any;
+    body: Record<string, unknown>;
     locale?: string;
     [key: string]: unknown;
 }

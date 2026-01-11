@@ -3,6 +3,72 @@ import client from "../../../../tina/__generated__/client";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 
+export const dynamic = "force-static";
+export const dynamicParams = false;
+
+type RelatedPost = {
+    title: string;
+    slug: string;
+    excerpt?: string;
+    image?: string;
+    date?: string;
+    readTime?: string;
+};
+
+type BlogTranslations = {
+    noArticles?: string | null;
+    readMore?: string | null;
+    readTime?: string | null;
+    by?: string | null;
+    backToBlog?: string | null;
+    publishedOn?: string | null;
+    shareTitle?: string | null;
+    shareButtons?: {
+        twitter?: string | null;
+        linkedin?: string | null;
+        facebook?: string | null;
+        copyLink?: string | null;
+    } | null;
+    tableOfContentsTitle?: string | null;
+    authorBox?: {
+        title?: string | null;
+        bio?: string | null;
+        contact?: string | null;
+    } | null;
+    relatedArticlesTitle?: string | null;
+};
+
+const normalizeBlogTranslations = (blog: BlogTranslations | null | undefined) => {
+    if (!blog) return null;
+
+    return {
+        noArticles: blog.noArticles ?? undefined,
+        readMore: blog.readMore ?? undefined,
+        readTime: blog.readTime ?? undefined,
+        by: blog.by ?? undefined,
+        backToBlog: blog.backToBlog ?? undefined,
+        publishedOn: blog.publishedOn ?? undefined,
+        shareTitle: blog.shareTitle ?? undefined,
+        shareButtons: blog.shareButtons
+            ? {
+                  twitter: blog.shareButtons.twitter ?? undefined,
+                  linkedin: blog.shareButtons.linkedin ?? undefined,
+                  facebook: blog.shareButtons.facebook ?? undefined,
+                  copyLink: blog.shareButtons.copyLink ?? undefined,
+              }
+            : undefined,
+        tableOfContentsTitle: blog.tableOfContentsTitle ?? undefined,
+        authorBox: blog.authorBox
+            ? {
+                  title: blog.authorBox.title ?? undefined,
+                  bio: blog.authorBox.bio ?? undefined,
+                  contact: blog.authorBox.contact ?? undefined,
+              }
+            : undefined,
+        relatedArticlesTitle: blog.relatedArticlesTitle ?? undefined,
+    };
+};
+
 interface PageProps {
     params: Promise<{
         locale: string;
@@ -166,8 +232,8 @@ export default async function Page(props: PageProps) {
                 relativePath: `${locale}/${postSlug}.mdx`,
             });
 
-            // Fetch related posts (same category or random if no category)
-            let relatedPosts: any[] = [];
+            // Fetch related posts (same category first, then fallback)
+            let relatedPosts: RelatedPost[] = [];
             try {
                 const blogConnection = await client.queries.blogConnection();
                 const allPosts = (blogConnection.data.blogConnection.edges || [])
@@ -180,29 +246,19 @@ export default async function Page(props: PageProps) {
                     );
 
                 const currentCategory = result.data.blog.category;
-                
-                // First try to get posts from same category
-                if (currentCategory) {
-                    relatedPosts = allPosts
-                        .filter(post => post.category === currentCategory)
-                        .slice(0, 3);
-                }
-                
-                // If not enough, fill with other posts
-                if (relatedPosts.length < 3) {
-                    const remainingPosts = allPosts
-                        .filter(post => !relatedPosts.includes(post))
-                        .slice(0, 3 - relatedPosts.length);
-                    relatedPosts = [...relatedPosts, ...remainingPosts];
-                }
+                const sameCategory = currentCategory
+                    ? allPosts.filter(post => post.category === currentCategory)
+                    : [];
+                const remaining = allPosts.filter(post => !sameCategory.includes(post));
 
-                // Format related posts data
-                relatedPosts = relatedPosts.map(post => ({
+                const selected = [...sameCategory, ...remaining].slice(0, 3);
+
+                relatedPosts = selected.map(post => ({
                     title: post.title,
                     slug: post._sys.filename.replace('.mdx', ''),
-                    excerpt: post.description || post.excerpt,
-                    image: post.image,
-                    date: post.date,
+                    excerpt: post.description ?? post.excerpt ?? undefined,
+                    image: post.image ?? undefined,
+                    date: post.date ?? undefined,
                     readTime: post.readTime ? `${post.readTime} min` : undefined,
                 }));
             } catch (error) {
@@ -215,7 +271,7 @@ export default async function Page(props: PageProps) {
                 const blogPageResult = await client.queries.pages({
                     relativePath: `${locale}/blog.mdx`,
                 });
-                blogTranslations = blogPageResult.data.pages.blog;
+                blogTranslations = normalizeBlogTranslations(blogPageResult.data.pages.blog as BlogTranslations | null | undefined);
             } catch (error) {
                 console.error('Error loading blog page translations:', error);
             }
@@ -339,7 +395,15 @@ export default async function Page(props: PageProps) {
                     );
 
                 // Inject projects into portfolioHighlights
-                const pageData = result.data.pages;
+                const pageData = {
+                    ...result.data.pages,
+                } as typeof result.data.pages & {
+                    home?: {
+                        portfolioHighlights?: {
+                            projects?: typeof portfolioProjects;
+                        };
+                    };
+                };
                 if (pageData.home?.portfolioHighlights) {
                     pageData.home.portfolioHighlights.projects = portfolioProjects;
                 }

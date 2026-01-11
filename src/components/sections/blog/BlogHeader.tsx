@@ -3,7 +3,7 @@ import { tinaField } from 'tinacms/dist/react';
 interface BlogHeaderProps {
     title?: string;
     description?: string;
-    data?: any;
+    data?: Record<string, unknown>;
 }
 
 export default function BlogHeader({ title, description, data }: BlogHeaderProps) {

@@ -13,7 +13,7 @@ interface ShareButtonsProps {
     locale?: string;
 }
 
-export default function ShareButtons({ title, buttons, locale = 'pl' }: ShareButtonsProps) {
+export default function ShareButtons({ title, buttons, locale: _locale = 'pl' }: ShareButtonsProps) {
 
     const handleShare = (platform: string) => {
         const url = typeof window !== 'undefined' ? window.location.href : '';

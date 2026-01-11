@@ -58,11 +58,11 @@ interface ContactInfoLabels {
 
 interface BriefData {
   title?: string | null;
-  description?: any;
+  description?: Record<string, unknown>;
   buttonText?: string | null;
   badge?: string | null;
-  heroTitle?: any;
-  heroTitleHighlight?: any;
+  heroTitle?: Record<string, unknown>;
+  heroTitleHighlight?: Record<string, unknown>;
   tabs?: TabType[] | null;
   form?: FormLabels | null;
   contactForm?: ContactFormLabels | null;
@@ -151,11 +151,11 @@ const BRIEF_STEPS: Record<string, Step[]> = {
 };
 
 // Komponent Briefu
-function BriefForm({ briefType, labels, tabs }: { briefType: string, labels?: FormLabels | null, tabs?: TabType[] | null }) {
+function BriefForm({ briefType, labels, tabs: _tabs }: { briefType: string, labels?: FormLabels | null, tabs?: TabType[] | null }) {
   const STEPS = BRIEF_STEPS[briefType] || [];
   
   const {
-    step,
+    step: _step,
     form,
     loading,
     success,
@@ -171,7 +171,7 @@ function BriefForm({ briefType, labels, tabs }: { briefType: string, labels?: Fo
     handleSubmit,
     isLastStep,
     isFirstStep,
-    setError,
+    setError: _setError,
   } = useBriefForm({
     steps: STEPS,
     briefType,

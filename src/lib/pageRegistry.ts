@@ -27,7 +27,7 @@ export const pageRegistry: Record<string, React.ComponentType<any>> = {
 export const slugs = Object.keys(pageRegistry);
 
 // Helper to get component for a slug
-export function getPageComponent(slug: string): React.ComponentType<any> | undefined {
+export function getPageComponent(slug: string): React.ComponentType<Record<string, unknown>> | undefined {
     return pageRegistry[slug];
 }
 

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "tinacms dev -c \"next dev\"",
     "build": "tinacms build && next build",
-    "start": "tinacms build && next start",
+    "start": "tinacms build && node app.js",
     "prod": "cross-env NODE_ENV=production npm run start",
     "lint": "eslint"
   },
@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
+    "@next/eslint-plugin-next": "^16.1.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -35,6 +36,7 @@
     "esbuild": "^0.27.2",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "typescript-eslint": "^8.51.0"
   }
 }

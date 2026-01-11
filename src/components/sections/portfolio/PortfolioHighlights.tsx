@@ -20,8 +20,8 @@ interface PortfolioProject {
 interface PortfolioHighlightsProps {
   data?: {
     projects?: PortfolioProject[] | null;
-    title?: any;
-    description?: any;
+    title?: Record<string, unknown>;
+    description?: Record<string, unknown>;
   };
 }
 
@@ -55,10 +55,10 @@ const PortfolioHighlights: React.FC<PortfolioHighlightsProps> = ({ data }) => {
             // Convert title/description to string if they're rich-text objects
             const projectTitle = typeof project?.title === 'string' 
               ? project.title 
-              : (project?.title as any)?.children?.[0]?.text || 'Project';
+              : (project?.title as Record<string, unknown>)?.children?.[0]?.text || 'Project';
             const projectDescription = typeof project?.description === 'string'
               ? project.description
-              : (project?.description as any)?.children?.[0]?.text || '';
+              : (project?.description as Record<string, unknown>)?.children?.[0]?.text || '';
             
             return (
             <Link

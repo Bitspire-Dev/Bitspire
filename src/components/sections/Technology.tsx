@@ -6,8 +6,8 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { RichText } from "@/components/ui/RichTextPresets";
 
 interface TechnologyData {
-  title?: any;
-  description?: any;
+  title?: Record<string, unknown>;
+  description?: Record<string, unknown>;
   [key: string]: unknown;
 }
 

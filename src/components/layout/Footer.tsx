@@ -16,7 +16,7 @@ import {
 
 const COMPANY = {
   name: 'Bitspire',
-  logo: '/logo/Bitspire logo main.svg'
+  logo: '/logo/bitspire-logo-main.svg'
 };
 
 const DESCRIPTION = {

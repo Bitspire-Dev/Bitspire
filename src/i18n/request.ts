@@ -1,22 +1,21 @@
 import { getRequestConfig } from 'next-intl/server';
+import { routing } from './routing';
 
-// Can be imported from a shared config
+// Supported locales (kept sync with middleware)
 export const locales = ['pl', 'en'] as const;
 export type Locale = (typeof locales)[number];
 
 export default getRequestConfig(async ({ requestLocale }) => {
-  // This typically corresponds to the `[locale]` segment
+  // Get locale from request (set by middleware)
   let locale = await requestLocale;
-
-  // Ensure that a valid locale is used
+  
+  // Fallback to default if not found
   if (!locale || !locales.includes(locale as Locale)) {
     locale = 'pl';
   }
 
   return {
     locale,
-    // Messages are loaded from MDX files in content/pages/{locale}/
-    // No need for separate messages/*.json files
-    messages: {}
+    messages: {},
   };
 });

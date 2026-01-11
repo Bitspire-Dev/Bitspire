@@ -9,7 +9,7 @@ interface BlogPostHeaderProps {
     author: string;
     date: string;
     locale: string;
-    data?: any;
+    data?: Record<string, unknown>;
     translations?: {
         by?: string;
         readTime?: string;

@@ -12,7 +12,7 @@ interface PortfolioProject {
 
 interface PortfolioGridProps {
     projects: PortfolioProject[];
-    data?: any;
+    data?: Record<string, unknown>;
     translations: {
         noProjects: string;
         viewProject: string;

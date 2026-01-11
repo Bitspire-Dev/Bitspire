@@ -22,7 +22,7 @@ interface BlogPostData {
     image?: string | null;
     imageAlt?: string | null;
     readTime?: number | null;
-    body: any;
+    body: Record<string, unknown>;
     locale?: string;
     slug?: string;
     relatedPosts?: Array<{

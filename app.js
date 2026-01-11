@@ -1,8 +1,10 @@
 #!/usr/bin/env node
-/* eslint-disable @typescript-eslint/no-require-imports */
 
 // Production-ready Next.js server starter
 // This file is used by hosting panels as the application entry point
+
+// Load environment variables from .env files (Next.js built-in loader)
+require('@next/env').loadEnvConfig(process.cwd());
 
 const { createServer } = require('http');
 const next = require('next');

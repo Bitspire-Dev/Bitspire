@@ -4,7 +4,7 @@ interface PortfolioHeaderProps {
     title?: string;
     description?: string;
     sectionLabel?: string;
-    data?: any;
+    data?: Record<string, unknown>;
 }
 
 export default function PortfolioHeader({ title, description, sectionLabel, data }: PortfolioHeaderProps) {

@@ -2,7 +2,7 @@ interface FeaturedImageProps {
     src: string;
     alt: string;
     className?: string;
-    tinaField?: any;
+    tinaField?: Record<string, unknown>;
 }
 
 export default function FeaturedImage({ src, alt, className = '', tinaField }: FeaturedImageProps) {

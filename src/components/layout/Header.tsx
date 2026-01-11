@@ -31,7 +31,6 @@ export const Header: React.FC = () => {
   
   const navigation = NAVIGATION[locale];
   const ctaButton = CTA_BUTTON[locale];
-   const logo = '/logo/bitspire-logo-main.svg';
   const logoAlt = 'Bitspire - strona główna';
 
   return (

@@ -6,7 +6,7 @@ interface PortfolioItemHeaderProps {
     description: string;
     category?: string | null;
     year?: string | null;
-    data?: any;
+    data?: Record<string, unknown>;
     translations: {
         year: string;
     };
@@ -18,7 +18,7 @@ export default function PortfolioItemHeader({
     category, 
     year,
     data,
-    translations: t 
+    translations: _t 
 }: PortfolioItemHeaderProps) {
     return (
         <>
