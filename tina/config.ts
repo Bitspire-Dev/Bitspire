@@ -4,7 +4,7 @@ import { blogCollection } from "./schemas/blog";
 import { pagesCollection } from "./schemas/pages";
 
 export default defineConfig({
-  branch: "main",
+  branch: "redesign",
   
   // Get this from tina.io
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID,
