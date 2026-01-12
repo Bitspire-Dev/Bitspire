@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from "react";
 import { SearchBar } from "@/components/ui/SearchBar";
-import Contact from "@/components/sections/Contact";
 import PageBackground from "@/components/layout/PageBackground";
 import PortfolioHeader from "@/components/sections/portfolio/PortfolioHeader";
 import PortfolioGrid from "@/components/sections/portfolio/PortfolioGrid";
@@ -19,9 +18,9 @@ interface PortfolioProject {
 
 interface PortfolioPageData {
     [key: string]: unknown;
-    title?: string;
-    description?: string;
-    sectionLabel?: string;
+    title?: string | null;
+    description?: string | null;
+    sectionLabel?: string | null;
     projects?: PortfolioProject[];
     locale?: string;
 }
@@ -107,8 +106,6 @@ export default function PortfolioPageWrapper({ data }: PortfolioPageWrapperProps
                     translations={t}
                 />
             </main>
-
-            <Contact data={data} />
         </PageBackground>
     );
 }

@@ -2,23 +2,22 @@
 
 import { useState, useMemo } from "react";
 import { SearchBar } from "@/components/ui/SearchBar";
-import Contact from "@/components/sections/Contact";
 import { useAdminLink } from "@/hooks/useAdminLink";
 import PageBackground from "@/components/layout/PageBackground";
 import BlogHeader from "@/components/sections/blog/BlogHeader";
 import BlogGrid from "@/components/sections/blog/BlogGrid";
 
 interface BlogPost {
-    _sys: {
-        filename: string;
-        relativePath: string;
+    _sys?: {
+        filename?: string;
+        relativePath?: string;
     };
-    title: string;
-    slug: string;
-    description: string;
+    title?: string;
+    slug?: string;
+    description?: string | null;
     excerpt?: string | null;
-    date: string;
-    author: string;
+    date?: string;
+    author?: string;
     category?: string | null;
     tags?: (string | null)[] | null;
     image?: string | null;
@@ -30,14 +29,14 @@ interface BlogPageData {
     [key: string]: unknown;
     posts?: BlogPost[];
     locale?: string;
-    title?: string;
-    description?: string;
+    title?: string | null;
+    description?: string | null;
     blog?: {
         noArticles?: string | null;
         readMore?: string | null;
         readTime?: string | null;
         by?: string | null;
-    };
+    } | null;
 }
 
 interface BlogPageWrapperProps {
@@ -46,7 +45,7 @@ interface BlogPageWrapperProps {
 
 export default function BlogPageWrapper({ data }: BlogPageWrapperProps) {
     const { getLink } = useAdminLink();
-    const posts = data?.posts || [];
+    const posts = (data?.posts || []) as BlogPost[];
     const locale = data?.locale || 'pl';
 
     // Search and filter state
@@ -69,9 +68,9 @@ export default function BlogPageWrapper({ data }: BlogPageWrapperProps) {
         return posts.filter(post => {
             // Search filter
             const matchesSearch = !searchQuery || 
-                post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                post.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                post.excerpt?.toLowerCase().includes(searchQuery.toLowerCase());
+                (post.title?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+                (post.description?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+                (post.excerpt?.toLowerCase() || '').includes(searchQuery.toLowerCase());
 
             // Tags filter
             const matchesTags = selectedTags.length === 0 ||
@@ -85,8 +84,8 @@ export default function BlogPageWrapper({ data }: BlogPageWrapperProps) {
         <PageBackground variant="blue">
             <main className="relative z-10 max-w-7xl mx-auto px-6 pt-32 pb-20">
                 <BlogHeader 
-                    title={data?.title}
-                    description={data?.description}
+                    title={data?.title || undefined}
+                    description={data?.description || undefined}
                     data={data}
                 />
 
@@ -103,14 +102,12 @@ export default function BlogPageWrapper({ data }: BlogPageWrapperProps) {
                 )}
 
                 <BlogGrid 
-                    posts={filteredPosts}
+                    posts={filteredPosts as any}
                     locale={locale}
                     translations={data?.blog}
                     getLink={getLink}
                 />
             </main>
-
-            <Contact data={data} />
         </PageBackground>
     );
 }

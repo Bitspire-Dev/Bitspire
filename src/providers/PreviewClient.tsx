@@ -3,15 +3,8 @@
 import React from 'react';
 import Image from 'next/image';
 import { Background } from '@/components/layout/Background';
-import { Hero } from '@/components/sections/Hero';
-import Technology from '@/components/sections/Technology';
-import { Offer } from '@/components/sections/Offer';
-import PortfolioHighlights from '@/components/sections/portfolio/PortfolioHighlights';
-import HowWeWork from '@/components/sections/HowWeWork';
-import FAQ from '@/components/sections/FAQ';
-import Contact from '@/components/sections/Contact';
+import { Hero } from '@/components/sections/home-page/Hero';
 import LegalPage from '@/components/sections/LegalPage';
-import Brief from '@/components/sections/Brief';
 import { CursorLightProvider } from '@/components/features/Cursor-Light';
 import { useTina, tinaField } from 'tinacms/dist/react';
 import { TinaMarkdown } from 'tinacms/dist/rich-text';
@@ -20,7 +13,6 @@ interface PreviewClientProps {
   data: unknown;
   query: string;
   variables: Record<string, unknown>;
-  portfolioProjects?: unknown[];
   blogPosts?: unknown[];
 }
 
@@ -28,7 +20,6 @@ export default function PreviewClient({
   data, 
   query, 
   variables, 
-  portfolioProjects = [],
   blogPosts = []
 }: PreviewClientProps): React.JSX.Element {
   /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -303,7 +294,7 @@ export default function PreviewClient({
   
   // Determine page type
   const isLegalPage = page.sections && Array.isArray(page.sections);
-  const isHomePage = page.hero || page.technology || page.offer;
+  const isHomePage = !!page.hero;
   const isPortfolioPage = page.projects && Array.isArray(page.projects);
   const isBriefPage = filename === 'brief';
   const isBlogPage = filename === 'blog';
@@ -322,9 +313,29 @@ export default function PreviewClient({
         <main className="relative z-10 pt-24">
           {/* Brief page */}
           {isBriefPage && page.brief && (
-            <div id="brief-section">
-              <Brief data={page.brief} />
-            </div>
+            <section
+              id="brief-section"
+              className="max-w-4xl mx-auto px-6 pb-16 space-y-4"
+              data-tina-field={tinaField(page, 'brief')}
+            >
+              {page.brief.title && (
+                <h1
+                  className="text-4xl md:text-5xl font-extrabold tracking-tight"
+                  data-tina-field={tinaField(page.brief, 'title')}
+                >
+                  {page.brief.title}
+                </h1>
+              )}
+
+              {page.brief.description && (
+                <p
+                  className="text-lg text-slate-300 leading-relaxed"
+                  data-tina-field={tinaField(page.brief, 'description')}
+                >
+                  {page.brief.description}
+                </p>
+              )}
+            </section>
           )}
           
           {/* Blog listing page */}
@@ -520,40 +531,9 @@ export default function PreviewClient({
           
           {/* Home page */}
           {isHomePage && (
-            <>
-              {/* Hero + Technology with continuous grid */}
-              <div className="bg-grid-pattern">
-                {page.hero && <Hero data={page.hero} />}
-                {page.technology && <Technology data={page.technology} />}
-              </div>
-              
-              {/* Offer section */}
-              {page.offer && (
-                <div id="offer-section">
-                  <Offer data={page.offer} />
-                </div>
-              )}
-              
-              {/* Portfolio Highlights */}
-              {page.portfolioHighlights && portfolioProjects && portfolioProjects.length > 0 && (
-                <div id="portfolio-section">
-                  <PortfolioHighlights data={{
-                    projects: portfolioProjects as never[],
-                    title: page.portfolioHighlights.title,
-                    description: page.portfolioHighlights.description
-                  }} />
-                </div>
-              )}
-              
-              {/* How We Work */}
-              {page.howWeWork && <HowWeWork data={page.howWeWork} />}
-              
-              {/* FAQ */}
-              {page.faq && <FAQ data={page.faq} />}
-              
-              {/* Contact */}
-              {page.contact && <Contact data={page.contact} />}
-            </>
+            <div className="bg-grid-pattern">
+              {page.hero && <Hero data={page.hero} />}
+            </div>
           )}
         </main>
       </div>

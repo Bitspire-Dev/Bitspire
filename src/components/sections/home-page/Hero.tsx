@@ -3,7 +3,6 @@
 import React from 'react';
 import Image from 'next/image';
 import { CTAButton } from '@/components/ui/buttons/CTA__button';
-import { BriefButton } from '@/components/ui/buttons/brief_button';
 import { tinaField } from 'tinacms/dist/react';
 import { RichText } from '@/components/ui/RichTextPresets';
 
@@ -22,12 +21,10 @@ interface HeroProps {
 // Hardcoded button texts per locale
 const buttonTexts = {
   pl: {
-    cta: "Rozpocznij projekt",
-    brief: "Wypełnij brief"
+    cta: "Rozpocznij projekt"
   },
   en: {
-    cta: "Start project",
-    brief: "Fill brief"
+    cta: "Start project"
   }
 } as const;
 
@@ -70,7 +67,6 @@ export const Hero: React.FC<HeroProps> = ({ data, locale = 'pl' }) => {
             {/* Buttons - hardcoded per locale */}
             <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
               <CTAButton>{texts.cta}</CTAButton>
-              <BriefButton>{texts.brief}</BriefButton>
             </div>
           </div>
 

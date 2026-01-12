@@ -1,37 +1,11 @@
-import HomePageWrapper from "@/components/pages/HomePageWrapper";
-import BlogPageWrapper from "@/components/pages/BlogPageWrapper";
-import PortfolioPageWrapper from "@/components/pages/PortfolioPageWrapper";
-import ContactPageWrapper from "@/components/pages/ContactPageWrapper";
-import LegalPageWrapper from "@/components/pages/LegalPageWrapper";
-import type React from "react";
+// Legacy registry kept only for backward-compatibility during routing refactor.
+// New routing should rely on explicit segments and LEGAL_PAGES_* from lib/routing/config.
+export const slugs: string[] = [];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const pageRegistry: Record<string, React.ComponentType<any>> = {
-    // Main pages
-    "home": HomePageWrapper,
-    "blog": BlogPageWrapper,
-    "portfolio": PortfolioPageWrapper,
-    "brief": ContactPageWrapper,
-    
-    // Legal pages - Polish
-    "polityka-prywatnosci": LegalPageWrapper,
-    "polityka-cookies": LegalPageWrapper,
-    "regulamin": LegalPageWrapper,
-    
-    // Legal pages - English
-    "privacy-policy": LegalPageWrapper,
-    "cookies-policy": LegalPageWrapper,
-    "terms": LegalPageWrapper,
-};
-
-export const slugs = Object.keys(pageRegistry);
-
-// Helper to get component for a slug
-export function getPageComponent(slug: string): React.ComponentType<Record<string, unknown>> | undefined {
-    return pageRegistry[slug];
+export function getPageComponent(_slug: string) {
+    return undefined;
 }
 
-// Helper to check if a slug exists
-export function isValidSlug(slug: string): boolean {
-    return slug in pageRegistry;
+export function isValidSlug(_slug: string): boolean {
+    return false;
 }

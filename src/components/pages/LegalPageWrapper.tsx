@@ -8,9 +8,9 @@ interface LegalSection {
 
 interface LegalPageData {
     [key: string]: unknown;
-    title?: string;
-    titleAccent?: string;
-    lastUpdate?: string;
+    title?: string | null;
+    titleAccent?: string | null;
+    lastUpdate?: string | null;
     sections?: LegalSection[];
 }
 

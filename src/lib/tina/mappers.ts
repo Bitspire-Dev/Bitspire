@@ -1,0 +1,43 @@
+// Normalization and helpers for Tina data.
+
+export function formatDate(date: string | null | undefined, locale: string): string | undefined {
+  if (!date) return undefined;
+  try {
+    return new Date(date).toLocaleDateString(locale || "pl-PL", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } catch {
+    return date;
+  }
+}
+
+export function normalizePost<T extends { _sys?: { filename?: string }; date?: string; title?: string; excerpt?: string | null; description?: string | null; readTime?: number | null; image?: string | null; imageAlt?: string | null; category?: string | null; tags?: (string | null)[] | null; body?: unknown; }>(raw: T, options?: { locale?: string; relatedPosts?: unknown[] }) {
+  const { locale = "pl", relatedPosts = [] } = options || {};
+  return {
+    ...raw,
+    slug: raw._sys?.filename?.replace(/\.mdx$/, ""),
+    dateFormatted: formatDate(raw.date, locale),
+    relatedPosts,
+  };
+}
+
+export function normalizeProject<T extends { _sys?: { filename?: string }; title?: string; description?: string; tags?: (string | null)[] | null; year?: string | null; image?: string | null; imageAlt?: string | null; body?: unknown; }>(raw: T, options?: { locale?: string }) {
+  const { locale = "pl" } = options || {};
+  return {
+    ...raw,
+    slug: raw._sys?.filename?.replace(/\.mdx$/, ""),
+    year: raw.year,
+    locale,
+  };
+}
+
+export function getRelatedPosts(current: { category?: string | null; _sys?: { filename?: string } }, allPosts: Array<{ category?: string | null; _sys?: { filename?: string } }>, limit = 3) {
+  const currentSlug = current._sys?.filename;
+  const sameCategory = current.category
+    ? allPosts.filter(p => p._sys?.filename !== currentSlug && p.category === current.category)
+    : [];
+  const remaining = allPosts.filter(p => p._sys?.filename !== currentSlug && !sameCategory.includes(p));
+  return [...sameCategory, ...remaining].slice(0, limit);
+}

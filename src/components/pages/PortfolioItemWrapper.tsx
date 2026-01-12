@@ -8,15 +8,15 @@ import BackLink from '@/components/layout/BackLink';
 import PortfolioItemHeader from '@/components/sections/portfolio/PortfolioItemHeader';
 
 interface PortfolioItemData {
-    title: string;
-    description: string;
+    title?: string;
+    description?: string | null;
     year?: string | null;
     category?: string | null;
     tags?: (string | null)[] | null;
     image?: string | null;
     imageAlt?: string | null;
     link?: string | null;
-    body: Record<string, unknown>;
+    body?: Record<string, unknown> | null;
     locale?: string;
     [key: string]: unknown;
 }
