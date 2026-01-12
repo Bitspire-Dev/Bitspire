@@ -1,6 +1,5 @@
 import { Collection } from "tinacms";
 import { heroSection, technologySection, offerSection, portfolioHighlightsSection, howWeWorkSection, faqSection, contactSection } from "./sections";
-import { briefSection } from "./briefSection";
 
 export const pagesCollection: Collection = {
   name: "pages",
@@ -63,7 +62,6 @@ export const pagesCollection: Collection = {
     heroSection,
     technologySection,
     offerSection,
-    briefSection,
     portfolioHighlightsSection,
     howWeWorkSection,
     faqSection,

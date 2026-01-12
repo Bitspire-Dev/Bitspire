@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import BlogPostWrapper from "@/components/pages/BlogPostWrapper";
-import { getBlogIndex, getBlogPost } from "@/lib/tina/queries";
+import { getBlogPost } from "@/lib/tina/queries";
 import { getAllBlogSlugs } from "@/lib/tina/params";
 
 interface PageProps {

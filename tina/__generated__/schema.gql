@@ -255,66 +255,6 @@ type PagesOffer {
   services: [PagesOfferServices]
 }
 
-type PagesBriefTabs {
-  label: String
-  value: String
-}
-
-type PagesBriefForm {
-  progressLabel: String
-  requiredMark: String
-  placeholderTextarea: String
-  placeholderText: String
-  placeholderTechnology: String
-  placeholderIntegrations: String
-  buttonPrev: String
-  buttonNext: String
-  buttonSubmit: String
-  buttonSubmitting: String
-  successTitle: String
-  successMessage: String
-}
-
-type PagesBriefContactForm {
-  title: String
-  placeholderName: String
-  placeholderEmail: String
-  placeholderMessage: String
-  buttonSend: String
-  buttonSending: String
-  successTitle: String
-  successMessage: String
-}
-
-type PagesBriefContactInfo {
-  title: String
-  emailLabel: String
-  phoneLabel: String
-  addressLabel: String
-  quickResponseLabel: String
-  quickResponseText: String
-}
-
-type PagesBriefContact {
-  email: String
-  phone: String
-  address: String
-  addressLine2: String
-  city: String
-}
-
-type PagesBrief {
-  description: JSON
-  badge: String
-  heroTitle: JSON
-  heroTitleHighlight: JSON
-  tabs: [PagesBriefTabs]
-  form: PagesBriefForm
-  contactForm: PagesBriefContactForm
-  contactInfo: PagesBriefContactInfo
-  contact: PagesBriefContact
-}
-
 type PagesPortfolioHighlights {
   title: JSON
   description: JSON
@@ -430,7 +370,6 @@ type Pages implements Node & Document {
   hero: PagesHero
   technology: PagesTechnology
   offer: PagesOffer
-  brief: PagesBrief
   portfolioHighlights: PagesPortfolioHighlights
   howWeWork: PagesHowWeWork
   faq: PagesFaq
@@ -509,90 +448,6 @@ input PagesOfferFilter {
   subtitle: RichTextFilter
   sectionLabel: StringFilter
   services: PagesOfferServicesFilter
-}
-
-input PagesBriefDescriptionGradientFilter {
-  children: StringFilter
-}
-
-input PagesBriefDescriptionFilter {
-  Gradient: PagesBriefDescriptionGradientFilter
-}
-
-input PagesBriefHeroTitleGradientFilter {
-  children: StringFilter
-}
-
-input PagesBriefHeroTitleFilter {
-  Gradient: PagesBriefHeroTitleGradientFilter
-}
-
-input PagesBriefHeroTitleHighlightGradientFilter {
-  children: StringFilter
-}
-
-input PagesBriefHeroTitleHighlightFilter {
-  Gradient: PagesBriefHeroTitleHighlightGradientFilter
-}
-
-input PagesBriefTabsFilter {
-  label: StringFilter
-  value: StringFilter
-}
-
-input PagesBriefFormFilter {
-  progressLabel: StringFilter
-  requiredMark: StringFilter
-  placeholderTextarea: StringFilter
-  placeholderText: StringFilter
-  placeholderTechnology: StringFilter
-  placeholderIntegrations: StringFilter
-  buttonPrev: StringFilter
-  buttonNext: StringFilter
-  buttonSubmit: StringFilter
-  buttonSubmitting: StringFilter
-  successTitle: StringFilter
-  successMessage: StringFilter
-}
-
-input PagesBriefContactFormFilter {
-  title: StringFilter
-  placeholderName: StringFilter
-  placeholderEmail: StringFilter
-  placeholderMessage: StringFilter
-  buttonSend: StringFilter
-  buttonSending: StringFilter
-  successTitle: StringFilter
-  successMessage: StringFilter
-}
-
-input PagesBriefContactInfoFilter {
-  title: StringFilter
-  emailLabel: StringFilter
-  phoneLabel: StringFilter
-  addressLabel: StringFilter
-  quickResponseLabel: StringFilter
-  quickResponseText: StringFilter
-}
-
-input PagesBriefContactFilter {
-  email: StringFilter
-  phone: StringFilter
-  address: StringFilter
-  addressLine2: StringFilter
-  city: StringFilter
-}
-
-input PagesBriefFilter {
-  description: PagesBriefDescriptionFilter
-  badge: StringFilter
-  heroTitle: PagesBriefHeroTitleFilter
-  heroTitleHighlight: PagesBriefHeroTitleHighlightFilter
-  tabs: PagesBriefTabsFilter
-  form: PagesBriefFormFilter
-  contactForm: PagesBriefContactFormFilter
-  contactInfo: PagesBriefContactInfoFilter
-  contact: PagesBriefContactFilter
 }
 
 input PagesPortfolioHighlightsTitleGradientFilter {
@@ -774,7 +629,6 @@ input PagesFilter {
   hero: PagesHeroFilter
   technology: PagesTechnologyFilter
   offer: PagesOfferFilter
-  brief: PagesBriefFilter
   portfolioHighlights: PagesPortfolioHighlightsFilter
   howWeWork: PagesHowWeWorkFilter
   faq: PagesFaqFilter
@@ -880,66 +734,6 @@ input PagesOfferMutation {
   subtitle: JSON
   sectionLabel: String
   services: [PagesOfferServicesMutation]
-}
-
-input PagesBriefTabsMutation {
-  label: String
-  value: String
-}
-
-input PagesBriefFormMutation {
-  progressLabel: String
-  requiredMark: String
-  placeholderTextarea: String
-  placeholderText: String
-  placeholderTechnology: String
-  placeholderIntegrations: String
-  buttonPrev: String
-  buttonNext: String
-  buttonSubmit: String
-  buttonSubmitting: String
-  successTitle: String
-  successMessage: String
-}
-
-input PagesBriefContactFormMutation {
-  title: String
-  placeholderName: String
-  placeholderEmail: String
-  placeholderMessage: String
-  buttonSend: String
-  buttonSending: String
-  successTitle: String
-  successMessage: String
-}
-
-input PagesBriefContactInfoMutation {
-  title: String
-  emailLabel: String
-  phoneLabel: String
-  addressLabel: String
-  quickResponseLabel: String
-  quickResponseText: String
-}
-
-input PagesBriefContactMutation {
-  email: String
-  phone: String
-  address: String
-  addressLine2: String
-  city: String
-}
-
-input PagesBriefMutation {
-  description: JSON
-  badge: String
-  heroTitle: JSON
-  heroTitleHighlight: JSON
-  tabs: [PagesBriefTabsMutation]
-  form: PagesBriefFormMutation
-  contactForm: PagesBriefContactFormMutation
-  contactInfo: PagesBriefContactInfoMutation
-  contact: PagesBriefContactMutation
 }
 
 input PagesPortfolioHighlightsMutation {
@@ -1057,7 +851,6 @@ input PagesMutation {
   hero: PagesHeroMutation
   technology: PagesTechnologyMutation
   offer: PagesOfferMutation
-  brief: PagesBriefMutation
   portfolioHighlights: PagesPortfolioHighlightsMutation
   howWeWork: PagesHowWeWorkMutation
   faq: PagesFaqMutation

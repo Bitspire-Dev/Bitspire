@@ -65,61 +65,6 @@ fragment PagesParts on Pages {
       buttonText
     }
   }
-  brief {
-    __typename
-    description
-    badge
-    heroTitle
-    heroTitleHighlight
-    tabs {
-      __typename
-      label
-      value
-    }
-    form {
-      __typename
-      progressLabel
-      requiredMark
-      placeholderTextarea
-      placeholderText
-      placeholderTechnology
-      placeholderIntegrations
-      buttonPrev
-      buttonNext
-      buttonSubmit
-      buttonSubmitting
-      successTitle
-      successMessage
-    }
-    contactForm {
-      __typename
-      title
-      placeholderName
-      placeholderEmail
-      placeholderMessage
-      buttonSend
-      buttonSending
-      successTitle
-      successMessage
-    }
-    contactInfo {
-      __typename
-      title
-      emailLabel
-      phoneLabel
-      addressLabel
-      quickResponseLabel
-      quickResponseText
-    }
-    contact {
-      __typename
-      email
-      phone
-      address
-      addressLine2
-      city
-    }
-  }
   portfolioHighlights {
     __typename
     title

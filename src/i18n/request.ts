@@ -1,5 +1,4 @@
 import { getRequestConfig } from 'next-intl/server';
-import { routing } from './routing';
 
 // Supported locales (kept sync with middleware)
 export const locales = ['pl', 'en'] as const;

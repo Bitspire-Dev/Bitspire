@@ -14,6 +14,7 @@ interface AuthorBoxProps {
 }
 
 export default function AuthorBox({ author = 'Bitspire Team', authorBox, locale: _locale = 'pl' }: AuthorBoxProps) {
+    const locale = _locale || 'pl';
 
     return (
         <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-6 backdrop-blur-sm shadow-lg">
@@ -30,7 +31,7 @@ export default function AuthorBox({ author = 'Bitspire Team', authorBox, locale:
                 {authorBox?.bio}
             </p>
             <Link
-                href="/brief"
+                href={`/${locale}`}
                 className="inline-flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 font-medium transition-colors group"
             >
                 {authorBox?.contact}

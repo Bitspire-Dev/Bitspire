@@ -8,16 +8,16 @@ import BlogHeader from "@/components/sections/blog/BlogHeader";
 import BlogGrid from "@/components/sections/blog/BlogGrid";
 
 interface BlogPost {
-    _sys?: {
-        filename?: string;
-        relativePath?: string;
+    _sys: {
+        filename: string;
+        relativePath: string;
     };
-    title?: string;
-    slug?: string;
-    description?: string | null;
+    title: string;
+    slug: string;
+    description: string;
     excerpt?: string | null;
-    date?: string;
-    author?: string;
+    date: string;
+    author: string;
     category?: string | null;
     tags?: (string | null)[] | null;
     image?: string | null;
@@ -102,7 +102,7 @@ export default function BlogPageWrapper({ data }: BlogPageWrapperProps) {
                 )}
 
                 <BlogGrid 
-                    posts={filteredPosts as any}
+                    posts={filteredPosts}
                     locale={locale}
                     translations={data?.blog}
                     getLink={getLink}

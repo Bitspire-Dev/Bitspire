@@ -10,18 +10,16 @@ const NAVIGATION = {
   pl: [
     { label: 'Portfolio', href: '/portfolio' },
     { label: 'Blog', href: '/blog' },
-    { label: 'Brief', href: '/brief' }
   ],
   en: [
     { label: 'Portfolio', href: '/portfolio' },
     { label: 'Blog', href: '/blog' },
-    { label: 'Brief', href: '/brief' }
   ]
 };
 
 const CTA_BUTTON = {
-  pl: { text: 'Zapytaj o ofertę', href: '/brief' },
-  en: { text: 'Get a Quote', href: '/brief' }
+  pl: { text: 'Zapytaj o ofertę', href: '/' },
+  en: { text: 'Get a Quote', href: '/' }
 };
 
 export const Header: React.FC = () => {

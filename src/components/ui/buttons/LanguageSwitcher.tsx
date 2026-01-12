@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import { usePathname as useNextPathname } from 'next/navigation';
 import { useLocale } from 'next-intl';
 
 const flagMap = {
@@ -18,7 +17,6 @@ interface LanguageSwitcherProps {
 
 export function LanguageSwitcher({ labels }: LanguageSwitcherProps = {}) {
   const locale = useLocale();
-  const pathname = useNextPathname();
 
   const otherLocale = locale === 'pl' ? 'en' : 'pl';
 

@@ -13,12 +13,6 @@ export async function getHomePage(locale: string) {
   return result.data.pages;
 }
 
-export async function getBriefPage(locale: string) {
-  const relativePath = `${prefix(locale)}brief.mdx`;
-  const result = await client.queries.pages({ relativePath });
-  return result.data.pages;
-}
-
 export async function getPage(locale: string, slug: string) {
   const relativePath = `${prefix(locale)}${slug}.mdx`;
   const result = await client.queries.pages({ relativePath });
