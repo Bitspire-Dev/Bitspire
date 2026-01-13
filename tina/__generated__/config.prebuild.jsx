@@ -16,9 +16,9 @@ var portfolioCollection = {
       if (pathParts.length >= 2) {
         const locale = pathParts[0];
         const slug = pathParts[1].replace(".mdx", "");
-        return `admin/${locale}/portfolio/${slug}`;
+        return `/admin/index.html#/~/admin/${locale}/portfolio/${slug}`;
       }
-      return "admin/pl/portfolio";
+      return "/admin/index.html#/~/admin/pl/portfolio";
     }
   },
   fields: [
@@ -122,9 +122,9 @@ var blogCollection = {
       if (pathParts.length >= 2) {
         const locale = pathParts[0];
         const slug = pathParts[1].replace(".mdx", "");
-        return `admin/${locale}/blog/${slug}`;
+        return `/admin/index.html#/~/admin/${locale}/blog/${slug}`;
       }
-      return "admin/pl/blog";
+      return "/admin/index.html#/~/admin/pl/blog";
     }
   },
   fields: [
@@ -449,9 +449,9 @@ var pagesCollection = {
       if (pathParts.length >= 2) {
         const locale = pathParts[0];
         const slug = pathParts[1].replace(".mdx", "");
-        return `admin/${locale}/${slug}`;
+        return `/admin/index.html#/~/admin/${locale}/${slug}`;
       }
-      return "admin/pl/home";
+      return "/admin/index.html#/~/admin/pl";
     }
   },
   fields: [

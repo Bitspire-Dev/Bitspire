@@ -16,10 +16,11 @@ export const blogCollection: Collection = {
       if (pathParts.length >= 2) {
         const locale = pathParts[0]; // 'pl' or 'en'
         const slug = pathParts[1].replace('.mdx', '');
-        
-        return `admin/${locale}/blog/${slug}`;
+
+        // Route Tina preview through SPA hash
+        return `/admin/index.html#/~/admin/${locale}/blog/${slug}`;
       }
-      return 'admin/pl/blog';
+      return '/admin/index.html#/~/admin/pl/blog';
     },
   },
   fields: [

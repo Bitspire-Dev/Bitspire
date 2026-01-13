@@ -1,29 +1,41 @@
-import { notFound } from "next/navigation";
-import LegalPageWrapper from "@/components/pages/LegalPageWrapper";
+import { notFound, redirect } from "next/navigation";
 import { AdminPreviewProvider } from "@/providers/AdminPreviewProvider";
+import { AdminLegalPagePreview } from "@/providers/AdminPreviewRenderer";
 import client from "@tina/__generated__/client";
 
-interface PageProps {
-  params: { locale: string };
-}
+const supportedLocales = ["pl", "en"] as const;
+const slugMap: Record<(typeof supportedLocales)[number], string> = {
+  pl: "polityka-prywatnosci.mdx",
+  en: "privacy-policy.mdx",
+};
 
-export async function generateStaticParams() {
-  return [{ locale: "pl" }];
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
+
+interface PageProps {
+  params: Promise<{ locale: string }>;
 }
 
 export default async function AdminPolitykaPrywatnosciPage({ params }: PageProps) {
-  const { locale } = params;
+  const { locale } = await params;
+
+  if (!supportedLocales.includes(locale as (typeof supportedLocales)[number])) {
+    redirect(`/admin/pl/polityka-prywatnosci`);
+  }
 
   try {
-    const result = await client.queries.pages({ relativePath: `${locale}/polityka-prywatnosci.mdx` });
+    const slug = slugMap[locale as (typeof supportedLocales)[number]];
+    const result = await client.queries.pages({ relativePath: `${locale}/${slug}` });
 
     return (
       <AdminPreviewProvider
         query={result.query}
         variables={result.variables}
         data={result.data}
-        render={data => <LegalPageWrapper data={{ ...data.pages, locale }} />}
-      />
+      >
+        <AdminLegalPagePreview locale={locale} />
+      </AdminPreviewProvider>
     );
   } catch (error) {
     console.error("Admin polityka prywatnosci not found", error);

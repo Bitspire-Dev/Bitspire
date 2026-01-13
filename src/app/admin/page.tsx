@@ -1,6 +1,5 @@
-// src/app/admin/page.tsx
 import { redirect } from 'next/navigation';
 
-export default function AdminIndex() {
-  redirect('/admin/pl/home');
+export default function AdminEntryPage() {
+  redirect('/admin/index.html#/~/admin/pl');
 }

@@ -9,18 +9,26 @@ export async function getAllBlogSlugs(locale: string) {
   const connection = await client.queries.blogConnection();
   const edges = connection.data.blogConnection.edges || [];
   return edges
-    .map(edge => edge?.node?._sys?.filename)
-    .filter((filename): filename is string => Boolean(filename))
-    .map(filename => ({ locale, slug: filename.replace(/\.mdx$/, "") }));
+    .map(edge => edge?.node?._sys?.relativePath)
+    .filter((relativePath): relativePath is string => Boolean(relativePath))
+    .filter(relativePath => relativePath.startsWith(prefix(locale)))
+    .map(relativePath => ({
+      locale,
+      slug: relativePath.replace(prefix(locale), "").replace(/\.mdx$/, ""),
+    }));
 }
 
 export async function getAllPortfolioSlugs(locale: string) {
   const connection = await client.queries.portfolioConnection();
   const edges = connection.data.portfolioConnection.edges || [];
   return edges
-    .map(edge => edge?.node?._sys?.filename)
-    .filter((filename): filename is string => Boolean(filename))
-    .map(filename => ({ locale, slug: filename.replace(/\.mdx$/, "") }));
+    .map(edge => edge?.node?._sys?.relativePath)
+    .filter((relativePath): relativePath is string => Boolean(relativePath))
+    .filter(relativePath => relativePath.startsWith(prefix(locale)))
+    .map(relativePath => ({
+      locale,
+      slug: relativePath.replace(prefix(locale), "").replace(/\.mdx$/, ""),
+    }));
 }
 
 export function getLegalSlugs(locale: string) {

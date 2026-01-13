@@ -17,11 +17,11 @@ export const pagesCollection: Collection = {
       if (pathParts.length >= 2) {
         const locale = pathParts[0]; // 'pl' or 'en'
         const slug = pathParts[1].replace('.mdx', '');
-        
-        // Always include slug in URL for consistency
-        return `admin/${locale}/${slug}`;
+
+        // Point Tina preview to the SPA entry with hash routing
+        return `/admin/index.html#/~/admin/${locale}/${slug}`;
       }
-      return 'admin/pl/home';
+      return '/admin/index.html#/~/admin/pl';
     },
   },
   fields: [

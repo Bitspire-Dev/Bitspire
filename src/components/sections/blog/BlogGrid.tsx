@@ -62,6 +62,7 @@ export default function BlogGrid({ posts, locale, translations, getLink }: BlogG
                     locale={locale}
                     translations={translations}
                     getLink={getLink}
+                    data={post as unknown as Record<string, unknown>}
                 />
             ))}
         </section>

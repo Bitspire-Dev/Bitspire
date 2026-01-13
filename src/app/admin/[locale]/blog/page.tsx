@@ -1,19 +1,19 @@
 import { notFound } from "next/navigation";
-import BlogPageWrapper from "@/components/pages/BlogPageWrapper";
 import { AdminPreviewProvider } from "@/providers/AdminPreviewProvider";
+import { AdminBlogIndexPreview } from "@/providers/AdminPreviewRenderer";
 import { getBlogIndex } from "@/lib/tina/queries";
 import client from "@tina/__generated__/client";
 
-interface PageProps {
-  params: { locale: string };
-}
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
-export async function generateStaticParams() {
-  return [{ locale: "pl" }, { locale: "en" }];
+interface PageProps {
+  params: Promise<{ locale: string }>;
 }
 
 export default async function AdminBlogIndexPage({ params }: PageProps) {
-  const { locale } = params;
+  const { locale } = await params;
 
   try {
     const [pageResult, posts] = await Promise.all([
@@ -26,17 +26,9 @@ export default async function AdminBlogIndexPage({ params }: PageProps) {
         query={pageResult.query}
         variables={pageResult.variables}
         data={pageResult.data}
-        render={data => (
-          <BlogPageWrapper
-            data={{
-              ...data.pages,
-              posts,
-              locale,
-              blog: null,
-            }}
-          />
-        )}
-      />
+      >
+        <AdminBlogIndexPreview locale={locale} posts={posts as unknown[]} />
+      </AdminPreviewProvider>
     );
   } catch (error) {
     console.error("Admin blog page not found", error);

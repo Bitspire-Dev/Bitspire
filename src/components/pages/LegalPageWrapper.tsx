@@ -16,10 +16,11 @@ interface LegalPageData {
 
 interface LegalPageWrapperProps {
     data: LegalPageData;
+    hideToc?: boolean;
 }
 
-export default function LegalPageWrapper({ data }: LegalPageWrapperProps) {
+export default function LegalPageWrapper({ data, hideToc }: LegalPageWrapperProps) {
     return (
-        <LegalPage data={data} />
+        <LegalPage data={data} hideToc={hideToc} />
     );
 }

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { TinaMarkdown } from 'tinacms/dist/rich-text';
+import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { tinaField } from 'tinacms/dist/react';
 import PageBackground from '@/components/layout/PageBackground';
 import BackLink from '@/components/layout/BackLink';
@@ -16,7 +17,7 @@ interface PortfolioItemData {
     image?: string | null;
     imageAlt?: string | null;
     link?: string | null;
-    body?: Record<string, unknown> | null;
+    body?: TinaMarkdownContent | TinaMarkdownContent[] | null;
     locale?: string;
     [key: string]: unknown;
 }
@@ -42,6 +43,13 @@ export default function PortfolioItemWrapper({ data }: PortfolioItemWrapperProps
     const locale = data?.locale || 'pl';
     const t = translations[locale as keyof typeof translations] || translations.en;
 
+    const title = data.title ?? "";
+    const description = data.description ?? "";
+
+    const imageSrc = data.image ?? undefined;
+    const imageAlt = data.imageAlt ?? data.title ?? "Project image";
+    const bodyContent = (data.body ?? []) as TinaMarkdownContent | TinaMarkdownContent[];
+
     return (
         <PageBackground variant="mixed">
             <main className="relative z-10 max-w-4xl mx-auto px-6 pt-32 pb-20">
@@ -49,8 +57,8 @@ export default function PortfolioItemWrapper({ data }: PortfolioItemWrapperProps
 
                 <article>
                     <PortfolioItemHeader
-                        title={data.title}
-                        description={data.description}
+                        title={title}
+                        description={description}
                         category={data.category}
                         year={data.year}
                         data={data}
@@ -58,14 +66,14 @@ export default function PortfolioItemWrapper({ data }: PortfolioItemWrapperProps
                     />
 
                     {/* Featured Image */}
-                    {data.image && (
+                    {imageSrc && (
                         <div 
                             className="relative w-full h-100 md:h-125 rounded-xl overflow-hidden mb-12 shadow-2xl"
                             data-tina-field={tinaField(data, 'image')}
                         >
                             <Image
-                                src={data.image}
-                                alt={data.imageAlt || data.title}
+                                src={imageSrc}
+                                alt={imageAlt}
                                 fill
                                 className="object-cover"
                                 priority
@@ -97,7 +105,7 @@ export default function PortfolioItemWrapper({ data }: PortfolioItemWrapperProps
                         prose-td:p-4 prose-td:border prose-td:border-slate-700/30 prose-td:text-slate-300
                         first:prose-p:text-xl first:prose-p:leading-[1.9] first:prose-p:text-slate-200
                     ">
-                        <TinaMarkdown content={data.body} />
+                        <TinaMarkdown content={bodyContent} />
                     </div>
 
                     {/* Tags */}

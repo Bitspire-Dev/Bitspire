@@ -23,12 +23,12 @@ export function useAdminLink() {
     if (isAdmin) {
       // Remove leading slash from href
       const cleanHref = href.startsWith('/') ? href.slice(1) : href;
-      
-      // Special case: root path "/" should go to /admin/{locale}/home
+
+      // Special case: root path "/" should go to /admin/{locale}
       if (cleanHref === '' || cleanHref === '/') {
-        return `/admin/${locale}/home`;
+        return `/admin/${locale}`;
       }
-      
+
       return `/admin/${locale}/${cleanHref}`;
     }
     

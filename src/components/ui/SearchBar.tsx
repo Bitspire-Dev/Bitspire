@@ -6,7 +6,7 @@ import { useSearch } from '@/hooks/useSearch';
 
 type ContentType = 'blog' | 'portfolio';
 
-interface SearchTranslations {
+export interface SearchTranslations {
   searchPlaceholder?: string;
   clearSearch?: string;
   filterByTech?: string;

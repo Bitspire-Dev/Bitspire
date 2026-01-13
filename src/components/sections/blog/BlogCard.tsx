@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { tinaField } from 'tinacms/dist/react';
 import TagsList from '@/components/ui/TagsList';
 
 interface BlogCardProps {
@@ -17,6 +18,7 @@ interface BlogCardProps {
         by?: string | null;
     } | null;
     getLink: (path: string) => string;
+    data?: Record<string, unknown>;
 }
 
 export default function BlogCard({ 
@@ -30,7 +32,8 @@ export default function BlogCard({
     tags,
     locale,
     translations,
-    getLink
+    getLink,
+    data
 }: BlogCardProps) {
     const formattedDate = new Date(date).toLocaleDateString(
         locale === 'pl' ? 'pl-PL' : 'en-US',
@@ -42,7 +45,10 @@ export default function BlogCard({
     );
 
     return (
-        <article className="group relative overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-900/40 backdrop-blur-sm hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(59,130,246,0.2)]">
+        <article
+            className="group relative overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-900/40 backdrop-blur-sm hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(59,130,246,0.2)]"
+            data-tina-field={data ? tinaField(data) : undefined}
+        >
             {/* Image */}
             {image && (
                 <Link href={getLink(`/blog/${slug}`)}>
@@ -67,23 +73,28 @@ export default function BlogCard({
                 {/* Date and Read Time */}
                 <div className="flex items-center gap-3 mb-1 text-xs text-slate-500">
                     <time dateTime={date}>
-                        {formattedDate}
+                        <span data-tina-field={data ? tinaField(data, 'date') : undefined}>{formattedDate}</span>
                     </time>
                     {readTime && translations?.readTime && (
                         <>
                             <span>•</span>
-                            <span>{translations.readTime.replace('{minutes}', readTime.toString())}</span>
+                            <span data-tina-field={data ? tinaField(data, 'readTime') : undefined}>
+                                {translations.readTime.replace('{minutes}', readTime.toString())}
+                            </span>
                         </>
                     )}
                 </div>
 
                 <Link href={getLink(`/blog/${slug}`)}>
-                    <h2 className="text-2xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-linear-to-r group-hover:from-blue-400 group-hover:to-cyan-400 transition-all duration-300 mb-4 leading-tight">
+                    <h2
+                        className="text-2xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-linear-to-r group-hover:from-blue-400 group-hover:to-cyan-400 transition-all duration-300 mb-4 leading-tight"
+                        data-tina-field={data ? tinaField(data, 'title') : undefined}
+                    >
                         {title}
                     </h2>
                 </Link>
 
-                <p className="text-slate-300 text-base leading-relaxed mb-4">
+                <p className="text-slate-300 text-base leading-relaxed mb-4" data-tina-field={data ? tinaField(data, excerpt ? 'excerpt' : 'description') : undefined}>
                     {excerpt || description}
                 </p>
 
@@ -96,7 +107,7 @@ export default function BlogCard({
 
                 {/* Read More Link */}
                 <Link
-                    href={`/${locale}/blog/${slug}`}
+                    href={getLink(`/blog/${slug}`)}
                     className="inline-flex items-center gap-2 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors group/link"
                 >
                     {translations?.readMore}

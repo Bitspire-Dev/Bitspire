@@ -16,10 +16,11 @@ export const portfolioCollection: Collection = {
       if (pathParts.length >= 2) {
         const locale = pathParts[0]; // 'pl' or 'en'
         const slug = pathParts[1].replace('.mdx', '');
-        
-        return `admin/${locale}/portfolio/${slug}`;
+
+        // Route Tina preview through SPA hash
+        return `/admin/index.html#/~/admin/${locale}/portfolio/${slug}`;
       }
-      return 'admin/pl/portfolio';
+      return '/admin/index.html#/~/admin/pl/portfolio';
     },
   },
   fields: [

@@ -1,19 +1,19 @@
 import { notFound } from "next/navigation";
-import PortfolioPageWrapper from "@/components/pages/PortfolioPageWrapper";
 import { AdminPreviewProvider } from "@/providers/AdminPreviewProvider";
+import { AdminPortfolioIndexPreview } from "@/providers/AdminPreviewRenderer";
 import { getPortfolioIndex } from "@/lib/tina/queries";
 import client from "@tina/__generated__/client";
 
-interface PageProps {
-  params: { locale: string };
-}
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
-export async function generateStaticParams() {
-  return [{ locale: "pl" }, { locale: "en" }];
+interface PageProps {
+  params: Promise<{ locale: string }>;
 }
 
 export default async function AdminPortfolioIndexPage({ params }: PageProps) {
-  const { locale } = params;
+  const { locale } = await params;
 
   try {
     const [pageResult, projects] = await Promise.all([
@@ -26,16 +26,9 @@ export default async function AdminPortfolioIndexPage({ params }: PageProps) {
         query={pageResult.query}
         variables={pageResult.variables}
         data={pageResult.data}
-        render={data => (
-          <PortfolioPageWrapper
-            data={{
-              ...data.pages,
-              projects,
-              locale,
-            }}
-          />
-        )}
-      />
+      >
+        <AdminPortfolioIndexPreview locale={locale} projects={projects as unknown[]} />
+      </AdminPreviewProvider>
     );
   } catch (error) {
     console.error("Admin portfolio page not found", error);

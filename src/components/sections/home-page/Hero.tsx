@@ -7,9 +7,10 @@ import { tinaField } from 'tinacms/dist/react';
 import { RichText } from '@/components/ui/RichTextPresets';
 
 interface HeroData {
-  title?: Record<string, unknown>; // Rich-text content
-  subtitle?: Record<string, unknown>; // Rich-text content
+  title?: Record<string, unknown>;
+  subtitle?: Record<string, unknown>;
   image?: string | null;
+  _tina_metadata?: unknown;
   [key: string]: unknown;
 }
 
@@ -31,7 +32,7 @@ const buttonTexts = {
 export const Hero: React.FC<HeroProps> = ({ data, locale = 'pl' }) => {
   const texts = buttonTexts[locale as keyof typeof buttonTexts] || buttonTexts.pl;
   return (
-    <section className="relative py-20 lg:py-32 overflow-hidden"  data-tina-field={tinaField(data)}>
+    <section className="relative py-20 lg:py-32 overflow-hidden" data-tina-field={data ? tinaField(data) : undefined}>
       {/* Cybernetic Background Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
       
@@ -52,11 +53,11 @@ export const Hero: React.FC<HeroProps> = ({ data, locale = 'pl' }) => {
               <span className="text-blue-200 text-xs font-bold tracking-widest uppercase drop-shadow-sm font-mono">System Online</span>
             </div>
             
-            <h1 data-tina-field={tinaField(data, 'title')}>
+            <h1 data-tina-field={data ? tinaField(data, 'title') : undefined}>
               <RichText content={data?.title} preset="hero-title" className="mb-8" />
             </h1>
             
-            <div data-tina-field={tinaField(data, 'subtitle')}>
+            <div data-tina-field={data ? tinaField(data, 'subtitle') : undefined}>
               <RichText 
                 content={data?.subtitle} 
                 preset="subtitle" 
@@ -85,7 +86,7 @@ export const Hero: React.FC<HeroProps> = ({ data, locale = 'pl' }) => {
                    fill
                    sizes="(max-width: 1024px) 100vw, 50vw"
                    className="object-contain filter-[drop-shadow(0_0_50px_rgba(59,130,246,0.3))]"
-                   data-tina-field={tinaField(data, 'image')}
+                   data-tina-field={data ? tinaField(data, 'image') : undefined}
                    priority
                  />
               </div>

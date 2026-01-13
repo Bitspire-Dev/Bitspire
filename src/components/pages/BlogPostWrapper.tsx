@@ -1,6 +1,7 @@
 'use client';
 
 import { TinaMarkdown } from 'tinacms/dist/rich-text';
+import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { tinaField } from 'tinacms/dist/react';
 import PageBackground from '@/components/layout/PageBackground';
 import BackLink from '@/components/layout/BackLink';
@@ -22,7 +23,7 @@ interface BlogPostData {
     image?: string | null;
     imageAlt?: string | null;
     readTime?: number | null;
-    body: Record<string, unknown>;
+    body: TinaMarkdownContent | TinaMarkdownContent[];
     locale?: string;
     slug?: string;
     relatedPosts?: Array<{

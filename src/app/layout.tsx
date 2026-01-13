@@ -1,4 +1,5 @@
 import { NextIntlClientProvider } from 'next-intl';
+import { setRequestLocale } from 'next-intl/server';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { CursorLightProvider } from '@/components/features/Cursor-Light';
@@ -104,6 +105,9 @@ export default async function RootLayout({
   // Pobierz locale z params (będzie ustawione przez middleware)
   const { locale } = await params;
   const currentLocale = locale || 'pl';
+
+  // Opt-in for static rendering with next-intl
+  setRequestLocale(currentLocale);
   // Messages are stored directly in MDX content; keep provider only for hooks like useLocale
   const messages = {};
 
