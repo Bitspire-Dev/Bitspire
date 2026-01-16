@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import LegalPageWrapper from "@/components/pages/LegalPageWrapper";
+import { buildLocalePath, buildMetadata, normalizeLocale } from "@/lib/seo/metadata";
 import { getLegalPage } from "@/lib/tina/queries";
 
 const supportedLocales = ["pl", "en"] as const;
@@ -14,6 +15,25 @@ interface PageProps {
 
 export async function generateStaticParams() {
   return supportedLocales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const currentLocale = normalizeLocale(locale);
+  const slug = slugMap[currentLocale];
+  const data = await getLegalPage(currentLocale, slug);
+
+  const paths = {
+    pl: buildLocalePath("pl", "/regulamin"),
+    en: buildLocalePath("en", "/terms"),
+  };
+
+  return buildMetadata({
+    title: data?.title,
+    description: data?.description,
+    locale: currentLocale,
+    paths,
+  });
 }
 
 export default async function RegulaminPage({ params }: PageProps) {

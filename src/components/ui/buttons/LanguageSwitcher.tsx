@@ -2,6 +2,8 @@
 
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
+import { useMemo, useEffect, useCallback } from 'react';
+import { useRouter, usePathname } from '@/i18n/routing';
 
 const flagMap = {
   pl: '/flags/pl.svg',
@@ -16,24 +18,44 @@ interface LanguageSwitcherProps {
 }
 
 export function LanguageSwitcher({ labels }: LanguageSwitcherProps = {}) {
-  const locale = useLocale();
+  const intlLocale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const otherLocale = locale === 'pl' ? 'en' : 'pl';
+  const stripLocalePrefix = useCallback((path: string) => {
+    if (path.startsWith('/en')) return path.replace(/^\/en(\/|$)/, '/');
+    if (path.startsWith('/pl')) return path.replace(/^\/pl(\/|$)/, '/');
+    return path;
+  }, []);
+
+  const currentLocale = useMemo(() => {
+    if (pathname?.startsWith('/en')) return 'en';
+    if (pathname?.startsWith('/pl')) return 'pl';
+    return intlLocale as 'pl' | 'en';
+  }, [pathname, intlLocale]);
+
+  const otherLocale = currentLocale === 'pl' ? 'en' : 'pl';
+
+  const targetPath = useMemo(() => {
+    const raw = pathname || '/';
+    const normalized = stripLocalePrefix(raw);
+    return normalized === '' ? '/' : normalized;
+  }, [pathname, stripLocalePrefix]);
+
+  const prefetchTarget = useCallback(() => {
+    if (!targetPath) return;
+    if (typeof router.prefetch === 'function') {
+      router.prefetch(targetPath, { locale: otherLocale });
+    }
+  }, [router, targetPath]);
+
+  useEffect(() => {
+    prefetchTarget();
+  }, [prefetchTarget]);
 
   const handleSwitch = () => {
-    // Debug: check what locale is detected
-    console.log('Language Switcher Debug:', {
-      detectedLocale: locale,
-      currentURL: window.location.href,
-      otherLocale: otherLocale
-    });
-    
-    // Simply replace the current locale with the other one in the URL
-    const currentUrl = window.location.href;
-    const newUrl = currentUrl.replace(`/${locale}/`, `/${otherLocale}/`);
-    
-    console.log('Switching to:', newUrl);
-    window.location.href = newUrl;
+    if (!targetPath) return;
+    router.replace(targetPath, { locale: otherLocale });
   };
 
   const ariaLabel = otherLocale === 'pl' 
@@ -43,6 +65,8 @@ export function LanguageSwitcher({ labels }: LanguageSwitcherProps = {}) {
   return (
     <button
       onClick={handleSwitch}
+      onMouseEnter={prefetchTarget}
+      onFocus={prefetchTarget}
       className="group relative w-10 h-10 rounded-lg overflow-hidden border-2 border-slate-600/40 hover:border-blue-400/60 bg-slate-800/40 hover:bg-slate-700/60 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-blue-500/20 hover:scale-110"
       aria-label={ariaLabel}
     >
