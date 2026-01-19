@@ -33,8 +33,8 @@ interface BlogGridProps {
 export default function BlogGrid({ posts, locale, translations, getLink }: BlogGridProps) {
     if (posts.length === 0) {
         return (
-            <section aria-label="Blog posts" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
-                <div className="col-span-full text-center py-20">
+            <section aria-label="Blog posts" className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 mb-16 md:mb-20">
+                <div className="col-span-full text-center py-16 md:py-20">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-800/50 border border-slate-700 mb-4">
                         <svg className="w-8 h-8 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -47,8 +47,8 @@ export default function BlogGrid({ posts, locale, translations, getLink }: BlogG
     }
 
     return (
-        <section aria-label="Blog posts" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
-            {posts.map((post) => (
+        <section aria-label="Blog posts" className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 mb-16 md:mb-20">
+            {posts.map((post, index) => (
                 <BlogCard
                     key={post._sys.relativePath}
                     title={post.title}
@@ -56,12 +56,14 @@ export default function BlogGrid({ posts, locale, translations, getLink }: BlogG
                     excerpt={post.excerpt}
                     description={post.description}
                     image={post.image}
+                    imageAlt={post.imageAlt}
                     date={post.date}
                     readTime={post.readTime}
                     tags={post.tags}
                     locale={locale}
                     translations={translations}
                     getLink={getLink}
+                    priority={index < 2}
                     data={post as unknown as Record<string, unknown>}
                 />
             ))}

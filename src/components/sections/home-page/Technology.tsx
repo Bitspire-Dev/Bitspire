@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import { tinaField } from 'tinacms/dist/react';
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { RichText } from "@/components/ui/RichTextPresets";
+import { RichText } from "@tina/richTextPresets";
 
 interface TechnologyData {
   title?: Record<string, unknown>;

@@ -2,8 +2,8 @@
 
 import React, { useMemo } from 'react';
 import { tinaField } from 'tinacms/dist/react';
-import { TinaMarkdown } from 'tinacms/dist/rich-text';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
+import { RichText } from '@tina/richTextPresets';
 
 interface Section {
   __typename?: string;
@@ -205,7 +205,12 @@ export default function LegalPage({ data, hideToc = false }: { data?: LegalPageD
             data-tina-field={tinaField(data, 'body')}
           >
             {hasBody ? (
-              <TinaMarkdown content={bodyContent as TinaMarkdownContent} components={mdxComponents} />
+              <RichText
+                content={bodyContent as TinaMarkdownContent}
+                preset="body"
+                className="max-w-none"
+                components={mdxComponents}
+              />
             ) : sections.length > 0 ? (
               sections.map((section, idx) => (
                 section?.id && section?.title && section?.content && (

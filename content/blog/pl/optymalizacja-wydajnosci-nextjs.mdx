@@ -50,7 +50,6 @@ export default function Posts() {
 }
 ```
 
-### Po (Server Component):
 ```tsx
 // app/blog/page.tsx
 export default async function BlogPage() {
@@ -67,7 +66,6 @@ export default async function BlogPage() {
 ```
 
 **Korzyści:**
-- ✅ Zero JavaScript wysłanego do klienta
 - ✅ Dane pobierane na serwerze (szybciej)
 - ✅ Lepsze SEO
 
@@ -85,33 +83,20 @@ import Image from 'next/image';
 export function Hero() {
   return (
     <Image
-      src="/hero.jpg"
-      alt="Hero image"
       width={1200}
       height={600}
-      priority // dla above-the-fold images
-      placeholder="blur"
       blurDataURL="data:image/jpeg;base64,..."
     />
-  );
-}
 ```
-
-**Pro tip:** Użyj `priority` tylko dla obrazów above-the-fold!
 
 ## 3. Implementuj Static Generation (SSG)
 
-Statyczne strony są **ultra-szybkie** i tanie w hostingu.
 
 ```tsx
-// app/blog/[slug]/page.tsx
-export async function generateStaticParams() {
   const posts = await getPosts();
   
-  return posts.map((post) => ({
     slug: post.slug,
   }));
-}
 
 export default async function BlogPost({ params }: { params: { slug: string } }) {
   const post = await getPost(params.slug);
@@ -121,9 +106,6 @@ export default async function BlogPost({ params }: { params: { slug: string } })
 ```
 
 **Kiedy używać SSG:**
-- ✅ Strony, które rzadko się zmieniają
-- ✅ Blogi, portfolio, landing pages
-- ✅ Dokumentacja
 
 ## 4. Używaj dynamicznych importów
 

@@ -1,6 +1,9 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { tinaField } from 'tinacms/dist/react';
 import TagsList from '@/components/ui/TagsList';
+import CardTitle from '@/components/ui/CardTitle';
+import { formatDate, safeLink, toSlug } from '@/lib/ui/helpers';
 
 interface BlogCardProps {
     title: string;
@@ -8,6 +11,7 @@ interface BlogCardProps {
     excerpt?: string | null;
     description?: string;
     image?: string | null;
+    imageAlt?: string | null;
     date: string;
     readTime?: number | null;
     tags?: (string | null)[] | null;
@@ -18,6 +22,7 @@ interface BlogCardProps {
         by?: string | null;
     } | null;
     getLink: (path: string) => string;
+    priority?: boolean;
     data?: Record<string, unknown>;
 }
 
@@ -27,22 +32,22 @@ export default function BlogCard({
     excerpt, 
     description,
     image, 
+    imageAlt,
     date, 
     readTime, 
     tags,
     locale,
     translations,
     getLink,
+    priority = false,
     data
 }: BlogCardProps) {
-    const formattedDate = new Date(date).toLocaleDateString(
-        locale === 'pl' ? 'pl-PL' : 'en-US',
-        {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        }
-    );
+    const blurDataUrl =
+        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjE4IiBmaWxsPSIjMGYxNzJhIi8+PC9zdmc+';
+    const resolvedSlug = slug || toSlug(title);
+    const postPath = getLink(`/blog/${resolvedSlug}`);
+    const postHref = safeLink(postPath) ?? postPath;
+    const formattedDate = formatDate(date, locale) ?? date;
 
     return (
         <article
@@ -51,25 +56,25 @@ export default function BlogCard({
         >
             {/* Image */}
             {image && (
-                <Link href={getLink(`/blog/${slug}`)}>
-                    <div 
-                        className="relative w-full aspect-video overflow-hidden rounded-t-2xl"
-                        style={{
-                            backgroundImage: `url(${image})`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'top center',
-                            margin: 0,
-                            padding: 0,
-                            display: 'block'
-                        }}
-                    >
+                <Link href={postHref} prefetch={false}>
+                    <div className="relative w-full aspect-video overflow-hidden rounded-t-2xl">
+                        <Image
+                            src={image}
+                            alt={imageAlt || title}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            className="object-cover group-hover:scale-110 transition-transform duration-500"
+                            priority={priority}
+                            placeholder="blur"
+                            blurDataURL={blurDataUrl}
+                        />
                         <div className="absolute inset-0 bg-linear-to-br from-blue-600/10 via-transparent to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10" />
                     </div>
                 </Link>
             )}
 
             {/* Content */}
-            <div className="p-6">
+            <div className="p-5 md:p-6">
                 {/* Date and Read Time */}
                 <div className="flex items-center gap-3 mb-1 text-xs text-slate-500">
                     <time dateTime={date}>
@@ -85,16 +90,16 @@ export default function BlogCard({
                     )}
                 </div>
 
-                <Link href={getLink(`/blog/${slug}`)}>
-                    <h2
-                        className="text-2xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-linear-to-r group-hover:from-blue-400 group-hover:to-cyan-400 transition-all duration-300 mb-4 leading-tight"
-                        data-tina-field={data ? tinaField(data, 'title') : undefined}
+                <Link href={postHref} prefetch={false}>
+                    <CardTitle
+                        variant="blue"
+                        tinaField={data ? tinaField(data, 'title') : undefined}
                     >
                         {title}
-                    </h2>
+                    </CardTitle>
                 </Link>
 
-                <p className="text-slate-300 text-base leading-relaxed mb-4" data-tina-field={data ? tinaField(data, excerpt ? 'excerpt' : 'description') : undefined}>
+                <p className="text-slate-300 text-sm md:text-base leading-relaxed mb-4" data-tina-field={data ? tinaField(data, excerpt ? 'excerpt' : 'description') : undefined}>
                     {excerpt || description}
                 </p>
 
@@ -107,8 +112,9 @@ export default function BlogCard({
 
                 {/* Read More Link */}
                 <Link
-                    href={getLink(`/blog/${slug}`)}
+                    href={postHref}
                     className="inline-flex items-center gap-2 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors group/link"
+                    prefetch={false}
                 >
                     {translations?.readMore}
                     <span className="group-hover/link:translate-x-1 transition-transform" aria-hidden>→</span>

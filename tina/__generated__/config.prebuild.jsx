@@ -1,6 +1,19 @@
 // tina/config.ts
 import { defineConfig } from "tinacms";
 
+// tina/templates/gradient.ts
+var gradientTemplate = {
+  name: "Gradient",
+  label: "Gradient Text",
+  fields: [
+    {
+      type: "string",
+      name: "children",
+      label: "Text"
+    }
+  ]
+};
+
 // tina/schemas/portfolio.ts
 var portfolioCollection = {
   name: "portfolio",
@@ -102,7 +115,8 @@ var portfolioCollection = {
       type: "rich-text",
       name: "body",
       label: "Content",
-      isBody: true
+      isBody: true,
+      templates: [gradientTemplate]
     }
   ]
 };
@@ -152,7 +166,8 @@ var blogCollection = {
       label: "Short Excerpt",
       ui: {
         component: "textarea"
-      }
+      },
+      required: true
     },
     {
       type: "datetime",
@@ -169,47 +184,40 @@ var blogCollection = {
     {
       type: "string",
       name: "category",
-      label: "Category"
+      label: "Category",
+      required: true
     },
     {
       type: "string",
       name: "tags",
       label: "Tags",
-      list: true
+      list: true,
+      required: true
     },
     {
       type: "image",
       name: "image",
-      label: "Featured Image"
+      label: "Featured Image",
+      required: true
     },
     {
       type: "string",
       name: "imageAlt",
-      label: "Image Alt Text"
+      label: "Image Alt Text",
+      required: true
     },
     {
       type: "number",
       name: "readTime",
-      label: "Read Time (minutes)"
+      label: "Read Time (minutes)",
+      required: true
     },
     {
       type: "rich-text",
       name: "body",
       label: "Content",
-      isBody: true
-    }
-  ]
-};
-
-// tina/templates/gradient.ts
-var gradientTemplate = {
-  name: "Gradient",
-  label: "Gradient Text",
-  fields: [
-    {
-      type: "string",
-      name: "children",
-      label: "Text"
+      isBody: true,
+      templates: [gradientTemplate]
     }
   ]
 };
@@ -625,7 +633,8 @@ var pagesCollection = {
       name: "body",
       label: "Page Content",
       description: "For legal pages and other text-heavy pages",
-      isBody: true
+      isBody: true,
+      templates: [gradientTemplate]
     }
   ]
 };

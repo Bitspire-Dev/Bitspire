@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useTina } from "tinacms/dist/react";
+import { useEditState, useTina } from "tinacms/dist/react";
 
 type AdminPreviewContextValue = unknown;
 
@@ -27,6 +27,11 @@ interface AdminPreviewProviderProps<TData> {
  * Server should provide query + variables + initial data.
  */
 export function AdminPreviewProvider<TData>({ query, variables, data, children }: AdminPreviewProviderProps<TData>) {
+  const { edit } = useEditState();
   const { data: liveData } = useTina({ query, variables, data: data as object });
-  return <AdminPreviewContext.Provider value={liveData as TData}>{children}</AdminPreviewContext.Provider>;
+  return (
+    <AdminPreviewContext.Provider value={liveData as TData}>
+      <div data-tina-edit-mode={edit ? "true" : "false"}>{children}</div>
+    </AdminPreviewContext.Provider>
+  );
 }

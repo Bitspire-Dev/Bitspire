@@ -140,10 +140,12 @@ input BooleanFilter {
   exists: Boolean
 }
 
-input RichTextFilter {
-  startsWith: String
-  eq: String
-  exists: Boolean
+input PortfolioBodyGradientFilter {
+  children: StringFilter
+}
+
+input PortfolioBodyFilter {
+  Gradient: PortfolioBodyGradientFilter
 }
 
 input PortfolioFilter {
@@ -160,7 +162,7 @@ input PortfolioFilter {
   imageAlt: StringFilter
   link: StringFilter
   featured: BooleanFilter
-  body: RichTextFilter
+  body: PortfolioBodyFilter
 }
 
 type PortfolioConnectionEdges {
@@ -178,14 +180,14 @@ type Blog implements Node & Document {
   title: String!
   slug: String!
   description: String!
-  excerpt: String
+  excerpt: String!
   date: String!
   author: String!
-  category: String
-  tags: [String]
-  image: String
-  imageAlt: String
-  readTime: Float
+  category: String!
+  tags: [String!]!
+  image: String!
+  imageAlt: String!
+  readTime: Float!
   body: JSON
   id: ID!
   _sys: SystemInfo!
@@ -202,6 +204,14 @@ input NumberFilter {
   in: [Float]
 }
 
+input BlogBodyGradientFilter {
+  children: StringFilter
+}
+
+input BlogBodyFilter {
+  Gradient: BlogBodyGradientFilter
+}
+
 input BlogFilter {
   title: StringFilter
   slug: StringFilter
@@ -214,7 +224,7 @@ input BlogFilter {
   image: ImageFilter
   imageAlt: StringFilter
   readTime: NumberFilter
-  body: RichTextFilter
+  body: BlogBodyFilter
 }
 
 type BlogConnectionEdges {
@@ -389,6 +399,12 @@ input PagesHeroTitleGradientFilter {
 
 input PagesHeroTitleFilter {
   Gradient: PagesHeroTitleGradientFilter
+}
+
+input RichTextFilter {
+  startsWith: String
+  eq: String
+  exists: Boolean
 }
 
 input PagesHeroFilter {
@@ -620,6 +636,14 @@ input PagesSearchBarFilter {
   portfolio: PagesSearchBarPortfolioFilter
 }
 
+input PagesBodyGradientFilter {
+  children: StringFilter
+}
+
+input PagesBodyFilter {
+  Gradient: PagesBodyGradientFilter
+}
+
 input PagesFilter {
   title: StringFilter
   description: StringFilter
@@ -636,7 +660,7 @@ input PagesFilter {
   portfolio: PagesPortfolioFilter
   blog: PagesBlogFilter
   searchBar: PagesSearchBarFilter
-  body: RichTextFilter
+  body: PagesBodyFilter
 }
 
 type PagesConnectionEdges {

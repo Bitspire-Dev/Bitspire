@@ -1,5 +1,6 @@
 import { tinaField } from 'tinacms/dist/react';
 import MetaBadge from '@/components/ui/MetaBadge';
+import { formatDate } from '@/lib/ui/helpers';
 
 interface BlogPostHeaderProps {
     title: string;
@@ -15,6 +16,12 @@ interface BlogPostHeaderProps {
         readTime?: string;
         publishedOn?: string;
     } | null;
+    translationsTinaFields?: {
+        by?: string;
+        readTime?: string;
+        publishedOn?: string;
+    };
+    authorTinaField?: string;
 }
 
 export default function BlogPostHeader({ 
@@ -26,21 +33,22 @@ export default function BlogPostHeader({
     date,
     locale,
     data,
-    translations
+    translations,
+    translationsTinaFields,
+    authorTinaField
 }: BlogPostHeaderProps) {
-    const formatDate = (dateString: string) => {
-        const dateObj = new Date(dateString);
-        return dateObj.toLocaleDateString(locale === 'pl' ? 'pl-PL' : 'en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+    const formattedDate = formatDate(date, locale) ?? date;
+
+    const labels = {
+        by: translations?.by,
+        readTime: translations?.readTime,
+        publishedOn: translations?.publishedOn,
     };
 
     return (
         <>
             {/* Category & Read Time */}
-            <div className="flex items-center justify-center gap-4 mb-2">
+            <div className="flex items-center justify-center md:justify-start gap-4 mb-3">
                 {category && (
                     <MetaBadge 
                         label={category} 
@@ -48,19 +56,21 @@ export default function BlogPostHeader({
                         tinaField={data ? tinaField(data, 'category') : undefined}
                     />
                 )}
-                {readTime && translations?.readTime && (
+                {readTime && labels.readTime && (
                     <span 
                         className="text-sm text-slate-400"
                         data-tina-field={data ? tinaField(data, 'readTime') : undefined}
                     >
-                        {translations.readTime.replace('{minutes}', readTime.toString())}
+                        <span data-tina-field={translationsTinaFields?.readTime}>
+                            {labels.readTime.replace('{minutes}', readTime.toString())}
+                        </span>
                     </span>
                 )}
             </div>
 
             {/* Title */}
             <h1 
-                className="text-4xl md:text-5xl font-bold text-white mb-3 leading-tight wrap-break-word overflow-wrap-anywhere text-center"
+                className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight wrap-break-word overflow-wrap-anywhere text-center md:text-left"
                 data-tina-field={data ? tinaField(data, 'title') : undefined}
             >
                 {title}
@@ -68,18 +78,34 @@ export default function BlogPostHeader({
 
             {/* Description */}
             <p 
-                className="text-xl text-slate-300 mb-6 wrap-break-word overflow-wrap-anywhere text-center"
+                className="text-base sm:text-lg md:text-xl text-slate-300 mb-6 wrap-break-word overflow-wrap-anywhere text-center md:text-left"
                 data-tina-field={data ? tinaField(data, 'description') : undefined}
             >
                 {description}
             </p>
 
             {/* Meta info */}
-            <div className="flex items-center justify-center gap-4 text-sm text-slate-400 mb-8 pb-8 border-b border-slate-700/50">
-                <span>{translations?.by} {author}</span>
+            <div className="flex items-center justify-center md:justify-start gap-4 text-sm text-slate-400 mb-8 pb-8 border-b border-slate-700/50">
+                <span>
+                    {labels.by && (
+                        <span data-tina-field={translationsTinaFields?.by}>
+                            {labels.by}{' '}
+                        </span>
+                    )}
+                    <span data-tina-field={authorTinaField}>{author}</span>
+                </span>
                 <span>•</span>
                 <span data-tina-field={data ? tinaField(data, 'date') : undefined}>
-                    {formatDate(date)}
+                    {labels.publishedOn ? (
+                        <>
+                            <span data-tina-field={translationsTinaFields?.publishedOn}>
+                                {labels.publishedOn}{' '}
+                            </span>
+                            {formattedDate}
+                        </>
+                    ) : (
+                        formattedDate
+                    )}
                 </span>
             </div>
         </>

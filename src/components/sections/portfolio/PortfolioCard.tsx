@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { tinaField } from 'tinacms/dist/react';
 import TagsList from '@/components/ui/TagsList';
+import CardTitle from '@/components/ui/CardTitle';
+import { safeLink } from '@/lib/ui/helpers';
 
 interface PortfolioCardProps {
     title: string;
@@ -27,6 +29,8 @@ export default function PortfolioCard({
     data,
     translations: t
 }: PortfolioCardProps) {
+    const safeHref = safeLink(link);
+
     return (
         <article className="group relative overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-900/40 backdrop-blur-sm hover:border-cyan-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]">
             {/* Image */}
@@ -62,12 +66,12 @@ export default function PortfolioCard({
                     </div>
                 )}
 
-                <h2 
-                    className="text-2xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-linear-to-r group-hover:from-cyan-400 group-hover:to-blue-400 transition-all duration-300 mb-4 leading-tight" 
-                    data-tina-field={data ? tinaField(data, `projects.${index}.title`) : undefined}
+                <CardTitle
+                    variant="cyan"
+                    tinaField={data ? tinaField(data, `projects.${index}.title`) : undefined}
                 >
                     {title}
-                </h2>
+                </CardTitle>
 
                 <p 
                     className="text-slate-300 text-base leading-relaxed mb-4" 
@@ -84,9 +88,9 @@ export default function PortfolioCard({
                 )}
 
                 {/* View Project Link */}
-                {link && (
+                {safeHref && (
                     <Link
-                        href={link}
+                        href={safeHref}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-400 hover:text-cyan-300 transition-colors group/link"

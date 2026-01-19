@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { CTAButton } from '@/components/ui/buttons/CTA__button';
 import { tinaField } from 'tinacms/dist/react';
-import { RichText } from '@/components/ui/RichTextPresets';
+import { RichText } from '@tina/richTextPresets';
 
 interface HeroData {
   title?: Record<string, unknown>;

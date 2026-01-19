@@ -27,10 +27,17 @@ export async function getLegalPage(locale: string, slug: string) {
 
 export async function getBlogPost(locale: string, slug: string) {
   const relativePath = `${prefix(locale)}${slug}.mdx`;
-  const result = await client.queries.blog({ relativePath });
-  const allPosts = await getBlogIndex(locale);
+  const [result, allPosts, page] = await Promise.all([
+    client.queries.blog({ relativePath }),
+    getBlogIndex(locale),
+    getPage(locale, "blog"),
+  ]);
   const relatedPosts = getRelatedPosts(result.data.blog, allPosts);
-  return normalizePost(result.data.blog, { locale, relatedPosts });
+  return {
+    ...normalizePost(result.data.blog, { locale, relatedPosts }),
+    blog: page?.blog ?? null,
+    locale,
+  };
 }
 
 export async function getBlogIndex(locale: string) {

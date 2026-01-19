@@ -1,4 +1,5 @@
 import { Collection } from "tinacms";
+import { gradientTemplate } from "../templates/gradient";
 
 export const blogCollection: Collection = {
   name: "blog",
@@ -49,6 +50,7 @@ export const blogCollection: Collection = {
       ui: {
         component: "textarea",
       },
+      required: true,
     },
     {
       type: "datetime",
@@ -66,33 +68,39 @@ export const blogCollection: Collection = {
       type: "string",
       name: "category",
       label: "Category",
+      required: true,
     },
     {
       type: "string",
       name: "tags",
       label: "Tags",
       list: true,
+      required: true,
     },
     {
       type: "image",
       name: "image",
       label: "Featured Image",
+      required: true,
     },
     {
       type: "string",
       name: "imageAlt",
       label: "Image Alt Text",
+      required: true,
     },
     {
       type: "number",
       name: "readTime",
       label: "Read Time (minutes)",
+      required: true,
     },
     {
       type: "rich-text",
       name: "body",
       label: "Content",
       isBody: true,
+      templates: [gradientTemplate],
     },
   ],
 };

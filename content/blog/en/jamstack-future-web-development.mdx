@@ -18,26 +18,59 @@ imageAlt: 'JAMstack architecture diagram'
 readTime: 9
 ---
 
-## What is JAMstack?
+## TL;DR
 
-JAMstack isn't a specific technology, but an **architecture for building web applications** based on three pillars:
+JAMstack is the fastest path to secure, scalable, content‑heavy sites. Use it when SEO and speed matter most, and pair it with a headless CMS.
 
-- **J**avaScript - dynamic functionality
-- **A**PIs - backend as a service
-- **M**arkup - pre-rendered HTML
+## The JAMstack pillars
 
-## Why JAMstack Dominates in 2025?
+- **JavaScript:** dynamic UX in the browser
+- **APIs:** data and services via HTTP
+- **Markup:** pre‑rendered HTML served from CDN
 
-### 1. Performance Beyond Compare
+## Why it wins in 2025
 
-**Static HTML served from CDN:**
+1) **Performance:** near‑instant load times
+2) **Security:** minimal attack surface
+3) **Scalability:** CDN handles traffic spikes
+
+```text
+Traditional: 800ms – 2s load time
+JAMstack:   100ms – 300ms load time
 ```
-Traditional: 800ms - 2s load time
-JAMstack: 100ms - 300ms load time
+
+## Typical architecture
+
+```mermaid
+flowchart LR
+  User --> CDN
+  CDN --> StaticSite[Pre-rendered HTML]
+  StaticSite --> API[APIs]
+  CMS[Headless CMS] --> API
 ```
 
-**Core Web Vitals:**
-- LCP (Largest Contentful Paint): < 0.5s
+## When NOT to use JAMstack
+
+- Real‑time apps (chat, trading)
+- Heavy back‑office workflows
+- Highly personalized pages (unless hybrid)
+
+## Case study snapshot
+
+```text
+Before: 2.8s load, Lighthouse 45/100
+After:  0.4s load, Lighthouse 98/100
+```
+
+## Recommended stack
+
+- **Next.js** for hybrid rendering
+- **Vercel** for deployment
+- **TinaCMS** for editorial workflow
+
+## Final takeaway
+
+If your site is content‑heavy and SEO‑driven, JAMstack is still the best default in 2025.
 - FID (First Input Delay): < 10ms
 - CLS (Cumulative Layout Shift): < 0.05
 
@@ -196,7 +229,7 @@ export default defineConfig({
 
 ### Before (WordPress):
 
-```
+```text
 ⏱️ Load time: 2.8s
 📊 Lighthouse: 45/100
 💰 Hosting: $12/month
@@ -206,7 +239,7 @@ export default defineConfig({
 
 ### After (Next.js + Vercel + TinaCMS):
 
-```
+```text
 ⏱️ Load time: 0.4s (7x faster!)
 📊 Lighthouse: 98/100
 💰 Hosting: $0 (free tier)
@@ -288,7 +321,7 @@ ${markdown}`
 
 ### Traditional WordPress:
 
-```
+```text
 VPS Hosting: $12/month
 Domain: $12/year
 SSL: $0 (Let's Encrypt)
@@ -301,7 +334,7 @@ TOTAL: ~$50/month = $600/year
 
 ### JAMstack (Next.js + Vercel):
 
-```
+```text
 Vercel Hobby: $0
 or Pro: $20/month
 Domain: $12/year

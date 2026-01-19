@@ -17,27 +17,80 @@ imageAlt: 'Comparison of different web technologies'
 readTime: 8
 ---
 
-## Introduction
+## TL;DR
 
-Choosing the right tech stack is one of the most important decisions you'll make at the start of a project. In 2025, we have more options than ever before, which can be both a blessing and a curse.
+Pick the stack that minimizes risk for your **goal, team, budget, and timeline**. Use SSR/SSG for marketing sites, choose full‑stack frameworks for product apps, and avoid over‑engineering for MVPs.
 
-## Key Selection Factors
+## Step 1: Define the project shape
 
-### 1. Project Requirements
+Answer these first:
 
-Before choosing technology, you need to thoroughly understand:
+- **Goal:** marketing, e‑commerce, SaaS, internal tool?
+- **Traffic:** hundreds, thousands, or millions of users?
+- **Time to market:** days, weeks, or months?
+- **Team:** in‑house vs agency; junior vs senior?
+- **Budget:** build cost + long‑term maintenance?
 
-- **Project goal** - is it a corporate website, e-commerce app, or SaaS?
-- **Scalability** - how many users do you expect to serve?
-- **Functionality** - what features are crucial for your business?
-- **Budget** - how much can you allocate to development and maintenance?
+## Step 2: Choose the rendering model
 
-### 2. Performance and SEO
+- **SSG** (static): fastest for content‑heavy sites.
+- **SSR** (server rendering): best for dynamic SEO pages.
+- **CSR** (client): good for dashboards and apps.
+- **Hybrid**: most real projects need a mix.
 
-In 2025, speed and SEO optimization are critical:
+## Step 3: Match stacks to outcomes
 
-**Next.js 15** offers:
-- Server-Side Rendering (SSR) out of the box
+### Marketing site / blog
+- Next.js + MDX + headless CMS
+- Astro + MDX
+
+### E‑commerce
+- Next.js + Shopify / Medusa
+- Nuxt + Shopware
+
+### SaaS
+- Next.js + Supabase
+- Remix + Prisma
+
+### Internal tools
+- React + Vite
+- Vue + Vite
+
+## Decision matrix (example)
+
+| Criterion | Next.js | React + Vite | Astro |
+|---|---|---|---|
+| SEO | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ |
+| Speed | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| DX | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+| Content sites | ⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ |
+| Apps | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐ |
+
+## Quick checklist
+
+- [ ] Do you need SSR/SSG?
+- [ ] Are you SEO‑driven?
+- [ ] Do you need built‑in routing, middleware, auth?
+- [ ] Can your team support this stack long‑term?
+
+## Example: minimal Next.js app
+
+```tsx
+export default function HomePage() {
+  return (
+    <main className="min-h-screen bg-slate-900 text-white p-8">
+      <h1 className="text-4xl font-bold">Hello, 2025</h1>
+      <p className="mt-4 text-slate-300">
+        Fast, SEO‑friendly, production‑ready.
+      </p>
+    </main>
+  );
+}
+```
+
+## Recommendation
+
+If you’re unsure, start with **Next.js + TypeScript**. It’s the most future‑proof, has the best ecosystem, and scales with the product.
 - Static Site Generation (SSG)
 - Incremental Static Regeneration (ISR)
 - Automatic image optimization

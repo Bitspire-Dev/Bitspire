@@ -1,4 +1,5 @@
 import { Collection } from "tinacms";
+import { gradientTemplate } from "../templates/gradient";
 import { heroSection, technologySection, offerSection, portfolioHighlightsSection, howWeWorkSection, faqSection, contactSection } from "./sections";
 
 export const pagesCollection: Collection = {
@@ -196,6 +197,7 @@ export const pagesCollection: Collection = {
       label: "Page Content",
       description: "For legal pages and other text-heavy pages",
       isBody: true,
+      templates: [gradientTemplate],
     },
   ],
 };

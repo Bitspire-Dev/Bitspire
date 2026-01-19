@@ -17,27 +17,68 @@ imageAlt: 'Dashboard with Next.js performance metrics'
 readTime: 12
 ---
 
-## Why Performance Matters?
+## TL;DR
 
-In 2025, website speed is not just a nice-to-have - it's a **must-have**. Google prioritizes fast sites in search results, and users abandon slow websites within seconds.
+Treat performance as a product feature. Optimize rendering, assets, and caching, then measure with Core Web Vitals.
 
-### Performance Facts:
+## 10 proven techniques
 
-- **53%** of mobile users abandon a site that takes longer than 3 seconds to load
-- Each second of delay can reduce conversions by **7%**
-- Sites in the top 10% for performance have **2x higher** conversion rates
+### 1) Use Server Components by default
+Keep data fetching on the server to reduce client JS.
 
-## 1. Leverage Server Components
-
-Next.js 15 introduces **Server Components** as default. This is a revolutionary change!
-
-### Before (Client Component):
 ```tsx
-'use client';
+export default async function Page() {
+  const data = await fetch('https://api.example.com/posts').then(r => r.json());
+  return <pre>{JSON.stringify(data, null, 2)}</pre>;
+}
+```
 
-import { useState, useEffect } from 'react';
+### 2) Avoid heavy client bundles
+- Minimize `use client`
+- Split interactive widgets
 
-export default function Posts() {
+### 3) Optimize images
+- Use `next/image`
+- Provide sizes and lazy loading
+
+### 4) Cache aggressively
+- Use `fetch` cache
+- Revalidate per route
+
+### 5) Reduce third‑party scripts
+- Load analytics after interaction
+- Remove unused tags
+
+### 6) Stream the UI
+- Use Suspense for content chunks
+
+### 7) Use route segment config
+- `dynamic`, `revalidate`, `fetchCache`
+
+### 8) Minimize layout shifts
+- Reserve media sizes
+- Avoid late‑loading fonts
+
+### 9) Use edge/CDN
+- Cache static assets globally
+
+### 10) Measure & iterate
+- Lighthouse
+- WebPageTest
+
+```bash
+pnpm dlx lighthouse https://yoursite.com
+```
+
+## Checklist
+
+- [ ] LCP < 2.5s
+- [ ] CLS < 0.1
+- [ ] INP < 200ms
+
+## Final note
+
+Optimizations are cumulative. Ship, measure, adjust — repeat.
   const [posts, setPosts] = useState([]);
   
   useEffect(() => {

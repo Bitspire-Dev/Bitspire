@@ -24,9 +24,19 @@ interface SearchBarProps {
   locale: string;
   type?: ContentType;
   translations?: SearchTranslations;
+  tinaFields?: {
+    searchPlaceholder?: string;
+    clearSearch?: string;
+    filterByTech?: string;
+    clearFilters?: string;
+    showLess?: string;
+    showMore?: string;
+    activeFilters?: string;
+    removeFilter?: string;
+  };
 }
 
-export function SearchBar({ allTags, onSearchChange, onTagsChange, locale: _locale, type: _type = 'blog', translations }: SearchBarProps) {
+export function SearchBar({ allTags, onSearchChange, onTagsChange, locale: _locale, type: _type = 'blog', translations, tinaFields }: SearchBarProps) {
   const {
     searchQuery,
     selectedTags,
@@ -84,12 +94,14 @@ export function SearchBar({ allTags, onSearchChange, onTagsChange, locale: _loca
             onChange={handleSearchInput}
             placeholder={t.searchPlaceholder}
             className="w-full pl-12 pr-12 py-4 bg-slate-800/50 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+            data-tina-field={tinaFields?.searchPlaceholder}
           />
           {searchQuery && (
             <button
               onClick={handleClear}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors"
               aria-label={t.clearSearch}
+              data-tina-field={tinaFields?.clearSearch}
             >
               <FaTimes />
             </button>
@@ -101,13 +113,14 @@ export function SearchBar({ allTags, onSearchChange, onTagsChange, locale: _loca
       {allTags.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">
+            <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider" data-tina-field={tinaFields?.filterByTech}>
               {t.filterByTech}
             </h3>
             {hasActiveFilters && (
               <button
                 onClick={handleClearAll}
                 className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                data-tina-field={tinaFields?.clearFilters}
               >
                 {t.clearFilters}
               </button>
@@ -138,6 +151,7 @@ export function SearchBar({ allTags, onSearchChange, onTagsChange, locale: _loca
               <button
                 onClick={toggleShowAllTags}
                 className="px-3 py-1.5 rounded-full text-xs font-medium bg-slate-700/50 text-slate-400 hover:text-slate-200 border border-slate-600/50 hover:border-slate-500 transition-all"
+                data-tina-field={showAllTags ? tinaFields?.showLess : tinaFields?.showMore}
               >
                 {showAllTags ? t.showLess : `+${remainingCount} ${t.showMore}`}
               </button>
@@ -147,7 +161,7 @@ export function SearchBar({ allTags, onSearchChange, onTagsChange, locale: _loca
           {/* Selected tags summary */}
           {selectedTags.length > 0 && (
             <div className="flex items-center gap-2 pt-2">
-              <span className="text-xs text-slate-400">{t.activeFilters}</span>
+              <span className="text-xs text-slate-400" data-tina-field={tinaFields?.activeFilters}>{t.activeFilters}</span>
               <div className="flex flex-wrap gap-2">
                 {selectedTags.map((tag) => (
                   <span
@@ -159,6 +173,7 @@ export function SearchBar({ allTags, onSearchChange, onTagsChange, locale: _loca
                       onClick={() => handleTagClick(tag)}
                       className="hover:text-blue-100 transition-colors"
                       aria-label={`${t.removeFilter} ${tag}`}
+                      data-tina-field={tinaFields?.removeFilter}
                     >
                       <FaTimes className="text-[10px]" />
                     </button>

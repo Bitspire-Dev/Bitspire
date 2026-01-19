@@ -73,7 +73,7 @@ export function AdminBlogIndexPreview({ locale, posts }: { locale: string; posts
 
   return (
     <BlogPageWrapper
-      data={{ ...(pages as BlogPageData), posts: normalizedPosts, locale, blog: null, body: body ?? undefined, _body: body ?? undefined }}
+      data={{ ...(pages as BlogPageData), posts: normalizedPosts, locale, blog: (pages as BlogPageData).blog, body: body ?? undefined, _body: body ?? undefined }}
     />
   );
 }
@@ -82,10 +82,12 @@ export function AdminBlogPostPreview({
   locale,
   slug,
   allPosts,
+  blogLabels,
 }: {
   locale: string;
   slug: string;
   allPosts: unknown[];
+  blogLabels: BlogPageData["blog"] | null;
 }) {
   const data = useAdminPreviewData<{ blog: unknown }>();
   const blog = data.blog as Parameters<typeof normalizePost>[0];
@@ -102,7 +104,7 @@ export function AdminBlogPostPreview({
       excerpt: (normalizedPost as { excerpt?: string | null }).excerpt ?? undefined,
       image: (normalizedPost as { image?: string | null }).image ?? undefined,
       date: normalizedPost.dateFormatted ?? normalizedPost.date ?? undefined,
-      readTime: normalizedPost.readTime ? String(normalizedPost.readTime) : undefined,
+      readTime: normalizedPost.readTime ?? null,
     };
   });
   const body = (blog as { body?: unknown }).body ?? {};
@@ -110,6 +112,8 @@ export function AdminBlogPostPreview({
   return (
     <BlogPostWrapper
       data={{
+        ...(blog as Record<string, unknown>),
+        ...(normalized as Record<string, unknown>),
         title: (normalized as { title?: string }).title ?? "",
         description: (normalized as { description?: string }).description ?? "",
         date: normalized.date ?? "",
@@ -123,7 +127,7 @@ export function AdminBlogPostPreview({
         slug,
         body: toTinaMarkdown(body),
         relatedPosts: related,
-        blog: null,
+        blog: blogLabels ?? null,
       }}
     />
   );

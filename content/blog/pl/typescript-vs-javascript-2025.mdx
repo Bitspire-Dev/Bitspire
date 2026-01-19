@@ -25,7 +25,6 @@ W świecie rozwoju webowego trwa nieustanna debata: TypeScript czy JavaScript? W
 
 TypeScript to nadzbiór JavaScript stworzony przez Microsoft. Dodaje opcjonalne statyczne typowanie do JavaScript, co pozwala na wykrywanie błędów już na etapie pisania kodu.
 
-### Zalety TypeScript
 
 **1. Wykrywanie błędów w czasie developmentu**
 
@@ -42,7 +41,6 @@ addNumbers(5, "10"); // Error: Argument of type 'string' is not assignable
 
 - Autocomplete
 - IntelliSense
-- Refactoring tools
 - Jump to definition
 
 **3. Samodokumentujący się kod**
@@ -50,9 +48,6 @@ addNumbers(5, "10"); // Error: Argument of type 'string' is not assignable
 ```typescript
 interface User {
   id: string;
-  name: string;
-  email: string;
-  role: 'admin' | 'user' | 'guest';
 }
 
 function greetUser(user: User): string {
@@ -64,15 +59,9 @@ function greetUser(user: User): string {
 
 TypeScript zmniejsza ryzyko błędów komunikacji w zespole dzięki jasno zdefiniowanym kontraktom API.
 
-### Wady TypeScript
-
-**1. Krzywa uczenia się**
 
 Dla początkujących programistów TypeScript może być przytłaczający. Trzeba nauczyć się:
 - System typów
-- Interfejsy i typy
-- Generics
-- Utility types
 
 **2. Dodatkowy overhead**
 

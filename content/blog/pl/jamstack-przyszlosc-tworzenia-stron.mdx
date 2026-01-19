@@ -18,26 +18,59 @@ imageAlt: 'JAMstack architecture diagram'
 readTime: 9
 ---
 
-## Co to jest JAMstack?
+## TL;DR
 
-JAMstack to nie konkretna technologia, ale **architektura budowy aplikacji webowych** oparta na trzech filarach:
+JAMstack daje najszybsze strony, świetne SEO i łatwą skalowalność. Najlepszy wybór dla contentu i marketingu.
 
-- **J**avaScript - dynamiczna funkcjonalność
-- **A**PIs - backend jako usługa
-- **M**arkup - pre-renderowane HTML
+## Filary JAMstack
 
-## Dlaczego JAMstack Dominuje w 2025?
+- **JavaScript:** interakcje po stronie klienta
+- **API:** dane i usługi przez HTTP
+- **Markup:** pre‑renderowane HTML
 
-### 1. Performance Beyond Compare
+## Dlaczego wygrywa w 2025
 
-**Statyczne HTML jest podawane z CDN:**
+1) **Wydajność**
+2) **Bezpieczeństwo**
+3) **Skalowalność**
+
+```text
+Traditional: 800ms – 2s load time
+JAMstack:   100ms – 300ms load time
 ```
-Traditional: 800ms - 2s load time
-JAMstack: 100ms - 300ms load time
+
+## Architektura (przykład)
+
+```mermaid
+flowchart LR
+  Użytkownik --> CDN
+  CDN --> StatycznaStrona
+  StatycznaStrona --> API
+  CMS[Headless CMS] --> API
 ```
 
-**Core Web Vitals:**
-- LCP (Largest Contentful Paint): < 0.5s
+## Kiedy NIE używać JAMstack
+
+- Aplikacje realtime (chat, trading)
+- Ciężkie workflow administracyjne
+- Silna personalizacja bez hybrydy
+
+## Snapshot wdrożenia
+
+```text
+Przed: 2.8s load, Lighthouse 45/100
+Po:    0.4s load, Lighthouse 98/100
+```
+
+## Rekomendowany stack
+
+- **Next.js**
+- **Vercel**
+- **TinaCMS**
+
+## Wniosek
+
+Dla treści i SEO — JAMstack wciąż jest najlepszym wyborem.
 - FID (First Input Delay): < 10ms
 - CLS (Cumulative Layout Shift): < 0.05
 
@@ -196,7 +229,7 @@ export default defineConfig({
 
 ### Przed (WordPress):
 
-```
+```text
 ⏱️ Load time: 2.8s
 📊 Lighthouse: 45/100
 💰 Hosting: 49 PLN/mies
@@ -206,7 +239,7 @@ export default defineConfig({
 
 ### Po (Next.js + Vercel + TinaCMS):
 
-```
+```text
 ⏱️ Load time: 0.4s (7x szybciej!)
 📊 Lighthouse: 98/100
 💰 Hosting: 0 PLN (free tier)
@@ -288,7 +321,7 @@ ${markdown}`
 
 ### Traditional WordPress:
 
-```
+```text
 Hosting VPS: 49 PLN/mies
 Domain: 50 PLN/rok
 SSL: 0 PLN (Let's Encrypt)
@@ -301,7 +334,7 @@ TOTAL: ~200 PLN/mies = 2400 PLN/rok
 
 ### JAMstack (Next.js + Vercel):
 
-```
+```text
 Vercel Hobby: 0 PLN
 lub Pro: 80 PLN/mies
 Domain: 50 PLN/rok

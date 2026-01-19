@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { tinaField } from 'tinacms/dist/react';
 import { useAdminLink } from '@/hooks/useAdminLink';
-import { RichText } from '../../ui/RichTextPresets';
+import { RichText } from '@tina/richTextPresets';
 
 interface PortfolioProject {
   title?: string | null;
@@ -60,10 +60,12 @@ const PortfolioHighlights: React.FC<PortfolioHighlightsProps> = ({ data }) => {
               ? project.description
               : (project?.description as Record<string, unknown>)?.children?.[0]?.text || '';
             
+            const projectHref = project?.slug ? getLink(`/portfolio/${project.slug}`) : '#';
+
             return (
             <Link
               key={index}
-              href={`/portfolio/${project?.slug || '#'}`}
+              href={projectHref}
               className="group relative overflow-hidden rounded-2xl bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/20"
             >
               {/* Project Image */}

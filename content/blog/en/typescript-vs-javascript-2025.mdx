@@ -17,26 +17,49 @@ imageAlt: 'TypeScript vs JavaScript comparison'
 readTime: 6
 ---
 
-## Introduction
+## TL;DR
 
-In web development, there's an ongoing debate: TypeScript or JavaScript? In 2025, TypeScript achieved 85% adoption among large projects, but does this mean JavaScript has lost its value?
+TypeScript is the better default for long‑term projects. JavaScript is fine for small prototypes or quick experiments.
 
-## TypeScript - What is it?
+## What TypeScript really adds
 
-TypeScript is a superset of JavaScript created by Microsoft. It adds optional static typing to JavaScript, allowing error detection during code writing.
-
-### TypeScript Advantages
-
-**1. Error Detection at Development Time**
+- Static types and safer refactors
+- Better IDE autocomplete
+- Clearer contracts between modules
 
 ```typescript
-// TypeScript catches the error before runtime
-function addNumbers(a: number, b: number): number {
-  return a + b;
-}
+type User = { id: string; email: string };
 
-addNumbers(5, "10"); // Error: Argument of type 'string' is not assignable
+function sendEmail(user: User) {
+  return `Hello ${user.email}`;
+}
 ```
+
+## When TypeScript wins
+
+- Medium/large codebases
+- Multi‑developer teams
+- Long‑term maintenance
+
+## When JavaScript is OK
+
+- MVPs or quick demos
+- Very small projects
+- One‑off scripts
+
+## Migration path
+
+1) Add `tsconfig.json`
+2) Rename files `.ts/.tsx`
+3) Fix types gradually
+
+```bash
+pnpm add -D typescript @types/node @types/react
+```
+
+## Recommendation
+
+If you plan to maintain the project for more than 6 months — go with **TypeScript**.
 
 **2. Better IDE Support**
 

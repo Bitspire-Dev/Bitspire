@@ -17,9 +17,10 @@ export default async function AdminBlogPostPage({ params }: PageProps) {
   const { locale, slug } = await params;
 
   try {
-    const [result, allPosts] = await Promise.all([
+    const [result, allPosts, pageResult] = await Promise.all([
       client.queries.blog({ relativePath: `${locale}/${slug}.mdx` }),
       getBlogIndex(locale),
+      client.queries.pages({ relativePath: `${locale}/blog.mdx` }),
     ]);
 
     return (
@@ -28,7 +29,12 @@ export default async function AdminBlogPostPage({ params }: PageProps) {
         variables={result.variables}
         data={result.data}
       >
-        <AdminBlogPostPreview locale={locale} slug={slug} allPosts={allPosts as unknown[]} />
+        <AdminBlogPostPreview
+          locale={locale}
+          slug={slug}
+          allPosts={allPosts as unknown[]}
+          blogLabels={pageResult.data.pages?.blog ?? null}
+        />
       </AdminPreviewProvider>
     );
   } catch (error) {
