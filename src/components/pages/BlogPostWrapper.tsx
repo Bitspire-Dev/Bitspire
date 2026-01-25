@@ -1,17 +1,13 @@
-'use client';
-
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { tinaField } from 'tinacms/dist/react';
 import PageBackground from '@/components/layout/PageBackground';
 import BackLink from '@/components/layout/BackLink';
-import FeaturedImage from '@/components/ui/FeaturedImage';
+import FeaturedImage from '@/components/ui/media/FeaturedImage';
 import { RichText } from '@tina/richTextPresets';
 import BlogPostHeader from '@/components/sections/blog/BlogPostHeader';
-import TableOfContents from '@/components/sections/blog/TableOfContents';
-import AuthorBox from '@/components/sections/blog/AuthorBox';
-import ShareButtons from '@/components/sections/blog/ShareButtons';
-import ReadingProgressBar from '@/components/sections/blog/ReadingProgressBar';
-import { RelatedArticles } from '@/components/sections/blog/RelatedArticles';
+import { getBlogUiCopy } from '@/lib/ui/blogCopy';
+import { BlogPostDesktopSidebar, BlogPostMobileSidebar, BlogPostProgress, BlogPostRelated } from '@/components/pages/BlogPostClient';
+import type { AdminLinkMode } from '@/lib/routing/adminLink';
 
 interface BlogPostData {
     title: string;
@@ -34,46 +30,27 @@ interface BlogPostData {
         date?: string;
         readTime?: number | null;
     }>;
-    blog?: {
-        noArticles?: string;
-        readMore?: string;
-        readTime?: string;
-        by?: string;
-        backToBlog?: string;
-        publishedOn?: string;
-        shareTitle?: string;
-        shareButtons?: {
-            twitter?: string;
-            linkedin?: string;
-            facebook?: string;
-            copyLink?: string;
-        };
-        tableOfContentsTitle?: string;
-        authorBox?: {
-            title?: string;
-            bio?: string;
-            contact?: string;
-        };
-        relatedArticlesTitle?: string;
-    } | null;
     [key: string]: unknown;
 }
 
 interface BlogPostWrapperProps {
     data: BlogPostData;
+    linkMode?: AdminLinkMode;
 }
 
-export default function BlogPostWrapper({ data }: BlogPostWrapperProps) {
+export default function BlogPostWrapper({ data, linkMode = 'production' }: BlogPostWrapperProps) {
     const locale = data?.locale || 'pl';
+    const copy = getBlogUiCopy(locale);
 
     return (
         <PageBackground variant="blue">
-            <ReadingProgressBar />
+            <BlogPostProgress />
             <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 pt-16 md:pt-28 pb-16 md:pb-20">
                 <BackLink
                     href="/blog"
-                    label={data?.blog?.backToBlog}
-                    tinaField={data ? tinaField(data, 'blog.backToBlog') : undefined}
+                    label={copy.backToBlog}
+                    locale={locale}
+                    linkMode={linkMode}
                 />
 
                 <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px] xl:grid-cols-[minmax(0,1fr)_320px]">
@@ -86,8 +63,13 @@ export default function BlogPostWrapper({ data }: BlogPostWrapperProps) {
                                     <FeaturedImage
                                         src={data.image}
                                         alt={data.imageAlt || data.title}
-                                        className="absolute inset-0 w-full h-full"
+                                        className="w-full h-full object-cover"
                                         tinaField={tinaField(data, 'image')}
+                                        width={1280}
+                                        height={720}
+                                        sizes="100vw"
+                                        priority
+                                        placeholder="blur"
                                     />
                                 </div>
                             )}
@@ -102,12 +84,11 @@ export default function BlogPostWrapper({ data }: BlogPostWrapperProps) {
                                     date={data.date}
                                     locale={locale}
                                     data={data}
-                                    translations={data?.blog}
-                                    translationsTinaFields={data ? {
-                                        by: tinaField(data, 'blog.by'),
-                                        readTime: tinaField(data, 'blog.readTime'),
-                                        publishedOn: tinaField(data, 'blog.publishedOn'),
-                                    } : undefined}
+                                    translations={{
+                                        by: copy.by,
+                                        readTime: copy.readTime,
+                                        publishedOn: copy.publishedOn,
+                                    }}
                                     authorTinaField={data ? tinaField(data, 'author') : undefined}
                                 />
 
@@ -135,87 +116,16 @@ export default function BlogPostWrapper({ data }: BlogPostWrapperProps) {
                         </article>
 
                         {/* Mobile: Share + TOC below article */}
-                        <div className="mt-10 space-y-6 lg:hidden">
-                            <AuthorBox 
-                                author={data.author} 
-                                authorBox={data?.blog?.authorBox}
-                                tinaFields={data ? {
-                                    author: tinaField(data, 'author'),
-                                    title: tinaField(data, 'blog.authorBox.title'),
-                                    bio: tinaField(data, 'blog.authorBox.bio'),
-                                    contact: tinaField(data, 'blog.authorBox.contact'),
-                                } : undefined}
-                            />
-                            <ShareButtons 
-                                title={data?.blog?.shareTitle}
-                                buttons={data?.blog?.shareButtons}
-                                tinaFields={data ? {
-                                    title: tinaField(data, 'blog.shareTitle'),
-                                    twitter: tinaField(data, 'blog.shareButtons.twitter'),
-                                    linkedin: tinaField(data, 'blog.shareButtons.linkedin'),
-                                    facebook: tinaField(data, 'blog.shareButtons.facebook'),
-                                    copy: tinaField(data, 'blog.shareButtons.copyLink'),
-                                } : undefined}
-                            />
-                            <TableOfContents 
-                                title={data?.blog?.tableOfContentsTitle}
-                                locale={locale} 
-                                tinaField={data ? tinaField(data, 'blog.tableOfContentsTitle') : undefined}
-                            />
-                        </div>
+                        <BlogPostMobileSidebar data={data} copy={copy} />
                     </main>
 
                     {/* Sidebar */}
-                    <aside className="hidden lg:block space-y-6">
-                        <AuthorBox 
-                            author={data.author} 
-                            authorBox={data?.blog?.authorBox}
-                            tinaFields={data ? {
-                                author: tinaField(data, 'author'),
-                                title: tinaField(data, 'blog.authorBox.title'),
-                                bio: tinaField(data, 'blog.authorBox.bio'),
-                                contact: tinaField(data, 'blog.authorBox.contact'),
-                            } : undefined}
-                        />
-                        <ShareButtons 
-                            title={data?.blog?.shareTitle}
-                            buttons={data?.blog?.shareButtons}
-                            tinaFields={data ? {
-                                title: tinaField(data, 'blog.shareTitle'),
-                                twitter: tinaField(data, 'blog.shareButtons.twitter'),
-                                linkedin: tinaField(data, 'blog.shareButtons.linkedin'),
-                                facebook: tinaField(data, 'blog.shareButtons.facebook'),
-                                copy: tinaField(data, 'blog.shareButtons.copyLink'),
-                            } : undefined}
-                        />
-                        <div className="sticky top-28 pr-1">
-                            <TableOfContents 
-                                title={data?.blog?.tableOfContentsTitle}
-                                locale={locale} 
-                                tinaField={data ? tinaField(data, 'blog.tableOfContentsTitle') : undefined}
-                            />
-                        </div>
-                    </aside>
+                    <BlogPostDesktopSidebar data={data} copy={copy} />
                 </div>
             </div>
 
             {/* Related Articles */}
-            {data.relatedPosts && data.relatedPosts.length > 0 && (
-                <RelatedArticles
-                    articles={data.relatedPosts}
-                    currentSlug={data.slug || ''}
-                    locale={locale}
-                    type="blog"
-                    sectionTitle={data?.blog?.relatedArticlesTitle}
-                    readMoreLabel={data?.blog?.readMore}
-                    readTimeLabel={data?.blog?.readTime}
-                    tinaFields={data ? {
-                        sectionTitle: tinaField(data, 'blog.relatedArticlesTitle'),
-                        readMoreLabel: tinaField(data, 'blog.readMore'),
-                        readTimeLabel: tinaField(data, 'blog.readTime'),
-                    } : undefined}
-                />
-            )}
+            <BlogPostRelated data={data} copy={copy} />
         </PageBackground>
     );
 }

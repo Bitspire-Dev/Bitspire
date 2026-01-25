@@ -1,8 +1,6 @@
-'use client';
+import React from 'react';
 
-import React, { memo } from 'react';
-
-export const Background = memo(() => {
+export const Background = () => {
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 0 }}>
       {/* Główne duże światła - tło */}
@@ -19,6 +17,4 @@ export const Background = memo(() => {
       <div className="absolute inset-0 bg-black/40" />
     </div>
   );
-});
-
-Background.displayName = 'Background';
+};

@@ -18,6 +18,11 @@ export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const country = (request as unknown as { geo?: { country?: string } }).geo?.country;
 
+  // Admin routes should bypass locale normalization
+  if (pathname.startsWith('/admin')) {
+    return NextResponse.next();
+  }
+
   // If first segment is not a supported locale, normalize to default locale prefix
   const segments = pathname.split('/').filter(Boolean);
   const firstSegment = segments[0];
@@ -29,11 +34,6 @@ export default function middleware(request: NextRequest) {
   if (pathname === '/') {
     const locale = getLocaleFromGeo(country);
     return NextResponse.redirect(new URL(`/${locale}`, request.url));
-  }
-
-  // Admin entry normalization to Tina SPA hash
-  if (pathname === '/admin' || pathname === '/admin/' || pathname === '/admin/index.html') {
-    return NextResponse.redirect(new URL('/admin/index.html#/~/admin/pl', request.url));
   }
 
   return intlMiddleware(request);

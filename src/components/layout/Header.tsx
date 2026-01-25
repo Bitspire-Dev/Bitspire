@@ -1,10 +1,8 @@
-"use client";
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useLocale } from 'next-intl';
 import { LanguageSwitcher } from '../ui/buttons/LanguageSwitcher';
-import { useAdminLink } from '@/hooks/useAdminLink';
+import { buildLocalePath } from '@/lib/seo/metadata';
 
 const NAVIGATION = {
   pl: [
@@ -22,26 +20,15 @@ const CTA_BUTTON = {
   en: { text: 'Get a Quote', href: '/' }
 };
 
-export const Header: React.FC = () => {
-  const [open, setOpen] = useState(false);
-  const locale = useLocale() as 'pl' | 'en';
-  const { getLink } = useAdminLink();
-  
+export const Header: React.FC<{ locale: 'pl' | 'en' }> = ({ locale }) => {
   const navigation = NAVIGATION[locale];
   const ctaButton = CTA_BUTTON[locale];
   const logoAlt = 'Bitspire - strona główna';
+  const getLink = (href: string) => buildLocalePath(locale, href);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 py-2 md:py-4 px-4 sm:px-6 animate-slide-in-down">
-      <div
-        className={`
-          bg-gray-900/70 border border-gray-700 text-white
-          max-w-screen-2xl mx-auto rounded-xl shadow-xl
-          overflow-hidden
-          transition-[max-height] duration-500 ease-in-out
-          ${open ? 'max-h-screen' : 'max-h-16 md:max-h-full'}
-        `}
-      >
+      <div className="bg-gray-900/70 border border-gray-700 text-white max-w-screen-2xl mx-auto rounded-xl shadow-xl overflow-hidden">
         {/* górny pasek */}
         <div className="px-4 md:px-6 py-2.5 flex items-center justify-between gap-4">
           {/* left: logo + optional center nav */}
@@ -74,7 +61,7 @@ export const Header: React.FC = () => {
             </nav>
           </div>
 
-          {/* right: CTA + language switcher (desktop) and hamburger stays at the end for mobile */}
+          {/* right: CTA + language switcher */}
           <div className="flex items-center gap-4">
             <div className="flex items-center">
               <LanguageSwitcher />
@@ -90,48 +77,24 @@ export const Header: React.FC = () => {
               </Link>
             </div>
 
-            {/* hamburger for mobile */}
-            <button
-              onClick={() => setOpen((o) => !o)}
-              className={`md:hidden focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-lg h-10 w-10 flex items-center justify-center transition-colors translate-y-px motion-safe:transition-transform ${open ? 'bg-transparent' : 'bg-transparent'}`}
-              aria-label={open ? 'Zamknij menu' : 'Otwórz menu'}
-              aria-expanded={open}
-              aria-controls="mobile-menu"
-            >
-              <svg
-                className={`w-5 h-5 text-white transition-transform duration-200 ${open ? 'rotate-90' : ''}`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                focusable="false"
-                role="img"
-                aria-labelledby="menu-icon-title"
-              >
-                <title id="menu-icon-title">{open ? 'Zamknij menu' : 'Otwórz menu'}</title>
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d={open ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
-                />
-              </svg>
-            </button>
           </div>
         </div>
 
-        {/* mobilne menu */}
-        <nav
-          id="mobile-menu"
-          className={`md:hidden flex flex-col px-6 pb-6 transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0'}`}
-          aria-label="Menu mobilne"
-          aria-hidden={!open}
-        >
-          <div className="flex flex-col gap-3 pt-6 border-t border-slate-700/50" aria-label="Menu mobilne linki">
+        {/* mobilne menu bez JS */}
+        <details className="md:hidden px-6 pb-6 border-t border-slate-700/50">
+          <summary className="list-none cursor-pointer py-4 flex items-center gap-3 text-slate-200">
+            <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-700/60">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </span>
+            <span className="text-sm font-medium">Menu</span>
+          </summary>
+          <div className="flex flex-col gap-3 pt-2" aria-label="Menu mobilne linki">
             {navigation.map((item, index) => (
               <Link
                 key={index}
                 href={getLink(item.href)}
-                onClick={() => setOpen(false)}
                 className="group relative overflow-hidden rounded-xl bg-linear-to-r from-slate-800/60 to-slate-700/40 border border-slate-600/30 hover:border-blue-400/50 backdrop-blur-sm px-6 py-4 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:scale-[1.02]"
               >
                 <div className="flex items-center justify-between relative z-10">
@@ -149,7 +112,6 @@ export const Header: React.FC = () => {
             <div className="flex flex-col gap-3 pt-3">
               <Link
                 href={getLink(ctaButton.href)}
-                onClick={() => setOpen(false)}
                 className="relative overflow-hidden flex justify-center items-center py-4 w-full rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900 bg-linear-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white text-lg font-bold shadow-lg shadow-blue-600/30 hover:shadow-blue-500/40 hover:scale-[1.02] group"
                 aria-label={ctaButton.text}
               >
@@ -158,7 +120,7 @@ export const Header: React.FC = () => {
               </Link>
             </div>
           </div>
-        </nav>
+        </details>
       </div>
     </header>
   );

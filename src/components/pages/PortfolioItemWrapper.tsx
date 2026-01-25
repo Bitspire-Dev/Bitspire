@@ -1,5 +1,3 @@
-'use client';
-
 import Image from "next/image";
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { tinaField } from 'tinacms/dist/react';
@@ -7,6 +5,9 @@ import PageBackground from '@/components/layout/PageBackground';
 import BackLink from '@/components/layout/BackLink';
 import PortfolioItemHeader from '@/components/sections/portfolio/PortfolioItemHeader';
 import { RichText } from '@tina/richTextPresets';
+
+const PORTFOLIO_BLUR_DATA_URL =
+    'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=';
 
 interface PortfolioItemData {
     title?: string;
@@ -53,7 +54,7 @@ export default function PortfolioItemWrapper({ data }: PortfolioItemWrapperProps
     return (
         <PageBackground variant="mixed">
             <main className="relative z-10 max-w-4xl mx-auto px-6 pt-32 pb-20">
-                <BackLink href="/portfolio" label={t.backToPortfolio} />
+                <BackLink href="/portfolio" label={t.backToPortfolio} locale={locale} />
 
                 <article>
                     <PortfolioItemHeader
@@ -74,16 +75,20 @@ export default function PortfolioItemWrapper({ data }: PortfolioItemWrapperProps
                             <Image
                                 src={imageSrc}
                                 alt={imageAlt}
-                                fill
-                                className="object-cover"
+                                width={1200}
+                                height={750}
+                                sizes="100vw"
+                                className="w-full h-full object-cover"
                                 priority
+                                placeholder="blur"
+                                blurDataURL={PORTFOLIO_BLUR_DATA_URL}
                             />
                         </div>
                     )}
 
                     {/* Project Content - Rich Text */}
                     <div data-tina-field={tinaField(data, 'body')}>
-                        <RichText content={bodyContent} preset="body" className="max-w-none" />
+                        <RichText content={bodyContent} preset="body" />
                     </div>
 
                     {/* Tags */}

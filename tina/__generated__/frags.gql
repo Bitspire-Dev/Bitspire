@@ -111,59 +111,5 @@ fragment PagesParts on Pages {
     quickResponseLabel
     quickResponseText
   }
-  portfolio {
-    __typename
-    title
-    description
-    sectionLabel
-  }
-  blog {
-    __typename
-    title
-    description
-    sectionLabel
-    shareTitle
-    shareButtons {
-      __typename
-      twitter
-      linkedin
-      facebook
-      copyLink
-    }
-    tableOfContentsTitle
-    authorBox {
-      __typename
-      title
-      bio
-      contact
-    }
-    relatedArticlesTitle
-    otherProjectsTitle
-  }
-  searchBar {
-    __typename
-    blog {
-      __typename
-      searchPlaceholder
-      clearSearch
-      filterByTech
-      clearFilters
-      showLess
-      showMore
-      activeFilters
-      removeFilter
-    }
-    portfolio {
-      __typename
-      searchPlaceholder
-      clearSearch
-      filterByTech
-      clearFilters
-      showLess
-      showMore
-      activeFilters
-      removeFilter
-    }
-  }
   body
 }

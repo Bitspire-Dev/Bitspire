@@ -1,7 +1,9 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { tinaField } from 'tinacms/dist/react';
+import { safeImageSrc } from '@/lib/ui/helpers';
 
 interface Project {
   __typename?: string;
@@ -67,18 +69,18 @@ export default function Portfolio({ data }: { data?: PortfolioData }) {
                   className={`group relative overflow-hidden rounded-2xl glass-panel transition-all duration-500 hover:shadow-[0_0_40px_rgba(59,130,246,0.2)] hover:border-blue-500/40 hover:-translate-y-1 ${getColumnSpan(idx)}`}
                 >
                   {/* Image */}
-                  {project.image && (
+                  {safeImageSrc(project.image) && (
                     <div 
                       className="relative w-full aspect-video overflow-hidden rounded-t-2xl"
-                      style={{
-                        backgroundImage: `url(${project.image})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'top center',
-                        margin: 0,
-                        padding: 0,
-                        display: 'block'
-                      }}
+                      data-tina-field={tinaField(data, `projects.${idx}.image`)}
                     >
+                      <Image
+                        src={safeImageSrc(project.image) as string}
+                        alt={project.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover"
+                      />
                       <div className="absolute inset-0 bg-linear-to-br from-blue-600/10 via-transparent to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                     </div>

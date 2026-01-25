@@ -3,6 +3,9 @@
 import React from 'react';
 import { FaSearch, FaTimes } from 'react-icons/fa';
 import { useSearch } from '@/hooks/useSearch';
+import { Badge } from '@/components/ui/primitives/Badge';
+import { Input } from '@/components/ui/primitives/Input';
+import { cn } from '@/lib/ui/classNames';
 
 type ContentType = 'blog' | 'portfolio';
 
@@ -23,20 +26,66 @@ interface SearchBarProps {
   onTagsChange: (tags: string[]) => void;
   locale: string;
   type?: ContentType;
-  translations?: SearchTranslations;
-  tinaFields?: {
-    searchPlaceholder?: string;
-    clearSearch?: string;
-    filterByTech?: string;
-    clearFilters?: string;
-    showLess?: string;
-    showMore?: string;
-    activeFilters?: string;
-    removeFilter?: string;
-  };
+  initialQuery?: string;
+  initialTags?: string[];
 }
 
-export function SearchBar({ allTags, onSearchChange, onTagsChange, locale: _locale, type: _type = 'blog', translations, tinaFields }: SearchBarProps) {
+const defaultCopy: Record<'pl' | 'en', Record<ContentType, Required<SearchTranslations>>> = {
+  pl: {
+    blog: {
+      searchPlaceholder: 'Szukaj artykułów…',
+      clearSearch: 'Wyczyść wyszukiwanie',
+      filterByTech: 'Filtruj po tagach',
+      clearFilters: 'Wyczyść filtry',
+      showLess: 'Pokaż mniej',
+      showMore: 'więcej',
+      activeFilters: 'Aktywne filtry:',
+      removeFilter: 'Usuń filtr',
+    },
+    portfolio: {
+      searchPlaceholder: 'Szukaj projektów…',
+      clearSearch: 'Wyczyść wyszukiwanie',
+      filterByTech: 'Filtruj po technologiach',
+      clearFilters: 'Wyczyść filtry',
+      showLess: 'Pokaż mniej',
+      showMore: 'więcej',
+      activeFilters: 'Aktywne filtry:',
+      removeFilter: 'Usuń filtr',
+    },
+  },
+  en: {
+    blog: {
+      searchPlaceholder: 'Search articles…',
+      clearSearch: 'Clear search',
+      filterByTech: 'Filter by tags',
+      clearFilters: 'Clear filters',
+      showLess: 'Show less',
+      showMore: 'more',
+      activeFilters: 'Active filters:',
+      removeFilter: 'Remove filter',
+    },
+    portfolio: {
+      searchPlaceholder: 'Search projects…',
+      clearSearch: 'Clear search',
+      filterByTech: 'Filter by technology',
+      clearFilters: 'Clear filters',
+      showLess: 'Show less',
+      showMore: 'more',
+      activeFilters: 'Active filters:',
+      removeFilter: 'Remove filter',
+    },
+  },
+};
+
+export function SearchBar({
+  allTags,
+  onSearchChange,
+  onTagsChange,
+  locale,
+  type = 'blog',
+  initialQuery,
+  initialTags,
+}: SearchBarProps) {
   const {
     searchQuery,
     selectedTags,
@@ -51,9 +100,14 @@ export function SearchBar({ allTags, onSearchChange, onTagsChange, locale: _loca
     shouldShowMoreButton,
     toggleShowAllTags,
     showAllTags,
-  } = useSearch({ maxVisibleTags: 8 });
+  } = useSearch({
+    maxVisibleTags: 8,
+    initialQuery,
+    initialTags,
+  });
 
-  const t = translations || {};
+  const normalizedLocale = locale === 'pl' ? 'pl' : 'en';
+  const t = defaultCopy[normalizedLocale][type];
   const displayedTags = getDisplayedTags(allTags);
   const remainingCount = getRemainingTagsCount(allTags);
 
@@ -88,20 +142,20 @@ export function SearchBar({ allTags, onSearchChange, onTagsChange, locale: _loca
       <div className="relative max-w-2xl mx-auto">
         <div className="relative">
           <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
-          <input
+          <Input
             type="text"
             value={searchQuery}
             onChange={handleSearchInput}
             placeholder={t.searchPlaceholder}
-            className="w-full pl-12 pr-12 py-4 bg-slate-800/50 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
-            data-tina-field={tinaFields?.searchPlaceholder}
+            inputSize="lg"
+            variant="search"
+            className="pl-12 pr-12"
           />
           {searchQuery && (
             <button
               onClick={handleClear}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors"
               aria-label={t.clearSearch}
-              data-tina-field={tinaFields?.clearSearch}
             >
               <FaTimes />
             </button>
@@ -113,71 +167,80 @@ export function SearchBar({ allTags, onSearchChange, onTagsChange, locale: _loca
       {allTags.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider" data-tina-field={tinaFields?.filterByTech}>
+            <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">
               {t.filterByTech}
             </h3>
             {hasActiveFilters && (
               <button
                 onClick={handleClearAll}
                 className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
-                data-tina-field={tinaFields?.clearFilters}
               >
                 {t.clearFilters}
               </button>
             )}
           </div>
-          
+
           <div className="flex flex-wrap gap-2">
             {displayedTags.map((tag) => {
               const isSelected = selectedTags.includes(tag);
-              const baseClasses = "px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer";
               const selectedClasses = isSelected
-                ? "bg-blue-600 text-white border-2 border-blue-400 shadow-lg shadow-blue-600/30"
-                : "bg-slate-800/50 text-slate-300 border border-slate-700/50 hover:border-blue-500/50 hover:bg-slate-800";
-              
+                ? 'bg-blue-600 text-white border-2 border-blue-400 shadow-lg shadow-blue-600/30'
+                : 'bg-slate-800/50 text-slate-300 border border-slate-700/50 hover:border-blue-500/50 hover:bg-slate-800';
+
               return (
-                <button
+                <Badge
                   key={tag}
+                  as="button"
+                  type="button"
                   onClick={() => handleTagClick(tag)}
-                  className={`${baseClasses} ${selectedClasses}`}
+                  shape="pill"
+                  size="md"
+                  variant="neutral"
+                  className={cn('cursor-pointer text-xs font-medium transition-all', selectedClasses)}
                   aria-pressed={isSelected}
                 >
                   {tag}
-                </button>
+                </Badge>
               );
             })}
-            
+
             {shouldShowMoreButton(allTags) && (
-              <button
+              <Badge
+                as="button"
+                type="button"
                 onClick={toggleShowAllTags}
-                className="px-3 py-1.5 rounded-full text-xs font-medium bg-slate-700/50 text-slate-400 hover:text-slate-200 border border-slate-600/50 hover:border-slate-500 transition-all"
-                data-tina-field={showAllTags ? tinaFields?.showLess : tinaFields?.showMore}
+                shape="pill"
+                size="md"
+                variant="neutral"
+                className="cursor-pointer text-xs font-medium bg-slate-700/50 text-slate-400 hover:text-slate-200 border border-slate-600/50 hover:border-slate-500 transition-all"
               >
                 {showAllTags ? t.showLess : `+${remainingCount} ${t.showMore}`}
-              </button>
+              </Badge>
             )}
           </div>
 
           {/* Selected tags summary */}
           {selectedTags.length > 0 && (
             <div className="flex items-center gap-2 pt-2">
-              <span className="text-xs text-slate-400" data-tina-field={tinaFields?.activeFilters}>{t.activeFilters}</span>
+              <span className="text-xs text-slate-400">{t.activeFilters}</span>
               <div className="flex flex-wrap gap-2">
                 {selectedTags.map((tag) => (
-                  <span
+                  <Badge
                     key={tag}
-                    className="inline-flex items-center gap-1.5 px-2 py-1 bg-blue-600/20 text-blue-300 border border-blue-500/30 rounded-full text-xs"
+                    variant="blue"
+                    size="sm"
+                    shape="pill"
+                    className="gap-1.5"
                   >
                     {tag}
                     <button
                       onClick={() => handleTagClick(tag)}
                       className="hover:text-blue-100 transition-colors"
                       aria-label={`${t.removeFilter} ${tag}`}
-                      data-tina-field={tinaFields?.removeFilter}
                     >
                       <FaTimes className="text-[10px]" />
                     </button>
-                  </span>
+                  </Badge>
                 ))}
               </div>
             </div>

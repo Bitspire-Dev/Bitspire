@@ -1,9 +1,8 @@
-'use client';
-
-import React, { useMemo } from 'react';
+import React from 'react';
 import { tinaField } from 'tinacms/dist/react';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
-import { RichText } from '@tina/richTextPresets';
+import { RichText } from '@/components/ui/tina/RichTextPresets';
+import { Card, CardContent } from '@/components/ui/primitives/Card';
 
 interface Section {
   __typename?: string;
@@ -77,12 +76,12 @@ export default function LegalPage({ data, hideToc = false }: { data?: LegalPageD
   const hasBody = Boolean(bodyContent);
 
   // Headings for TOC: prefer body, fallback to legacy sections
-  const headings = useMemo(() => {
+  const headings = (() => {
     if (hasBody) return extractHeadings(bodyContent);
     return sections
       .filter((s) => s?.id && s?.title)
       .map((s) => ({ id: s.id as string, text: s.title as string }));
-  }, [bodyContent, hasBody, sections]);
+  })();
   const hasHeadings = headings.length > 0;
 
   const mdxComponents = {
@@ -171,10 +170,13 @@ export default function LegalPage({ data, hideToc = false }: { data?: LegalPageD
         {/* Main content */}
         <div className="space-y-10">
           {/* Header */}
-          <header 
-            className="bg-slate-800/60 border border-slate-700 rounded-2xl p-8 shadow-lg backdrop-blur-md"
+          <Card
+            as="header"
+            interactive={false}
+            className="bg-slate-800/60 border-slate-700 shadow-lg backdrop-blur-md"
             data-tina-field={tinaField(data, 'title')}
           >
+            <CardContent padding="lg">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white">
               <span>{data?.title || 'Document'}</span>
               {data?.titleAccent && (
@@ -197,18 +199,21 @@ export default function LegalPage({ data, hideToc = false }: { data?: LegalPageD
                 Data ostatniej aktualizacji: {data.lastUpdate}
               </p>
             )}
-          </header>
+            </CardContent>
+          </Card>
 
           {/* Content */}
-          <article 
-            className="bg-slate-800/40 border border-slate-700 rounded-2xl p-8 shadow-xl backdrop-blur-md leading-relaxed"
+          <Card
+            as="article"
+            interactive={false}
+            className="bg-slate-800/40 border-slate-700 shadow-xl backdrop-blur-md leading-relaxed"
             data-tina-field={tinaField(data, 'body')}
           >
+            <CardContent padding="lg">
             {hasBody ? (
               <RichText
                 content={bodyContent as TinaMarkdownContent}
                 preset="body"
-                className="max-w-none"
                 components={mdxComponents}
               />
             ) : sections.length > 0 ? (
@@ -245,7 +250,8 @@ export default function LegalPage({ data, hideToc = false }: { data?: LegalPageD
             <p className="mt-4 text-xs text-slate-500">
               Dokument informacyjny – nie stanowi porady prawnej.
             </p>
-          </article>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </main>

@@ -34,3 +34,15 @@ export function safeLink(href?: string | null): string | undefined {
 
   return undefined;
 }
+
+export function safeImageSrc(src?: string | null): string | undefined {
+  if (!src) return undefined;
+  const trimmed = src.trim();
+  if (!trimmed) return undefined;
+
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  if (trimmed.startsWith('/')) return trimmed;
+  if (trimmed.startsWith('data:')) return trimmed;
+
+  return `/${trimmed}`;
+}

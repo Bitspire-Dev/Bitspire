@@ -69,15 +69,14 @@ export function useContactForm(options: UseContactFormOptions = {}) {
     setError("");
 
     try {
-      const formDataEncoded = new URLSearchParams({
-        "form-name": formName,
-        ...formData,
-      });
-
-      const response = await fetch("/", {
+      const response = await fetch("/api/contact", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formDataEncoded.toString(),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          formName,
+          ...formData,
+          company: "", // honeypot field
+        }),
       });
 
       if (!response.ok) {

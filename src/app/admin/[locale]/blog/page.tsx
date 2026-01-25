@@ -2,11 +2,13 @@ import { notFound } from "next/navigation";
 import { AdminPreviewProvider } from "@/providers/AdminPreviewProvider";
 import { AdminBlogIndexPreview } from "@/providers/AdminPreviewRenderer";
 import { getBlogIndex } from "@/lib/tina/queries";
-import client from "@tina/__generated__/client";
+import { getTinaClient } from "@/lib/tina/client";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 export const fetchCache = "force-no-store";
+
+const client = getTinaClient();
 
 interface PageProps {
   params: Promise<{ locale: string }>;

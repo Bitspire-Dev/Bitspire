@@ -1,11 +1,50 @@
 import { MetadataRoute } from 'next';
-import client from '@tina/__generated__/client';
+import { getTinaClient } from '@/lib/tina/client';
 import { LEGAL_PAGES_EN, LEGAL_PAGES_PL } from '@/lib/routing/legal-pages/config';
 
 const BASE_URL = 'https://bitspire.pl';
 const LOCALES = ['pl', 'en'] as const;
 
+export const revalidate = 3600;
+export const dynamic = 'force-static';
+
 const prefixFor = (locale: string) => (locale === 'pl' ? '/pl' : '/en');
+
+const client = getTinaClient();
+
+async function fetchAllPortfolioNodes() {
+  const nodes: NonNullable<NonNullable<Awaited<ReturnType<typeof client.queries.portfolioConnection>>['data']['portfolioConnection']['edges']>[number]>['node'][] = [];
+  let after: string | undefined = undefined;
+
+  do {
+    const response = await client.queries.portfolioConnection({ first: 50, after });
+    const connection = response.data.portfolioConnection;
+    const edges = connection.edges || [];
+    edges.forEach((edge) => {
+      if (edge?.node) nodes.push(edge.node);
+    });
+    after = connection.pageInfo?.hasNextPage ? connection.pageInfo.endCursor : undefined;
+  } while (after);
+
+  return nodes;
+}
+
+async function fetchAllBlogNodes() {
+  const nodes: NonNullable<NonNullable<Awaited<ReturnType<typeof client.queries.blogConnection>>['data']['blogConnection']['edges']>[number]>['node'][] = [];
+  let after: string | undefined = undefined;
+
+  do {
+    const response = await client.queries.blogConnection({ first: 50, after });
+    const connection = response.data.blogConnection;
+    const edges = connection.edges || [];
+    edges.forEach((edge) => {
+      if (edge?.node) nodes.push(edge.node);
+    });
+    after = connection.pageInfo?.hasNextPage ? connection.pageInfo.endCursor : undefined;
+  } while (after);
+
+  return nodes;
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
@@ -13,12 +52,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Portfolio entries
   let portfolioPosts: MetadataRoute.Sitemap = [];
   try {
-    const portfolioConnection = await client.queries.portfolioConnection();
+    const portfolioNodes = await fetchAllPortfolioNodes();
 
-    portfolioPosts = (portfolioConnection.data.portfolioConnection.edges || [])
-      .map(edge => edge?.node)
+    portfolioPosts = portfolioNodes
       .filter((node): node is NonNullable<typeof node> => Boolean(node))
-      .map(node => {
+      .map((node) => {
         const slug = node._sys.filename;
         const locale = node._sys.relativePath.split('/')[0];
         const date = node.date ? new Date(node.date) : now;
@@ -38,12 +76,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Blog entries
   let blogPosts: MetadataRoute.Sitemap = [];
   try {
-    const blogConnection = await client.queries.blogConnection();
+    const blogNodes = await fetchAllBlogNodes();
 
-    blogPosts = (blogConnection.data.blogConnection.edges || [])
-      .map(edge => edge?.node)
+    blogPosts = blogNodes
       .filter((node): node is NonNullable<typeof node> => Boolean(node))
-      .map(node => {
+      .map((node) => {
         const slug = node._sys.filename;
         const locale = node._sys.relativePath.split('/')[0];
         const date = node.date ? new Date(node.date) : now;

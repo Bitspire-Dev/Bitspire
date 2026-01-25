@@ -1,20 +1,23 @@
 import Link from 'next/link';
-import { useAdminLink } from '@/hooks/useAdminLink';
+import { buildAdminLink, type AdminLinkMode } from '@/lib/routing/adminLink';
 
 interface BackLinkProps {
     href: string;
     label?: string;
     tinaField?: string;
+    locale?: string;
+    linkMode?: AdminLinkMode;
 }
 
-export default function BackLink({ href, label, tinaField }: BackLinkProps) {
-    const { getLink } = useAdminLink();
+export default function BackLink({ href, label, tinaField, locale = 'pl', linkMode = 'production' }: BackLinkProps) {
     
     if (!label) return null;
+
+    const linkHref = buildAdminLink(href, { locale, mode: linkMode });
     
     return (
         <Link 
-            href={getLink(href)}
+            href={linkHref}
             className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors mb-8 group"
             data-tina-field={tinaField}
         >

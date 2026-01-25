@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import { Heading } from '@/components/ui/primitives/Heading';
+import { cn } from '@/lib/ui/classNames';
 
 interface CardTitleProps {
     children: ReactNode;
@@ -19,11 +21,17 @@ export default function CardTitle({
     };
 
     return (
-        <h2
-            className={`text-2xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-linear-to-r transition-all duration-300 mb-4 leading-tight ${variantClasses[variant]} ${className}`}
+        <Heading
+            as="h2"
+            size="lg"
+            className={cn(
+                'group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-linear-to-r transition-all duration-300 mb-4 leading-tight',
+                variantClasses[variant],
+                className
+            )}
             data-tina-field={tinaField}
         >
             {children}
-        </h2>
+        </Heading>
     );
 }

@@ -313,64 +313,6 @@ type PagesContact {
   quickResponseText: String
 }
 
-type PagesPortfolio {
-  title: String
-  description: String
-  sectionLabel: String
-}
-
-type PagesBlogShareButtons {
-  twitter: String
-  linkedin: String
-  facebook: String
-  copyLink: String
-}
-
-type PagesBlogAuthorBox {
-  title: String
-  bio: String
-  contact: String
-}
-
-type PagesBlog {
-  title: String
-  description: String
-  sectionLabel: String
-  shareTitle: String
-  shareButtons: PagesBlogShareButtons
-  tableOfContentsTitle: String
-  authorBox: PagesBlogAuthorBox
-  relatedArticlesTitle: String
-  otherProjectsTitle: String
-}
-
-type PagesSearchBarBlog {
-  searchPlaceholder: String
-  clearSearch: String
-  filterByTech: String
-  clearFilters: String
-  showLess: String
-  showMore: String
-  activeFilters: String
-  removeFilter: String
-}
-
-type PagesSearchBarPortfolio {
-  searchPlaceholder: String
-  clearSearch: String
-  filterByTech: String
-  clearFilters: String
-  showLess: String
-  showMore: String
-  activeFilters: String
-  removeFilter: String
-}
-
-type PagesSearchBar {
-  blog: PagesSearchBarBlog
-  portfolio: PagesSearchBarPortfolio
-}
-
 type Pages implements Node & Document {
   title: String!
   description: String
@@ -384,9 +326,6 @@ type Pages implements Node & Document {
   howWeWork: PagesHowWeWork
   faq: PagesFaq
   contact: PagesContact
-  portfolio: PagesPortfolio
-  blog: PagesBlog
-  searchBar: PagesSearchBar
   body: JSON
   id: ID!
   _sys: SystemInfo!
@@ -578,64 +517,6 @@ input PagesContactFilter {
   quickResponseText: StringFilter
 }
 
-input PagesPortfolioFilter {
-  title: StringFilter
-  description: StringFilter
-  sectionLabel: StringFilter
-}
-
-input PagesBlogShareButtonsFilter {
-  twitter: StringFilter
-  linkedin: StringFilter
-  facebook: StringFilter
-  copyLink: StringFilter
-}
-
-input PagesBlogAuthorBoxFilter {
-  title: StringFilter
-  bio: StringFilter
-  contact: StringFilter
-}
-
-input PagesBlogFilter {
-  title: StringFilter
-  description: StringFilter
-  sectionLabel: StringFilter
-  shareTitle: StringFilter
-  shareButtons: PagesBlogShareButtonsFilter
-  tableOfContentsTitle: StringFilter
-  authorBox: PagesBlogAuthorBoxFilter
-  relatedArticlesTitle: StringFilter
-  otherProjectsTitle: StringFilter
-}
-
-input PagesSearchBarBlogFilter {
-  searchPlaceholder: StringFilter
-  clearSearch: StringFilter
-  filterByTech: StringFilter
-  clearFilters: StringFilter
-  showLess: StringFilter
-  showMore: StringFilter
-  activeFilters: StringFilter
-  removeFilter: StringFilter
-}
-
-input PagesSearchBarPortfolioFilter {
-  searchPlaceholder: StringFilter
-  clearSearch: StringFilter
-  filterByTech: StringFilter
-  clearFilters: StringFilter
-  showLess: StringFilter
-  showMore: StringFilter
-  activeFilters: StringFilter
-  removeFilter: StringFilter
-}
-
-input PagesSearchBarFilter {
-  blog: PagesSearchBarBlogFilter
-  portfolio: PagesSearchBarPortfolioFilter
-}
-
 input PagesBodyGradientFilter {
   children: StringFilter
 }
@@ -657,9 +538,6 @@ input PagesFilter {
   howWeWork: PagesHowWeWorkFilter
   faq: PagesFaqFilter
   contact: PagesContactFilter
-  portfolio: PagesPortfolioFilter
-  blog: PagesBlogFilter
-  searchBar: PagesSearchBarFilter
   body: PagesBodyFilter
 }
 
@@ -808,64 +686,6 @@ input PagesContactMutation {
   quickResponseText: String
 }
 
-input PagesPortfolioMutation {
-  title: String
-  description: String
-  sectionLabel: String
-}
-
-input PagesBlogShareButtonsMutation {
-  twitter: String
-  linkedin: String
-  facebook: String
-  copyLink: String
-}
-
-input PagesBlogAuthorBoxMutation {
-  title: String
-  bio: String
-  contact: String
-}
-
-input PagesBlogMutation {
-  title: String
-  description: String
-  sectionLabel: String
-  shareTitle: String
-  shareButtons: PagesBlogShareButtonsMutation
-  tableOfContentsTitle: String
-  authorBox: PagesBlogAuthorBoxMutation
-  relatedArticlesTitle: String
-  otherProjectsTitle: String
-}
-
-input PagesSearchBarBlogMutation {
-  searchPlaceholder: String
-  clearSearch: String
-  filterByTech: String
-  clearFilters: String
-  showLess: String
-  showMore: String
-  activeFilters: String
-  removeFilter: String
-}
-
-input PagesSearchBarPortfolioMutation {
-  searchPlaceholder: String
-  clearSearch: String
-  filterByTech: String
-  clearFilters: String
-  showLess: String
-  showMore: String
-  activeFilters: String
-  removeFilter: String
-}
-
-input PagesSearchBarMutation {
-  blog: PagesSearchBarBlogMutation
-  portfolio: PagesSearchBarPortfolioMutation
-}
-
 input PagesMutation {
   title: String
   description: String
@@ -879,9 +699,6 @@ input PagesMutation {
   howWeWork: PagesHowWeWorkMutation
   faq: PagesFaqMutation
   contact: PagesContactMutation
-  portfolio: PagesPortfolioMutation
-  blog: PagesBlogMutation
-  searchBar: PagesSearchBarMutation
   body: JSON
 }
 

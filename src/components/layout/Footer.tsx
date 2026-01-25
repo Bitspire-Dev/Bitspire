@@ -1,9 +1,8 @@
-"use client";
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useLocale } from 'next-intl';
-import { useAdminLink } from '@/hooks/useAdminLink';
+import { buildLocalePath } from '@/lib/seo/metadata';
+import { CookieSettingsButton } from '@/components/ui/cookie-consent/CookieSettingsButton';
 import {
   FaFacebookF,
   FaInstagram,
@@ -55,12 +54,11 @@ const COOKIE_SETTINGS_TEXT = {
   en: 'Cookie Settings'
 };
 
-export const Footer: React.FC = () => {
-  const locale = useLocale() as 'pl' | 'en';
-  const { getLink } = useAdminLink();
+export const Footer: React.FC<{ locale: 'pl' | 'en' }> = ({ locale }) => {
   const description = DESCRIPTION[locale];
   const legalLinks = LEGAL_LINKS[locale];
   const cookieSettingsText = COOKIE_SETTINGS_TEXT[locale];
+  const getLink = (href: string) => buildLocalePath(locale, href);
 
   const getSocialIcon = (icon: string) => {
     switch (icon.toLowerCase()) {
@@ -169,15 +167,7 @@ export const Footer: React.FC = () => {
           </p>
           
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm justify-center md:justify-end">
-            <button
-              onClick={() => {
-                const evt = new CustomEvent("open-cookie-settings");
-                window.dispatchEvent(evt);
-              }}
-              className="text-gray-400 hover:text-white transition-colors underline decoration-dotted underline-offset-4"
-            >
-              {cookieSettingsText}
-            </button>
+            <CookieSettingsButton label={cookieSettingsText} />
           </div>
         </div>
       </div>

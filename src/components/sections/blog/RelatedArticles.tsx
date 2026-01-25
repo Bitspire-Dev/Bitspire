@@ -1,9 +1,14 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useAdminLink } from '@/hooks/useAdminLink';
+import { Button } from '@/components/ui/primitives/Button';
+import { Card, CardAccent, CardContent, CardMedia } from '@/components/ui/primitives/Card';
+import { Heading } from '@/components/ui/primitives/Heading';
+import { Text } from '@/components/ui/primitives/Text';
+import FeaturedImage from '@/components/ui/media/FeaturedImage';
+import { safeImageSrc } from '@/lib/ui/helpers';
 
 interface Article {
   title: string;
@@ -40,8 +45,6 @@ export const RelatedArticles: React.FC<RelatedArticlesProps> = ({
   tinaFields
 }) => {
   const { getLink } = useAdminLink();
-  const blurDataUrl =
-    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjE4IiBmaWxsPSIjMGYxNzJhIi8+PC9zdmc+';
   // Filter out current article and limit to 3
   const filteredArticles = articles
     .filter(article => article.slug !== currentSlug)
@@ -57,9 +60,9 @@ export const RelatedArticles: React.FC<RelatedArticlesProps> = ({
       
       <div className="container mx-auto max-w-6xl relative z-10">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3" data-tina-field={tinaFields?.sectionTitle}>
+          <Heading as="h2" size="2xl" className="text-3xl md:text-4xl mb-3" data-tina-field={tinaFields?.sectionTitle}>
             {sectionTitle}
-          </h2>
+          </Heading>
           <div className="w-20 h-1 bg-linear-to-r from-blue-500 to-cyan-500 mx-auto rounded-full" />
         </div>
 
@@ -68,26 +71,25 @@ export const RelatedArticles: React.FC<RelatedArticlesProps> = ({
             <Link
               key={article.slug}
               href={getLink(`/${type}/${article.slug}`)}
+              prefetch
+              className="block"
             >
-              <article className="group relative overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-900/40 backdrop-blur-sm hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(59,130,246,0.2)]">
+              <Card as="article" variant="blue">
                 {/* Image */}
-                {article.image && (
-                  <div className="relative w-full aspect-video overflow-hidden rounded-t-2xl">
-                    <Image
-                      src={article.image}
+                {safeImageSrc(article.image) && (
+                  <CardMedia>
+                    <FeaturedImage
+                      src={safeImageSrc(article.image) as string}
                       alt={article.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                      placeholder="blur"
-                      blurDataURL={blurDataUrl}
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                     <div className="absolute inset-0 bg-linear-to-br from-blue-600/10 via-transparent to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10" />
-                  </div>
+                  </CardMedia>
                 )}
 
                 {/* Content */}
-                <div className="p-5 md:p-6">
+                <CardContent padding="sm">
                   {/* Date and Read Time */}
                   {article.date && (
                     <div className="flex items-center gap-3 mb-1 text-xs text-slate-500">
@@ -109,31 +111,34 @@ export const RelatedArticles: React.FC<RelatedArticlesProps> = ({
                     </div>
                   )}
 
-                  <h3 className="text-2xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-linear-to-r group-hover:from-blue-400 group-hover:to-cyan-400 transition-all duration-300 mb-4 leading-tight">
+                  <Heading
+                    as="h3"
+                    size="lg"
+                    className="group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-linear-to-r group-hover:from-blue-400 group-hover:to-cyan-400 transition-all duration-300 mb-4 leading-tight"
+                  >
                     {article.title}
-                  </h3>
+                  </Heading>
 
                   {article.excerpt && (
-                    <p className="text-slate-300 text-sm md:text-base leading-relaxed mb-4">
+                    <Text size="sm" className="md:text-base leading-relaxed mb-4">
                       {article.excerpt}
-                    </p>
+                    </Text>
                   )}
 
                   {/* Read More Link */}
                   {readMoreLabel && (
-                    <span
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors group/link"
-                      data-tina-field={tinaFields?.readMoreLabel}
-                    >
-                      {readMoreLabel}
-                      <span className="group-hover/link:translate-x-1 transition-transform" aria-hidden>→</span>
-                    </span>
+                    <Button asChild variant="link" size="link" className="group/link" data-tina-field={tinaFields?.readMoreLabel}>
+                      <span aria-hidden>
+                        {readMoreLabel}
+                        <span className="group-hover/link:translate-x-1 transition-transform" aria-hidden>→</span>
+                      </span>
+                    </Button>
                   )}
-                </div>
+                </CardContent>
 
                 {/* Accent line */}
-                <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-linear-to-r from-blue-500 to-cyan-400 group-hover:w-full transition-all duration-500" />
-              </article>
+                <CardAccent variant="blue" />
+              </Card>
             </Link>
           ))}
         </div>

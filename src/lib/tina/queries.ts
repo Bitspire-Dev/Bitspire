@@ -1,70 +1,182 @@
-import client from "@tina/__generated__/client";
-import { getRelatedPosts, normalizePost, normalizeProject } from "./mappers";
+import { getTinaClient } from "@/lib/tina/client";
+import {
+  mapBlogList,
+  mapBlogPostData,
+  mapHomePageData,
+  mapLegalPageData,
+  mapPageWithBody,
+  mapPortfolioItemData,
+  mapPortfolioProjects,
+} from "./adapters";
 
 // Minimal data access layer for Tina collections.
+
+const client = getTinaClient();
 
 function prefix(locale: string): string {
   return `${locale}/`;
 }
 
+async function fetchAllBlogNodes(sort?: string) {
+  const nodes: Array<NonNullable<NonNullable<Awaited<ReturnType<typeof client.queries.blogConnection>>['data']['blogConnection']['edges']>[number]>['node']> = [];
+  let after: string | undefined = undefined;
+
+  do {
+    const response = await client.queries.blogConnection({
+      first: 50,
+      after,
+      sort,
+    });
+
+    const connection = response.data.blogConnection;
+    const edges = connection.edges || [];
+    edges.forEach((edge) => {
+      if (edge?.node) nodes.push(edge.node);
+    });
+
+    after = connection.pageInfo?.hasNextPage ? connection.pageInfo.endCursor : undefined;
+  } while (after);
+
+  return nodes;
+}
+
+async function fetchAllPortfolioNodes(sort?: string) {
+  const nodes: Array<NonNullable<NonNullable<Awaited<ReturnType<typeof client.queries.portfolioConnection>>['data']['portfolioConnection']['edges']>[number]>['node']> = [];
+  let after: string | undefined = undefined;
+
+  do {
+    const response = await client.queries.portfolioConnection({
+      first: 50,
+      after,
+      sort,
+    });
+
+    const connection = response.data.portfolioConnection;
+    const edges = connection.edges || [];
+    edges.forEach((edge) => {
+      if (edge?.node) nodes.push(edge.node);
+    });
+
+    after = connection.pageInfo?.hasNextPage ? connection.pageInfo.endCursor : undefined;
+  } while (after);
+
+  return nodes;
+}
+
 export async function getHomePage(locale: string) {
   const relativePath = `${prefix(locale)}home.mdx`;
   const result = await client.queries.pages({ relativePath });
-  return result.data.pages;
+  const page = result.data.pages;
+  return page ? mapHomePageData(page, locale) : page;
 }
 
 export async function getPage(locale: string, slug: string) {
   const relativePath = `${prefix(locale)}${slug}.mdx`;
   const result = await client.queries.pages({ relativePath });
-  return result.data.pages;
+  const page = result.data.pages;
+  return page ? mapPageWithBody(page, { locale }) : page;
 }
 
 export async function getLegalPage(locale: string, slug: string) {
   const relativePath = `${prefix(locale)}${slug}.mdx`;
   const result = await client.queries.pages({ relativePath });
-  return result.data.pages;
+  const page = result.data.pages;
+  return page ? mapLegalPageData(page, locale) : page;
 }
 
 export async function getBlogPost(locale: string, slug: string) {
   const relativePath = `${prefix(locale)}${slug}.mdx`;
-  const [result, allPosts, page] = await Promise.all([
-    client.queries.blog({ relativePath }),
-    getBlogIndex(locale),
-    getPage(locale, "blog"),
-  ]);
-  const relatedPosts = getRelatedPosts(result.data.blog, allPosts);
-  return {
-    ...normalizePost(result.data.blog, { locale, relatedPosts }),
-    blog: page?.blog ?? null,
+  const result = await client.queries.blog({ relativePath });
+  const relatedPosts = await getRelatedBlogPosts(locale, result.data.blog);
+  return mapBlogPostData(result.data.blog, {
     locale,
-  };
+    slug,
+    relatedPosts,
+  });
+}
+
+type BlogNode = {
+  _sys?: { filename?: string; relativePath?: string };
+  slug?: string;
+  category?: string | null;
+};
+
+function getLocaleFromPath(path?: string) {
+  return path?.split("/")[0] ?? "";
+}
+
+function getNodeSlug(node: BlogNode) {
+  return node.slug ?? node._sys?.filename?.replace(/\.mdx$/, "") ?? "";
+}
+
+function collectBlogNodes(
+  nodes: Array<BlogNode | null | undefined>,
+  locale: string,
+  currentSlug: string,
+  seen: Set<string>,
+  output: BlogNode[]
+) {
+  nodes.forEach((node) => {
+    if (!node) return;
+    const nodeLocale = getLocaleFromPath(node._sys?.relativePath);
+    if (nodeLocale !== locale) return;
+    const slug = getNodeSlug(node);
+    if (!slug || slug === currentSlug || seen.has(slug)) return;
+    seen.add(slug);
+    output.push(node);
+  });
+}
+
+export async function getRelatedBlogPosts(locale: string, current: BlogNode) {
+  const currentSlug = getNodeSlug(current);
+  const seen = new Set<string>();
+  const related: BlogNode[] = [];
+
+  try {
+    const recentConnection = await client.queries.blogConnection({
+      first: 24,
+      sort: "date_desc",
+    });
+
+    const recentNodes = (recentConnection.data.blogConnection.edges || [])
+      .map((edge) => edge?.node);
+
+    if (current.category) {
+      const sameCategory = recentNodes.filter((node) => node?.category === current.category);
+      collectBlogNodes(sameCategory, locale, currentSlug, seen, related);
+    }
+
+    if (related.length < 3) {
+      collectBlogNodes(recentNodes, locale, currentSlug, seen, related);
+    }
+  } catch (error) {
+    console.error("Failed to load related blog posts:", error);
+  }
+
+  return related.slice(0, 3);
 }
 
 export async function getBlogIndex(locale: string) {
-  const connection = await client.queries.blogConnection();
-  const edges = connection.data.blogConnection.edges || [];
-  return edges
-    .map(edge => edge?.node)
-    .filter((node): node is NonNullable<typeof node> => Boolean(node?._sys?.relativePath?.startsWith(prefix(locale))))
-    .map(node => normalizePost(node, { locale }))
-    .sort((a, b) => {
-      const da = a.date ? new Date(a.date).getTime() : 0;
-      const db = b.date ? new Date(b.date).getTime() : 0;
-      return db - da;
-    });
+  try {
+    const nodes = await fetchAllBlogNodes("date_desc");
+    const posts = nodes
+      .filter((node): node is NonNullable<typeof node> => Boolean(node?._sys?.relativePath?.startsWith(prefix(locale))));
+    return mapBlogList(posts, locale);
+  } catch (error) {
+    console.error("Failed to load blog index:", error);
+    return [];
+  }
 }
 
 export async function getPortfolioItem(locale: string, slug: string) {
   const relativePath = `${prefix(locale)}${slug}.mdx`;
   const result = await client.queries.portfolio({ relativePath });
-  return normalizeProject(result.data.portfolio, { locale });
+  return mapPortfolioItemData(result.data.portfolio, locale);
 }
 
 export async function getPortfolioIndex(locale: string) {
-  const connection = await client.queries.portfolioConnection();
-  const edges = connection.data.portfolioConnection.edges || [];
-  return edges
-    .map(edge => edge?.node)
-    .filter((node): node is NonNullable<typeof node> => Boolean(node?._sys?.relativePath?.startsWith(prefix(locale))))
-    .map(node => normalizeProject(node, { locale }));
+  const nodes = await fetchAllPortfolioNodes();
+  const projects = nodes
+    .filter((node): node is NonNullable<typeof node> => Boolean(node?._sys?.relativePath?.startsWith(prefix(locale))));
+  return mapPortfolioProjects(projects, locale);
 }

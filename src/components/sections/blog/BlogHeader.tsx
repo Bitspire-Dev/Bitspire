@@ -24,7 +24,7 @@ export default function BlogHeader({ title, description, data }: BlogHeaderProps
                     </svg>
                 </span>
             </h1>
-            <p className="text-base md:text-xl text-slate-400 max-w-2xl leading-relaxed" data-tina-field={data ? tinaField(data, 'description') : undefined}>
+            <p className="text-base md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed" data-tina-field={data ? tinaField(data, 'description') : undefined}>
                 {description}
             </p>
         </header>

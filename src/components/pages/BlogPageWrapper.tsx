@@ -1,10 +1,6 @@
-"use client";
-
-import { useMemo, useState } from "react";
+import { buildAdminLink, type AdminLinkMode } from "@/lib/routing/adminLink";
 import type { TinaMarkdownContent } from "tinacms/dist/rich-text";
-import { tinaField } from "tinacms/dist/react";
-import { SearchBar, type SearchTranslations } from "@/components/ui/SearchBar";
-import { useAdminLink } from "@/hooks/useAdminLink";
+import { SearchBarRouter } from "@/components/ui/composites/SearchBarRouter";
 import PageBackground from "@/components/layout/PageBackground";
 import BlogHeader from "@/components/sections/blog/BlogHeader";
 import BlogGrid from "@/components/sections/blog/BlogGrid";
@@ -35,69 +31,41 @@ interface BlogPageData {
     description?: string | null;
     body?: TinaMarkdownContent | TinaMarkdownContent[] | null;
     _body?: TinaMarkdownContent | TinaMarkdownContent[] | null;
-    blog?: {
-        noArticles?: string | null;
-        readMore?: string | null;
-        readTime?: string | null;
-        by?: string | null;
-        backToBlog?: string | null;
-        publishedOn?: string | null;
-        shareTitle?: string | null;
-        shareButtons?: {
-            twitter?: string | null;
-            linkedin?: string | null;
-            facebook?: string | null;
-            copyLink?: string | null;
-        } | null;
-        tableOfContentsTitle?: string | null;
-        authorBox?: {
-            title?: string | null;
-            bio?: string | null;
-            contact?: string | null;
-        } | null;
-        relatedArticlesTitle?: string | null;
-        otherProjectsTitle?: string | null;
-    } | null;
-    searchBar?: {
-        blog?: SearchTranslations;
-    } | null;
 }
 
 interface BlogPageWrapperProps {
     data: BlogPageData;
+    allTags?: string[];
+    searchQuery?: string;
+    selectedTags?: string[];
+    linkMode?: AdminLinkMode;
 }
 
-export default function BlogPageWrapper({ data }: BlogPageWrapperProps) {
-    const { getLink } = useAdminLink();
+export default function BlogPageWrapper({
+    data,
+    allTags,
+    searchQuery,
+    selectedTags,
+    linkMode = "production",
+}: BlogPageWrapperProps) {
     const posts = (data?.posts || []) as BlogPost[];
     const locale = data?.locale || "pl";
-    const searchTranslations = data?.searchBar?.blog as SearchTranslations | undefined;
-    const [searchQuery, setSearchQuery] = useState("");
-    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const normalizedAllTags = allTags && allTags.length > 0
+        ? allTags
+        : Array.from(
+            posts.reduce((acc, post) => {
+                post.tags?.forEach(tag => {
+                    if (tag) acc.add(tag);
+                });
+                return acc;
+            }, new Set<string>())
+        ).sort();
 
-    const allTags = useMemo(() => {
-        const tagsSet = new Set<string>();
-        posts.forEach(post => {
-            post.tags?.forEach(tag => {
-                if (tag) tagsSet.add(tag);
-            });
+    const getLink = (href: string) =>
+        buildAdminLink(href, {
+            locale,
+            mode: linkMode,
         });
-        return Array.from(tagsSet).sort();
-    }, [posts]);
-
-    const filteredPosts = useMemo(() => {
-        return posts.filter(post => {
-            const matchesSearch = !searchQuery ||
-                (post.title?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-                (post.description?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-                (post.excerpt?.toLowerCase() || "").includes(searchQuery.toLowerCase());
-
-            const matchesTags = selectedTags.length === 0 ||
-                selectedTags.some(tag => post.tags?.some(postTag => postTag === tag));
-
-            return matchesSearch && matchesTags;
-        });
-    }, [posts, searchQuery, selectedTags]);
 
     return (
         <PageBackground variant="blue">
@@ -108,34 +76,23 @@ export default function BlogPageWrapper({ data }: BlogPageWrapperProps) {
                     data={data}
                 />
 
-                {allTags.length > 0 && (
+                {normalizedAllTags.length > 0 && (
                     <div className="mb-12">
-                        <SearchBar
-                            allTags={allTags}
-                            onSearchChange={setSearchQuery}
-                            onTagsChange={setSelectedTags}
+                        <SearchBarRouter
+                            allTags={normalizedAllTags}
                             locale={locale}
                             type="blog"
-                            translations={searchTranslations}
-                            tinaFields={data ? {
-                                searchPlaceholder: tinaField(data, 'searchBar.blog.searchPlaceholder'),
-                                clearSearch: tinaField(data, 'searchBar.blog.clearSearch'),
-                                filterByTech: tinaField(data, 'searchBar.blog.filterByTech'),
-                                clearFilters: tinaField(data, 'searchBar.blog.clearFilters'),
-                                showLess: tinaField(data, 'searchBar.blog.showLess'),
-                                showMore: tinaField(data, 'searchBar.blog.showMore'),
-                                activeFilters: tinaField(data, 'searchBar.blog.activeFilters'),
-                                removeFilter: tinaField(data, 'searchBar.blog.removeFilter'),
-                            } : undefined}
+                            initialQuery={searchQuery}
+                            initialTags={selectedTags}
                         />
                     </div>
                 )}
 
                 <BlogGrid
-                    posts={filteredPosts}
+                    posts={posts}
                     locale={locale}
-                    translations={data?.blog}
                     getLink={getLink}
+                    isAdmin={linkMode !== "production"}
                 />
             </main>
         </PageBackground>

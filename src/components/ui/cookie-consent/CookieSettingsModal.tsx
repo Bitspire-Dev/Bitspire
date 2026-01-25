@@ -3,6 +3,8 @@ import React from "react";
 import { useCookieConsent } from "@/hooks/useCookies";
 import { useModal } from "@/hooks/useModal";
 import type { CookieCategory } from "@/lib/cookies";
+import { Button } from "@/components/ui/primitives/Button";
+import { Card, CardContent } from "@/components/ui/primitives/Card";
 
 interface Props {
   open: boolean;
@@ -42,7 +44,11 @@ export const CookieSettingsModal: React.FC<Props> = ({ open, onClose }) => {
       aria-labelledby="cookie-settings-title"
       ref={dialogRef}
     >
-      <div className={`w-full max-w-2xl rounded-2xl bg-slate-900 border border-slate-700 shadow-2xl p-6 md:p-8 ${contentClass}`}>
+      <Card
+        interactive={false}
+        className={`w-full max-w-2xl bg-slate-900 border-slate-700 shadow-2xl backdrop-blur-md ${contentClass}`}
+      >
+        <CardContent padding="md" className="p-6 md:p-8">
         <h2 id="cookie-settings-title" className="text-2xl font-bold text-white mb-2">
           Ustawienia cookies
         </h2>
@@ -79,26 +85,30 @@ export const CookieSettingsModal: React.FC<Props> = ({ open, onClose }) => {
           ))}
         </ul>
         <div className="flex flex-wrap gap-4 justify-end mt-8">
-          <button
+          <Button
             onClick={() => { rejectAll(); onClose(); }}
-            className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-sm font-medium text-slate-200 border border-slate-600"
+            variant="secondary"
+            className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-sm font-medium text-slate-200 border border-slate-600"
           >
             Odrzuć wszystkie
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => { grantAll(); onClose(); }}
-            className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-sm font-semibold text-white shadow"
+            variant="primary"
+            className="px-4 py-2 text-sm font-semibold shadow"
           >
             Akceptuj wszystkie
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm font-medium text-slate-200 border border-slate-600"
+            variant="secondary"
+            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-sm font-medium text-slate-200 border border-slate-600"
           >
             Zamknij
-          </button>
+          </Button>
         </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

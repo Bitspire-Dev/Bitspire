@@ -1,11 +1,14 @@
-'use client';
-
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { tinaField } from 'tinacms/dist/react';
-import { useAdminLink } from '@/hooks/useAdminLink';
-import { RichText } from '@tina/richTextPresets';
+import { buildAdminLink, type AdminLinkMode } from '@/lib/routing/adminLink';
+import { RichTextLite } from '@/components/ui/tina/RichTextLite';
+import { Badge } from '@/components/ui/primitives/Badge';
+import { Button } from '@/components/ui/primitives/Button';
+import { Card, CardContent, CardMedia } from '@/components/ui/primitives/Card';
+import { Heading } from '@/components/ui/primitives/Heading';
+import { Text } from '@/components/ui/primitives/Text';
 
 interface PortfolioProject {
   title?: string | null;
@@ -23,10 +26,11 @@ interface PortfolioHighlightsProps {
     title?: Record<string, unknown>;
     description?: Record<string, unknown>;
   };
+  locale?: string;
+  linkMode?: AdminLinkMode;
 }
 
-const PortfolioHighlights: React.FC<PortfolioHighlightsProps> = ({ data }) => {
-  const { getLink } = useAdminLink();
+const PortfolioHighlights: React.FC<PortfolioHighlightsProps> = ({ data, locale = 'pl', linkMode = 'production' }) => {
   // Filter featured projects
   const featuredProjects = data?.projects?.filter(project => project?.featured) || [];
 
@@ -43,10 +47,10 @@ const PortfolioHighlights: React.FC<PortfolioHighlightsProps> = ({ data }) => {
         <div className="text-center mb-16">
           <div className="w-16 h-0.5 bg-linear-to-r from-blue-600 to-cyan-500 mb-6 mx-auto"></div>
           <div data-tina-field={tinaField(data, 'title')}>
-            <RichText content={data?.title} preset="section-title" />
+            <RichTextLite content={data?.title} preset="section-title" />
           </div>
           <div data-tina-field={tinaField(data, 'description')}>
-            <RichText content={data?.description} preset="subtitle" />
+            <RichTextLite content={data?.description} preset="subtitle" />
           </div>
         </div>
 
@@ -60,16 +64,20 @@ const PortfolioHighlights: React.FC<PortfolioHighlightsProps> = ({ data }) => {
               ? project.description
               : (project?.description as Record<string, unknown>)?.children?.[0]?.text || '';
             
-            const projectHref = project?.slug ? getLink(`/portfolio/${project.slug}`) : '#';
+            const projectHref = project?.slug
+              ? buildAdminLink(`/portfolio/${project.slug}`, { locale, mode: linkMode })
+              : '#';
 
             return (
             <Link
               key={index}
               href={projectHref}
-              className="group relative overflow-hidden rounded-2xl bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/20"
+              className="block"
+              prefetch
             >
+              <Card as="article" variant="blue" className="bg-slate-800/50 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/20">
               {/* Project Image */}
-              <div className="relative aspect-video overflow-hidden bg-slate-900">
+              <CardMedia className="bg-slate-900">
                 {project?.image ? (
                   <Image
                     src={project.image}
@@ -90,35 +98,43 @@ const PortfolioHighlights: React.FC<PortfolioHighlightsProps> = ({ data }) => {
                 <div className="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
                 
                 {/* Featured badge */}
-                <div className="absolute top-4 right-4 bg-blue-500/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                <Badge
+                  variant="neutral"
+                  shape="pill"
+                  size="md"
+                  className="absolute top-4 right-4 bg-blue-500/90 backdrop-blur-sm text-white border-transparent text-xs font-bold px-3 py-1.5 gap-1.5"
+                >
                   <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                   Wyróżnione
-                </div>
-              </div>
+                </Badge>
+              </CardMedia>
 
               {/* Project Content */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
+              <CardContent>
+                <Heading as="h3" size="md" className="text-xl mb-2 group-hover:text-blue-400 transition-colors">
                   {projectTitle}
-                </h3>
+                </Heading>
                 
-                <p className="text-slate-400 text-sm mb-4 line-clamp-2">
+                <Text variant="muted" size="sm" className="mb-4 line-clamp-2">
                   {projectDescription}
-                </p>
+                </Text>
 
                 {/* Tags */}
                 {project?.tags && project.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {project.tags.slice(0, 3).map((tag, tagIndex) => (
                       tag ? (
-                        <span
+                        <Badge
                           key={tagIndex}
-                          className="text-xs px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20"
+                          variant="blue"
+                          shape="pill"
+                          size="sm"
+                          className="px-3 text-blue-400"
                         >
                           {tag}
-                        </span>
+                        </Badge>
                       ) : null
                     ))}
                   </div>
@@ -131,7 +147,8 @@ const PortfolioHighlights: React.FC<PortfolioHighlightsProps> = ({ data }) => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
                 </div>
-              </div>
+              </CardContent>
+              </Card>
             </Link>
             );
           })}
@@ -139,15 +156,14 @@ const PortfolioHighlights: React.FC<PortfolioHighlightsProps> = ({ data }) => {
 
         {/* View all projects button */}
         <div className="text-center mt-12">
-          <Link
-            href={getLink("/portfolio")}
-            className="inline-flex items-center gap-2 btn-tech-primary px-8 py-4 rounded-lg font-bold text-sm uppercase tracking-wider"
-          >
-            Zobacz wszystkie projekty
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </Link>
+          <Button asChild variant="primary" size="lg" className="btn-tech-primary px-8 py-4 rounded-lg font-bold text-sm uppercase tracking-wider">
+            <Link href={buildAdminLink("/portfolio", { locale, mode: linkMode })} prefetch>
+              Zobacz wszystkie projekty
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+          </Button>
         </div>
       </div>
     </section>

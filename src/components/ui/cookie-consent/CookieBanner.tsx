@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCookieConsent } from "@/hooks/useCookies";
 import { useAdminLink } from "@/hooks/useAdminLink";
 import { CookieSettingsModal } from "./CookieSettingsModal";
+import { Button } from "@/components/ui/primitives/Button";
 
 export const CookieBanner: React.FC = () => {
   const { consent, ready, grantAll, rejectAll } = useCookieConsent();
@@ -63,25 +64,28 @@ export const CookieBanner: React.FC = () => {
           działanie serwisu. Szczegóły znajdziesz w <Link href={getLink("/polityka-prywatnosci/")} className="text-blue-400 underline">polityce prywatności</Link> i <Link href={getLink("/polityka-cookies/")} className="text-blue-400 underline">polityce cookies</Link>.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-end">
-          <button
+          <Button
             onClick={() => handleAction(rejectAll)}
-            className="px-5 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-sm font-medium text-slate-200 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+            variant="secondary"
+            className="px-5 py-2 bg-slate-700 hover:bg-slate-600 text-sm font-medium text-slate-200 border border-slate-600 focus:ring-offset-2 focus:ring-offset-slate-900"
           >
             Odrzuć
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setOpenSettings(true)}
-            className="px-5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm font-medium text-slate-200 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+            variant="secondary"
+            className="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-sm font-medium text-slate-200 border border-slate-600 focus:ring-offset-2 focus:ring-offset-slate-900"
           >
             Ustawienia
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => handleAction(grantAll)}
-            className="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-sm font-semibold text-white shadow focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+            variant="primary"
+            className="px-5 py-2 text-sm font-semibold shadow focus:ring-offset-2 focus:ring-offset-slate-900"
             autoFocus
           >
             Akceptuj wszystkie
-          </button>
+          </Button>
         </div>
       </div>
       <CookieSettingsModal open={openSettings} onClose={() => setOpenSettings(false)} />

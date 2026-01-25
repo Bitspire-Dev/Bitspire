@@ -40,13 +40,17 @@ export default async function PortfolioItemPage({ params }: PageProps) {
     const project = await getPortfolioItem(currentLocale, slug);
     const pagePath = buildLocalePath(currentLocale, `/portfolio/${slug}`);
     const imageUrl = project?.image ? absoluteUrl(project.image) : undefined;
+    const authorName = (project as { client?: string; author?: string | null })?.author
+      ?? (project as { client?: string; author?: string | null })?.client;
 
     const jsonLd = {
       "@context": "https://schema.org",
-      "@type": "CreativeWork",
+      "@type": "Project",
       name: project?.title ?? "",
       description: project?.description ?? "",
       image: imageUrl ? [imageUrl] : undefined,
+      datePublished: (project as { date?: string | null })?.date ?? undefined,
+      author: authorName ? { "@type": "Organization", name: authorName } : undefined,
       url: absoluteUrl(pagePath),
       inLanguage: currentLocale,
     };

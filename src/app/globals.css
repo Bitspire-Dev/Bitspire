@@ -24,3 +24,9 @@ body,
   }
 }
 
+@layer components {
+  .richtext-body {
+    max-width: none;
+  }
+}
+

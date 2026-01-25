@@ -4,7 +4,10 @@ import React from 'react';
 import Image from 'next/image';
 import { CTAButton } from '@/components/ui/buttons/CTA__button';
 import { tinaField } from 'tinacms/dist/react';
-import { RichText } from '@tina/richTextPresets';
+import { RichTextLite } from '@/components/ui/tina/RichTextLite';
+
+const HERO_BLUR_DATA_URL =
+  'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=';
 
 interface HeroData {
   title?: Record<string, unknown>;
@@ -53,12 +56,12 @@ export const Hero: React.FC<HeroProps> = ({ data, locale = 'pl' }) => {
               <span className="text-blue-200 text-xs font-bold tracking-widest uppercase drop-shadow-sm font-mono">System Online</span>
             </div>
             
-            <h1 data-tina-field={data ? tinaField(data, 'title') : undefined}>
-              <RichText content={data?.title} preset="hero-title" className="mb-8" />
-            </h1>
+            <div data-tina-field={data ? tinaField(data, 'title') : undefined}>
+              <RichTextLite content={data?.title} preset="hero-title" className="mb-8" />
+            </div>
             
             <div data-tina-field={data ? tinaField(data, 'subtitle') : undefined}>
-              <RichText 
+              <RichTextLite 
                 content={data?.subtitle} 
                 preset="subtitle" 
                 className="mb-10 max-w-2xl mx-auto lg:mx-0 border-l-2 border-blue-500/30 pl-6" 
@@ -83,11 +86,14 @@ export const Hero: React.FC<HeroProps> = ({ data, locale = 'pl' }) => {
                  <Image
                    src={data.image}
                    alt="Hero illustration"
-                   fill
+                   width={1200}
+                   height={900}
                    sizes="(max-width: 1024px) 100vw, 50vw"
-                   className="object-contain filter-[drop-shadow(0_0_50px_rgba(59,130,246,0.3))]"
+                   className="w-full h-full object-contain filter-[drop-shadow(0_0_50px_rgba(59,130,246,0.3))]"
                    data-tina-field={data ? tinaField(data, 'image') : undefined}
                    priority
+                   placeholder="blur"
+                   blurDataURL={HERO_BLUR_DATA_URL}
                  />
               </div>
             ) : null}

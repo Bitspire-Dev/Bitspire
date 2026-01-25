@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { AdminPreviewProvider } from "@/providers/AdminPreviewProvider";
 import { AdminLegalPagePreview } from "@/providers/AdminPreviewRenderer";
-import client from "@tina/__generated__/client";
+import { getTinaClient } from "@/lib/tina/client";
 
 const supportedLocales = ["pl", "en"] as const;
 const slugMap: Record<(typeof supportedLocales)[number], string> = {
@@ -12,6 +12,8 @@ const slugMap: Record<(typeof supportedLocales)[number], string> = {
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 export const fetchCache = "force-no-store";
+
+const client = getTinaClient();
 
 interface PageProps {
   params: Promise<{ locale: string }>;

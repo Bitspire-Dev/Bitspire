@@ -1,8 +1,13 @@
 import Link from 'next/link';
 import { tinaField } from 'tinacms/dist/react';
-import TagsList from '@/components/ui/TagsList';
-import CardTitle from '@/components/ui/CardTitle';
-import { safeLink } from '@/lib/ui/helpers';
+import TagsList from '@/components/ui/composites/TagsList';
+import CardTitle from '@/components/ui/composites/CardTitle';
+import { Badge } from '@/components/ui/primitives/Badge';
+import { Button } from '@/components/ui/primitives/Button';
+import { Card, CardAccent, CardContent, CardMedia } from '@/components/ui/primitives/Card';
+import { Text } from '@/components/ui/primitives/Text';
+import FeaturedImage from '@/components/ui/media/FeaturedImage';
+import { safeImageSrc, safeLink } from '@/lib/ui/helpers';
 
 interface PortfolioCardProps {
     title: string;
@@ -30,80 +35,82 @@ export default function PortfolioCard({
     translations: t
 }: PortfolioCardProps) {
     const safeHref = safeLink(link);
+    const imageSrc = safeImageSrc(image);
 
     return (
-        <article className="group relative overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-900/40 backdrop-blur-sm hover:border-cyan-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]">
+        <Card as="article" variant="blue">
             {/* Image */}
-            {image && (
-                <div 
-                    className="relative w-full aspect-video overflow-hidden rounded-t-2xl"
+            {imageSrc && (
+                <CardMedia
                     data-tina-field={data ? tinaField(data, `projects.${index}.image`) : undefined}
-                    style={{
-                        backgroundImage: `url(${image})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'top center',
-                        margin: 0,
-                        padding: 0,
-                        display: 'block'
-                    }}
                 >
+                    <FeaturedImage
+                        src={imageSrc}
+                        alt={title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
                     <div className="absolute inset-0 bg-linear-to-br from-cyan-600/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10" />
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.1),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10" />
-                </div>
+                </CardMedia>
             )}
 
             {/* Content */}
-            <div className="p-6">
+            <CardContent>
                 {/* Year Badge */}
                 {year && (
                     <div className="flex items-center gap-2 mb-1">
-                        <span 
-                            className="text-xs px-2 py-1 rounded-md bg-slate-800 text-slate-400 border border-slate-700"
+                        <Badge
+                            variant="slate"
+                            size="sm"
+                            shape="md"
                             data-tina-field={data ? tinaField(data, `projects.${index}.year`) : undefined}
                         >
                             {year}
-                        </span>
+                        </Badge>
                     </div>
                 )}
 
                 <CardTitle
-                    variant="cyan"
+                    variant="blue"
                     tinaField={data ? tinaField(data, `projects.${index}.title`) : undefined}
                 >
                     {title}
                 </CardTitle>
 
-                <p 
-                    className="text-slate-300 text-base leading-relaxed mb-4" 
+                <Text
+                    size="md"
+                    className="leading-relaxed mb-4"
                     data-tina-field={data ? tinaField(data, `projects.${index}.description`) : undefined}
                 >
                     {description}
-                </p>
+                </Text>
 
                 {/* Tags */}
                 {tags && tags.length > 0 && (
                     <div className="mb-4">
-                        <TagsList tags={tags} variant="cyan" maxTags={3} />
+                        <TagsList tags={tags} variant="blue" maxTags={3} />
                     </div>
                 )}
 
                 {/* View Project Link */}
                 {safeHref && (
-                    <Link
-                        href={safeHref}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-400 hover:text-cyan-300 transition-colors group/link"
-                        data-tina-field={data ? tinaField(data, `projects.${index}.link`) : undefined}
-                    >
-                        {t.viewProject}
-                        <span className="group-hover/link:translate-x-1 transition-transform" aria-hidden>→</span>
-                    </Link>
+                    <Button asChild variant="link" size="link" className="group/link text-blue-400 hover:text-blue-300">
+                        <Link
+                            href={safeHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            data-tina-field={data ? tinaField(data, `projects.${index}.link`) : undefined}
+                        >
+                            {t.viewProject}
+                            <span className="group-hover/link:translate-x-1 transition-transform" aria-hidden>→</span>
+                        </Link>
+                    </Button>
                 )}
-            </div>
+            </CardContent>
 
             {/* Accent line */}
-            <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-linear-to-r from-cyan-500 to-blue-400 group-hover:w-full transition-all duration-500" />
-        </article>
+            <CardAccent variant="blue" />
+        </Card>
     );
 }

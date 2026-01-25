@@ -3,8 +3,14 @@ import { portfolioCollection } from "./schemas/portfolio";
 import { blogCollection } from "./schemas/blog";
 import { pagesCollection } from "./schemas/pages";
 
+const branch =
+  process.env.NEXT_PUBLIC_TINA_BRANCH ??
+  process.env.TINA_BRANCH ??
+  process.env.VERCEL_GIT_COMMIT_REF ??
+  "redesign";
+
 export default defineConfig({
-  branch: "redesign",
+  branch,
   
   // Get this from tina.io
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID,

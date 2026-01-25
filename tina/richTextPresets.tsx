@@ -1,5 +1,7 @@
 import { TinaMarkdown, TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import React from 'react';
+import Image from 'next/image';
+import { safeImageSrc } from '../src/lib/ui/helpers';
 import type { ReactElement } from 'react';
 import { Highlight, themes, type RenderProps } from 'prism-react-renderer';
 import Prism from 'prismjs';
@@ -192,15 +194,26 @@ export const richTextComponents = {
     const content = typeof value === 'string' ? value : extractText(children);
     return renderCodeBlock(content, blockLanguage);
   },
-  img: ({ src, alt }: RichTextProps) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={typeof src === 'string' ? src : undefined}
-      alt={typeof alt === 'string' ? alt : ''}
-      loading="lazy"
-      className="rounded-2xl shadow-2xl my-8 w-full h-auto"
-    />
-  ),
+  img: ({ src, alt }: RichTextProps) => {
+    const resolvedSrc = typeof src === 'string' ? safeImageSrc(src) : undefined;
+    if (!resolvedSrc) return null;
+
+    const isLocalAvif = resolvedSrc.startsWith('/') && resolvedSrc.toLowerCase().endsWith('.avif');
+
+    return (
+      <span className="block my-8">
+        <Image
+          src={resolvedSrc}
+          alt={typeof alt === 'string' ? alt : ''}
+          width={1200}
+          height={800}
+          sizes="100vw"
+          className="rounded-2xl shadow-2xl w-full h-auto"
+          unoptimized={isLocalAvif}
+        />
+      </span>
+    );
+  },
   hr: () => <hr className="my-10 border-slate-700/40" />,
   table: ({ children }: RichTextProps) => (
     <div className="my-8 overflow-x-auto">
@@ -341,6 +354,8 @@ interface RichTextPresetProps {
   components?: Partial<typeof richTextComponents>;
 }
 
+const richTextWrapperClass = 'richtext-body';
+
 const presetStyles = {
   'hero-title': 'text-5xl lg:text-7xl font-bold text-white mb-8 leading-tight tracking-tight drop-shadow-lg',
   'section-title': 'text-3xl md:text-5xl font-bold text-white mb-4 text-center leading-tight',
@@ -356,7 +371,7 @@ export const RichText: React.FC<RichTextPresetProps> = ({
   components,
 }) => {
   const baseClassName = presetStyles[preset];
-  const combinedClassName = `${baseClassName} ${className}`.trim();
+  const combinedClassName = [richTextWrapperClass, baseClassName, className].filter(Boolean).join(' ');
 
   // Handle undefined or null content
   if (!content) {

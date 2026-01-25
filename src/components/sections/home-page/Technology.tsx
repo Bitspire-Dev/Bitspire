@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import { tinaField } from 'tinacms/dist/react';
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { RichText } from "@tina/richTextPresets";
+import { RichTextLite } from '@/components/ui/tina/RichTextLite';
 
 interface TechnologyData {
   title?: Record<string, unknown>;
@@ -124,10 +124,10 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
 		  <div className="w-16 h-0.5 bg-linear-to-r from-blue-600 to-cyan-500 mb-4"></div>
           <div data-tina-field={tinaField(data, 'title')}>
-            <RichText content={data?.title} preset="section-title" className="mb-3" />
+			<RichTextLite content={data?.title} preset="section-title" className="mb-3" />
           </div>
           <div data-tina-field={tinaField(data, 'description')}>
-            <RichText content={data?.description} preset="description" />
+			<RichTextLite content={data?.description} preset="description" />
           </div>
         </div>
       </div>

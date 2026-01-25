@@ -1,9 +1,5 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
-import { Header } from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
-import { CursorLightProvider } from '@/components/features/Cursor-Light';
-import { Background } from '@/components/layout/Background';
 import { Metadata } from 'next';
 import './globals.css';
 
@@ -132,14 +128,7 @@ export default async function RootLayout({
       </head>
       <body className="antialiased bg-slate-950 text-slate-100 min-h-screen">
         <NextIntlClientProvider locale={currentLocale} messages={messages}>
-          <CursorLightProvider>
-            <Background />
-            <Header />
-            <main className="relative z-10">
-              {children}
-            </main>
-            <Footer />
-          </CursorLightProvider>
+          {children}
         </NextIntlClientProvider>
       </body>
     </html>

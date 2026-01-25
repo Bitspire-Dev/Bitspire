@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
 import { AdminPreviewProvider } from "@/providers/AdminPreviewProvider";
 import { AdminHomePreview } from "@/providers/AdminPreviewRenderer";
-import client from "@tina/__generated__/client";
+import { getTinaClient } from "@/lib/tina/client";
 import { redirect } from "next/navigation";
 
 const supportedLocales = ["pl", "en"] as const;
+
+const client = getTinaClient();
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

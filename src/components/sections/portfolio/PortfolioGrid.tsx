@@ -22,7 +22,7 @@ interface PortfolioGridProps {
 export default function PortfolioGrid({ projects, data, translations: t }: PortfolioGridProps) {
     if (projects.length === 0) {
         return (
-            <section aria-label="Portfolio projects" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+            <section aria-label="Portfolio projects" className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 mb-16 md:mb-20">
                 <div className="col-span-full text-center py-20">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-800/50 border border-slate-700 mb-4">
                         <svg className="w-8 h-8 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -36,7 +36,7 @@ export default function PortfolioGrid({ projects, data, translations: t }: Portf
     }
 
     return (
-        <section aria-label="Portfolio projects" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+        <section aria-label="Portfolio projects" className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 mb-16 md:mb-20">
             {projects.map((project, idx) => {
                 if (!project?.title) return null;
 

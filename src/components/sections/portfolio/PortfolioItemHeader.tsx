@@ -1,5 +1,5 @@
 import { tinaField } from 'tinacms/dist/react';
-import MetaBadge from '@/components/ui/MetaBadge';
+import MetaBadge from '@/components/ui/composites/MetaBadge';
 
 interface PortfolioItemHeaderProps {
     title: string;

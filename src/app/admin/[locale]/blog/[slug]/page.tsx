@@ -1,12 +1,14 @@
 import { notFound } from "next/navigation";
 import { AdminPreviewProvider } from "@/providers/AdminPreviewProvider";
-import { getBlogIndex } from "@/lib/tina/queries";
+import { getRelatedBlogPosts } from "@/lib/tina/queries";
 import { AdminBlogPostPreview } from "@/providers/AdminPreviewRenderer";
-import client from "@tina/__generated__/client";
+import { getTinaClient } from "@/lib/tina/client";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 export const fetchCache = "force-no-store";
+
+const client = getTinaClient();
 export const dynamicParams = true;
 
 interface PageProps {
@@ -17,11 +19,8 @@ export default async function AdminBlogPostPage({ params }: PageProps) {
   const { locale, slug } = await params;
 
   try {
-    const [result, allPosts, pageResult] = await Promise.all([
-      client.queries.blog({ relativePath: `${locale}/${slug}.mdx` }),
-      getBlogIndex(locale),
-      client.queries.pages({ relativePath: `${locale}/blog.mdx` }),
-    ]);
+    const result = await client.queries.blog({ relativePath: `${locale}/${slug}.mdx` });
+    const relatedPosts = await getRelatedBlogPosts(locale, result.data.blog);
 
     return (
       <AdminPreviewProvider
@@ -32,8 +31,7 @@ export default async function AdminBlogPostPage({ params }: PageProps) {
         <AdminBlogPostPreview
           locale={locale}
           slug={slug}
-          allPosts={allPosts as unknown[]}
-          blogLabels={pageResult.data.pages?.blog ?? null}
+          relatedPosts={relatedPosts as unknown[]}
         />
       </AdminPreviewProvider>
     );

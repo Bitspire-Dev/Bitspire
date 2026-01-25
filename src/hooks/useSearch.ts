@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 
 interface UseSearchOptions {
   initialQuery?: string;
@@ -17,6 +17,14 @@ export function useSearch(options: UseSearchOptions = {}) {
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [selectedTags, setSelectedTags] = useState<string[]>(initialTags);
   const [showAllTags, setShowAllTags] = useState(false);
+
+  useEffect(() => {
+    setSearchQuery(initialQuery);
+  }, [initialQuery]);
+
+  useEffect(() => {
+    setSelectedTags(initialTags);
+  }, [initialTags]);
 
   const handleSearchChange = useCallback((query: string) => {
     setSearchQuery(query);

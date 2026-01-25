@@ -6,157 +6,72 @@ import BlogPageWrapper from "@/components/pages/BlogPageWrapper";
 import BlogPostWrapper from "@/components/pages/BlogPostWrapper";
 import PortfolioPageWrapper from "@/components/pages/PortfolioPageWrapper";
 import PortfolioItemWrapper from "@/components/pages/PortfolioItemWrapper";
-import { getRelatedPosts, normalizePost, normalizeProject } from "@/lib/tina/mappers";
+import {
+  mapBlogIndexData,
+  mapBlogPostData,
+  mapHomePageData,
+  mapLegalPageData,
+  mapPortfolioIndexData,
+  mapPortfolioItemData,
+} from "@/lib/tina/adapters";
 import { useAdminPreviewData } from "./AdminPreviewProvider";
 import type { ComponentProps } from "react";
-import type { TinaMarkdownContent } from "tinacms/dist/rich-text";
 
 type JsonRecord = Record<string, unknown>;
 type HomeData = ComponentProps<typeof HomePageWrapper>["data"];
 type LegalData = ComponentProps<typeof LegalPageWrapper>["data"];
 type BlogPageData = ComponentProps<typeof BlogPageWrapper>["data"];
+type BlogPostData = ComponentProps<typeof BlogPostWrapper>["data"];
 type PortfolioIndexData = ComponentProps<typeof PortfolioPageWrapper>["data"];
 type PortfolioItemData = ComponentProps<typeof PortfolioItemWrapper>["data"];
-type BlogListItem = NonNullable<BlogPageData["posts"]>[number];
-
-const toTinaMarkdown = (value: unknown): TinaMarkdownContent | TinaMarkdownContent[] => {
-  if (Array.isArray(value)) return value as TinaMarkdownContent[];
-  if (value && typeof value === "object") return value as TinaMarkdownContent;
-  return [];
-};
 
 export function AdminHomePreview({ locale }: { locale: string }) {
   const data = useAdminPreviewData<{ pages: JsonRecord }>();
-  const pages = data.pages as HomeData & { _body?: unknown };
-  const rawBody = (pages as { body?: unknown }).body ?? (pages as { _body?: unknown })._body;
-  const body = rawBody ? toTinaMarkdown(rawBody) : null;
-
-  return <HomePageWrapper data={{ ...pages, body: body ?? undefined, _body: body ?? undefined, locale }} />;
+  const pages = mapHomePageData(data.pages as Record<string, unknown>, locale) as HomeData;
+  return <HomePageWrapper data={pages} />;
 }
 
 export function AdminLegalPagePreview({ locale }: { locale: string }) {
   const data = useAdminPreviewData<{ pages: JsonRecord }>();
-  const pages = data.pages as LegalData & { _body?: unknown };
-  const rawBody = (pages as { body?: unknown }).body ?? (pages as { _body?: unknown })._body;
-  const normalizedBody = rawBody ? toTinaMarkdown(rawBody) : null;
-  return <LegalPageWrapper data={{ ...pages, body: normalizedBody as LegalData["body"], _body: normalizedBody, locale }} hideToc />;
+  const pages = mapLegalPageData(data.pages as Record<string, unknown>, locale) as LegalData;
+  return <LegalPageWrapper data={pages} hideToc />;
 }
 
 export function AdminBlogIndexPreview({ locale, posts }: { locale: string; posts: unknown[] }) {
   const data = useAdminPreviewData<{ pages: JsonRecord }>();
-  const pages = data.pages as BlogPageData & { _body?: unknown };
-  const rawBody = (pages as { body?: unknown }).body ?? (pages as { _body?: unknown })._body;
-  const body = rawBody ? toTinaMarkdown(rawBody) : null;
-  const typedPosts = posts as Parameters<typeof normalizePost>[0][];
-  const normalizedPosts: BlogListItem[] = typedPosts.map((post) => {
-    const normalized = normalizePost(post, { locale });
-    const fallbackSlug = normalized._sys?.filename ?? "";
-
-    return {
-      _sys: {
-        filename: normalized._sys?.filename ?? fallbackSlug,
-        relativePath: (post as { _sys?: { relativePath?: string } })._sys?.relativePath ?? "",
-      },
-      title: (normalized as { title?: string }).title ?? "",
-      slug: normalized.slug ?? fallbackSlug,
-      description: (normalized as { description?: string | null }).description ?? "",
-      excerpt: (normalized as { excerpt?: string | null }).excerpt ?? undefined,
-      date: normalized.date ?? "",
-      author: (normalized as { author?: string }).author ?? "",
-      category: normalized.category ?? null,
-      tags: normalized.tags ?? [],
-      image: (normalized as { image?: string | null }).image ?? undefined,
-      imageAlt: (normalized as { imageAlt?: string | null }).imageAlt ?? undefined,
-      readTime: (normalized as { readTime?: number | null }).readTime ?? null,
-    } satisfies BlogListItem;
-  });
-
-  return (
-    <BlogPageWrapper
-      data={{ ...(pages as BlogPageData), posts: normalizedPosts, locale, blog: (pages as BlogPageData).blog, body: body ?? undefined, _body: body ?? undefined }}
-    />
-  );
+  const pages = data.pages as Record<string, unknown>;
+  const mapped = mapBlogIndexData(pages, posts as Record<string, unknown>[], locale) as BlogPageData;
+  return <BlogPageWrapper data={mapped} linkMode="admin" />;
 }
 
 export function AdminBlogPostPreview({
   locale,
   slug,
-  allPosts,
-  blogLabels,
+  relatedPosts,
 }: {
   locale: string;
   slug: string;
-  allPosts: unknown[];
-  blogLabels: BlogPageData["blog"] | null;
+  relatedPosts: unknown[];
 }) {
   const data = useAdminPreviewData<{ blog: unknown }>();
-  const blog = data.blog as Parameters<typeof normalizePost>[0];
-  const typedAllPosts = allPosts as Parameters<typeof normalizePost>[0][];
-  const relatedPosts = getRelatedPosts(blog, typedAllPosts as Parameters<typeof getRelatedPosts>[1]);
-  const normalized = normalizePost(blog, { locale, relatedPosts });
-  const related = relatedPosts.map((post) => {
-    const normalizedPost = normalizePost(post as Parameters<typeof normalizePost>[0], { locale });
-    const fallbackSlug = normalizedPost._sys?.filename ?? "";
-
-    return {
-      title: (normalizedPost as { title?: string }).title ?? "",
-      slug: normalizedPost.slug ?? fallbackSlug,
-      excerpt: (normalizedPost as { excerpt?: string | null }).excerpt ?? undefined,
-      image: (normalizedPost as { image?: string | null }).image ?? undefined,
-      date: normalizedPost.dateFormatted ?? normalizedPost.date ?? undefined,
-      readTime: normalizedPost.readTime ?? null,
-    };
+  const mapped = mapBlogPostData(data.blog as Record<string, unknown>, {
+    locale,
+    slug,
+    relatedPosts: relatedPosts as Record<string, unknown>[],
   });
-  const body = (blog as { body?: unknown }).body ?? {};
 
-  return (
-    <BlogPostWrapper
-      data={{
-        ...(blog as Record<string, unknown>),
-        ...(normalized as Record<string, unknown>),
-        title: (normalized as { title?: string }).title ?? "",
-        description: (normalized as { description?: string }).description ?? "",
-        date: normalized.date ?? "",
-        author: (normalized as { author?: string }).author ?? "",
-        category: normalized.category ?? null,
-        tags: normalized.tags ?? [],
-        image: (normalized as { image?: string | null }).image ?? undefined,
-        imageAlt: (normalized as { imageAlt?: string | null }).imageAlt ?? undefined,
-        readTime: (normalized as { readTime?: number | null }).readTime ?? null,
-        locale,
-        slug,
-        body: toTinaMarkdown(body),
-        relatedPosts: related,
-        blog: blogLabels ?? null,
-      }}
-    />
-  );
+  return <BlogPostWrapper data={mapped as BlogPostData} linkMode="admin" />;
 }
 
 export function AdminPortfolioIndexPreview({ locale, projects }: { locale: string; projects: unknown[] }) {
   const data = useAdminPreviewData<{ pages: JsonRecord }>();
-  const pages = data.pages as PortfolioIndexData & { _body?: unknown };
-  const rawBody = (pages as { body?: unknown }).body ?? (pages as { _body?: unknown })._body;
-  const body = rawBody ? toTinaMarkdown(rawBody) : null;
-
-  return <PortfolioPageWrapper data={{ ...(pages as PortfolioIndexData), projects: projects as PortfolioIndexData["projects"], locale, body: body ?? undefined, _body: body ?? undefined }} />;
+  const pages = data.pages as Record<string, unknown>;
+  const mapped = mapPortfolioIndexData(pages, projects as Record<string, unknown>[], locale) as PortfolioIndexData;
+  return <PortfolioPageWrapper data={mapped} />;
 }
 
 export function AdminPortfolioItemPreview({ locale }: { locale: string }) {
   const data = useAdminPreviewData<{ portfolio: unknown }>();
-  const portfolio = data.portfolio as Parameters<typeof normalizeProject>[0];
-  const normalized = normalizeProject(portfolio, { locale });
-  const body = (portfolio as { body?: unknown }).body ?? null;
-
-  return (
-    <PortfolioItemWrapper
-      data={{
-        ...(normalized as PortfolioItemData),
-        title: (normalized as { title?: string }).title,
-        description: (normalized as { description?: string | null }).description,
-        locale,
-        body: body as PortfolioItemData["body"],
-      }}
-    />
-  );
+  const mapped = mapPortfolioItemData(data.portfolio as Record<string, unknown>, locale) as PortfolioItemData;
+  return <PortfolioItemWrapper data={mapped} />;
 }
