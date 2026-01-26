@@ -12,7 +12,14 @@ async function fetchAllBlogRelativePaths() {
   let after: string | undefined = undefined;
 
   do {
-    const response = await client.queries.blogConnection({ first: 50, after });
+    const response = await client.queries.blogConnection({
+      first: 50,
+      after,
+      filter: {
+        slug: { startsWith: "" },
+        author: { startsWith: "" },
+      },
+    });
     const connection = response.data.blogConnection;
     const edges = connection.edges || [];
     edges.forEach((edge) => {

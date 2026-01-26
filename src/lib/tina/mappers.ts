@@ -13,7 +13,7 @@ export function formatDate(date: string | null | undefined, locale: string): str
   }
 }
 
-export function normalizePost<T extends { _sys?: { filename?: string }; date?: string; title?: string; excerpt?: string | null; description?: string | null; readTime?: number | null; image?: string | null; imageAlt?: string | null; category?: string | null; tags?: (string | null)[] | null; body?: unknown; }>(raw: T, options?: { locale?: string; relatedPosts?: unknown[] }) {
+export function normalizePost<T extends { _sys?: { filename?: string }; date?: string | null; title?: string; excerpt?: string | null; description?: string | null; readTime?: number | null; image?: string | null; imageAlt?: string | null; category?: string | null; tags?: (string | null)[] | null; author?: string | null; body?: unknown; }>(raw: T, options?: { locale?: string; relatedPosts?: unknown[] }) {
   const { locale = "pl", relatedPosts = [] } = options || {};
   return {
     ...raw,

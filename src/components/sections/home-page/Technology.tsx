@@ -4,11 +4,12 @@ import Image from "next/image";
 import { tinaField } from 'tinacms/dist/react';
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { RichTextLite } from '@/components/ui/tina/RichTextLite';
+import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 
 interface TechnologyData {
-  title?: Record<string, unknown>;
-  description?: Record<string, unknown>;
-  [key: string]: unknown;
+	title?: Record<string, unknown> | null;
+	description?: Record<string, unknown> | null;
+	[key: string]: unknown;
 }
 
 const logos = [
@@ -124,10 +125,17 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
 		  <div className="w-16 h-0.5 bg-linear-to-r from-blue-600 to-cyan-500 mb-4"></div>
           <div data-tina-field={tinaField(data, 'title')}>
-			<RichTextLite content={data?.title} preset="section-title" className="mb-3" />
+			<RichTextLite
+				content={data?.title as TinaMarkdownContent | TinaMarkdownContent[]}
+				preset="section-title"
+				className="mb-3"
+			/>
           </div>
           <div data-tina-field={tinaField(data, 'description')}>
-			<RichTextLite content={data?.description} preset="description" />
+			<RichTextLite
+				content={data?.description as TinaMarkdownContent | TinaMarkdownContent[]}
+				preset="description"
+			/>
           </div>
         </div>
       </div>

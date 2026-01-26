@@ -3,7 +3,7 @@ import LegalPageWrapper from "@/components/pages/LegalPageWrapper";
 import { buildLocalePath, buildMetadata, normalizeLocale } from "@/lib/seo/metadata";
 import { getLegalPage } from "@/lib/tina/queries";
 
-export const revalidate = 60 * 60 * 24 * 30;
+export const revalidate = 2592000;
 
 const supportedLocales = ["pl", "en"] as const;
 const slugMap: Record<(typeof supportedLocales)[number], string> = {

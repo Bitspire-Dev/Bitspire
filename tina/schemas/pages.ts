@@ -1,6 +1,6 @@
 import { Collection } from "tinacms";
 import { gradientTemplate } from "../templates/gradient";
-import { heroSection, technologySection, offerSection, portfolioHighlightsSection, howWeWorkSection, faqSection, contactSection } from "./sections";
+import { heroSection, technologySection } from "./sections";
 
 export const pagesCollection: Collection = {
   name: "pages",
@@ -8,21 +8,21 @@ export const pagesCollection: Collection = {
   path: "content/pages",
   format: "mdx",
   match: {
-    include: '**/*',
+    include: "**/*",
   },
   ui: {
     router: ({ document }) => {
       // Extract locale and slug from the path
       // document._sys.relativePath format: "pl/home.mdx" or "en/portfolio.mdx"
-      const pathParts = document._sys.relativePath.split('/');
+      const pathParts = document._sys.relativePath.split("/");
       if (pathParts.length >= 2) {
         const locale = pathParts[0]; // 'pl' or 'en'
-        const slug = pathParts[1].replace('.mdx', '');
+        const slug = pathParts[1].replace(".mdx", "");
 
         // Point Tina preview to the SPA entry with hash routing
         return `/admin/index.html#/~/admin/${locale}/${slug}`;
       }
-      return '/admin/index.html#/~/admin/pl';
+      return "/admin/index.html#/~/admin/pl";
     },
   },
   fields: [
@@ -49,24 +49,9 @@ export const pagesCollection: Collection = {
       label: "Table of Contents Title",
       description: "For legal pages sidebar",
     },
-    {
-      type: "string",
-      name: "selectedProjects",
-      label: "Selected Portfolio Projects",
-      description: "Choose which portfolio projects to display (max 3 for highlights)",
-      list: true,
-      ui: {
-        component: "list",
-      },
-    },
     // Home page sections
     heroSection,
     technologySection,
-    offerSection,
-    portfolioHighlightsSection,
-    howWeWorkSection,
-    faqSection,
-    contactSection,
     {
       type: "rich-text",
       name: "body",

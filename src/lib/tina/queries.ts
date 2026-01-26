@@ -8,6 +8,7 @@ import {
   mapPortfolioItemData,
   mapPortfolioProjects,
 } from "./adapters";
+import type { BlogListItem, BlogPostData, PortfolioItemData, PortfolioListItem } from "@/lib/tina/types";
 
 // Minimal data access layer for Tina collections.
 
@@ -26,6 +27,10 @@ async function fetchAllBlogNodes(sort?: string) {
       first: 50,
       after,
       sort,
+      filter: {
+        slug: { startsWith: "" },
+        author: { startsWith: "" },
+      },
     });
 
     const connection = response.data.blogConnection;
@@ -84,11 +89,13 @@ export async function getLegalPage(locale: string, slug: string) {
   return page ? mapLegalPageData(page, locale) : page;
 }
 
-export async function getBlogPost(locale: string, slug: string) {
+export async function getBlogPost(locale: string, slug: string): Promise<BlogPostData | null> {
   const relativePath = `${prefix(locale)}${slug}.mdx`;
   const result = await client.queries.blog({ relativePath });
-  const relatedPosts = await getRelatedBlogPosts(locale, result.data.blog);
-  return mapBlogPostData(result.data.blog, {
+  const blog = result.data.blog;
+  if (!blog) return null;
+  const relatedPosts = await getRelatedBlogPosts(locale, blog);
+  return mapBlogPostData(blog, {
     locale,
     slug,
     relatedPosts,
@@ -97,7 +104,7 @@ export async function getBlogPost(locale: string, slug: string) {
 
 type BlogNode = {
   _sys?: { filename?: string; relativePath?: string };
-  slug?: string;
+  slug?: string | null;
   category?: string | null;
 };
 
@@ -136,6 +143,10 @@ export async function getRelatedBlogPosts(locale: string, current: BlogNode) {
     const recentConnection = await client.queries.blogConnection({
       first: 24,
       sort: "date_desc",
+      filter: {
+        slug: { startsWith: "" },
+        author: { startsWith: "" },
+      },
     });
 
     const recentNodes = (recentConnection.data.blogConnection.edges || [])
@@ -156,7 +167,7 @@ export async function getRelatedBlogPosts(locale: string, current: BlogNode) {
   return related.slice(0, 3);
 }
 
-export async function getBlogIndex(locale: string) {
+export async function getBlogIndex(locale: string): Promise<BlogListItem[]> {
   try {
     const nodes = await fetchAllBlogNodes("date_desc");
     const posts = nodes
@@ -168,13 +179,15 @@ export async function getBlogIndex(locale: string) {
   }
 }
 
-export async function getPortfolioItem(locale: string, slug: string) {
+export async function getPortfolioItem(locale: string, slug: string): Promise<PortfolioItemData | null> {
   const relativePath = `${prefix(locale)}${slug}.mdx`;
   const result = await client.queries.portfolio({ relativePath });
-  return mapPortfolioItemData(result.data.portfolio, locale);
+  const portfolio = result.data.portfolio;
+  if (!portfolio) return null;
+  return mapPortfolioItemData(portfolio, locale);
 }
 
-export async function getPortfolioIndex(locale: string) {
+export async function getPortfolioIndex(locale: string): Promise<PortfolioListItem[]> {
   const nodes = await fetchAllPortfolioNodes();
   const projects = nodes
     .filter((node): node is NonNullable<typeof node> => Boolean(node?._sys?.relativePath?.startsWith(prefix(locale))));

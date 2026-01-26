@@ -27,7 +27,6 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 86400,
     dangerouslyAllowSVG: false,
     contentDispositionType: 'inline',
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
       {
         protocol: 'https',

@@ -1,6 +1,6 @@
 # DATAFLOW — Bitspire (checklista projektowa komponentów)
 
-Poniższy dokument to **wyczerpująca lista kontrolna** procesu tworzenia nowego komponentu/sekcji/strony tak, aby od razu był w 100% kompatybilny z istniejącą architekturą (Next.js App Router + TinaCMS + MDX + i18n). Traktuj go jako **jedno źródło prawdy** dla spójności rozwiązań i uniknięcia rozbieżności.
+Poniższy dokument to **wyczerpująca lista kontrolna** procesu tworzenia nowego komponentu/sekcji/strony tak, aby od razu był w 100% kompatybilny z istniejącą architekturą (Next.js App Router + TinaCMS + MDX + i18n). Traktuj go jako **jedno źródło prawdy** dla spójności rozwiązań i uniknięcia rozbieżności. Dokument ma pokrywać wszystkie niezbędne kroki – bez wyjątków.
 
 ---
 
@@ -12,6 +12,7 @@ Poniższy dokument to **wyczerpująca lista kontrolna** procesu tworzenia nowego
 - **Każda treść musi mieć zapytania w warstwie Tina** (generated client + queries).
 - **Każda nowa sekcja/strona musi mieć spójny routing** (i18n + slug + admin preview).
 - **Nie mieszamy wzorców.** Te same typy obiektów = te same rozwiązania (np. sekcje strony domowej zawsze w pages schema, nie w osobnych plikach MDX).
+- **Podstawowe tokeny designu (kolory, spacing, container)** definiujemy i utrzymujemy w tailwind.config.js; w JSX/CSS używamy klas opartych o te tokeny.
 
 ---
 
@@ -28,18 +29,19 @@ Poniższy dokument to **wyczerpująca lista kontrolna** procesu tworzenia nowego
    - tina/schemas/blog.ts
    - tina/schemas/portfolio.ts
    - tina/schemas/sections.ts
-3) **Generated client** — automatycznie generowany (tina/__generated__/client.ts) i używany w queries.
-4) **Data access layer** — src/lib/tina/queries.ts + mappers.ts.
-5) **Strony Next.js** — src/app/[locale]/... pobierają dane i renderują wrappery.
-6) **Wrappery stron** — src/components/pages/*Wrapper.tsx łączą dane + sekcje.
-7) **Sekcje / UI** — src/components/sections/** + src/components/ui/**.
-8) **Admin Preview** — src/app/admin/** + src/providers/** (live preview w Tina).
+3) **Generated client + types** — automatycznie generowane (tina/__generated__/client.ts, tina/__generated__/types.ts, tina/__generated__/schema.gql) i używane w queries.
+4) **Data access layer** — src/lib/tina/queries.ts + adapters.ts + mappers.ts + body helpers.
+5) **Wspólne typy danych** — src/lib/tina/types.ts (używane przez wrappery/komponenty).
+6) **Strony Next.js** — src/app/[locale]/... pobierają dane i renderują wrappery.
+7) **Wrappery stron** — src/components/pages/*Wrapper.tsx łączą dane + sekcje.
+8) **Sekcje / UI** — src/components/sections/** + src/components/ui/**.
+9) **Admin Preview** — src/app/admin/** + src/providers/** (live preview w Tina).
 
 ### 1.2. Jednolity format MDX
 - **Frontmatter (YAML)** = metadane i pola strukturalne (np. title, description, hero, etc.).
 - **Body (MDX)** = treść właściwa (np. artykuł, opis, dodatkowe akapity).
 - Frontmatter jest mapowany do pól w TinaCMS.
-- Body jest renderowane przez TinaMarkdown.
+- Body jest renderowane przez TinaMarkdown/RichText (zgodnie z presetami).
 
 ### 1.3. Jednolity i18n
 - Obsługa locale: **pl + en**.
@@ -111,6 +113,8 @@ To osobne kolekcje z własnym MDX.
 - [ ] Ustal poprawne typy Tina:
   - string, datetime, boolean, list, image, object.
 - [ ] Dodaj opisy i labelki (UX w Tina).
+- [ ] Zadbaj o zgodność typu w src/lib/tina/types.ts (jeśli typ jest współdzielony w UI).
+- [ ] Po zmianie schema uruchom regenerację plików Tina (tina/__generated__).
 
 ### 3.3. Tworzenie treści (MDX)
 - [ ] Nowy plik: content/[collection]/[locale]/[slug].mdx
@@ -122,6 +126,7 @@ To osobne kolekcje z własnym MDX.
 - [ ] Użyj normalizePost / normalizeProject (src/lib/tina/mappers.ts).
 - [ ] Dodaj nowe mapowania, jeśli wprowadzasz nowe pola do list.
 - [ ] Upewnij się, że slug jest spójny (_sys.filename).
+- [ ] Mapowanie stron i sekcji realizuj przez adapters.ts (mapPageWithBody / mapHomePageData).
 
 ### 3.5. Query layer (Tina queries)
 - [ ] Dodaj funkcję w src/lib/tina/queries.ts:
@@ -130,6 +135,7 @@ To osobne kolekcje z własnym MDX.
 - [ ] Użyj `client.queries.<collection>`.
 - [ ] Używaj prefix(locale) = "pl/" lub "en/".
 - [ ] Sortowanie, filtrowanie, mapping wg wzorców.
+- [ ] Zwracaj typy z src/lib/tina/types.ts, gdy są używane w UI/wrapperach.
 
 ### 3.6. Routing i i18n
 - [ ] Dodaj route w src/app/[locale]/.../page.tsx.
@@ -141,7 +147,7 @@ To osobne kolekcje z własnym MDX.
 - [ ] Utwórz/rozszerz wrapper w src/components/pages/**.
 - [ ] Wstrzyknij dane z Tina.
 - [ ] Renderuj sekcje i body.
-- [ ] Dodaj TinaMarkdown (dla body).
+- [ ] Dodaj TinaMarkdown/RichText (dla body).
 - [ ] Dodaj tinaField dla edytowalnych pól.
 
 ### 3.8. Sekcje UI
@@ -149,6 +155,7 @@ To osobne kolekcje z własnym MDX.
 - [ ] Utrzymaj spójny styl (Tailwind + istniejące layouty).
 - [ ] Dla każdego pola z Tina dodaj data-tina-field.
 - [ ] Używaj pomocników do body (extractBody, hasBodyContent).
+- [ ] Nie zostawiaj martwych zależności po usuniętych sekcjach.
 
 ### 3.9. Admin Preview (Tina)
 - [ ] Dodaj route w src/app/admin/[locale]/.../page.tsx.
@@ -161,6 +168,7 @@ To osobne kolekcje z własnym MDX.
 - [ ] Zaktualizuj sitemap.ts dla nowych stron lub kolekcji.
 - [ ] Upewnij się, że `title` i `description` istnieją w MDX.
 - [ ] Dla obrazów dodaj `imageAlt`.
+- [ ] Dla obrazów z lokalnych ścieżek używaj helperów bezpieczeństwa (np. safeImageSrc), jeśli są stosowane w UI.
 
 ### 3.11. Test spójności
 - [ ] Czy pliki PL i EN są kompletne?
@@ -169,6 +177,7 @@ To osobne kolekcje z własnym MDX.
 - [ ] Czy wszystkie pola mają tinaField w UI?
 - [ ] Czy admin preview działa?
 - [ ] Czy routing generuje stronę bez 404?
+- [ ] Czy wygenerowane pliki Tina są aktualne (client/types/schema)?
 
 ---
 
@@ -245,6 +254,7 @@ To osobne kolekcje z własnym MDX.
 - [ ] Nie twórz treści bez wersji EN/PL.
 - [ ] Nie twórz nowych routingów bez aktualizacji i18n + sitemap.
 - [ ] Nie używaj nowych helperów, jeśli istnieją (extractBody, hasBodyContent, normalizePost).
+- [ ] Po zmianie schema zawsze regeneruj tina/__generated__.
 
 ---
 
@@ -261,6 +271,7 @@ To osobne kolekcje z własnym MDX.
 9) **Zaktualizuj sitemap**
 10) **Zweryfikuj i18n mapping**
 11) **Sprawdź spójność stylów + layoutów**
+12) **Zregeneruj pliki Tina** (tina/__generated__)
 
 ---
 
@@ -272,6 +283,7 @@ To osobne kolekcje z własnym MDX.
 - [ ] Czy routing ma poprawne locale prefix?
 - [ ] Czy admin preview działa bez błędów?
 - [ ] Czy nowy komponent nie wprowadza drugiego „standardu”?
+- [ ] Czy Tina __generated__ jest aktualne?
 
 ---
 
@@ -283,6 +295,7 @@ To osobne kolekcje z własnym MDX.
 - **Locale** musi być częścią ścieżki i danych.
 - **Admin Preview** musi działać dla każdego nowego typu treści.
 - **Sitemap + SEO** aktualizowane dla nowych stron i kolekcji.
+- **Generated Tina files** muszą być aktualne po każdej zmianie schema.
 
 ---
 

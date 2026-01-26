@@ -6,7 +6,6 @@ const BASE_URL = 'https://bitspire.pl';
 const LOCALES = ['pl', 'en'] as const;
 
 export const revalidate = 3600;
-export const dynamic = 'force-static';
 
 const prefixFor = (locale: string) => (locale === 'pl' ? '/pl' : '/en');
 
@@ -34,7 +33,14 @@ async function fetchAllBlogNodes() {
   let after: string | undefined = undefined;
 
   do {
-    const response = await client.queries.blogConnection({ first: 50, after });
+    const response = await client.queries.blogConnection({
+      first: 50,
+      after,
+      filter: {
+        slug: { startsWith: "" },
+        author: { startsWith: "" },
+      },
+    });
     const connection = response.data.blogConnection;
     const edges = connection.edges || [];
     edges.forEach((edge) => {

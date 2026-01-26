@@ -16,6 +16,7 @@ interface FeaturedImageProps {
     quality?: number;
     placeholder?: 'blur' | 'empty';
     blurDataURL?: string;
+    unoptimized?: boolean;
 }
 
 export default function FeaturedImage({
@@ -31,6 +32,7 @@ export default function FeaturedImage({
     quality,
     placeholder,
     blurDataURL,
+    unoptimized,
 }: FeaturedImageProps) {
     const hasDimensions = typeof width === 'number' && typeof height === 'number';
     const useFill = typeof fill === 'boolean' ? fill : !hasDimensions;
@@ -51,6 +53,7 @@ export default function FeaturedImage({
             quality={quality}
             placeholder={resolvedPlaceholder}
             blurDataURL={resolvedBlurDataURL}
+            unoptimized={unoptimized}
             data-tina-field={tinaField}
         />
     );

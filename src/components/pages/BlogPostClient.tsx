@@ -1,6 +1,6 @@
 'use client';
 
-import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
+import type { BlogPostData } from '@/lib/tina/types';
 import { tinaField } from 'tinacms/dist/react';
 import ReadingProgressBar from '@/components/sections/blog/ReadingProgressBar';
 import TableOfContents from '@/components/sections/blog/TableOfContents';
@@ -8,30 +8,6 @@ import AuthorBox from '@/components/sections/blog/AuthorBox';
 import ShareButtons from '@/components/sections/blog/ShareButtons';
 import { RelatedArticles } from '@/components/sections/blog/RelatedArticles';
 import type { BlogUiCopy } from '@/lib/ui/blogCopy';
-
-interface BlogPostData {
-  title: string;
-  description: string;
-  date: string;
-  author: string;
-  category?: string | null;
-  tags?: (string | null)[] | null;
-  image?: string | null;
-  imageAlt?: string | null;
-  readTime?: number | null;
-  body: TinaMarkdownContent | TinaMarkdownContent[];
-  locale?: string;
-  slug?: string;
-  relatedPosts?: Array<{
-    title: string;
-    slug: string;
-    excerpt?: string;
-    image?: string;
-    date?: string;
-    readTime?: number | null;
-  }>;
-  [key: string]: unknown;
-}
 
 interface BlogPostClientProps {
   data: BlogPostData;

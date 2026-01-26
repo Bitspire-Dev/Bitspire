@@ -2,17 +2,9 @@
 
 /* Minimal global styles. Prefer Tailwind utility classes in JSX. */
 
-:root {
-  --bg-primary: #0f172a;
-  --text-primary: #f8fafc;
-}
-
 html,
 body,
 #__next {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;

@@ -1,4 +1,5 @@
 import type { TinaMarkdownContent } from "tinacms/dist/rich-text";
+import type { BlogListItem, BlogPostData, PortfolioItemData, PortfolioListItem } from "@/lib/tina/types";
 import { extractBody } from "./body";
 import { getRelatedPosts, normalizePost, normalizeProject } from "./mappers";
 
@@ -51,8 +52,8 @@ type RawPost = {
   title?: string;
   description?: string | null;
   excerpt?: string | null;
-  date?: string;
-  author?: string;
+  date?: string | null;
+  author?: string | null;
   category?: string | null;
   tags?: (string | null)[] | null;
   image?: string | null;
@@ -60,7 +61,21 @@ type RawPost = {
   readTime?: number | null;
 };
 
-export function mapBlogListItem(raw: RawPost, locale: string) {
+function normalizeBlogImage(image?: string | null): string | undefined {
+  if (!image) return undefined;
+  const trimmed = image.trim();
+  if (!trimmed) return undefined;
+
+  const tinaMatch = trimmed.match(/^https?:\/\/assets\.tina\.io\/[^/]+(\/.*)$/i);
+  if (tinaMatch) {
+    const path = tinaMatch[1] || "";
+    if (path.startsWith("/blog/")) return path;
+  }
+
+  return trimmed;
+}
+
+export function mapBlogListItem(raw: RawPost, locale: string): BlogListItem {
   const normalized = normalizePost(raw, { locale });
   const fallbackSlug = normalized._sys?.filename ?? "";
 
@@ -77,15 +92,15 @@ export function mapBlogListItem(raw: RawPost, locale: string) {
     author: (normalized as { author?: string }).author ?? "",
     category: normalized.category ?? null,
     tags: normalized.tags ?? [],
-    image: (normalized as { image?: string | null }).image ?? undefined,
+    image: normalizeBlogImage((normalized as { image?: string | null }).image),
     imageAlt: (normalized as { imageAlt?: string | null }).imageAlt ?? undefined,
     readTime: (normalized as { readTime?: number | null }).readTime ?? null,
   };
 
-  return ensureContentSource(raw as UnknownRecord, mapped as UnknownRecord);
+  return ensureContentSource(raw as UnknownRecord, mapped as UnknownRecord) as BlogListItem;
 }
 
-export function mapBlogList(items: RawPost[], locale: string) {
+export function mapBlogList(items: RawPost[], locale: string): BlogListItem[] {
   return items.map(item => mapBlogListItem(item, locale));
 }
 
@@ -110,7 +125,7 @@ export function mapBlogPostData(
     relatedPosts?: RawPost[];
     slug?: string;
   }
-) {
+): BlogPostData {
   const { locale, allPosts, relatedPosts: providedRelated, slug } = options;
   const relatedPosts = providedRelated
     ? providedRelated
@@ -128,7 +143,7 @@ export function mapBlogPostData(
       title: (normalizedPost as { title?: string }).title ?? "",
       slug: normalizedPost.slug ?? fallbackSlug,
       excerpt: (normalizedPost as { excerpt?: string | null }).excerpt ?? undefined,
-      image: (normalizedPost as { image?: string | null }).image ?? undefined,
+      image: normalizeBlogImage((normalizedPost as { image?: string | null }).image),
       date: normalizedPost.dateFormatted ?? normalizedPost.date ?? undefined,
       readTime: normalizedPost.readTime ?? null,
     };
@@ -144,7 +159,7 @@ export function mapBlogPostData(
     author: (normalized as { author?: string }).author ?? "",
     category: normalized.category ?? null,
     tags: normalized.tags ?? [],
-    image: (normalized as { image?: string | null }).image ?? undefined,
+    image: normalizeBlogImage((normalized as { image?: string | null }).image),
     imageAlt: (normalized as { imageAlt?: string | null }).imageAlt ?? undefined,
     readTime: normalized.readTime ?? null,
     locale,
@@ -154,7 +169,7 @@ export function mapBlogPostData(
     relatedPosts: related,
   };
 
-  return ensureContentSource(raw as UnknownRecord, mapped as UnknownRecord);
+  return ensureContentSource(raw as UnknownRecord, mapped as UnknownRecord) as BlogPostData;
 }
 
 type RawProject = {
@@ -170,12 +185,12 @@ type RawProject = {
   _body?: unknown;
 };
 
-export function mapPortfolioProject(raw: RawProject, locale: string) {
+export function mapPortfolioProject(raw: RawProject, locale: string): PortfolioListItem {
   const normalized = normalizeProject(raw as Parameters<typeof normalizeProject>[0], { locale });
-  return ensureContentSource(raw as UnknownRecord, normalized as UnknownRecord);
+  return ensureContentSource(raw as UnknownRecord, normalized as UnknownRecord) as PortfolioListItem;
 }
 
-export function mapPortfolioProjects(projects: RawProject[], locale: string) {
+export function mapPortfolioProjects(projects: RawProject[], locale: string): PortfolioListItem[] {
   return projects.map(project => mapPortfolioProject(project, locale));
 }
 
@@ -186,7 +201,7 @@ export function mapPortfolioIndexData<T extends UnknownRecord>(rawPage: T, proje
   });
 }
 
-export function mapPortfolioItemData(raw: RawProject, locale: string) {
+export function mapPortfolioItemData(raw: RawProject, locale: string): PortfolioItemData {
   const normalized = normalizeProject(raw as Parameters<typeof normalizeProject>[0], { locale });
   const { body, _body } = normalizeBody(raw);
   const mapped = {
@@ -195,5 +210,5 @@ export function mapPortfolioItemData(raw: RawProject, locale: string) {
     _body,
     locale,
   };
-  return ensureContentSource(raw as UnknownRecord, mapped as UnknownRecord);
+  return ensureContentSource(raw as UnknownRecord, mapped as UnknownRecord) as PortfolioItemData;
 }

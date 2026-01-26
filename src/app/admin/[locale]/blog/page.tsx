@@ -5,8 +5,6 @@ import { getBlogIndex } from "@/lib/tina/queries";
 import { getTinaClient } from "@/lib/tina/client";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
-export const fetchCache = "force-no-store";
 
 const client = getTinaClient();
 

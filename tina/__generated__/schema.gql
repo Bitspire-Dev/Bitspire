@@ -95,18 +95,17 @@ union DocumentNode = Portfolio | Blog | Pages | Folder
 
 type Portfolio implements Node & Document {
   title: String!
-  slug: String!
-  description: String!
-  date: String
+  slug: String
+  description: String
   excerpt: String
+  date: String
   category: String
   tags: [String]
-  year: String
-  client: String
   image: String
   imageAlt: String
   link: String
-  featured: Boolean
+  client: String
+  year: String
   body: JSON
   id: ID!
   _sys: SystemInfo!
@@ -120,24 +119,11 @@ input StringFilter {
   in: [String]
 }
 
-input DatetimeFilter {
-  after: String
-  before: String
-  eq: String
-  exists: Boolean
-  in: [String]
-}
-
 input ImageFilter {
   startsWith: String
   eq: String
   exists: Boolean
   in: [String]
-}
-
-input BooleanFilter {
-  eq: Boolean
-  exists: Boolean
 }
 
 input PortfolioBodyGradientFilter {
@@ -152,16 +138,15 @@ input PortfolioFilter {
   title: StringFilter
   slug: StringFilter
   description: StringFilter
-  date: DatetimeFilter
   excerpt: StringFilter
+  date: StringFilter
   category: StringFilter
   tags: StringFilter
-  year: StringFilter
-  client: StringFilter
   image: ImageFilter
   imageAlt: StringFilter
   link: StringFilter
-  featured: BooleanFilter
+  client: StringFilter
+  year: StringFilter
   body: PortfolioBodyFilter
 }
 
@@ -178,20 +163,28 @@ type PortfolioConnection implements Connection {
 
 type Blog implements Node & Document {
   title: String!
-  slug: String!
-  description: String!
-  excerpt: String!
-  date: String!
-  author: String!
-  category: String!
-  tags: [String!]!
-  image: String!
-  imageAlt: String!
-  readTime: Float!
+  slug: String
+  description: String
+  excerpt: String
+  date: String
+  author: String
+  category: String
+  tags: [String]
+  image: String
+  imageAlt: String
+  readTime: Float
   body: JSON
   id: ID!
   _sys: SystemInfo!
   _values: JSON!
+}
+
+input DatetimeFilter {
+  after: String
+  before: String
+  eq: String
+  exists: Boolean
+  in: [String]
 }
 
 input NumberFilter {
@@ -249,83 +242,13 @@ type PagesTechnology {
   description: JSON
 }
 
-type PagesOfferServices {
-  title: JSON
-  description: JSON
-  icon: String
-  features: [String]
-  link: String
-  buttonText: String
-}
-
-type PagesOffer {
-  title: JSON
-  subtitle: JSON
-  sectionLabel: String
-  services: [PagesOfferServices]
-}
-
-type PagesPortfolioHighlights {
-  title: JSON
-  description: JSON
-}
-
-type PagesHowWeWorkSteps {
-  title: JSON
-  description: JSON
-  icon: String
-  duration: String
-}
-
-type PagesHowWeWork {
-  title: JSON
-  description: JSON
-  steps: [PagesHowWeWorkSteps]
-}
-
-type PagesFaqItems {
-  question: JSON
-  answer: JSON
-}
-
-type PagesFaq {
-  title: JSON
-  description: JSON
-  items: [PagesFaqItems]
-}
-
-type PagesContact {
-  title: JSON
-  description: JSON
-  email: String
-  phone: String
-  address: String
-  addressLine2: String
-  city: String
-  successTitle: String
-  successMessage: String
-  nameLabel: String
-  emailLabel: String
-  messageLabel: String
-  buttonText: String
-  contactDataTitle: String
-  quickResponseLabel: String
-  quickResponseText: String
-}
-
 type Pages implements Node & Document {
   title: String!
   description: String
   lastUpdate: String
   tocTitle: String
-  selectedProjects: [String]
   hero: PagesHero
   technology: PagesTechnology
-  offer: PagesOffer
-  portfolioHighlights: PagesPortfolioHighlights
-  howWeWork: PagesHowWeWork
-  faq: PagesFaq
-  contact: PagesContact
   body: JSON
   id: ID!
   _sys: SystemInfo!
@@ -365,158 +288,6 @@ input PagesTechnologyFilter {
   description: RichTextFilter
 }
 
-input PagesOfferTitleGradientFilter {
-  children: StringFilter
-}
-
-input PagesOfferTitleFilter {
-  Gradient: PagesOfferTitleGradientFilter
-}
-
-input PagesOfferServicesTitleGradientFilter {
-  children: StringFilter
-}
-
-input PagesOfferServicesTitleFilter {
-  Gradient: PagesOfferServicesTitleGradientFilter
-}
-
-input PagesOfferServicesDescriptionGradientFilter {
-  children: StringFilter
-}
-
-input PagesOfferServicesDescriptionFilter {
-  Gradient: PagesOfferServicesDescriptionGradientFilter
-}
-
-input PagesOfferServicesFilter {
-  title: PagesOfferServicesTitleFilter
-  description: PagesOfferServicesDescriptionFilter
-  icon: StringFilter
-  features: StringFilter
-  link: StringFilter
-  buttonText: StringFilter
-}
-
-input PagesOfferFilter {
-  title: PagesOfferTitleFilter
-  subtitle: RichTextFilter
-  sectionLabel: StringFilter
-  services: PagesOfferServicesFilter
-}
-
-input PagesPortfolioHighlightsTitleGradientFilter {
-  children: StringFilter
-}
-
-input PagesPortfolioHighlightsTitleFilter {
-  Gradient: PagesPortfolioHighlightsTitleGradientFilter
-}
-
-input PagesPortfolioHighlightsFilter {
-  title: PagesPortfolioHighlightsTitleFilter
-  description: RichTextFilter
-}
-
-input PagesHowWeWorkTitleGradientFilter {
-  children: StringFilter
-}
-
-input PagesHowWeWorkTitleFilter {
-  Gradient: PagesHowWeWorkTitleGradientFilter
-}
-
-input PagesHowWeWorkStepsTitleGradientFilter {
-  children: StringFilter
-}
-
-input PagesHowWeWorkStepsTitleFilter {
-  Gradient: PagesHowWeWorkStepsTitleGradientFilter
-}
-
-input PagesHowWeWorkStepsDescriptionGradientFilter {
-  children: StringFilter
-}
-
-input PagesHowWeWorkStepsDescriptionFilter {
-  Gradient: PagesHowWeWorkStepsDescriptionGradientFilter
-}
-
-input PagesHowWeWorkStepsFilter {
-  title: PagesHowWeWorkStepsTitleFilter
-  description: PagesHowWeWorkStepsDescriptionFilter
-  icon: StringFilter
-  duration: StringFilter
-}
-
-input PagesHowWeWorkFilter {
-  title: PagesHowWeWorkTitleFilter
-  description: RichTextFilter
-  steps: PagesHowWeWorkStepsFilter
-}
-
-input PagesFaqTitleGradientFilter {
-  children: StringFilter
-}
-
-input PagesFaqTitleFilter {
-  Gradient: PagesFaqTitleGradientFilter
-}
-
-input PagesFaqItemsQuestionGradientFilter {
-  children: StringFilter
-}
-
-input PagesFaqItemsQuestionFilter {
-  Gradient: PagesFaqItemsQuestionGradientFilter
-}
-
-input PagesFaqItemsAnswerGradientFilter {
-  children: StringFilter
-}
-
-input PagesFaqItemsAnswerFilter {
-  Gradient: PagesFaqItemsAnswerGradientFilter
-}
-
-input PagesFaqItemsFilter {
-  question: PagesFaqItemsQuestionFilter
-  answer: PagesFaqItemsAnswerFilter
-}
-
-input PagesFaqFilter {
-  title: PagesFaqTitleFilter
-  description: RichTextFilter
-  items: PagesFaqItemsFilter
-}
-
-input PagesContactTitleGradientFilter {
-  children: StringFilter
-}
-
-input PagesContactTitleFilter {
-  Gradient: PagesContactTitleGradientFilter
-}
-
-input PagesContactFilter {
-  title: PagesContactTitleFilter
-  description: RichTextFilter
-  email: StringFilter
-  phone: StringFilter
-  address: StringFilter
-  addressLine2: StringFilter
-  city: StringFilter
-  successTitle: StringFilter
-  successMessage: StringFilter
-  nameLabel: StringFilter
-  emailLabel: StringFilter
-  messageLabel: StringFilter
-  buttonText: StringFilter
-  contactDataTitle: StringFilter
-  quickResponseLabel: StringFilter
-  quickResponseText: StringFilter
-}
-
 input PagesBodyGradientFilter {
   children: StringFilter
 }
@@ -530,14 +301,8 @@ input PagesFilter {
   description: StringFilter
   lastUpdate: StringFilter
   tocTitle: StringFilter
-  selectedProjects: StringFilter
   hero: PagesHeroFilter
   technology: PagesTechnologyFilter
-  offer: PagesOfferFilter
-  portfolioHighlights: PagesPortfolioHighlightsFilter
-  howWeWork: PagesHowWeWorkFilter
-  faq: PagesFaqFilter
-  contact: PagesContactFilter
   body: PagesBodyFilter
 }
 
@@ -583,16 +348,15 @@ input PortfolioMutation {
   title: String
   slug: String
   description: String
-  date: String
   excerpt: String
+  date: String
   category: String
   tags: [String]
-  year: String
-  client: String
   image: String
   imageAlt: String
   link: String
-  featured: Boolean
+  client: String
+  year: String
   body: JSON
 }
 
@@ -622,83 +386,13 @@ input PagesTechnologyMutation {
   description: JSON
 }
 
-input PagesOfferServicesMutation {
-  title: JSON
-  description: JSON
-  icon: String
-  features: [String]
-  link: String
-  buttonText: String
-}
-
-input PagesOfferMutation {
-  title: JSON
-  subtitle: JSON
-  sectionLabel: String
-  services: [PagesOfferServicesMutation]
-}
-
-input PagesPortfolioHighlightsMutation {
-  title: JSON
-  description: JSON
-}
-
-input PagesHowWeWorkStepsMutation {
-  title: JSON
-  description: JSON
-  icon: String
-  duration: String
-}
-
-input PagesHowWeWorkMutation {
-  title: JSON
-  description: JSON
-  steps: [PagesHowWeWorkStepsMutation]
-}
-
-input PagesFaqItemsMutation {
-  question: JSON
-  answer: JSON
-}
-
-input PagesFaqMutation {
-  title: JSON
-  description: JSON
-  items: [PagesFaqItemsMutation]
-}
-
-input PagesContactMutation {
-  title: JSON
-  description: JSON
-  email: String
-  phone: String
-  address: String
-  addressLine2: String
-  city: String
-  successTitle: String
-  successMessage: String
-  nameLabel: String
-  emailLabel: String
-  messageLabel: String
-  buttonText: String
-  contactDataTitle: String
-  quickResponseLabel: String
-  quickResponseText: String
-}
-
 input PagesMutation {
   title: String
   description: String
   lastUpdate: String
   tocTitle: String
-  selectedProjects: [String]
   hero: PagesHeroMutation
   technology: PagesTechnologyMutation
-  offer: PagesOfferMutation
-  portfolioHighlights: PagesPortfolioHighlightsMutation
-  howWeWork: PagesHowWeWorkMutation
-  faq: PagesFaqMutation
-  contact: PagesContactMutation
   body: JSON
 }
 

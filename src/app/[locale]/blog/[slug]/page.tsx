@@ -18,6 +18,9 @@ export async function generateMetadata({ params }: PageProps) {
   const { locale, slug } = await params;
   const currentLocale = normalizeLocale(locale);
   const post = await getBlogPost(currentLocale, slug);
+  const safeTitle = typeof post?.title === "string" ? post.title : undefined;
+  const safeDescription = typeof post?.description === "string" ? post.description : undefined;
+  const safeImage = typeof post?.image === "string" ? post.image : undefined;
 
   const paths = {
     pl: buildLocalePath("pl", `/blog/${slug}`),
@@ -25,11 +28,11 @@ export async function generateMetadata({ params }: PageProps) {
   };
 
   const base = buildMetadata({
-    title: post?.title ?? undefined,
-    description: post?.description ?? undefined,
+    title: safeTitle,
+    description: safeDescription,
     locale: currentLocale,
     paths,
-    image: post?.image ?? undefined,
+    image: safeImage,
     ogType: "article",
   });
 
@@ -49,8 +52,22 @@ export default async function BlogPostPage({ params }: PageProps) {
   try {
     const currentLocale = normalizeLocale(locale);
     const post = await getBlogPost(currentLocale, slug);
+    if (!post || typeof post !== "object") {
+      notFound();
+    }
+    const hasRequiredFields =
+      typeof (post as { title?: unknown }).title === "string" &&
+      typeof (post as { description?: unknown }).description === "string" &&
+      typeof (post as { date?: unknown }).date === "string" &&
+      typeof (post as { author?: unknown }).author === "string" &&
+      (post as { body?: unknown }).body != null;
+
+    if (!hasRequiredFields) {
+      notFound();
+    }
     const pagePath = buildLocalePath(currentLocale, `/blog/${slug}`);
-    const imageUrl = post?.image ? absoluteUrl(post.image) : undefined;
+    const safeImage = typeof post?.image === "string" ? post.image : undefined;
+    const imageUrl = safeImage ? absoluteUrl(safeImage) : undefined;
 
     const jsonLd = {
       "@context": "https://schema.org",

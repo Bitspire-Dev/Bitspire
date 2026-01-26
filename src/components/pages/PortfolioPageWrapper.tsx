@@ -50,6 +50,8 @@ export default function PortfolioPageWrapper({
     const projects = data?.projects || [];
     const locale = (data?.locale as string) || 'pl';
     const t = translations[locale as keyof typeof translations] || translations.en;
+    const safeTitle = typeof data?.title === 'string' ? data.title : undefined;
+    const safeDescription = typeof data?.description === 'string' ? data.description : undefined;
     const normalizedAllTags = allTags && allTags.length > 0
         ? allTags
         : Array.from(
@@ -65,8 +67,8 @@ export default function PortfolioPageWrapper({
         <PageBackground variant="blue">
             <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-20 md:pt-32 pb-16 md:pb-20">
                 <PortfolioHeader 
-                    title={data?.title}
-                    description={data?.description}
+                    title={safeTitle}
+                    description={safeDescription}
                     locale={locale}
                     data={data}
                 />

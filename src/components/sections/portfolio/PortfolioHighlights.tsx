@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { tinaField } from 'tinacms/dist/react';
 import { buildAdminLink, type AdminLinkMode } from '@/lib/routing/adminLink';
 import { RichTextLite } from '@/components/ui/tina/RichTextLite';
+import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { Badge } from '@/components/ui/primitives/Badge';
 import { Button } from '@/components/ui/primitives/Button';
 import { Card, CardContent, CardMedia } from '@/components/ui/primitives/Card';
@@ -23,8 +24,8 @@ interface PortfolioProject {
 interface PortfolioHighlightsProps {
   data?: {
     projects?: PortfolioProject[] | null;
-    title?: Record<string, unknown>;
-    description?: Record<string, unknown>;
+    title?: Record<string, unknown> | null;
+    description?: Record<string, unknown> | null;
   };
   locale?: string;
   linkMode?: AdminLinkMode;
@@ -47,22 +48,22 @@ const PortfolioHighlights: React.FC<PortfolioHighlightsProps> = ({ data, locale 
         <div className="text-center mb-16">
           <div className="w-16 h-0.5 bg-linear-to-r from-blue-600 to-cyan-500 mb-6 mx-auto"></div>
           <div data-tina-field={tinaField(data, 'title')}>
-            <RichTextLite content={data?.title} preset="section-title" />
+            <RichTextLite content={data?.title as TinaMarkdownContent | TinaMarkdownContent[]} preset="section-title" />
           </div>
           <div data-tina-field={tinaField(data, 'description')}>
-            <RichTextLite content={data?.description} preset="subtitle" />
+            <RichTextLite content={data?.description as TinaMarkdownContent | TinaMarkdownContent[]} preset="subtitle" />
           </div>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {featuredProjects.map((project, index) => {
             // Convert title/description to string if they're rich-text objects
-            const projectTitle = typeof project?.title === 'string' 
-              ? project.title 
-              : (project?.title as Record<string, unknown>)?.children?.[0]?.text || 'Project';
+            const projectTitle = typeof project?.title === 'string'
+              ? project.title
+              : (project?.title as unknown as { children?: Array<{ text?: string }> })?.children?.[0]?.text || 'Project';
             const projectDescription = typeof project?.description === 'string'
               ? project.description
-              : (project?.description as Record<string, unknown>)?.children?.[0]?.text || '';
+              : (project?.description as unknown as { children?: Array<{ text?: string }> })?.children?.[0]?.text || '';
             
             const projectHref = project?.slug
               ? buildAdminLink(`/portfolio/${project.slug}`, { locale, mode: linkMode })

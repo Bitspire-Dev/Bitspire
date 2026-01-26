@@ -48,6 +48,7 @@ export default function BlogCard({
     const postHref = safeLink(postPath) ?? postPath;
     const formattedDate = formatDate(date, locale) ?? date;
     const imageSrc = safeImageSrc(image);
+    const unoptimizedImage = Boolean(imageSrc && imageSrc.startsWith('/') && imageSrc.endsWith('.avif'));
     const isLinked = !isAdmin;
 
     return (
@@ -77,6 +78,7 @@ export default function BlogCard({
                         priority={priority}
                         placeholder={priority ? 'blur' : 'empty'}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        unoptimized={unoptimizedImage}
                     />
                     <div className="absolute inset-0 bg-linear-to-br from-blue-600/10 via-transparent to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10" />
                 </CardMedia>

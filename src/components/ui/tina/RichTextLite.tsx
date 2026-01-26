@@ -25,12 +25,12 @@ const simpleComponents = {
     </h2>
   ),
   h3: ({ children }: RichTextProps) => (
-    <h3 className="text-xl md:text-2xl font-semibold text-slate-100 mt-6 mb-4">
+    <h3 className="text-xl md:text-2xl font-semibold text-brand-fg mt-6 mb-4">
       {children}
     </h3>
   ),
   p: ({ children }: RichTextProps) => (
-    <p className="text-base md:text-lg leading-relaxed text-slate-300 mb-5">
+    <p className="text-base md:text-lg leading-relaxed text-brand-text-muted mb-5">
       {children}
     </p>
   ),
@@ -49,12 +49,12 @@ const simpleComponents = {
     );
   },
   ul: ({ children }: RichTextProps) => (
-    <ul className="list-disc list-outside pl-6 my-5 space-y-2 text-slate-300">
+    <ul className="list-disc list-outside pl-6 my-5 space-y-2 text-brand-text-muted">
       {children}
     </ul>
   ),
   ol: ({ children }: RichTextProps) => (
-    <ol className="list-decimal list-outside pl-6 my-5 space-y-2 text-slate-300">
+    <ol className="list-decimal list-outside pl-6 my-5 space-y-2 text-brand-text-muted">
       {children}
     </ol>
   ),
@@ -65,7 +65,7 @@ const simpleComponents = {
     <strong className="font-semibold text-white">{children}</strong>
   ),
   em: ({ children }: RichTextProps) => (
-    <em className="text-slate-200 italic">{children}</em>
+    <em className="text-brand-text-soft italic">{children}</em>
   ),
 };
 
@@ -79,8 +79,8 @@ interface RichTextLiteProps {
 const presetStyles = {
   'hero-title': 'text-5xl lg:text-7xl font-bold text-white mb-8 leading-tight tracking-tight drop-shadow-lg',
   'section-title': 'text-3xl md:text-5xl font-bold text-white mb-4 text-center leading-tight',
-  'subtitle': 'text-lg lg:text-xl text-slate-400 leading-relaxed',
-  'description': 'text-lg text-slate-300 text-center leading-relaxed',
+  'subtitle': 'text-lg lg:text-xl text-brand-text-muted-2 leading-relaxed',
+  'description': 'text-lg text-brand-text-muted text-center leading-relaxed',
   'body': 'text-white',
 };
 

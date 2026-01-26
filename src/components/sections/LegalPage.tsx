@@ -62,7 +62,10 @@ const textFromChildren = (children: React.ReactNode): string => {
   const walk = (node: React.ReactNode): string => {
     if (typeof node === 'string' || typeof node === 'number') return String(node);
     if (Array.isArray(node)) return node.map(walk).join('');
-    if (React.isValidElement(node)) return walk(node.props.children);
+    if (React.isValidElement(node)) {
+      const element = node as React.ReactElement<{ children?: React.ReactNode }>;
+      return walk(element.props.children);
+    }
     return '';
   };
   return walk(children);
@@ -84,8 +87,10 @@ export default function LegalPage({ data, hideToc = false }: { data?: LegalPageD
   })();
   const hasHeadings = headings.length > 0;
 
+  type RichTextProps = { children?: React.ReactNode } & Record<string, unknown>;
+
   const mdxComponents = {
-    h2: ({ children }: { children: React.ReactNode }) => {
+    h2: ({ children }: RichTextProps) => {
       const id = slugify(textFromChildren(children));
       return (
         <h2 id={id} className="group text-xl md:text-2xl font-semibold mt-2 mb-4 text-white flex items-center gap-2">
@@ -100,27 +105,30 @@ export default function LegalPage({ data, hideToc = false }: { data?: LegalPageD
         </h2>
       );
     },
-    h3: ({ children }: { children: React.ReactNode }) => {
+    h3: ({ children }: RichTextProps) => {
       const id = slugify(textFromChildren(children));
       return <h3 id={id} className="text-lg md:text-xl font-semibold mt-4 mb-3 text-white">{children}</h3>;
     },
-    p: ({ children }: { children: React.ReactNode }) => (
+    p: ({ children }: RichTextProps) => (
       <p className="mb-4 text-slate-300 text-sm md:text-base leading-relaxed">{children}</p>
     ),
-    ul: ({ children }: { children: React.ReactNode }) => (
+    ul: ({ children }: RichTextProps) => (
       <ul className="list-disc list-inside space-y-2 mb-4 text-slate-300 text-sm md:text-base">{children}</ul>
     ),
-    ol: ({ children }: { children: React.ReactNode }) => (
+    ol: ({ children }: RichTextProps) => (
       <ol className="list-decimal list-inside space-y-2 mb-4 text-slate-300 text-sm md:text-base">{children}</ol>
     ),
-    li: ({ children }: { children: React.ReactNode }) => (
+    li: ({ children }: RichTextProps) => (
       <li className="leading-relaxed">{children}</li>
     ),
-    strong: ({ children }: { children: React.ReactNode }) => (
+    strong: ({ children }: RichTextProps) => (
       <strong className="font-semibold text-white">{children}</strong>
     ),
-    a: ({ children, href }: { children: React.ReactNode; href?: string }) => (
-      <a href={href} className="text-blue-400 hover:text-blue-300 underline">
+    a: ({ children, href }: RichTextProps) => (
+      <a
+        href={typeof href === "string" ? href : undefined}
+        className="text-blue-400 hover:text-blue-300 underline"
+      >
         {children}
       </a>
     ),

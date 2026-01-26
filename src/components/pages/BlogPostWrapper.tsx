@@ -1,4 +1,4 @@
-import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
+import type { BlogPostData } from '@/lib/tina/types';
 import { tinaField } from 'tinacms/dist/react';
 import PageBackground from '@/components/layout/PageBackground';
 import BackLink from '@/components/layout/BackLink';
@@ -6,32 +6,9 @@ import FeaturedImage from '@/components/ui/media/FeaturedImage';
 import { RichText } from '@tina/richTextPresets';
 import BlogPostHeader from '@/components/sections/blog/BlogPostHeader';
 import { getBlogUiCopy } from '@/lib/ui/blogCopy';
+import { safeImageSrc } from '@/lib/ui/helpers';
 import { BlogPostDesktopSidebar, BlogPostMobileSidebar, BlogPostProgress, BlogPostRelated } from '@/components/pages/BlogPostClient';
 import type { AdminLinkMode } from '@/lib/routing/adminLink';
-
-interface BlogPostData {
-    title: string;
-    description: string;
-    date: string;
-    author: string;
-    category?: string | null;
-    tags?: (string | null)[] | null;
-    image?: string | null;
-    imageAlt?: string | null;
-    readTime?: number | null;
-    body: TinaMarkdownContent | TinaMarkdownContent[];
-    locale?: string;
-    slug?: string;
-    relatedPosts?: Array<{
-        title: string;
-        slug: string;
-        excerpt?: string;
-        image?: string;
-        date?: string;
-        readTime?: number | null;
-    }>;
-    [key: string]: unknown;
-}
 
 interface BlogPostWrapperProps {
     data: BlogPostData;
@@ -41,6 +18,8 @@ interface BlogPostWrapperProps {
 export default function BlogPostWrapper({ data, linkMode = 'production' }: BlogPostWrapperProps) {
     const locale = data?.locale || 'pl';
     const copy = getBlogUiCopy(locale);
+    const imageSrc = safeImageSrc(data.image);
+    const unoptimizedImage = Boolean(imageSrc && imageSrc.startsWith('/') && imageSrc.endsWith('.avif'));
 
     return (
         <PageBackground variant="blue">
@@ -58,10 +37,10 @@ export default function BlogPostWrapper({ data, linkMode = 'production' }: BlogP
                     <main className="min-w-0">
                         <article className="w-full max-w-none">
                             {/* Featured Image - 16:9 aspect ratio */}
-                            {data.image && (
+                            {imageSrc && (
                                 <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-8 md:mb-12 shadow-2xl">
                                     <FeaturedImage
-                                        src={data.image}
+                                        src={imageSrc}
                                         alt={data.imageAlt || data.title}
                                         className="w-full h-full object-cover"
                                         tinaField={tinaField(data, 'image')}
@@ -70,6 +49,7 @@ export default function BlogPostWrapper({ data, linkMode = 'production' }: BlogP
                                         sizes="100vw"
                                         priority
                                         placeholder="blur"
+                                        unoptimized={unoptimizedImage}
                                     />
                                 </div>
                             )}

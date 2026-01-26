@@ -1,5 +1,6 @@
 import type { TinaMarkdownContent } from "tinacms/dist/rich-text";
 import { Hero } from "@/components/sections/home-page/Hero";
+import Technology from "@/components/sections/home-page/Technology";
 
 interface HomePageData {
     locale?: string;
@@ -7,6 +8,10 @@ interface HomePageData {
         title?: Record<string, unknown> | null;
         subtitle?: Record<string, unknown> | null;
         image?: string | null;
+    } | null;
+    technology?: {
+        title?: Record<string, unknown> | null;
+        description?: Record<string, unknown> | null;
     } | null;
     body?: TinaMarkdownContent | TinaMarkdownContent[] | null;
     _body?: TinaMarkdownContent | TinaMarkdownContent[] | null;
@@ -32,9 +37,18 @@ export default function HomePageWrapper({ data }: HomePageWrapperProps) {
         }
         : undefined;
 
+    const technology = data.technology
+        ? {
+            ...data.technology,
+            title: data.technology.title ?? undefined,
+            description: data.technology.description ?? undefined,
+        }
+        : undefined;
+
     return (
         <>
             <Hero data={hero} locale={locale} />
+            {technology ? <Technology data={technology} /> : null}
         </>
     );
 }

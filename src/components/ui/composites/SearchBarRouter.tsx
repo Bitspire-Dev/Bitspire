@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/ui/composites/SearchBar";
 
@@ -32,16 +32,37 @@ export function SearchBarRouter({
   const initialQueryValue = initialQuery ?? "";
   const initialTagsValue = useMemo(() => normalizeTags(initialTags), [initialTags]);
 
+  const urlQuery = searchParams?.get("q") ?? "";
+  const urlTagsRaw = searchParams?.get("tags") ?? "";
+  const urlTags = useMemo(() => normalizeTags(urlTagsRaw.split(",")), [urlTagsRaw]);
+  const urlTagsKey = useMemo(() => urlTags.join("|"), [urlTags]);
+  const currentQueryString = searchParams?.toString() ?? "";
+  const currentUrl = currentQueryString ? `${pathname}?${currentQueryString}` : pathname;
+
   const [query, setQuery] = useState(initialQueryValue);
   const [tags, setTags] = useState(initialTagsValue);
+  const tagsKey = useMemo(() => normalizeTags(tags).join("|"), [tags]);
+  const initializedRef = useRef(false);
+  const lastUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
-    setQuery(initialQueryValue);
-  }, [initialQueryValue]);
+    if (!initializedRef.current) {
+      setQuery(urlQuery);
+      setTags(urlTags);
+      initializedRef.current = true;
+      return;
+    }
 
-  useEffect(() => {
-    setTags(initialTagsValue);
-  }, [initialTagsValue]);
+    if (lastUrlRef.current === currentUrl) return;
+
+    if (query !== urlQuery) {
+      setQuery(urlQuery);
+    }
+
+    if (tagsKey !== urlTagsKey) {
+      setTags(urlTags);
+    }
+  }, [currentUrl, query, urlQuery, tagsKey, urlTagsKey, urlTags]);
 
   const updateParams = useCallback((nextQuery: string, nextTags: string[]) => {
     const params = new URLSearchParams(searchParams?.toString());
@@ -61,16 +82,22 @@ export function SearchBarRouter({
 
     const query = params.toString();
     const nextUrl = query ? `${pathname}?${query}` : pathname;
-    router.replace(nextUrl, { scroll: false });
-  }, [pathname, router, searchParams]);
+    if (nextUrl !== currentUrl) {
+      lastUrlRef.current = nextUrl;
+      router.replace(nextUrl, { scroll: false });
+    }
+  }, [currentUrl, pathname, router, searchParams]);
 
   useEffect(() => {
+    if (!initializedRef.current) return;
+    if (query === urlQuery && tagsKey === urlTagsKey) return;
+
     const handle = window.setTimeout(() => {
       updateParams(query, tags);
     }, 300);
 
     return () => window.clearTimeout(handle);
-  }, [query, tags, updateParams]);
+  }, [query, tags, tagsKey, urlQuery, urlTagsKey, updateParams]);
 
   return (
     <SearchBar

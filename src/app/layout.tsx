@@ -126,7 +126,7 @@ export default async function RootLayout({
         <meta name="msapplication-TileColor" content="#0f172a" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
       </head>
-      <body className="antialiased bg-slate-950 text-slate-100 min-h-screen">
+      <body className="antialiased bg-slate-950 text-slate-100 min-h-screen font-sans">
         <NextIntlClientProvider locale={currentLocale} messages={messages}>
           {children}
         </NextIntlClientProvider>

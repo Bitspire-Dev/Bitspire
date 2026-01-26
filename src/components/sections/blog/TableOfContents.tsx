@@ -98,7 +98,7 @@ export default function TableOfContents({ title, locale: _locale = 'pl', classNa
                 <button
                     type="button"
                     onClick={() => setIsOpen((prev) => !prev)}
-                    className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between bg-slate-900/80 border border-slate-700/60 rounded-full px-5 py-3 text-left text-xs font-semibold tracking-wider uppercase text-slate-200 shadow-xl backdrop-blur"
+                    className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between bg-brand-surface/80 border border-brand-border/60 rounded-full px-5 py-3 text-left text-xs font-semibold tracking-wider uppercase text-brand-text-soft shadow-xl backdrop-blur"
                     aria-expanded={isOpen}
                 >
                     <span className="truncate" data-tina-field={tinaField}>{title}</span>
@@ -112,10 +112,10 @@ export default function TableOfContents({ title, locale: _locale = 'pl', classNa
                             type="button"
                             aria-label="Close"
                             onClick={() => setIsOpen(false)}
-                            className="absolute inset-0 bg-slate-950/60"
+                            className="absolute inset-0 bg-brand-bg/60"
                         />
-                        <div className="absolute bottom-20 left-4 right-4 bg-slate-900/90 border border-slate-700/60 rounded-2xl p-5 backdrop-blur-sm shadow-2xl max-h-[60vh] overflow-y-auto">
-                            <h2 className="text-xs font-semibold tracking-wider uppercase text-slate-400 mb-3" data-tina-field={tinaField}>
+                        <div className="absolute bottom-20 left-4 right-4 bg-brand-surface/90 border border-brand-border/60 rounded-2xl p-5 backdrop-blur-sm shadow-2xl max-h-[60vh] overflow-y-auto">
+                            <h2 className="text-xs font-semibold tracking-wider uppercase text-brand-text-muted-2 mb-3" data-tina-field={tinaField}>
                                 {title}
                             </h2>
                             <ol className="space-y-0.5 text-sm">
@@ -129,7 +129,7 @@ export default function TableOfContents({ title, locale: _locale = 'pl', classNa
                                             className={`block py-2 px-3 -mx-3 rounded-lg transition-all duration-200 leading-snug ${
                                                 activeId === heading.id
                                                     ? 'text-blue-400 font-semibold bg-linear-to-r from-blue-500/20 to-cyan-500/10 border-l-2 border-blue-400 pl-2.5'
-                                                    : 'text-slate-300 hover:text-white hover:bg-slate-700/30'
+                                                    : 'text-brand-text-muted hover:text-white hover:bg-brand-border/30'
                                             }`}
                                             onClick={(e) => {
                                                 e.preventDefault();

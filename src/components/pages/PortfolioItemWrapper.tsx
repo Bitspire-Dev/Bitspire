@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
+import type { PortfolioItemData } from '@/lib/tina/types';
 import { tinaField } from 'tinacms/dist/react';
 import PageBackground from '@/components/layout/PageBackground';
 import BackLink from '@/components/layout/BackLink';
@@ -8,20 +9,6 @@ import { RichText } from '@tina/richTextPresets';
 
 const PORTFOLIO_BLUR_DATA_URL =
     'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=';
-
-interface PortfolioItemData {
-    title?: string;
-    description?: string | null;
-    year?: string | null;
-    category?: string | null;
-    tags?: (string | null)[] | null;
-    image?: string | null;
-    imageAlt?: string | null;
-    link?: string | null;
-    body?: TinaMarkdownContent | TinaMarkdownContent[] | null;
-    locale?: string;
-    [key: string]: unknown;
-}
 
 interface PortfolioItemWrapperProps {
     data: PortfolioItemData;

@@ -18,6 +18,9 @@ export async function generateMetadata({ params }: PageProps) {
   const { locale, slug } = await params;
   const currentLocale = normalizeLocale(locale);
   const project = await getPortfolioItem(currentLocale, slug);
+  const safeTitle = typeof project?.title === "string" ? project.title : undefined;
+  const safeDescription = typeof project?.description === "string" ? project.description : undefined;
+  const safeImage = typeof project?.image === "string" ? project.image : undefined;
 
   const paths = {
     pl: buildLocalePath("pl", `/portfolio/${slug}`),
@@ -25,11 +28,11 @@ export async function generateMetadata({ params }: PageProps) {
   };
 
   return buildMetadata({
-    title: project?.title ?? undefined,
-    description: project?.description ?? undefined,
+    title: safeTitle,
+    description: safeDescription,
     locale: currentLocale,
     paths,
-    image: project?.image ?? undefined,
+    image: safeImage,
   });
 }
 
@@ -38,8 +41,12 @@ export default async function PortfolioItemPage({ params }: PageProps) {
   try {
     const currentLocale = normalizeLocale(locale);
     const project = await getPortfolioItem(currentLocale, slug);
+    if (!project) {
+      notFound();
+    }
     const pagePath = buildLocalePath(currentLocale, `/portfolio/${slug}`);
-    const imageUrl = project?.image ? absoluteUrl(project.image) : undefined;
+    const safeImage = typeof project?.image === "string" ? project.image : undefined;
+    const imageUrl = safeImage ? absoluteUrl(safeImage) : undefined;
     const authorName = (project as { client?: string; author?: string | null })?.author
       ?? (project as { client?: string; author?: string | null })?.client;
 
