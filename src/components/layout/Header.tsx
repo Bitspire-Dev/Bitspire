@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { LanguageSwitcher } from '../ui/buttons/LanguageSwitcher';
 import { buildLocalePath } from '@/lib/seo/metadata';
+import { buildAdminLink, type AdminLinkMode } from '@/lib/routing/adminLink';
 
 const NAVIGATION = {
   pl: [
@@ -20,11 +21,15 @@ const CTA_BUTTON = {
   en: { text: 'Get a Quote', href: '/' }
 };
 
-export const Header: React.FC<{ locale: 'pl' | 'en' }> = ({ locale }) => {
+export const Header: React.FC<{ locale: 'pl' | 'en'; linkMode?: AdminLinkMode }> = ({
+  locale,
+  linkMode,
+}) => {
   const navigation = NAVIGATION[locale];
   const ctaButton = CTA_BUTTON[locale];
   const logoAlt = 'Bitspire - strona główna';
-  const getLink = (href: string) => buildLocalePath(locale, href);
+  const getLink = (href: string) =>
+    linkMode ? buildAdminLink(href, { locale, mode: linkMode }) : buildLocalePath(locale, href);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 py-2 md:py-4 px-4 sm:px-6 animate-slide-in-down">

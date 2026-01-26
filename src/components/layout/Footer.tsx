@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { buildLocalePath } from '@/lib/seo/metadata';
+import { buildAdminLink, type AdminLinkMode } from '@/lib/routing/adminLink';
 import { CookieSettingsButton } from '@/components/ui/cookie-consent/CookieSettingsButton';
 import {
   FaFacebookF,
@@ -54,11 +55,15 @@ const COOKIE_SETTINGS_TEXT = {
   en: 'Cookie Settings'
 };
 
-export const Footer: React.FC<{ locale: 'pl' | 'en' }> = ({ locale }) => {
+export const Footer: React.FC<{ locale: 'pl' | 'en'; linkMode?: AdminLinkMode }> = ({
+  locale,
+  linkMode,
+}) => {
   const description = DESCRIPTION[locale];
   const legalLinks = LEGAL_LINKS[locale];
   const cookieSettingsText = COOKIE_SETTINGS_TEXT[locale];
-  const getLink = (href: string) => buildLocalePath(locale, href);
+  const getLink = (href: string) =>
+    linkMode ? buildAdminLink(href, { locale, mode: linkMode }) : buildLocalePath(locale, href);
 
   const getSocialIcon = (icon: string) => {
     switch (icon.toLowerCase()) {

@@ -28,26 +28,41 @@ export function LanguageSwitcher({ labels }: LanguageSwitcherProps = {}) {
     return path;
   }, []);
 
+  const adminLocaleMatch = useMemo(() => {
+    if (!pathname) return null;
+    return pathname.match(/^\/admin\/(preview\/)?(pl|en)(?=\/|$)/);
+  }, [pathname]);
+
+  const isAdminPath = Boolean(adminLocaleMatch);
+
   const currentLocale = useMemo(() => {
+    if (adminLocaleMatch?.[2] === 'en') return 'en';
+    if (adminLocaleMatch?.[2] === 'pl') return 'pl';
     if (pathname?.startsWith('/en')) return 'en';
     if (pathname?.startsWith('/pl')) return 'pl';
     return intlLocale as 'pl' | 'en';
-  }, [pathname, intlLocale]);
+  }, [adminLocaleMatch, pathname, intlLocale]);
 
   const otherLocale = currentLocale === 'pl' ? 'en' : 'pl';
 
   const targetPath = useMemo(() => {
     const raw = pathname || '/';
+    if (isAdminPath) {
+      return raw.replace(
+        /^\/admin\/(preview\/)?(pl|en)(?=\/|$)/,
+        `/admin/$1${otherLocale}`
+      );
+    }
     const normalized = stripLocalePrefix(raw);
     return normalized === '' ? '/' : normalized;
-  }, [pathname, stripLocalePrefix]);
+  }, [pathname, stripLocalePrefix, isAdminPath, otherLocale]);
 
   const prefetchTarget = useCallback(() => {
-    if (!targetPath) return;
+    if (!targetPath || isAdminPath) return;
     if (typeof router.prefetch === 'function') {
       router.prefetch(targetPath, { locale: otherLocale });
     }
-  }, [router, targetPath]);
+  }, [router, targetPath, isAdminPath, otherLocale]);
 
   useEffect(() => {
     prefetchTarget();
@@ -55,6 +70,10 @@ export function LanguageSwitcher({ labels }: LanguageSwitcherProps = {}) {
 
   const handleSwitch = () => {
     if (!targetPath) return;
+    if (isAdminPath) {
+      window.location.assign(targetPath);
+      return;
+    }
     router.replace(targetPath, { locale: otherLocale });
   };
 
