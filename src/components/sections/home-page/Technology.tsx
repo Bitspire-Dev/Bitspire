@@ -4,229 +4,196 @@ import Image from "next/image";
 import { tinaField } from 'tinacms/dist/react';
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { RichTextLite } from '@tina/richTextPresets';
+import { safeImageSrc } from '@/lib/ui/helpers';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 
-interface TechnologyData {
-	title?: Record<string, unknown> | string | null;
-	description?: Record<string, unknown> | string | null;
-	[key: string]: unknown;
-}
-
-const logos = [
-  { src: "/logo/Nextjs.svg", alt: "Next.js Logo" },
-  { src: "/logo/React.svg", alt: "React Logo" },
-  { src: "/logo/TypeScript.svg", alt: "TypeScript Logo" },
-  { src: "/logo/Vercel_logo.svg", alt: "Vercel Logo" },
-  { src: "/logo/Tailwind_CSS.svg", alt: "Tailwind CSS Logo" },
-  { src: "/logo/Vite.svg", alt: "Vite Logo" },
-  { src: "/logo/Stripe.svg", alt: "Stripe Logo" },
-	{ src: "/logo/Docker.svg", alt: "Docker Logo" },
-];
-
-const LOGO_WIDTH = 140; // 80px image + 60px gap
-const SPEED = 0.8; // Faster speed
-
-const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-	const [logoCount, setLogoCount] = useState(logos.length * 8);
-	// animation state stored in refs to avoid React re-renders on every frame
-	const positionsRef = useRef<number[]>([]);
-	const rafRef = useRef<number | null>(null);
-	const itemsRef = useRef<Array<HTMLSpanElement | null>>([]);
-	const lastWidthRef = useRef<number>(0);
-	const resizeTimeoutRef = useRef<number | null>(null);
-  
-  // Use scroll animation hook
-  const { ref: sectionRef, visible } = useScrollAnimation<HTMLElement>({ threshold: 0.15 });
-
-  useEffect(() => {
-		// Calculate how many logos are needed to fill the container + buffer
-		const computeCount = () => {
-			const vw = window.visualViewport?.width || window.innerWidth || 2200;
-			// ignore tiny changes that occur when mobile address bar hides/shows
-			if (Math.abs(vw - lastWidthRef.current) < 10 && positionsRef.current.length) return;
-			lastWidthRef.current = vw;
-			const minCount = Math.ceil(vw / LOGO_WIDTH) + logos.length * 5;
-			setLogoCount((prev) => (prev === minCount ? prev : minCount));
-			// initialize or preserve a smooth offset
-			if (!positionsRef.current.length) {
-				positionsRef.current = Array.from({ length: minCount }, (_, i) => i * LOGO_WIDTH);
-			} else {
-				const base = positionsRef.current[0];
-				positionsRef.current = Array.from({ length: minCount }, (_, i) => base + i * LOGO_WIDTH);
-			}
-		};
-
-		const onResize = () => {
-			if (resizeTimeoutRef.current) window.clearTimeout(resizeTimeoutRef.current);
-			resizeTimeoutRef.current = window.setTimeout(() => computeCount(), 120) as unknown as number;
-		};
-
-		computeCount();
-		window.visualViewport?.addEventListener("resize", onResize);
-		window.addEventListener("resize", onResize);
-		return () => {
-			window.visualViewport?.removeEventListener("resize", onResize);
-			window.removeEventListener("resize", onResize);
-			if (resizeTimeoutRef.current) window.clearTimeout(resizeTimeoutRef.current);
-		};
-  }, []);
-
-  useEffect(() => {
-		const vw = window.visualViewport?.width || window.innerWidth || 2200;
-		const isMobile = vw < 768;
-		const currentSpeed = isMobile ? 1.2 : SPEED;
-
-		// per-frame transform updates (no React state churn)
-		const step = () => {
-			const arr = positionsRef.current;
-			if (!arr.length) {
-				rafRef.current = requestAnimationFrame(step);
-				return;
-			}
-			// compute max only once per frame
-			let maxPos = -Infinity;
-			for (let i = 0; i < arr.length; i++) {
-				if (arr[i] > maxPos) maxPos = arr[i];
-			}
-
-			for (let i = 0; i < arr.length; i++) {
-				let p = arr[i] - currentSpeed;
-				if (p < -LOGO_WIDTH) p = maxPos + LOGO_WIDTH;
-				arr[i] = p;
-				const el = itemsRef.current[i];
-				if (el) el.style.transform = `translate3d(${p}px, -50%, 0)`;
-			}
-			rafRef.current = requestAnimationFrame(step);
-		};
-
-		if (visible && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-			// initialize transforms immediately to avoid flicker
-			for (let i = 0; i < positionsRef.current.length; i++) {
-				const el = itemsRef.current[i];
-				if (el) el.style.transform = `translate3d(${positionsRef.current[i]}px, -50%, 0)`;
-			}
-			rafRef.current = requestAnimationFrame(step);
-		}
-
-		return () => {
-			if (rafRef.current) cancelAnimationFrame(rafRef.current);
-			rafRef.current = null;
-		};
-	}, [visible, logoCount]);
-
-	const titleValue = data?.title;
-	const descriptionValue = data?.description;
-
-	const renderTitle = () => {
-		if (!titleValue) return null;
-		if (typeof titleValue === "string") {
-			return (
-				<h2 className="text-3xl md:text-5xl font-bold text-white mb-4 text-center leading-tight">
-					{titleValue}
-				</h2>
-			);
-		}
-		return (
-			<RichTextLite
-				content={titleValue as TinaMarkdownContent | TinaMarkdownContent[]}
-				preset="section-title"
-				className="mb-3"
-			/>
-		);
-	};
-
-	const renderDescription = () => {
-		if (!descriptionValue) return null;
-		if (typeof descriptionValue === "string") {
-			return (
-				<p className="text-lg text-brand-text-muted text-center leading-relaxed">
-					{descriptionValue}
-				</p>
-			);
-		}
-		return (
-			<RichTextLite
-				content={descriptionValue as TinaMarkdownContent | TinaMarkdownContent[]}
-				preset="description"
-			/>
-		);
-	};
-
-	return (
-		<section
-			ref={sectionRef}
-			className="w-full py-12 relative overflow-hidden"
-			data-tina-field={tinaField(data)}
-		>
-      <div className="container mx-auto px-4 mb-8">
-        <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
-		  <div className="w-16 h-0.5 bg-linear-to-r from-blue-600 to-cyan-500 mb-4"></div>
-		  <div data-tina-field={tinaField(data, 'title')}>
-			{renderTitle()}
-		  </div>
-		  <div data-tina-field={tinaField(data, 'description')}>
-			{renderDescription()}
-		  </div>
-        </div>
-      </div>
-      
-	  <div className="w-full">
-		<div
-		  className="relative mx-auto h-32 flex items-center overflow-hidden"
-		  style={{
-			maxWidth: '1600px',
-			minHeight: '8rem',
-			WebkitMaskImage:
-			  'linear-gradient(to right, transparent 0px, black 128px, black calc(100% - 128px), transparent 100%)',
-			maskImage:
-			  'linear-gradient(to right, transparent 0px, black 128px, black calc(100% - 128px), transparent 100%)'
-		  }}
-		  ref={containerRef}
-		>
-		  <div className="absolute left-0 top-0 w-full h-full" role="list" aria-label="Technologie" style={{ pointerEvents: "none" }}>
-			{Array.from({ length: logoCount }).map((_, i) => {
-			  const { src, alt } = logos[i % logos.length];
-			  return (
-				<span
-				  key={i}
-				  role="listitem"
-				  ref={(el) => {
-					itemsRef.current[i] = el;
-				  }}
-				  className="marquee-item transform-gpu will-change-transform"
-				  style={{
-					position: "absolute",
-					left: 0,
-					top: "50%",
-					transform: `translate3d(${positionsRef.current[i] ?? i * LOGO_WIDTH}px, -50%, 0)`,
-					width: "80px",
-					display: "flex",
-					justifyContent: "center"
-				  }}
-				>
-          <div className="relative group flex justify-center items-center h-full w-full">
-						<Image
-              src={src}
-              alt={alt}
-              width={80}
-              height={60}
-              className="h-14 w-auto object-contain opacity-60 transition-all duration-500 group-hover:opacity-100 group-hover:scale-110 relative z-10 brightness-0 invert"
-              loading="lazy"
-              sizes="80px"
-              style={{ height: 'auto' }}
-            />
-          </div>
-				</span>
-			  );
-			})}
-		  </div>
-		</div>
-	  </div>
-	</section>
-  );
+type TechnologyItem = Record<string, unknown> & {
+    name?: string | null;
+    icon?: string | null;
 };
 
+interface TechnologyData {
+    title?: TinaMarkdownContent | TinaMarkdownContent[] | null;
+    description?: TinaMarkdownContent | TinaMarkdownContent[] | null;
+    items?: TechnologyItem[] | null;
+    [key: string]: unknown;
+}
+
+const LOGO_WIDTH = 140; // 80px image + 60px gap
+const SPEED = 0.8;
+
+const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
+    const items = data?.items || [];
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [logoCount, setLogoCount] = useState(items.length > 0 ? items.length * 8 : 0);
+    
+    // animation state stored in refs
+    const positionsRef = useRef<number[]>([]);
+    const rafRef = useRef<number | null>(null);
+    const itemsRef = useRef<Array<HTMLSpanElement | null>>([]);
+    const lastWidthRef = useRef<number>(0);
+    const resizeTimeoutRef = useRef<number | null>(null);
+  
+    // Use scroll animation hook for fade-in effect
+    const { ref: sectionRef, visible } = useScrollAnimation<HTMLElement>({ threshold: 0.15 });
+
+    useEffect(() => {
+        if (items.length === 0) return;
+
+        // Calculate how many logos are needed to fill the container + buffer
+        const computeCount = () => {
+            const vw = window.visualViewport?.width || window.innerWidth || 2200;
+            // ignore tiny changes that occur when mobile address bar hides/shows
+            if (Math.abs(vw - lastWidthRef.current) < 10 && positionsRef.current.length) return;
+            lastWidthRef.current = vw;
+
+            // Ensure we have enough copies to cover screen width + buffer
+            const minCount = Math.ceil(vw / LOGO_WIDTH) + items.length * 5;
+            setLogoCount((prev) => (prev === minCount ? prev : minCount));
+            
+            // initialize or preserve a smooth offset
+            if (!positionsRef.current.length) {
+                positionsRef.current = Array.from({ length: minCount }, (_, i) => i * LOGO_WIDTH);
+            } else {
+                const base = positionsRef.current[0] || 0;
+                // Rebuild positions array based on new count, continuing from current offset
+                positionsRef.current = Array.from({ length: minCount }, (_, i) => base + i * LOGO_WIDTH);
+            }
+        };
+
+        const onResize = () => {
+            if (resizeTimeoutRef.current) window.clearTimeout(resizeTimeoutRef.current);
+            resizeTimeoutRef.current = window.setTimeout(() => computeCount(), 120) as unknown as number;
+        };
+
+        computeCount();
+        window.visualViewport?.addEventListener("resize", onResize);
+        window.addEventListener("resize", onResize);
+        return () => {
+            window.visualViewport?.removeEventListener("resize", onResize);
+            window.removeEventListener("resize", onResize);
+            if (resizeTimeoutRef.current) window.clearTimeout(resizeTimeoutRef.current);
+            if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        };
+    }, [items.length]);
+
+    useEffect(() => {
+        if (items.length === 0) return;
+        
+        const vw = window.visualViewport?.width || window.innerWidth || 2200;
+        const isMobile = vw < 768;
+        const currentSpeed = isMobile ? 1.0 : SPEED;
+
+        const step = () => {
+            const arr = positionsRef.current;
+            if (!arr.length) {
+                rafRef.current = requestAnimationFrame(step);
+                return;
+            }
+            
+            // Find current max pos to move items wrapped around to the end
+            let maxPos = -Infinity;
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i] > maxPos) maxPos = arr[i];
+            }
+
+            for (let i = 0; i < arr.length; i++) {
+                let p = arr[i] - currentSpeed;
+                // If item moved completely off-screen to left, move it to the right end
+                if (p < -LOGO_WIDTH) p = maxPos + LOGO_WIDTH; 
+                arr[i] = p;
+                
+                const el = itemsRef.current[i];
+                if (el) el.style.transform = `translate3d(${p}px, -50%, 0)`;
+            }
+            rafRef.current = requestAnimationFrame(step);
+        };
+        
+        rafRef.current = requestAnimationFrame(step);
+        return () => {
+            if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        };
+    }, [items.length]);
+
+    if (!data || items.length === 0) return null;
+
+    return (
+        <section 
+            ref={sectionRef}
+            className={`py-section mt-2.5 relative bg-brand-bg text-brand-fg overflow-hidden transition-all duration-1000 ${
+                visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+            }`}
+             data-tina-field={tinaField(data)}
+        >
+             {/* Background glow similar to Features */}
+             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-250 h-75 bg-brand-accent-2/5 rounded-full blur-[100px] pointer-events-none" />
+
+            <div className="container mx-auto px-4 relative z-10 mb-6 lg:mb-8">
+                 <div className="text-center max-w-3xl mx-auto">
+                    {data.title && (
+                        <div 
+                            className="prose prose-invert max-w-none [&>h1]:text-3xl [&>h1]:md:text-4xl [&>h1]:font-bold mb-4"
+                            data-tina-field={tinaField(data, 'title')}
+                        >
+                            <RichTextLite content={data.title} />
+                        </div>
+                    )}
+                    {data.description && (
+                        <div 
+                            className="prose prose-invert max-w-none text-brand-text-muted text-lg"
+                            data-tina-field={tinaField(data, 'description')}
+                        >
+                            <RichTextLite content={data.description} />
+                        </div>
+                    )}
+                 </div>
+            </div>
+
+            <div 
+                className="relative w-full h-32 overflow-hidden items-center flex"
+                ref={containerRef}
+            >
+                {/* Fade masks for edges */}
+                <div className="absolute left-0 top-0 bottom-0 w-12 md:w-32 bg-linear-to-r from-brand-bg to-transparent z-20 pointer-events-none" />
+                <div className="absolute right-0 top-0 bottom-0 w-12 md:w-32 bg-linear-to-l from-brand-bg to-transparent z-20 pointer-events-none" />
+
+                {/* Render enough copies to fill buffer */}
+                {Array.from({ length: logoCount }).map((_, i) => {
+                    const item = items[i % items.length];
+                    const iconSrc = safeImageSrc(item?.icon || undefined);
+                    return (
+                        <span
+                            key={i}
+                            ref={(el) => { itemsRef.current[i] = el; }}
+                            className="absolute top-1/2 left-0 w-35 flex justify-center items-center px-4 will-change-transform"
+                            style={{
+                                transform: 'translate3d(2000px, -50%, 0)', // initial offscreen
+                            }}
+                             data-tina-field={tinaField(item)}
+                        >
+                            {/* Icon Container */}
+                                                        <div className="relative w-full h-15 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 transform hover:scale-110 cursor-pointer">
+                                {iconSrc ? (
+                                    <Image
+                                        src={iconSrc}
+                                        alt={item.name || "Technology Logo"}
+                                        fill
+                                                                                className={`object-contain opacity-90 ${
+                                                                                    item.name === 'Vite'
+                                                                                        ? 'filter-[brightness(1.75)]'
+                                                                                        : 'filter-[brightness(0)_invert(1)_brightness(1.75)]'
+                                                                                }`}
+                                    />
+                                ) : (
+                                    <span className="text-brand-text-muted text-sm font-bold">{item.name}</span>
+                                )}
+                            </div>
+                        </span>
+                    );
+                })}
+            </div>
+        </section>
+    );
+};
 
 export default Technology;
-

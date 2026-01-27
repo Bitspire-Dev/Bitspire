@@ -29,5 +29,28 @@ export const technologySection: TinaField = {
   fields: [
     richTextField("title", "Section Title"),
     simpleRichTextField("description", "Section Description"),
+    {
+      type: "object",
+      name: "items",
+      label: "Technologies",
+      list: true,
+      ui: {
+        itemProps: (item) => {
+          return { label: item?.name };
+        },
+      },
+      fields: [
+        {
+          type: "string",
+          name: "name",
+          label: "Name",
+        },
+        {
+          type: "image",
+          name: "icon",
+          label: "Icon",
+        },
+      ],
+    },
   ],
 };

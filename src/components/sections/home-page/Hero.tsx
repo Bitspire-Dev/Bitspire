@@ -222,7 +222,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
                    {/* Gradient fade at bottom to merge with next section */}
                    {/* "Two-sided" gradient: 0-100-0. Ends fade into background. */}
                   <div 
-                    className="absolute left-0 right-0 bottom-[-100px] h-[200px] z-20 pointer-events-none" 
+                    className="absolute left-0 right-0 -bottom-25 h-50 z-20 pointer-events-none" 
                     style={{
                        background: 'linear-gradient(to bottom, transparent 0%, #020617 50%, transparent 100%)',
                     }}

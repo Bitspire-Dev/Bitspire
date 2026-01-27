@@ -396,9 +396,15 @@ export type PagesBodyTechnologySectionTitleFilter = {
   Gradient?: InputMaybe<PagesBodyTechnologySectionTitleGradientFilter>;
 };
 
+export type PagesBodyTechnologySectionItemsFilter = {
+  name?: InputMaybe<StringFilter>;
+  icon?: InputMaybe<ImageFilter>;
+};
+
 export type PagesBodyTechnologySectionFilter = {
   title?: InputMaybe<PagesBodyTechnologySectionTitleFilter>;
   description?: InputMaybe<RichTextFilter>;
+  items?: InputMaybe<PagesBodyTechnologySectionItemsFilter>;
 };
 
 export type PagesBodyAboutSectionTitleGradientFilter = {
@@ -417,11 +423,33 @@ export type PagesBodyAboutSectionFilter = {
   imageAlt?: InputMaybe<StringFilter>;
 };
 
+export type PagesBodyFeaturesSectionTitleGradientFilter = {
+  text?: InputMaybe<StringFilter>;
+};
+
+export type PagesBodyFeaturesSectionTitleFilter = {
+  Gradient?: InputMaybe<PagesBodyFeaturesSectionTitleGradientFilter>;
+};
+
+export type PagesBodyFeaturesSectionFeaturesFilter = {
+  icon?: InputMaybe<ImageFilter>;
+  title?: InputMaybe<StringFilter>;
+  description?: InputMaybe<StringFilter>;
+};
+
+export type PagesBodyFeaturesSectionFilter = {
+  label?: InputMaybe<StringFilter>;
+  title?: InputMaybe<PagesBodyFeaturesSectionTitleFilter>;
+  subtitle?: InputMaybe<RichTextFilter>;
+  features?: InputMaybe<PagesBodyFeaturesSectionFeaturesFilter>;
+};
+
 export type PagesBodyFilter = {
   Gradient?: InputMaybe<PagesBodyGradientFilter>;
   HeroSection?: InputMaybe<PagesBodyHeroSectionFilter>;
   TechnologySection?: InputMaybe<PagesBodyTechnologySectionFilter>;
   AboutSection?: InputMaybe<PagesBodyAboutSectionFilter>;
+  FeaturesSection?: InputMaybe<PagesBodyFeaturesSectionFilter>;
 };
 
 export type PagesFilter = {

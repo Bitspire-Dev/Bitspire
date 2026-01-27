@@ -11,7 +11,10 @@ description: Bitspire - Nowoczesne rozwiązania IT dla Twojego biznesu
     W Bitspire tworzymy nowoczesne rozwiązania webowe, dopasowane do twoich potrzeb.
   </>}
   image="/web-images/GRYF.webp"
-  actions={[{ label: "Kontakt", url: "/#contact", type: "primary" }, { label: "Portfolio", url: "/portfolio", type: "secondary" }]}
+  actions={[
+    { label: "Kontakt", url: "/#contact", type: "primary" },
+    { label: "Portfolio", url: "/portfolio", type: "secondary" }
+  ]}
 />
 
 <AboutSection
@@ -26,3 +29,51 @@ description: Bitspire - Nowoczesne rozwiązania IT dla Twojego biznesu
   imageAlt="Sekcja O Nas"
 />
 
+<FeaturesSection
+  label="Możliwości"
+  title={<>
+    Wyróżnij się na tle konkurencji i zyskaj silną pozycję rynkową dzięki Bitspire.
+  </>}
+  subtitle={<>
+    Tworzymy rozwiązania, które łączą estetykę z funkcjonalnością. Każdy projekt jest budowany z precyzją i dbałością o szczegóły.
+  </>}
+  features={[
+    {
+      icon: "/web-images/features-section/Wydajność.webp",
+      title: "Optymalizacja",
+      description:
+        "Powolna praca strony internetowej nie wynika z ograniczeń sprzętu lub łącza internetowego użytkownika, lecz z niedostatecznej optymalizacji. Zapewnienie klientom szybkiego i płynnego doświadczenia użytkownika przyczynia się do wzrostu ich zaufania do marki."
+    },
+    {
+      icon: "/web-images/features-section/SEO.webp",
+      title: "SEO",
+      description:
+        "Ruch organiczny stanowi stale dostępne źródło pozyskiwania klientów, niezależne od czasu. Dobrze zaprojektowane strony internetowe mogą znacząco obniżyć koszty marketingu."
+    },
+    {
+      icon: "/web-images/features-section/Skalowalność.webp",
+      title: "Skalowalność",
+      description:
+        "Solidna architektura zapewnia skalowalnością strony internetowej wraz z rozwojem marki, eliminując potencjalne ograniczenia w procesie wzrostu. Oferujemy kompleksowe usługi modernizacji i aktualizacji infrastruktury technicznej, dostosowując rozwiązanie do przyszłych wymagań biznesowych i technologicznych."
+    }
+  ]}
+/>
+
+<TechnologySection
+  title={<>
+    ## Technologie, w których <Gradient text="tworzymy" />
+  </>}
+  description={<>
+
+  </>}
+  items={[
+    { name: "Next.js", icon: "/logo/Nextjs.svg" },
+    { name: "React", icon: "/logo/React.svg" },
+    { name: "TypeScript", icon: "/logo/TypeScript.svg" },
+    { name: "Vercel", icon: "/logo/Vercel_logo.svg" },
+    { name: "Tailwind CSS", icon: "/logo/Tailwind_CSS.svg" },
+    { name: "Vite", icon: "/logo/Vite.svg" },
+    { name: "Stripe", icon: "/logo/Stripe.svg" },
+    { name: "Docker", icon: "/logo/Docker.svg" }
+  ]}
+/>

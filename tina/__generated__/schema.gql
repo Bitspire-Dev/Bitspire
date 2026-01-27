@@ -281,9 +281,15 @@ input PagesBodyTechnologySectionTitleFilter {
   Gradient: PagesBodyTechnologySectionTitleGradientFilter
 }
 
+input PagesBodyTechnologySectionItemsFilter {
+  name: StringFilter
+  icon: ImageFilter
+}
+
 input PagesBodyTechnologySectionFilter {
   title: PagesBodyTechnologySectionTitleFilter
   description: RichTextFilter
+  items: PagesBodyTechnologySectionItemsFilter
 }
 
 input PagesBodyAboutSectionTitleGradientFilter {
@@ -302,11 +308,33 @@ input PagesBodyAboutSectionFilter {
   imageAlt: StringFilter
 }
 
+input PagesBodyFeaturesSectionTitleGradientFilter {
+  text: StringFilter
+}
+
+input PagesBodyFeaturesSectionTitleFilter {
+  Gradient: PagesBodyFeaturesSectionTitleGradientFilter
+}
+
+input PagesBodyFeaturesSectionFeaturesFilter {
+  icon: ImageFilter
+  title: StringFilter
+  description: StringFilter
+}
+
+input PagesBodyFeaturesSectionFilter {
+  label: StringFilter
+  title: PagesBodyFeaturesSectionTitleFilter
+  subtitle: RichTextFilter
+  features: PagesBodyFeaturesSectionFeaturesFilter
+}
+
 input PagesBodyFilter {
   Gradient: PagesBodyGradientFilter
   HeroSection: PagesBodyHeroSectionFilter
   TechnologySection: PagesBodyTechnologySectionFilter
   AboutSection: PagesBodyAboutSectionFilter
+  FeaturesSection: PagesBodyFeaturesSectionFilter
 }
 
 input PagesFilter {

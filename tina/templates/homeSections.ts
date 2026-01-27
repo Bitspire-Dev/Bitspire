@@ -102,5 +102,83 @@ export const technologySectionTemplate = {
       name: "description",
       label: "Section Description",
     },
+    {
+      type: "object" as const,
+      name: "items",
+      label: "Technologies",
+      list: true as const,
+      ui: {
+        itemProps: (item: { name?: string } | undefined) => {
+          return { label: item?.name };
+        },
+      },
+      fields: [
+        {
+          type: "string" as const,
+          name: "name",
+          label: "Name",
+        },
+        {
+          type: "image" as const,
+          name: "icon",
+          label: "Icon",
+        },
+      ],
+    },
   ],
 } as const satisfies RichTextTemplate<false>;
+
+export const featuresSectionTemplate = {
+  name: "FeaturesSection",
+  label: "Features Section",
+  fields: [
+    {
+      type: "string" as const,
+      name: "label",
+      label: "Label",
+    },
+    {
+      type: "rich-text" as const,
+      name: "title",
+      label: "Title",
+      templates: [gradientTemplate],
+    },
+    {
+      type: "rich-text" as const,
+      name: "subtitle",
+      label: "Subtitle",
+    },
+    {
+      type: "object" as const,
+      name: "features",
+      label: "Features List",
+      list: true as const,
+      ui: {
+        itemProps: (item: { title?: string } | undefined) => {
+          return { label: item?.title };
+        },
+      },
+      fields: [
+        {
+          type: "image" as const,
+          name: "icon",
+          label: "Icon",
+        },
+        {
+          type: "string" as const,
+          name: "title",
+          label: "Title",
+        },
+        {
+          type: "string" as const,
+          name: "description",
+          label: "Description",
+          ui: {
+            component: "textarea",
+          },
+        },
+      ],
+    },
+  ],
+} as const satisfies RichTextTemplate<false>;
+

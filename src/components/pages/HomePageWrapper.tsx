@@ -4,6 +4,7 @@ import { RichText } from "@tina/richTextPresets";
 import { Hero } from "@/components/sections/home-page/Hero";
 import Technology from "@/components/sections/home-page/Technology";
 import About from "@/components/sections/home-page/About";
+import Features from "@/components/sections/home-page/Features";
 
 interface HomePageData {
     locale?: string;
@@ -39,6 +40,11 @@ export default function HomePageWrapper({ data }: HomePageWrapperProps) {
             AboutSection: (props: object) => (
                 <div data-tina-field={tinaField(props as Record<string, unknown>)}>
                     <About data={props as Record<string, unknown>} />
+                </div>
+            ),
+            FeaturesSection: (props: object) => (
+                <div data-tina-field={tinaField(props as Record<string, unknown>)}>
+                    <Features data={props as Record<string, unknown>} />
                 </div>
             ),
         };

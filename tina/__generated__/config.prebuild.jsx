@@ -214,6 +214,82 @@ var technologySectionTemplate = {
       type: "rich-text",
       name: "description",
       label: "Section Description"
+    },
+    {
+      type: "object",
+      name: "items",
+      label: "Technologies",
+      list: true,
+      ui: {
+        itemProps: (item) => {
+          return { label: item?.name };
+        }
+      },
+      fields: [
+        {
+          type: "string",
+          name: "name",
+          label: "Name"
+        },
+        {
+          type: "image",
+          name: "icon",
+          label: "Icon"
+        }
+      ]
+    }
+  ]
+};
+var featuresSectionTemplate = {
+  name: "FeaturesSection",
+  label: "Features Section",
+  fields: [
+    {
+      type: "string",
+      name: "label",
+      label: "Label"
+    },
+    {
+      type: "rich-text",
+      name: "title",
+      label: "Title",
+      templates: [gradientTemplate]
+    },
+    {
+      type: "rich-text",
+      name: "subtitle",
+      label: "Subtitle"
+    },
+    {
+      type: "object",
+      name: "features",
+      label: "Features List",
+      list: true,
+      ui: {
+        itemProps: (item) => {
+          return { label: item?.title };
+        }
+      },
+      fields: [
+        {
+          type: "image",
+          name: "icon",
+          label: "Icon"
+        },
+        {
+          type: "string",
+          name: "title",
+          label: "Title"
+        },
+        {
+          type: "string",
+          name: "description",
+          label: "Description",
+          ui: {
+            component: "textarea"
+          }
+        }
+      ]
     }
   ]
 };
@@ -268,7 +344,7 @@ var pagesCollection = {
       label: "Page Content",
       description: "For legal pages and other text-heavy pages",
       isBody: true,
-      templates: [gradientTemplate, heroSectionTemplate, technologySectionTemplate, aboutSectionTemplate]
+      templates: [gradientTemplate, heroSectionTemplate, technologySectionTemplate, aboutSectionTemplate, featuresSectionTemplate]
     }
   ]
 };
