@@ -127,7 +127,7 @@ input ImageFilter {
 }
 
 input PortfolioBodyGradientFilter {
-  children: StringFilter
+  text: StringFilter
 }
 
 input PortfolioBodyFilter {
@@ -198,7 +198,7 @@ input NumberFilter {
 }
 
 input BlogBodyGradientFilter {
-  children: StringFilter
+  text: StringFilter
 }
 
 input BlogBodyFilter {
@@ -231,36 +231,27 @@ type BlogConnection implements Connection {
   edges: [BlogConnectionEdges]
 }
 
-type PagesHero {
-  title: JSON
-  subtitle: JSON
-  image: String
-}
-
-type PagesTechnology {
-  title: JSON
-  description: JSON
-}
-
 type Pages implements Node & Document {
   title: String!
   description: String
   lastUpdate: String
   tocTitle: String
-  hero: PagesHero
-  technology: PagesTechnology
   body: JSON
   id: ID!
   _sys: SystemInfo!
   _values: JSON!
 }
 
-input PagesHeroTitleGradientFilter {
-  children: StringFilter
+input PagesBodyGradientFilter {
+  text: StringFilter
 }
 
-input PagesHeroTitleFilter {
-  Gradient: PagesHeroTitleGradientFilter
+input PagesBodyHeroSectionTitleGradientFilter {
+  text: StringFilter
+}
+
+input PagesBodyHeroSectionTitleFilter {
+  Gradient: PagesBodyHeroSectionTitleGradientFilter
 }
 
 input RichTextFilter {
@@ -269,31 +260,53 @@ input RichTextFilter {
   exists: Boolean
 }
 
-input PagesHeroFilter {
-  title: PagesHeroTitleFilter
+input PagesBodyHeroSectionActionsFilter {
+  label: StringFilter
+  url: StringFilter
+  type: StringFilter
+}
+
+input PagesBodyHeroSectionFilter {
+  title: PagesBodyHeroSectionTitleFilter
   subtitle: RichTextFilter
   image: ImageFilter
+  actions: PagesBodyHeroSectionActionsFilter
 }
 
-input PagesTechnologyTitleGradientFilter {
-  children: StringFilter
+input PagesBodyTechnologySectionTitleGradientFilter {
+  text: StringFilter
 }
 
-input PagesTechnologyTitleFilter {
-  Gradient: PagesTechnologyTitleGradientFilter
+input PagesBodyTechnologySectionTitleFilter {
+  Gradient: PagesBodyTechnologySectionTitleGradientFilter
 }
 
-input PagesTechnologyFilter {
-  title: PagesTechnologyTitleFilter
+input PagesBodyTechnologySectionFilter {
+  title: PagesBodyTechnologySectionTitleFilter
   description: RichTextFilter
 }
 
-input PagesBodyGradientFilter {
-  children: StringFilter
+input PagesBodyAboutSectionTitleGradientFilter {
+  text: StringFilter
+}
+
+input PagesBodyAboutSectionTitleFilter {
+  Gradient: PagesBodyAboutSectionTitleGradientFilter
+}
+
+input PagesBodyAboutSectionFilter {
+  label: StringFilter
+  title: PagesBodyAboutSectionTitleFilter
+  description: RichTextFilter
+  image: ImageFilter
+  imageAlt: StringFilter
 }
 
 input PagesBodyFilter {
   Gradient: PagesBodyGradientFilter
+  HeroSection: PagesBodyHeroSectionFilter
+  TechnologySection: PagesBodyTechnologySectionFilter
+  AboutSection: PagesBodyAboutSectionFilter
 }
 
 input PagesFilter {
@@ -301,8 +314,6 @@ input PagesFilter {
   description: StringFilter
   lastUpdate: StringFilter
   tocTitle: StringFilter
-  hero: PagesHeroFilter
-  technology: PagesTechnologyFilter
   body: PagesBodyFilter
 }
 
@@ -375,24 +386,11 @@ input BlogMutation {
   body: JSON
 }
 
-input PagesHeroMutation {
-  title: JSON
-  subtitle: JSON
-  image: String
-}
-
-input PagesTechnologyMutation {
-  title: JSON
-  description: JSON
-}
-
 input PagesMutation {
   title: String
   description: String
   lastUpdate: String
   tocTitle: String
-  hero: PagesHeroMutation
-  technology: PagesTechnologyMutation
   body: JSON
 }
 

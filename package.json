@@ -18,6 +18,7 @@
     "@tailwindcss/postcss": "^4.1.18",
     "@tinacms/cli": "^2.1.1",
     "cookies-next": "^6.1.0",
+    "framer-motion": "^12.29.2",
     "next": "^16.1.0",
     "next-intl": "^4.6.1",
     "prism-react-renderer": "^2.4.1",
@@ -27,7 +28,7 @@
     "react-icons": "^5.5.0",
     "tailwindcss": "^4.1.18",
     "tinacms": "^3.3.1",
-    "zod": "^4.25.1"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
@@ -39,6 +40,7 @@
     "esbuild": "^0.27.2",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.0",
+    "fs-extra": "^11.3.3",
     "typescript": "^5",
     "typescript-eslint": "^8.51.0"
   }

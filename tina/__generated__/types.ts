@@ -236,7 +236,7 @@ export type ImageFilter = {
 };
 
 export type PortfolioBodyGradientFilter = {
-  children?: InputMaybe<StringFilter>;
+  text?: InputMaybe<StringFilter>;
 };
 
 export type PortfolioBodyFilter = {
@@ -310,7 +310,7 @@ export type NumberFilter = {
 };
 
 export type BlogBodyGradientFilter = {
-  children?: InputMaybe<StringFilter>;
+  text?: InputMaybe<StringFilter>;
 };
 
 export type BlogBodyFilter = {
@@ -345,39 +345,28 @@ export type BlogConnection = Connection & {
   edges?: Maybe<Array<Maybe<BlogConnectionEdges>>>;
 };
 
-export type PagesHero = {
-  __typename?: 'PagesHero';
-  title?: Maybe<Scalars['JSON']['output']>;
-  subtitle?: Maybe<Scalars['JSON']['output']>;
-  image?: Maybe<Scalars['String']['output']>;
-};
-
-export type PagesTechnology = {
-  __typename?: 'PagesTechnology';
-  title?: Maybe<Scalars['JSON']['output']>;
-  description?: Maybe<Scalars['JSON']['output']>;
-};
-
 export type Pages = Node & Document & {
   __typename?: 'Pages';
   title: Scalars['String']['output'];
   description?: Maybe<Scalars['String']['output']>;
   lastUpdate?: Maybe<Scalars['String']['output']>;
   tocTitle?: Maybe<Scalars['String']['output']>;
-  hero?: Maybe<PagesHero>;
-  technology?: Maybe<PagesTechnology>;
   body?: Maybe<Scalars['JSON']['output']>;
   id: Scalars['ID']['output'];
   _sys: SystemInfo;
   _values: Scalars['JSON']['output'];
 };
 
-export type PagesHeroTitleGradientFilter = {
-  children?: InputMaybe<StringFilter>;
+export type PagesBodyGradientFilter = {
+  text?: InputMaybe<StringFilter>;
 };
 
-export type PagesHeroTitleFilter = {
-  Gradient?: InputMaybe<PagesHeroTitleGradientFilter>;
+export type PagesBodyHeroSectionTitleGradientFilter = {
+  text?: InputMaybe<StringFilter>;
+};
+
+export type PagesBodyHeroSectionTitleFilter = {
+  Gradient?: InputMaybe<PagesBodyHeroSectionTitleGradientFilter>;
 };
 
 export type RichTextFilter = {
@@ -386,31 +375,53 @@ export type RichTextFilter = {
   exists?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type PagesHeroFilter = {
-  title?: InputMaybe<PagesHeroTitleFilter>;
+export type PagesBodyHeroSectionActionsFilter = {
+  label?: InputMaybe<StringFilter>;
+  url?: InputMaybe<StringFilter>;
+  type?: InputMaybe<StringFilter>;
+};
+
+export type PagesBodyHeroSectionFilter = {
+  title?: InputMaybe<PagesBodyHeroSectionTitleFilter>;
   subtitle?: InputMaybe<RichTextFilter>;
   image?: InputMaybe<ImageFilter>;
+  actions?: InputMaybe<PagesBodyHeroSectionActionsFilter>;
 };
 
-export type PagesTechnologyTitleGradientFilter = {
-  children?: InputMaybe<StringFilter>;
+export type PagesBodyTechnologySectionTitleGradientFilter = {
+  text?: InputMaybe<StringFilter>;
 };
 
-export type PagesTechnologyTitleFilter = {
-  Gradient?: InputMaybe<PagesTechnologyTitleGradientFilter>;
+export type PagesBodyTechnologySectionTitleFilter = {
+  Gradient?: InputMaybe<PagesBodyTechnologySectionTitleGradientFilter>;
 };
 
-export type PagesTechnologyFilter = {
-  title?: InputMaybe<PagesTechnologyTitleFilter>;
+export type PagesBodyTechnologySectionFilter = {
+  title?: InputMaybe<PagesBodyTechnologySectionTitleFilter>;
   description?: InputMaybe<RichTextFilter>;
 };
 
-export type PagesBodyGradientFilter = {
-  children?: InputMaybe<StringFilter>;
+export type PagesBodyAboutSectionTitleGradientFilter = {
+  text?: InputMaybe<StringFilter>;
+};
+
+export type PagesBodyAboutSectionTitleFilter = {
+  Gradient?: InputMaybe<PagesBodyAboutSectionTitleGradientFilter>;
+};
+
+export type PagesBodyAboutSectionFilter = {
+  label?: InputMaybe<StringFilter>;
+  title?: InputMaybe<PagesBodyAboutSectionTitleFilter>;
+  description?: InputMaybe<RichTextFilter>;
+  image?: InputMaybe<ImageFilter>;
+  imageAlt?: InputMaybe<StringFilter>;
 };
 
 export type PagesBodyFilter = {
   Gradient?: InputMaybe<PagesBodyGradientFilter>;
+  HeroSection?: InputMaybe<PagesBodyHeroSectionFilter>;
+  TechnologySection?: InputMaybe<PagesBodyTechnologySectionFilter>;
+  AboutSection?: InputMaybe<PagesBodyAboutSectionFilter>;
 };
 
 export type PagesFilter = {
@@ -418,8 +429,6 @@ export type PagesFilter = {
   description?: InputMaybe<StringFilter>;
   lastUpdate?: InputMaybe<StringFilter>;
   tocTitle?: InputMaybe<StringFilter>;
-  hero?: InputMaybe<PagesHeroFilter>;
-  technology?: InputMaybe<PagesTechnologyFilter>;
   body?: InputMaybe<PagesBodyFilter>;
 };
 
@@ -564,24 +573,11 @@ export type BlogMutation = {
   body?: InputMaybe<Scalars['JSON']['input']>;
 };
 
-export type PagesHeroMutation = {
-  title?: InputMaybe<Scalars['JSON']['input']>;
-  subtitle?: InputMaybe<Scalars['JSON']['input']>;
-  image?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type PagesTechnologyMutation = {
-  title?: InputMaybe<Scalars['JSON']['input']>;
-  description?: InputMaybe<Scalars['JSON']['input']>;
-};
-
 export type PagesMutation = {
   title?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   lastUpdate?: InputMaybe<Scalars['String']['input']>;
   tocTitle?: InputMaybe<Scalars['String']['input']>;
-  hero?: InputMaybe<PagesHeroMutation>;
-  technology?: InputMaybe<PagesTechnologyMutation>;
   body?: InputMaybe<Scalars['JSON']['input']>;
 };
 
@@ -589,7 +585,7 @@ export type PortfolioPartsFragment = { __typename: 'Portfolio', title: string, s
 
 export type BlogPartsFragment = { __typename: 'Blog', title: string, slug?: string | null, description?: string | null, excerpt?: string | null, date?: string | null, author?: string | null, category?: string | null, tags?: Array<string | null> | null, image?: string | null, imageAlt?: string | null, readTime?: number | null, body?: any | null };
 
-export type PagesPartsFragment = { __typename: 'Pages', title: string, description?: string | null, lastUpdate?: string | null, tocTitle?: string | null, body?: any | null, hero?: { __typename: 'PagesHero', title?: any | null, subtitle?: any | null, image?: string | null } | null, technology?: { __typename: 'PagesTechnology', title?: any | null, description?: any | null } | null };
+export type PagesPartsFragment = { __typename: 'Pages', title: string, description?: string | null, lastUpdate?: string | null, tocTitle?: string | null, body?: any | null };
 
 export type PortfolioQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
@@ -634,7 +630,7 @@ export type PagesQueryVariables = Exact<{
 }>;
 
 
-export type PagesQuery = { __typename?: 'Query', pages: { __typename: 'Pages', id: string, title: string, description?: string | null, lastUpdate?: string | null, tocTitle?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesHero', title?: any | null, subtitle?: any | null, image?: string | null } | null, technology?: { __typename: 'PagesTechnology', title?: any | null, description?: any | null } | null } };
+export type PagesQuery = { __typename?: 'Query', pages: { __typename: 'Pages', id: string, title: string, description?: string | null, lastUpdate?: string | null, tocTitle?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
 
 export type PagesConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -646,7 +642,7 @@ export type PagesConnectionQueryVariables = Exact<{
 }>;
 
 
-export type PagesConnectionQuery = { __typename?: 'Query', pagesConnection: { __typename?: 'PagesConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PagesConnectionEdges', cursor: string, node?: { __typename: 'Pages', id: string, title: string, description?: string | null, lastUpdate?: string | null, tocTitle?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesHero', title?: any | null, subtitle?: any | null, image?: string | null } | null, technology?: { __typename: 'PagesTechnology', title?: any | null, description?: any | null } | null } | null } | null> | null } };
+export type PagesConnectionQuery = { __typename?: 'Query', pagesConnection: { __typename?: 'PagesConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PagesConnectionEdges', cursor: string, node?: { __typename: 'Pages', id: string, title: string, description?: string | null, lastUpdate?: string | null, tocTitle?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
 
 export const PortfolioPartsFragmentDoc = gql`
     fragment PortfolioParts on Portfolio {
@@ -690,17 +686,6 @@ export const PagesPartsFragmentDoc = gql`
   description
   lastUpdate
   tocTitle
-  hero {
-    __typename
-    title
-    subtitle
-    image
-  }
-  technology {
-    __typename
-    title
-    description
-  }
   body
 }
     `;

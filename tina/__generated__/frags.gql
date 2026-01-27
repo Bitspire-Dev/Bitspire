@@ -37,16 +37,5 @@ fragment PagesParts on Pages {
   description
   lastUpdate
   tocTitle
-  hero {
-    __typename
-    title
-    subtitle
-    image
-  }
-  technology {
-    __typename
-    title
-    description
-  }
   body
 }

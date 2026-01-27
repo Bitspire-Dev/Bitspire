@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
-import { useMemo, useEffect, useCallback } from 'react';
+import { useMemo, useEffect, useCallback, useTransition } from 'react';
 import { useRouter, usePathname } from '@/i18n/routing';
 
 const flagMap = {
@@ -21,6 +21,7 @@ export function LanguageSwitcher({ labels }: LanguageSwitcherProps = {}) {
   const intlLocale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
 
   const stripLocalePrefix = useCallback((path: string) => {
     if (path.startsWith('/en')) return path.replace(/^\/en(\/|$)/, '/');
@@ -74,7 +75,9 @@ export function LanguageSwitcher({ labels }: LanguageSwitcherProps = {}) {
       window.location.assign(targetPath);
       return;
     }
-    router.replace(targetPath, { locale: otherLocale });
+    startTransition(() => {
+      router.replace(targetPath, { locale: otherLocale, scroll: false });
+    });
   };
 
   const ariaLabel = otherLocale === 'pl' 
@@ -86,8 +89,10 @@ export function LanguageSwitcher({ labels }: LanguageSwitcherProps = {}) {
       onClick={handleSwitch}
       onMouseEnter={prefetchTarget}
       onFocus={prefetchTarget}
+      onPointerDown={prefetchTarget}
       className="group relative w-10 h-10 rounded-lg overflow-hidden border-2 border-slate-600/40 hover:border-blue-400/60 bg-slate-800/40 hover:bg-slate-700/60 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-blue-500/20 hover:scale-110"
       aria-label={ariaLabel}
+      aria-busy={isPending}
     >
       <div className="absolute inset-0 bg-linear-to-br from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <Image

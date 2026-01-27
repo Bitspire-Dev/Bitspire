@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { tinaField } from 'tinacms/dist/react';
 import { buildAdminLink, type AdminLinkMode } from '@/lib/routing/adminLink';
-import { RichTextLite } from '@/components/ui/tina/RichTextLite';
+import { RichTextLite } from '@tina/richTextPresets';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { Badge } from '@/components/ui/primitives/Badge';
 import { Button } from '@/components/ui/primitives/Button';

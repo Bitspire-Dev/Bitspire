@@ -1,7 +1,7 @@
 import React from 'react';
 import { tinaField } from 'tinacms/dist/react';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
-import { RichText } from '@/components/ui/tina/RichTextPresets';
+import { RichText } from '@tina/richTextPresets';
 import { Card, CardContent } from '@/components/ui/primitives/Card';
 
 interface Section {
@@ -132,7 +132,7 @@ export default function LegalPage({ data, hideToc = false }: { data?: LegalPageD
         {children}
       </a>
     ),
-  };
+  } as Record<string, (props: object) => React.ReactElement>;
 
   const shellClass = hideToc
     ? "max-w-5xl mx-auto"

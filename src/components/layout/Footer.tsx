@@ -1,9 +1,9 @@
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { buildLocalePath } from '@/lib/seo/metadata';
 import { buildAdminLink, type AdminLinkMode } from '@/lib/routing/adminLink';
 import { CookieSettingsButton } from '@/components/ui/cookie-consent/CookieSettingsButton';
+import Image from 'next/image';
 import {
   FaFacebookF,
   FaInstagram,

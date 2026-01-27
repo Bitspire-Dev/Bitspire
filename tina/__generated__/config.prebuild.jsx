@@ -1,14 +1,20 @@
 // tina/config.ts
 import { defineConfig } from "tinacms";
 
-// tina/templates/gradient.ts
+// tina/templates/text styles/gradient.ts
 var gradientTemplate = {
   name: "Gradient",
   label: "Gradient Text",
+  inline: true,
+  ui: {
+    defaultItem: {
+      text: ""
+    }
+  },
   fields: [
     {
       type: "string",
-      name: "children",
+      name: "text",
       label: "Text"
     }
   ]
@@ -109,42 +115,106 @@ var blogCollection = {
   ]
 };
 
-// tina/templates/richText.ts
-var richTextField = (name, label, description) => ({
-  type: "rich-text",
-  name,
-  label,
-  description,
-  templates: [gradientTemplate]
-});
-var simpleRichTextField = (name, label) => ({
-  type: "rich-text",
-  name,
-  label
-});
-
-// tina/schemas/sections.ts
-var heroSection = {
-  type: "object",
-  name: "hero",
+// tina/templates/homeSections.ts
+var heroSectionTemplate = {
+  name: "HeroSection",
   label: "Hero Section",
   fields: [
-    richTextField("title", "Title", "U\u017Cyj 'Gradient' z menu aby doda\u0107 kolorowy tekst"),
-    simpleRichTextField("subtitle", "Subtitle"),
+    {
+      type: "rich-text",
+      name: "title",
+      label: "Title",
+      templates: [gradientTemplate]
+    },
+    {
+      type: "rich-text",
+      name: "subtitle",
+      label: "Subtitle"
+    },
     {
       type: "image",
       name: "image",
       label: "Hero Image"
+    },
+    {
+      type: "object",
+      list: true,
+      name: "actions",
+      label: "Actions",
+      ui: {
+        itemProps: (item) => {
+          return { label: item?.label };
+        }
+      },
+      fields: [
+        {
+          type: "string",
+          name: "label",
+          label: "Label"
+        },
+        {
+          type: "string",
+          name: "url",
+          label: "URL"
+        },
+        {
+          type: "string",
+          name: "type",
+          label: "Type",
+          options: ["primary", "secondary", "outline"]
+        }
+      ]
     }
   ]
 };
-var technologySection = {
-  type: "object",
-  name: "technology",
+var aboutSectionTemplate = {
+  name: "AboutSection",
+  label: "About Section",
+  fields: [
+    {
+      type: "string",
+      name: "label",
+      label: "Label",
+      description: "Small text above title (e.g. About the project)"
+    },
+    {
+      type: "rich-text",
+      name: "title",
+      label: "Title",
+      templates: [gradientTemplate]
+    },
+    {
+      type: "rich-text",
+      name: "description",
+      label: "Description"
+    },
+    {
+      type: "image",
+      name: "image",
+      label: "Image"
+    },
+    {
+      type: "string",
+      name: "imageAlt",
+      label: "Image Alt Text"
+    }
+  ]
+};
+var technologySectionTemplate = {
+  name: "TechnologySection",
   label: "Technology Section",
   fields: [
-    richTextField("title", "Section Title"),
-    simpleRichTextField("description", "Section Description")
+    {
+      type: "rich-text",
+      name: "title",
+      label: "Section Title",
+      templates: [gradientTemplate]
+    },
+    {
+      type: "rich-text",
+      name: "description",
+      label: "Section Description"
+    }
   ]
 };
 
@@ -192,16 +262,13 @@ var pagesCollection = {
       label: "Table of Contents Title",
       description: "For legal pages sidebar"
     },
-    // Home page sections
-    heroSection,
-    technologySection,
     {
       type: "rich-text",
       name: "body",
       label: "Page Content",
       description: "For legal pages and other text-heavy pages",
       isBody: true,
-      templates: [gradientTemplate]
+      templates: [gradientTemplate, heroSectionTemplate, technologySectionTemplate, aboutSectionTemplate]
     }
   ]
 };
@@ -211,9 +278,9 @@ var branch = process.env.NEXT_PUBLIC_TINA_BRANCH ?? process.env.TINA_BRANCH ?? p
 var config_default = defineConfig({
   branch,
   // Get this from tina.io
-  clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID,
+  clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID ?? "local",
   // Get this from tina.io
-  token: process.env.TINA_TOKEN,
+  token: process.env.TINA_TOKEN ?? "local",
   build: {
     outputFolder: "admin",
     publicFolder: "public"

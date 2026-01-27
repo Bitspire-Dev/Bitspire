@@ -3,12 +3,12 @@ import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import { tinaField } from 'tinacms/dist/react';
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { RichTextLite } from '@/components/ui/tina/RichTextLite';
+import { RichTextLite } from '@tina/richTextPresets';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 
 interface TechnologyData {
-	title?: Record<string, unknown> | null;
-	description?: Record<string, unknown> | null;
+	title?: Record<string, unknown> | string | null;
+	description?: Record<string, unknown> | string | null;
 	[key: string]: unknown;
 }
 
@@ -115,6 +115,44 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
 		};
 	}, [visible, logoCount]);
 
+	const titleValue = data?.title;
+	const descriptionValue = data?.description;
+
+	const renderTitle = () => {
+		if (!titleValue) return null;
+		if (typeof titleValue === "string") {
+			return (
+				<h2 className="text-3xl md:text-5xl font-bold text-white mb-4 text-center leading-tight">
+					{titleValue}
+				</h2>
+			);
+		}
+		return (
+			<RichTextLite
+				content={titleValue as TinaMarkdownContent | TinaMarkdownContent[]}
+				preset="section-title"
+				className="mb-3"
+			/>
+		);
+	};
+
+	const renderDescription = () => {
+		if (!descriptionValue) return null;
+		if (typeof descriptionValue === "string") {
+			return (
+				<p className="text-lg text-brand-text-muted text-center leading-relaxed">
+					{descriptionValue}
+				</p>
+			);
+		}
+		return (
+			<RichTextLite
+				content={descriptionValue as TinaMarkdownContent | TinaMarkdownContent[]}
+				preset="description"
+			/>
+		);
+	};
+
 	return (
 		<section
 			ref={sectionRef}
@@ -124,19 +162,12 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
       <div className="container mx-auto px-4 mb-8">
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
 		  <div className="w-16 h-0.5 bg-linear-to-r from-blue-600 to-cyan-500 mb-4"></div>
-          <div data-tina-field={tinaField(data, 'title')}>
-			<RichTextLite
-				content={data?.title as TinaMarkdownContent | TinaMarkdownContent[]}
-				preset="section-title"
-				className="mb-3"
-			/>
-          </div>
-          <div data-tina-field={tinaField(data, 'description')}>
-			<RichTextLite
-				content={data?.description as TinaMarkdownContent | TinaMarkdownContent[]}
-				preset="description"
-			/>
-          </div>
+		  <div data-tina-field={tinaField(data, 'title')}>
+			{renderTitle()}
+		  </div>
+		  <div data-tina-field={tinaField(data, 'description')}>
+			{renderDescription()}
+		  </div>
         </div>
       </div>
       
@@ -175,7 +206,7 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
 				  }}
 				>
           <div className="relative group flex justify-center items-center h-full w-full">
-            <Image
+						<Image
               src={src}
               alt={alt}
               width={80}

@@ -1,5 +1,5 @@
 import { Collection } from "tinacms";
-import { gradientTemplate } from "../templates/gradient";
+import { gradientTemplate } from "../templates/text styles/gradient";
 
 export const portfolioCollection: Collection = {
   name: "portfolio",
