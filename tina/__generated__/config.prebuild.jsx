@@ -311,6 +311,42 @@ var technologySectionTemplate = {
     }
   ]
 };
+var portfolioHighlightsSectionTemplate = {
+  name: "PortfolioHighlightsSection",
+  label: "Portfolio Highlights",
+  fields: [
+    {
+      type: "rich-text",
+      name: "title",
+      label: "Title",
+      templates: [gradientTemplate]
+    },
+    {
+      type: "rich-text",
+      name: "subtitle",
+      label: "Subtitle"
+    },
+    {
+      type: "object",
+      name: "projects",
+      label: "Selected Projects",
+      list: true,
+      ui: {
+        itemProps: (item) => {
+          return { label: item?.project };
+        }
+      },
+      fields: [
+        {
+          type: "reference",
+          name: "project",
+          label: "Project",
+          collections: ["portfolio"]
+        }
+      ]
+    }
+  ]
+};
 var featuresSectionTemplate = {
   name: "FeaturesSection",
   label: "Features Section",
@@ -444,7 +480,7 @@ var pagesCollection = {
       label: "Page Content",
       description: "For legal pages and other text-heavy pages",
       isBody: true,
-      templates: [gradientTemplate, heroSectionTemplate, technologySectionTemplate, aboutSectionTemplate, featuresSectionTemplate, statisticsSectionTemplate]
+      templates: [gradientTemplate, heroSectionTemplate, technologySectionTemplate, aboutSectionTemplate, featuresSectionTemplate, statisticsSectionTemplate, portfolioHighlightsSectionTemplate]
     }
   ]
 };

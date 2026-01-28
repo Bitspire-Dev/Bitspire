@@ -475,6 +475,28 @@ export type PagesBodyStatisticsSectionFilter = {
   tiles?: InputMaybe<PagesBodyStatisticsSectionTilesFilter>;
 };
 
+export type PagesBodyPortfolioHighlightsSectionTitleGradientFilter = {
+  text?: InputMaybe<StringFilter>;
+};
+
+export type PagesBodyPortfolioHighlightsSectionTitleFilter = {
+  Gradient?: InputMaybe<PagesBodyPortfolioHighlightsSectionTitleGradientFilter>;
+};
+
+export type PagesBodyPortfolioHighlightsSectionProjectsProjectFilter = {
+  portfolio?: InputMaybe<PortfolioFilter>;
+};
+
+export type PagesBodyPortfolioHighlightsSectionProjectsFilter = {
+  project?: InputMaybe<PagesBodyPortfolioHighlightsSectionProjectsProjectFilter>;
+};
+
+export type PagesBodyPortfolioHighlightsSectionFilter = {
+  title?: InputMaybe<PagesBodyPortfolioHighlightsSectionTitleFilter>;
+  subtitle?: InputMaybe<RichTextFilter>;
+  projects?: InputMaybe<PagesBodyPortfolioHighlightsSectionProjectsFilter>;
+};
+
 export type PagesBodyFilter = {
   Gradient?: InputMaybe<PagesBodyGradientFilter>;
   HeroSection?: InputMaybe<PagesBodyHeroSectionFilter>;
@@ -482,6 +504,7 @@ export type PagesBodyFilter = {
   AboutSection?: InputMaybe<PagesBodyAboutSectionFilter>;
   FeaturesSection?: InputMaybe<PagesBodyFeaturesSectionFilter>;
   StatisticsSection?: InputMaybe<PagesBodyStatisticsSectionFilter>;
+  PortfolioHighlightsSection?: InputMaybe<PagesBodyPortfolioHighlightsSectionFilter>;
 };
 
 export type PagesFilter = {

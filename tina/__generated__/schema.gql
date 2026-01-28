@@ -360,6 +360,28 @@ input PagesBodyStatisticsSectionFilter {
   tiles: PagesBodyStatisticsSectionTilesFilter
 }
 
+input PagesBodyPortfolioHighlightsSectionTitleGradientFilter {
+  text: StringFilter
+}
+
+input PagesBodyPortfolioHighlightsSectionTitleFilter {
+  Gradient: PagesBodyPortfolioHighlightsSectionTitleGradientFilter
+}
+
+input PagesBodyPortfolioHighlightsSectionProjectsProjectFilter {
+  portfolio: PortfolioFilter
+}
+
+input PagesBodyPortfolioHighlightsSectionProjectsFilter {
+  project: PagesBodyPortfolioHighlightsSectionProjectsProjectFilter
+}
+
+input PagesBodyPortfolioHighlightsSectionFilter {
+  title: PagesBodyPortfolioHighlightsSectionTitleFilter
+  subtitle: RichTextFilter
+  projects: PagesBodyPortfolioHighlightsSectionProjectsFilter
+}
+
 input PagesBodyFilter {
   Gradient: PagesBodyGradientFilter
   HeroSection: PagesBodyHeroSectionFilter
@@ -367,6 +389,7 @@ input PagesBodyFilter {
   AboutSection: PagesBodyAboutSectionFilter
   FeaturesSection: PagesBodyFeaturesSectionFilter
   StatisticsSection: PagesBodyStatisticsSectionFilter
+  PortfolioHighlightsSection: PagesBodyPortfolioHighlightsSectionFilter
 }
 
 input PagesFilter {

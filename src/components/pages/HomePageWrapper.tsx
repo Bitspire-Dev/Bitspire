@@ -5,6 +5,7 @@ import { Hero } from "@/components/sections/home-page/Hero";
 import Technology from "@/components/sections/home-page/Technology";
 import About from "@/components/sections/home-page/About";
 import Features from "@/components/sections/home-page/Features";
+import PortfolioHighlights from "@/components/sections/home-page/PortfolioHighlights";
 import { Statistics } from "@/components/sections/home-page/Statistics";
 
 interface HomePageData {
@@ -16,9 +17,10 @@ interface HomePageData {
 
 interface HomePageWrapperProps {
     data?: HomePageData;
+    portfolioHighlightsProjects?: Array<Record<string, unknown>>;
 }
 
-export default function HomePageWrapper({ data }: HomePageWrapperProps) {
+export default function HomePageWrapper({ data, portfolioHighlightsProjects }: HomePageWrapperProps) {
     const locale = data?.locale || 'pl';
     
     if (!data) {
@@ -46,6 +48,14 @@ export default function HomePageWrapper({ data }: HomePageWrapperProps) {
             FeaturesSection: (props: object) => (
                 <div data-tina-field={tinaField(props as Record<string, unknown>)}>
                     <Features data={props as Record<string, unknown>} />
+                </div>
+            ),
+            PortfolioHighlightsSection: (props: object) => (
+                <div data-tina-field={tinaField(props as Record<string, unknown>)}>
+                                        <PortfolioHighlights
+                                            data={props as Record<string, unknown>}
+                                            projectsIndex={portfolioHighlightsProjects}
+                                        />
                 </div>
             ),
             StatisticsSection: (props: object) => (

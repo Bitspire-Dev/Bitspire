@@ -129,6 +129,43 @@ export const technologySectionTemplate = {
   ],
 } as const satisfies RichTextTemplate<false>;
 
+export const portfolioHighlightsSectionTemplate = {
+  name: "PortfolioHighlightsSection",
+  label: "Portfolio Highlights",
+  fields: [
+    {
+      type: "rich-text" as const,
+      name: "title",
+      label: "Title",
+      templates: [gradientTemplate],
+    },
+    {
+      type: "rich-text" as const,
+      name: "subtitle",
+      label: "Subtitle",
+    },
+    {
+      type: "object" as const,
+      name: "projects",
+      label: "Selected Projects",
+      list: true as const,
+      ui: {
+        itemProps: (item: { project?: string } | undefined) => {
+          return { label: item?.project };
+        },
+      },
+      fields: [
+        {
+          type: "reference" as const,
+          name: "project",
+          label: "Project",
+          collections: ["portfolio"],
+        },
+      ],
+    },
+  ],
+} as const satisfies RichTextTemplate<false>;
+
 export const featuresSectionTemplate = {
   name: "FeaturesSection",
   label: "Features Section",

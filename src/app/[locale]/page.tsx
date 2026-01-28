@@ -1,6 +1,6 @@
 import HomePageWrapper from "@/components/pages/HomePageWrapper";
 import { buildLocalePath, buildMetadata, normalizeLocale } from "@/lib/seo/metadata";
-import { getHomePage } from "@/lib/tina/queries";
+import { getHomePage, getPortfolioIndex } from "@/lib/tina/queries";
 import { redirect } from "next/navigation";
 
 const supportedLocales = ["pl", "en"] as const;
@@ -38,6 +38,14 @@ export default async function Home({ params }: PageProps) {
     // send it to default locale with the same path to reach the correct route.
     redirect(`/pl/${locale}`);
   }
-  const data = await getHomePage(locale);
-  return <HomePageWrapper data={{ ...data, locale }} />;
+  const [data, portfolioHighlightsProjects] = await Promise.all([
+    getHomePage(locale),
+    getPortfolioIndex(locale),
+  ]);
+  return (
+    <HomePageWrapper
+      data={{ ...data, locale }}
+      portfolioHighlightsProjects={portfolioHighlightsProjects}
+    />
+  );
 }

@@ -32,7 +32,7 @@ description: Bitspire - Nowoczesne rozwiązania IT dla Twojego biznesu
 <FeaturesSection
   label="Możliwości"
   title={<>
-    Wyróżnij się na tle konkurencji i zyskaj silną pozycję rynkową dzięki Bitspire.
+    # Wyróżnij się na tle konkurencji i zyskaj silną pozycję rynkową dzięki Bitspire.
   </>}
   subtitle={<>
     Tworzymy rozwiązania, które łączą estetykę z funkcjonalnością. Każdy projekt jest budowany z precyzją i dbałością o szczegóły.
@@ -59,9 +59,23 @@ description: Bitspire - Nowoczesne rozwiązania IT dla Twojego biznesu
   ]}
 />
 
+<PortfolioHighlightsSection
+  title={<>
+    # Wybrane <Gradient text="Realizacje" />
+  </>}
+  subtitle={<>
+    Zobacz przykłady naszych projektów, które przyniosły realne korzyści naszym klientom.
+  </>}
+  projects={[
+    { project: "pl/bezawaryjni.mdx" },
+    { project: "pl/eduvantage.mdx" },
+    { project: "pl/skladamy.mdx" }
+  ]}
+/>
+
 <StatisticsSection
   title={<>
-    Liczby, które <Gradient text="robią różnicę" />
+    # Liczby, które <Gradient text="robią różnicę" />
   </>}
   description={<>
     Sprawdź, dlaczego nasze rozwiązania technologiczne przekładają się na Twój realny zysk. Nie zgadujemy – opieramy się na danych.
@@ -86,7 +100,8 @@ description: Bitspire - Nowoczesne rozwiązania IT dla Twojego biznesu
     {
       number: "Lead",
       title: "Skuteczniejsza konwersja",
-      description: "Projektujemy ścieżki użytkownika tak, aby maksymalizować sprzedaż.",
+      description:
+        "Projektujemy ścieżki użytkownika tak, aby maksymalizować sprzedaż.",
       variant: "transparent",
       size: "4x2",
       colStart: 9,
@@ -123,9 +138,6 @@ description: Bitspire - Nowoczesne rozwiązania IT dla Twojego biznesu
 <TechnologySection
   title={<>
     ## Technologie, w których <Gradient text="tworzymy" />
-  </>}
-  description={<>
-
   </>}
   items={[
     { name: "Next.js", icon: "/logo/Nextjs.svg" },
