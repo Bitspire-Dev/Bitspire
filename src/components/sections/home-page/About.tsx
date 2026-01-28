@@ -6,6 +6,7 @@ import { RichText } from '@tina/richTextPresets';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { useLocale } from 'next-intl';
 
 import { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 
@@ -24,6 +25,7 @@ interface AboutProps {
 
 export const About: React.FC<AboutProps> = ({ data }) => {
   const imageSrc = safeImageSrc(data.image);
+  const locale = useLocale();
 
   return (
     <section className="w-full py-section lg:pt-64 overflow-hidden bg-brand-bg relative z-10">
@@ -31,6 +33,7 @@ export const About: React.FC<AboutProps> = ({ data }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Image Column */}
           <motion.div 
+            key={`about-image-${locale}`}
             className="relative order-1 lg:order-1"
             data-tina-field={tinaField(data, 'image')}
             initial={{ opacity: 0, x: -50 }}
@@ -53,6 +56,7 @@ export const About: React.FC<AboutProps> = ({ data }) => {
 
           {/* Content Column */}
           <motion.div 
+            key={`about-content-${locale}`}
             className="flex flex-col gap-6 order-2 lg:order-2"
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}

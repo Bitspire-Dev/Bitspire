@@ -2,10 +2,11 @@
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { tinaField } from 'tinacms/dist/react';
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { RichText } from '@tina/richTextPresets';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
+import { motion } from 'framer-motion';
+import { useLocale } from "next-intl";
 
 type TechnologyItem = Record<string, unknown> & {
     name?: string | null;
@@ -27,6 +28,7 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [logoCount, setLogoCount] = useState(items.length > 0 ? items.length * 8 : 0);
     const logoCacheRef = useRef<Map<string, HTMLImageElement>>(new Map());
+    const locale = useLocale();
     
     // animation state stored in refs
     const positionsRef = useRef<number[]>([]);
@@ -43,9 +45,6 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
         () => Array.from(new Set(itemIconSrcs.filter(Boolean) as string[])),
         [itemIconSrcs]
     );
-
-    // Use scroll animation hook for fade-in effect
-    const { ref: sectionRef, visible } = useScrollAnimation<HTMLElement>({ threshold: 0.15 });
 
     useEffect(() => {
         if (!uniqueLogoSrcs.length || typeof window === "undefined") return;
@@ -142,12 +141,14 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
     if (!data || items.length === 0) return null;
 
     return (
-        <section 
-            ref={sectionRef}
-            className={`py-section mt-2.5 relative bg-brand-bg text-brand-fg overflow-hidden transition-all duration-1000 ${
-                visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-            }`}
-             data-tina-field={tinaField(data)}
+        <motion.section 
+            key={`technology-${locale}`}
+            className="py-section mt-2.5 relative bg-brand-bg text-brand-fg overflow-hidden"
+            data-tina-field={tinaField(data)}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
         >
              {/* Background glow similar to Features */}
              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-250 h-75 bg-brand-accent-2/5 rounded-full blur-[100px] pointer-events-none" />
@@ -221,7 +222,7 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
                     );
                 })}
             </div>
-        </section>
+        </motion.section>
     );
 };
 

@@ -9,6 +9,7 @@ import { safeImageSrc } from '@/lib/ui/helpers';
 import { Link } from '@/i18n/routing';
 import { motion, type Variants } from 'framer-motion';
 import Image from 'next/image';
+import { useLocale } from 'next-intl';
 
 const HERO_BLUR_DATA_URL =
   'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=';
@@ -38,6 +39,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
   const titleValue = data?.title;
   const subtitleValue = data?.subtitle;
   const actions = data?.actions || [];
+  const locale = useLocale();
 
   const renderTitle = () => {
     if (!titleValue) return null;
@@ -137,6 +139,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
       />
 
       <motion.div 
+        key={`hero-content-${locale}`}
         /**
          * CONTENT CONTAINER:
          * Mobile: Natural flow
@@ -196,6 +199,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
       {/* Hero Image - Positioned absolutely at the bottom for stability */}
       {imageSrc && (
         <motion.div
+          key={`hero-image-${locale}`}
             variants={imageVariants}
             initial="hidden"
             animate="visible"

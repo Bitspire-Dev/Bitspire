@@ -3,6 +3,7 @@ import React from 'react';
 import { tinaField } from 'tinacms/dist/react';
 import { RichText } from '@tina/richTextPresets';
 import { motion } from 'framer-motion';
+import { useLocale } from 'next-intl';
 import { 
   Tile, 
   TileNumber, 
@@ -36,6 +37,7 @@ interface StatisticsData {
 
 export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
   if (!data) return null;
+  const locale = useLocale();
 
   return (
     <section className="py-20 md:py-32 relative overflow-hidden">
@@ -44,6 +46,7 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
 
       <div className="container mx-auto px-4 md:px-8">
         <motion.div 
+          key={`statistics-header-${locale}`}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -150,7 +153,7 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
 
               return (
                 <motion.div
-                  key={i}
+                  key={`${locale}-${i}`}
                   style={gridStyle}
                   className={finalClassName}
                   initial={{ opacity: 0, scale: 0.9 }}

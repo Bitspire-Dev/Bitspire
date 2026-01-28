@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaArrowRight, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { useLocale } from 'next-intl';
 
 interface PortfolioProject {
   title?: string;
@@ -64,6 +65,7 @@ function normalizeIndexProject(item: Record<string, unknown>): PortfolioProject 
 
 export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHighlightsProps) {
   const [currentIndex, setCurrentIndex] = useState(1);
+  const locale = useLocale();
   
   if (!data) return null;
 
@@ -127,6 +129,7 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div 
+          key={`portfolio-highlights-header-${locale}`}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -147,6 +150,7 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
 
         {/* Carousel */}
         <motion.div 
+          key={`portfolio-highlights-carousel-${locale}`}
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}

@@ -5,6 +5,7 @@ import { tinaField } from 'tinacms/dist/react';
 import { RichText } from '@tina/richTextPresets';
 import { motion } from 'framer-motion';
 import { TinaMarkdownContent } from 'tinacms/dist/rich-text';
+import { useLocale } from 'next-intl';
 
 interface ContactData {
   label?: string | null;
@@ -26,6 +27,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
     status: 'idle' | 'loading' | 'success' | 'error';
     message: string;
   }>({ status: 'idle', message: '' });
+  const locale = useLocale();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -77,6 +79,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
           <div className="flex flex-col justify-center h-full pt-8 lg:sticky lg:top-24">
             {data.label && (
               <motion.div
+                key={`contact-label-${locale}`}
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -90,6 +93,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
             )}
 
             <motion.div
+              key={`contact-title-${locale}`}
               className="prose prose-invert max-w-none mb-8 [&>h1]:text-4xl [&>h1]:md:text-5xl [&>h1]:font-bold [&>h1]:leading-tight [&>h1]:tracking-tight"
               data-tina-field={tinaField(data, 'title')}
               initial={{ opacity: 0, y: 20 }}
@@ -101,6 +105,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
             </motion.div>
 
             <motion.div
+              key={`contact-description-${locale}`}
                className="prose prose-invert max-w-none text-brand-text-muted text-lg leading-relaxed border-l-2 border-brand-border/50 pl-6"
                data-tina-field={tinaField(data, 'description')}
                initial={{ opacity: 0, y: 20 }}
@@ -114,6 +119,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
 
           {/* Right Side: Card Form */}
           <motion.div
+            key={`contact-form-${locale}`}
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}

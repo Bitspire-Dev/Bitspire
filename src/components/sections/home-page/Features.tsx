@@ -7,6 +7,7 @@ import { safeImageSrc } from '@/lib/ui/helpers';
 import Image from 'next/image';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { motion } from 'framer-motion';
+import { useLocale } from 'next-intl';
 
 type FeatureItem = Record<string, unknown> & {
   icon?: string | null;
@@ -28,6 +29,7 @@ interface FeaturesProps {
 
 export default function Features({ data }: FeaturesProps) {
   if (!data) return null;
+  const locale = useLocale();
 
   return (
     <section className="py-section pt-32 lg:pt-40 bg-brand-bg relative z-10 text-brand-fg overflow-hidden" data-tina-field={tinaField(data)}>
@@ -36,6 +38,7 @@ export default function Features({ data }: FeaturesProps) {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div 
+          key={`features-header-${locale}`}
           className="text-center max-w-3xl mx-auto mb-16 md:mb-24"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -77,7 +80,7 @@ export default function Features({ data }: FeaturesProps) {
             const iconSrc = safeImageSrc(feature.icon || undefined);
             return (
             <motion.div 
-                key={index} 
+              key={`${locale}-${index}`} 
                 className="group relative flex flex-col p-6 rounded-2xl border border-blue-500/30 bg-blue-950/20 hover:bg-blue-950/40 hover:border-blue-500/50 transition-all duration-500 backdrop-blur-sm"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
