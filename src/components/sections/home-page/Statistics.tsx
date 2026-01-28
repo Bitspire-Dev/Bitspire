@@ -8,7 +8,6 @@ import {
   TileTitle, 
   TileDescription, 
   TileContent, 
-  TileHeader,
   type TileVariant,
   type TileSize
 } from '@/components/ui/primitives/Tile';
@@ -120,7 +119,7 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
                  </div>
                  
                  {isWide && tile.description && (
-                    <div className="pl-4 max-w-[240px] text-right">
+                    <div className="pl-4 max-w-60 text-right">
                        <TileDescription className="text-xs sm:text-sm text-balance">
                            {tile.description}
                        </TileDescription>

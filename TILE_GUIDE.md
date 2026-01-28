@@ -75,7 +75,7 @@ Struktura kafelka jest zorientowana na `flex-col`. Używaj podkomponentów do za
     <div>
       <TileNumber className="animate-gradient-x">02</TileNumber>
     </div>
-    <div className="pl-4 max-w-[240px] text-right">
+    <div className="pl-4 max-w-60 text-right">
       <TileDescription className="text-xs sm:text-sm text-balance">
         High-level targeted advertising attracts students and clients seeking professional education.
       </TileDescription>
