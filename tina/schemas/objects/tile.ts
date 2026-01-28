@@ -6,16 +6,39 @@ export const tileFields: TinaField[] = [
     name: "variant",
     label: "Style Variant",
     options: [
-      { label: "Solid Dark (Default)", value: "solid-dark" },
-      { label: "Solid Light", value: "solid-light" },
-      { label: "Glass (Gradient)", value: "glass" },
-      { label: "Glass Light", value: "glass-light" },
-      { label: "Outline", value: "outline" },
-      { label: "Gradient Dark", value: "gradient-dark" },
+      { label: "Transparent", value: "transparent" },
+      { label: "Solid White", value: "solid-white" },
+      { label: "Solid Black", value: "solid-black" },
+      { label: "Texture", value: "texture" },
     ],
     ui: {
-        defaultValue: "solid-dark"
+        defaultValue: "transparent"
     }
+  },
+  {
+      type: "string",
+      name: "size",
+      label: "Grid Spacing",
+      description: "How many grid cells this tile should occupy.",
+      options: [
+          { label: "2x2", value: "2x2" },
+          { label: "4x2", value: "4x2" }
+      ],
+      ui: {
+          defaultValue: "2x2"
+      }
+  },
+  {
+    type: "number",
+    name: "colStart",
+    label: "Grid Column Start",
+    description: "Column index to place this tile (1-based).",
+  },
+  {
+    type: "number",
+    name: "rowStart",
+    label: "Grid Row Start",
+    description: "Row index to place this tile (1-based).",
   },
   {
     type: "boolean",

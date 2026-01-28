@@ -1,4 +1,5 @@
 import type { RichTextTemplate } from "@tinacms/schema-tools";
+import { tileFields } from "../schemas/objects/tile";
 import { gradientTemplate } from "./text styles/gradient";
 
 export const heroSectionTemplate = {
@@ -182,3 +183,32 @@ export const featuresSectionTemplate = {
   ],
 } as const satisfies RichTextTemplate<false>;
 
+export const statisticsSectionTemplate = {
+  name: "StatisticsSection",
+  label: "Statistics Section",
+  fields: [
+    {
+       type: "rich-text" as const,
+       name: "title",
+       label: "Title",
+       templates: [gradientTemplate],
+    },
+    {
+       type: "rich-text" as const,
+       name: "description",
+       label: "Description",
+    },
+    {
+       type: "object" as const,
+       name: "tiles",
+       label: "Tiles",
+       list: true as const,
+       ui: {
+        itemProps: (item: { title?: string } | undefined) => {
+           return { label: item?.title };
+        },
+       },
+       fields: tileFields
+    }
+  ],
+} as const satisfies RichTextTemplate<false>;

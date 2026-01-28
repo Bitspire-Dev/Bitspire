@@ -444,12 +444,44 @@ export type PagesBodyFeaturesSectionFilter = {
   features?: InputMaybe<PagesBodyFeaturesSectionFeaturesFilter>;
 };
 
+export type PagesBodyStatisticsSectionTitleGradientFilter = {
+  text?: InputMaybe<StringFilter>;
+};
+
+export type PagesBodyStatisticsSectionTitleFilter = {
+  Gradient?: InputMaybe<PagesBodyStatisticsSectionTitleGradientFilter>;
+};
+
+export type BooleanFilter = {
+  eq?: InputMaybe<Scalars['Boolean']['input']>;
+  exists?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type PagesBodyStatisticsSectionTilesFilter = {
+  variant?: InputMaybe<StringFilter>;
+  size?: InputMaybe<StringFilter>;
+  colStart?: InputMaybe<NumberFilter>;
+  rowStart?: InputMaybe<NumberFilter>;
+  withNoise?: InputMaybe<BooleanFilter>;
+  number?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  description?: InputMaybe<StringFilter>;
+  link?: InputMaybe<StringFilter>;
+};
+
+export type PagesBodyStatisticsSectionFilter = {
+  title?: InputMaybe<PagesBodyStatisticsSectionTitleFilter>;
+  description?: InputMaybe<RichTextFilter>;
+  tiles?: InputMaybe<PagesBodyStatisticsSectionTilesFilter>;
+};
+
 export type PagesBodyFilter = {
   Gradient?: InputMaybe<PagesBodyGradientFilter>;
   HeroSection?: InputMaybe<PagesBodyHeroSectionFilter>;
   TechnologySection?: InputMaybe<PagesBodyTechnologySectionFilter>;
   AboutSection?: InputMaybe<PagesBodyAboutSectionFilter>;
   FeaturesSection?: InputMaybe<PagesBodyFeaturesSectionFilter>;
+  StatisticsSection?: InputMaybe<PagesBodyStatisticsSectionFilter>;
 };
 
 export type PagesFilter = {

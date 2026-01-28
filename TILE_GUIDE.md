@@ -1,6 +1,6 @@
 # Tile Component Guide (`src/components/ui/primitives/Tile.tsx`)
 
-Komponent `Tile` to uniwersalny "kafelek" w stylu Apple/Bento grid, zaprojektowany do tworzenia nowoczesnych układów (np. sekcje Feature, Grid, Portfolio). Obsługuje różne warianty stylistyczne, rozmiary oraz teksturę "noise".
+Komponent `Tile` to uniwersalny "kafelek" w stylu Apple/Bento grid, zaprojektowany do tworzenia nowoczesnych układów (np. sekcje Feature, Grid, Portfolio). Obsługuje różne warianty stylistyczne, rozmiary siatki oraz teksturę "noise".
 
 ## Import
 
@@ -11,6 +11,7 @@ import {
   TileTitle, 
   TileDescription, 
   TileContent, 
+  TileHeader,
   TileFooter 
 } from '@/components/ui/primitives/Tile';
 ```
@@ -20,8 +21,10 @@ import {
 Struktura kafelka jest zorientowana na `flex-col`. Używaj podkomponentów do zachowania spójnych odstępów i typografii.
 
 ```tsx
-<Tile variant="solid-dark" size="md">
-  <TileNumber>01</TileNumber>
+<Tile variant="transparent" gridSize="2x2">
+  <TileHeader>
+    <TileNumber>01</TileNumber>
+  </TileHeader>
   <TileContent>
     <TileTitle>Tytuł sekcji</TileTitle>
     <TileDescription>
@@ -35,8 +38,8 @@ Struktura kafelka jest zorientowana na `flex-col`. Używaj podkomponentów do za
 
 | Prop | Typ | Domyślnie | Opis |
 |------|-----|-----------|------|
-| `variant` | `TitleVariant` | `'solid-dark'` | Styl kafelka (patrz tabela poniżej) |
-| `size` | `'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Padding i zaokrąglenie rogów |
+| `variant` | `TileVariant` | `'transparent'` | Styl kafelka (patrz tabela poniżej) |
+| `gridSize` | `'2x2' \| '4x2'` | `'2x2'` | Rozmiar kafelka w siatce (col/row span) |
 | `withNoise` | `boolean` | `false` | Dodaje subtelną teksturę szumu (grain) |
 | `className` | `string` | `undefined` | Dodatkowe klasy Tailwind |
 
@@ -44,46 +47,43 @@ Struktura kafelka jest zorientowana na `flex-col`. Używaj podkomponentów do za
 
 | Wariant | Wygląd | Zastosowanie |
 |---------|--------|--------------|
-| `solid-dark` | Ciemne tło (brand-surface), jasny tekst | Główne kafelki informacyjne |
-| `solid-light` | Białe tło, ciemny tekst | Kafelki wyróżniające się wysokim kontrastem |
-| `glass` | Gradient (Pink -> Purple) + Blur | **Główne akcenty** (jak na ref "Marketing Agencies") |
-| `glass-light` | Oszronione szkło (białe), lekko przezroczyste | Subtelne elementy tła lub nakładki |
-| `outline` | Przezroczyste, tylko obrys | Elementy drugoplanowe |
-| `gradient-dark` | Ciemny gradient (Surface -> Black) | Głębsze, "bogatsze" tło niż solid-dark |
+| `solid-white` | Białe tło, ciemny tekst | Kafelki wyróżniające się wysokim kontrastem |
+| `transparent` | Przezroczyste tło, jasny tekst | Główne kafelki na ciemnym tle |
+| `solid-black` | Czarne tło, jasny tekst | Mocny kontrast, akcenty |
+| `texture` | Tło z teksturą (obraz + połysk) | Kafelki premium / hero |
 
-## Przykłady (na podstawie referencji)
+## Przykłady (zgodnie z obecnym układem)
 
-### 1. Różowy gradient ("Marketing Agencies")
-
-Ten wariant używa kolorów `brand-accent` zdefiniowanych w `tailwind.config.js`.
+### 1. Kafelek 2x2 (tylko tytuł + liczba)
 
 ```tsx
-<Tile variant="glass" size="lg" withNoise>
-  <TileNumber>03</TileNumber>
-  <TileContent className="mt-8">
+<Tile variant="solid-white" gridSize="2x2">
+  <TileHeader>
+    <TileNumber className="animate-gradient-x">03</TileNumber>
+  </TileHeader>
+  <TileContent>
     <TileTitle>Marketing Agencies</TileTitle>
   </TileContent>
 </Tile>
 ```
 
-### 2. Biały kafelek ("Small Business")
+### 2. Kafelek 4x2 (opis w prawym górnym rogu)
 
 ```tsx
-<Tile variant="solid-light" size="md">
-  <TileNumber className="text-brand-accent">01</TileNumber>
-  <TileContent>
-    <TileTitle>Small and Medium-Sized Businesses</TileTitle>
-  </TileContent>
-</Tile>
-```
+<Tile variant="transparent" gridSize="4x2">
+  <div className="flex justify-between items-start w-full">
+    <div>
+      <TileNumber className="animate-gradient-x">02</TileNumber>
+    </div>
+    <div className="pl-4 max-w-[240px] text-right">
+      <TileDescription className="text-xs sm:text-sm text-balance">
+        High-level targeted advertising attracts students and clients seeking professional education.
+      </TileDescription>
+    </div>
+  </div>
 
-### 3. Ciemny kafelek ("Corporate Clients")
-
-```tsx
-<Tile variant="solid-dark" size="md" className="hover:border-brand-accent/50">
-  <TileNumber>05</TileNumber>
   <TileContent>
-    <TileTitle>Corporate Clients</TileTitle>
+    <TileTitle>Educational Consulting Services</TileTitle>
   </TileContent>
 </Tile>
 ```
@@ -113,11 +113,22 @@ Pamiętaj, aby w komponencie pobierającym dane (np. `FeatureSection.tsx`) zmapo
   <Tile 
     key={i} 
     variant={tile.variant} 
+    gridSize={tile.size}
     withNoise={tile.withNoise}
+    style={tile.colStart && tile.rowStart ? {
+      gridColumn: `${tile.colStart} / span ${tile.size === '4x2' ? 4 : 2}`,
+      gridRow: `${tile.rowStart} / span 2`,
+    } : undefined}
   >
     {tile.number && <TileNumber>{tile.number}</TileNumber>}
     <TileTitle>{tile.title}</TileTitle>
-    <TileDescription>{tile.description}</TileDescription>
+    {tile.description && <TileDescription>{tile.description}</TileDescription>}
   </Tile>
 ))}
 ```
+
+## Układ treści (ważne zasady)
+
+- **Kafelki 2x2:** tylko `number` + `title` (bez opisu).
+- **Kafelki 4x2:** opis powinien być wyświetlany w **prawym górnym rogu**, liczba po lewej, tytuł na dole.
+- W razie potrzeby specjalnego układu (np. opis w prawym górnym rogu), realizuj to w komponencie sekcji (np. `Statistics.tsx`).

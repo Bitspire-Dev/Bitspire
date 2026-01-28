@@ -329,12 +329,44 @@ input PagesBodyFeaturesSectionFilter {
   features: PagesBodyFeaturesSectionFeaturesFilter
 }
 
+input PagesBodyStatisticsSectionTitleGradientFilter {
+  text: StringFilter
+}
+
+input PagesBodyStatisticsSectionTitleFilter {
+  Gradient: PagesBodyStatisticsSectionTitleGradientFilter
+}
+
+input BooleanFilter {
+  eq: Boolean
+  exists: Boolean
+}
+
+input PagesBodyStatisticsSectionTilesFilter {
+  variant: StringFilter
+  size: StringFilter
+  colStart: NumberFilter
+  rowStart: NumberFilter
+  withNoise: BooleanFilter
+  number: StringFilter
+  title: StringFilter
+  description: StringFilter
+  link: StringFilter
+}
+
+input PagesBodyStatisticsSectionFilter {
+  title: PagesBodyStatisticsSectionTitleFilter
+  description: RichTextFilter
+  tiles: PagesBodyStatisticsSectionTilesFilter
+}
+
 input PagesBodyFilter {
   Gradient: PagesBodyGradientFilter
   HeroSection: PagesBodyHeroSectionFilter
   TechnologySection: PagesBodyTechnologySectionFilter
   AboutSection: PagesBodyAboutSectionFilter
   FeaturesSection: PagesBodyFeaturesSectionFilter
+  StatisticsSection: PagesBodyStatisticsSectionFilter
 }
 
 input PagesFilter {
