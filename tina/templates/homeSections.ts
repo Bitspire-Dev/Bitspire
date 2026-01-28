@@ -249,3 +249,43 @@ export const statisticsSectionTemplate = {
     }
   ],
 } as const satisfies RichTextTemplate<false>;
+
+export const contactSectionTemplate = {
+  name: "ContactSection",
+  label: "Contact Section",
+  fields: [
+    {
+      type: "string" as const,
+      name: "label",
+      label: "Label",
+      description: "Small text above title",
+    },
+    {
+      type: "rich-text" as const,
+      name: "title",
+      label: "Title",
+      templates: [gradientTemplate],
+    },
+    {
+      type: "rich-text" as const,
+      name: "description",
+      label: "Description",
+    },
+    {
+      type: "string" as const,
+      name: "buttonLabel",
+      label: "Button Label",
+    },
+    {
+      type: "string" as const,
+      name: "successMessage",
+      label: "Success Message",
+    },
+    {
+      type: "string" as const,
+      name: "errorMessage",
+      label: "Error Message",
+    },
+  ],
+} as const satisfies RichTextTemplate<false>;
+

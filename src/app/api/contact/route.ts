@@ -1,13 +1,18 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { Resend } from 'resend';
 
 const contactSchema = z.object({
   name: z.string().trim().min(1),
   email: z.string().trim().email(),
   message: z.string().trim().min(1),
+  subject: z.string().optional().default("General Inquiry"),
   formName: z.string().optional(),
   company: z.string().optional(), // honeypot
 });
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
@@ -67,6 +72,32 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  // TODO: Integrate real delivery (email/CRM) here.
-  return NextResponse.json({ ok: true });
+  try {
+    const { name, email, subject, message } = parsed.data;
+    
+    await resend.emails.send({
+      from: 'Bitspire Contact <onboarding@resend.dev>', // Update with verified domain if available
+      to: [process.env.CONTACT_EMAIL || 'delivered@resend.dev'],
+      reply_to: email,
+      subject: `[Bitspire] Contact: ${subject}`,
+      html: `
+        <div>
+          <h2>New message from ${name}</h2>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Subject:</strong> ${subject}</p>
+          <div style="margin-top: 20px; padding: 20px; background: #eee;">
+            ${message.replace(/\n/g, '<br>')}
+          </div>
+        </div>
+      `
+    });
+    
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error("Resend error:", error);
+    return NextResponse.json(
+      { ok: false, error: "Failed to send email" },
+      { status: 500 }
+    );
+  }
 }

@@ -1,7 +1,8 @@
 "use client";
 import React from 'react';
 import { tinaField } from 'tinacms/dist/react';
-import { RichTextLite } from '@tina/richTextPresets';
+import { RichText } from '@tina/richTextPresets';
+import { motion } from 'framer-motion';
 import { 
   Tile, 
   TileNumber, 
@@ -42,30 +43,36 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-250 h-250 bg-blue-900/10 blur-[120px] rounded-full pointer-events-none -z-10" />
 
       <div className="container mx-auto px-4 md:px-8">
-        <div className="mb-20 max-w-4xl">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-20 max-w-4xl"
+        >
             {data.title && (
                 <div data-tina-field={tinaField(data, 'title')}>
                    <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-white/95">
-                     <RichTextLite content={data.title} />
+                     <RichText content={data.title} />
                    </h2>
                 </div>
             )}
             {data.description && (
                 <div data-tina-field={tinaField(data, 'description')}>
                     <div className="text-xl text-brand-text-muted leading-relaxed max-w-2xl">
-                        <RichTextLite content={data.description} />
+                        <RichText content={data.description} />
                     </div>
                 </div>
             )}
-        </div>
+        </motion.div>
 
         {/* Modular Grid System */}
         <div 
-          className="grid grid-rows-6 gap-4 [--stat-cols:5] md:[--stat-cols:12]" 
+          className="grid gap-3 sm:gap-4 lg:gap-6 [--stat-cols:6] [--stat-rows:10] sm:[--stat-cols:8] sm:[--stat-rows:8] md:[--stat-cols:12] md:[--stat-rows:6]" 
           style={{
             gridTemplateColumns: 'repeat(var(--stat-cols), minmax(0, 1fr))',
-            aspectRatio: 'calc(var(--stat-cols) / 6)',
-            gridTemplateRows: 'repeat(6, minmax(0, 1fr))',
+            gridTemplateRows: 'repeat(var(--stat-rows), minmax(0, 1fr))',
+            aspectRatio: 'calc(var(--stat-cols) / var(--stat-rows))',
           }}
           data-tina-field={tinaField(data, 'tiles')}
         >
@@ -76,12 +83,51 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
               const colSpan = size === '4x2' ? 4 : 2;
               const rowSpan = 2;
 
-              const gridStyle = tile.colStart && tile.rowStart
-                ? {
-                    gridColumn: `${tile.colStart} / span ${colSpan}`,
-                    gridRow: `${tile.rowStart} / span ${rowSpan}`,
-                  }
-                : undefined;
+              const mobileLayout: Array<{ colStart: number; rowStart: number }> = [
+                { colStart: 1, rowStart: 1 },
+                { colStart: 5, rowStart: 2 },
+                { colStart: 3, rowStart: 4 },
+                { colStart: 1, rowStart: 5 },
+                { colStart: 5, rowStart: 6 },
+                { colStart: 2, rowStart: 7 },
+                { colStart: 4, rowStart: 8 },
+                { colStart: 1, rowStart: 9 },
+              ];
+
+              const mobilePlacement = mobileLayout[i];
+              const basePlacement = mobilePlacement || (tile.colStart && tile.rowStart
+                ? { colStart: tile.colStart, rowStart: tile.rowStart }
+                : undefined);
+              const mdPlacement = (tile.colStart && tile.rowStart)
+                ? { colStart: tile.colStart, rowStart: tile.rowStart }
+                : mobilePlacement;
+
+              const gridStyle = {
+                '--stat-col-span': String(colSpan),
+                '--stat-row-span': String(rowSpan),
+                '--stat-col-span-md': String(colSpan),
+                '--stat-row-span-md': String(rowSpan),
+                ...(basePlacement
+                  ? {
+                      '--stat-col-start': String(basePlacement.colStart),
+                      '--stat-row-start': String(basePlacement.rowStart),
+                    }
+                  : {}),
+                ...(mdPlacement
+                  ? {
+                      '--stat-col-start-md': String(mdPlacement.colStart),
+                      '--stat-row-start-md': String(mdPlacement.rowStart),
+                    }
+                  : {}),
+              } as React.CSSProperties;
+
+              const placementClassName =
+                basePlacement || mdPlacement
+                  ? 'col-[var(--stat-col-start)_/_span_var(--stat-col-span)] row-[var(--stat-row-start)_/_span_var(--stat-row-span)] md:col-[var(--stat-col-start-md)_/_span_var(--stat-col-span-md)] md:row-[var(--stat-row-start-md)_/_span_var(--stat-row-span-md)]'
+                  : undefined;
+              
+              const finalClassName = placementClassName || (size === '4x2' ? 'col-span-4 row-span-2' : 'col-span-2 row-span-2');
+
               const useAnimatedGradient =
                 variant === 'solid-white' || variant === 'solid-black' || variant === 'transparent';
 
@@ -97,34 +143,50 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
                 : undefined;
 
               const isWide = size === '4x2';
+              const numberStyle = {
+                ...(gradientStyle ?? {}),
+                '--tile-number-scale': isWide ? '1' : '1.12',
+              } as React.CSSProperties;
 
               return (
+                <motion.div
+                  key={i}
+                  style={gridStyle}
+                  className={finalClassName}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ 
+                    duration: 0.5, 
+                    delay: i * 0.1,
+                    ease: "easeOut"
+                  }}
+                >
             <Tile 
-              key={i} 
               variant={variant}
               gridSize={size}
               withNoise={tile.withNoise === true}
-              style={gridStyle}
+              className="w-full h-full"
             >
-              <div className="flex justify-between items-start w-full">
-                 <div>
+                <div className="flex items-start w-full gap-3">
+                  <div className="shrink-0">
                     {tile.number && (
                       <TileNumber
                         className={useAnimatedGradient ? 'animate-gradient-x' : undefined}
-                        style={gradientStyle}
+                        style={numberStyle}
                       >
                         {tile.number}
                       </TileNumber>
                     )}
                  </div>
                  
-                 {isWide && tile.description && (
-                    <div className="pl-4 max-w-60 text-right">
-                       <TileDescription className="text-xs sm:text-sm text-balance">
-                           {tile.description}
-                       </TileDescription>
+                  {isWide && tile.description && (
+                    <div className="ml-auto min-w-0 max-w-[58%] text-right">
+                      <TileDescription className="text-balance overflow-hidden [display:-webkit-box] [-webkit-line-clamp:3] [-webkit-box-orient:vertical]">
+                        {tile.description}
+                      </TileDescription>
                     </div>
-                 )}
+                  )}
               </div>
               
               <TileContent>
@@ -132,6 +194,7 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
                 {!isWide && tile.description && <TileDescription>{tile.description}</TileDescription>}
               </TileContent>
             </Tile>
+            </motion.div>
               );
             })()
           ))}

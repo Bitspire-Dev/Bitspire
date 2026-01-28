@@ -51,7 +51,7 @@ export function Tile({
   return (
     <div
       className={cn(
-        'relative overflow-hidden transition-all duration-300 group rounded-4xl p-5 sm:p-6 md:p-8',
+        'relative overflow-hidden transition-all duration-300 group rounded-4xl @container [--tile-pad:clamp(8px,4.2cqmin,18px)] p-[var(--tile-pad)]',
         variants[variant],
         sizeClass,
         className
@@ -101,15 +101,15 @@ export function Tile({
 
 // Sub-components
 export function TileNumber({ children, className }: React.ComponentProps<'div'>) {
-    return <div className={cn("text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter mb-2 sm:mb-4 opacity-90", className)}>{children}</div>
+  return <div className={cn("text-[clamp(1.1rem,calc(18cqmin*var(--tile-number-scale,1)),3.25rem)] font-bold tracking-tighter mb-[clamp(6px,3.5cqmin,16px)] opacity-90 leading-none", className)}>{children}</div>
 }
 
 export function TileTitle({ children, className }: React.ComponentProps<'h3'>) {
-    return <h3 className={cn("text-lg sm:text-xl md:text-2xl font-bold leading-tight mb-1 sm:mb-2 tracking-tight", className)}>{children}</h3>
+  return <h3 className={cn("text-[clamp(0.85rem,8.2cqmin,1.6rem)] font-bold leading-[1.1] mb-[clamp(4px,2.5cqmin,10px)] tracking-tight text-balance overflow-hidden [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical]", className)}>{children}</h3>
 }
 
 export function TileDescription({ children, className }: React.ComponentProps<'p'>) {
-    return <p className={cn("text-sm sm:text-base opacity-80 leading-relaxed max-w-prose", className)}>{children}</p>
+  return <p className={cn("text-[clamp(0.7rem,5.6cqmin,1.05rem)] opacity-80 leading-[1.35] max-w-prose text-pretty overflow-hidden [display:-webkit-box] [-webkit-line-clamp:3] [-webkit-box-orient:vertical]", className)}>{children}</p>
 }
 
 export function TileContent({ children, className }: React.ComponentProps<'div'>) {

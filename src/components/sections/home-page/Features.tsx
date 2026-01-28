@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { tinaField } from 'tinacms/dist/react';
-import { RichTextLite } from '@tina/richTextPresets';
+import { RichText } from '@tina/richTextPresets';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import Image from 'next/image';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
@@ -61,14 +61,14 @@ export default function Features({ data }: FeaturesProps) {
             data-tina-field={tinaField(data, 'title')} 
             className="prose prose-invert max-w-none [&>h1]:text-4xl [&>h1]:md:text-5xl [&>h1]:font-bold [&>h1]:leading-tight mb-6"
           >
-             {data.title && <RichTextLite content={data.title} />}
+             {data.title && <RichText content={data.title} />}
           </div>
 
           <div 
             data-tina-field={tinaField(data, 'subtitle')}
             className="prose prose-invert max-w-none text-brand-text-muted text-lg md:text-xl leading-relaxed"
           >
-              {data.subtitle && <RichTextLite content={data.subtitle} />}
+              {data.subtitle && <RichText content={data.subtitle} />}
           </div>
         </motion.div>
 

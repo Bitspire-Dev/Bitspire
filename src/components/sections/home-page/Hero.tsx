@@ -3,7 +3,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/primitives/Button';
 import { tinaField } from 'tinacms/dist/react';
-import { RichTextLite } from '@tina/richTextPresets';
+import { RichText } from '@tina/richTextPresets';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import { Link } from '@/i18n/routing';
@@ -48,8 +48,8 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
         </h1>
       );
     }
-    return (
-      <RichTextLite
+      return (
+        <RichText
         content={titleValue as TinaMarkdownContent | TinaMarkdownContent[]}
         preset="hero-title"
         className="mb-6 text-center"
@@ -67,7 +67,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
       );
     }
     return (
-      <RichTextLite
+      <RichText
         content={subtitleValue as TinaMarkdownContent | TinaMarkdownContent[]}
         preset="subtitle"
         className="mb-8 max-w-2xl mx-auto text-center px-4"

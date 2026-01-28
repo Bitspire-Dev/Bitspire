@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { tinaField } from 'tinacms/dist/react';
-import { RichTextLite } from '@tina/richTextPresets';
+import { RichText } from '@tina/richTextPresets';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -87,7 +87,7 @@ export const About: React.FC<AboutProps> = ({ data }) => {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: 0.4 }}
             >
-              <RichTextLite content={data.title ?? []} />
+              <RichText content={data.title ?? []} />
             </motion.div>
 
             <motion.div 
@@ -98,7 +98,7 @@ export const About: React.FC<AboutProps> = ({ data }) => {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: 0.5 }}
             >
-              <RichTextLite content={data.description ?? []} />
+              <RichText content={data.description ?? []} />
             </motion.div>
 
           </motion.div>

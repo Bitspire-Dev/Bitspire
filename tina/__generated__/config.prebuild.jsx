@@ -429,6 +429,44 @@ var statisticsSectionTemplate = {
     }
   ]
 };
+var contactSectionTemplate = {
+  name: "ContactSection",
+  label: "Contact Section",
+  fields: [
+    {
+      type: "string",
+      name: "label",
+      label: "Label",
+      description: "Small text above title"
+    },
+    {
+      type: "rich-text",
+      name: "title",
+      label: "Title",
+      templates: [gradientTemplate]
+    },
+    {
+      type: "rich-text",
+      name: "description",
+      label: "Description"
+    },
+    {
+      type: "string",
+      name: "buttonLabel",
+      label: "Button Label"
+    },
+    {
+      type: "string",
+      name: "successMessage",
+      label: "Success Message"
+    },
+    {
+      type: "string",
+      name: "errorMessage",
+      label: "Error Message"
+    }
+  ]
+};
 
 // tina/schemas/pages.ts
 var pagesCollection = {
@@ -480,7 +518,7 @@ var pagesCollection = {
       label: "Page Content",
       description: "For legal pages and other text-heavy pages",
       isBody: true,
-      templates: [gradientTemplate, heroSectionTemplate, technologySectionTemplate, aboutSectionTemplate, featuresSectionTemplate, statisticsSectionTemplate, portfolioHighlightsSectionTemplate]
+      templates: [gradientTemplate, heroSectionTemplate, technologySectionTemplate, aboutSectionTemplate, featuresSectionTemplate, statisticsSectionTemplate, portfolioHighlightsSectionTemplate, contactSectionTemplate]
     }
   ]
 };

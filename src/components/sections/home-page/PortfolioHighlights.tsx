@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { tinaField } from 'tinacms/dist/react';
-import { RichTextLite } from '@tina/richTextPresets';
+import { RichText } from '@tina/richTextPresets';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -126,21 +126,33 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-brand-accent/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-16 max-w-2xl mx-auto">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16 max-w-2xl mx-auto"
+        >
           {data.title && (
             <div className="mb-4" data-tina-field={tinaField(data, 'title')}>
-              <RichTextLite content={data.title} />
+              <RichText content={data.title} />
             </div>
           )}
           {data.subtitle && (
             <div className="text-brand-fg/60 text-lg" data-tina-field={tinaField(data, 'subtitle')}>
-              <RichTextLite content={data.subtitle} />
+              <RichText content={data.subtitle} />
             </div>
           )}
-        </div>
+        </motion.div>
 
         {/* Carousel */}
-        <div className="relative h-125 flex items-center justify-center perspective-1000">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="relative h-125 flex items-center justify-center perspective-1000"
+        >
           <AnimatePresence mode='popLayout'>
             {[-1, 0, 1].map((offset) => {
               const index = getIndex(currentIndex + offset);
@@ -236,7 +248,7 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
            >
              <FaChevronRight className="text-white text-xl" />
            </button>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

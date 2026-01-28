@@ -382,6 +382,23 @@ input PagesBodyPortfolioHighlightsSectionFilter {
   projects: PagesBodyPortfolioHighlightsSectionProjectsFilter
 }
 
+input PagesBodyContactSectionTitleGradientFilter {
+  text: StringFilter
+}
+
+input PagesBodyContactSectionTitleFilter {
+  Gradient: PagesBodyContactSectionTitleGradientFilter
+}
+
+input PagesBodyContactSectionFilter {
+  label: StringFilter
+  title: PagesBodyContactSectionTitleFilter
+  description: RichTextFilter
+  buttonLabel: StringFilter
+  successMessage: StringFilter
+  errorMessage: StringFilter
+}
+
 input PagesBodyFilter {
   Gradient: PagesBodyGradientFilter
   HeroSection: PagesBodyHeroSectionFilter
@@ -390,6 +407,7 @@ input PagesBodyFilter {
   FeaturesSection: PagesBodyFeaturesSectionFilter
   StatisticsSection: PagesBodyStatisticsSectionFilter
   PortfolioHighlightsSection: PagesBodyPortfolioHighlightsSectionFilter
+  ContactSection: PagesBodyContactSectionFilter
 }
 
 input PagesFilter {

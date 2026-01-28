@@ -1,9 +1,9 @@
 "use client";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { tinaField } from 'tinacms/dist/react';
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { RichTextLite } from '@tina/richTextPresets';
+import { RichText } from '@tina/richTextPresets';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 
@@ -26,6 +26,7 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
     const items = data?.items || [];
     const containerRef = useRef<HTMLDivElement>(null);
     const [logoCount, setLogoCount] = useState(items.length > 0 ? items.length * 8 : 0);
+    const logoCacheRef = useRef<Map<string, HTMLImageElement>>(new Map());
     
     // animation state stored in refs
     const positionsRef = useRef<number[]>([]);
@@ -34,8 +35,31 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
     const lastWidthRef = useRef<number>(0);
     const resizeTimeoutRef = useRef<number | null>(null);
   
+    const itemIconSrcs = useMemo(
+        () => items.map((item) => safeImageSrc(item?.icon || undefined)),
+        [items]
+    );
+    const uniqueLogoSrcs = useMemo(
+        () => Array.from(new Set(itemIconSrcs.filter(Boolean) as string[])),
+        [itemIconSrcs]
+    );
+
     // Use scroll animation hook for fade-in effect
     const { ref: sectionRef, visible } = useScrollAnimation<HTMLElement>({ threshold: 0.15 });
+
+    useEffect(() => {
+        if (!uniqueLogoSrcs.length || typeof window === "undefined") return;
+
+        uniqueLogoSrcs.forEach((src) => {
+            if (!logoCacheRef.current.has(src)) {
+                const img = new window.Image();
+                img.src = src;
+                img.decoding = "async";
+                img.loading = "lazy";
+                logoCacheRef.current.set(src, img);
+            }
+        });
+    }, [uniqueLogoSrcs]);
 
     useEffect(() => {
         if (items.length === 0) return;
@@ -135,7 +159,7 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
                             className="prose prose-invert max-w-none [&>h1]:text-3xl [&>h1]:md:text-4xl [&>h1]:font-bold mb-4"
                             data-tina-field={tinaField(data, 'title')}
                         >
-                            <RichTextLite content={data.title} />
+                            <RichText content={data.title} />
                         </div>
                     )}
                     {data.description && (
@@ -143,7 +167,7 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
                             className="prose prose-invert max-w-none text-brand-text-muted text-lg"
                             data-tina-field={tinaField(data, 'description')}
                         >
-                            <RichTextLite content={data.description} />
+                            <RichText content={data.description} />
                         </div>
                     )}
                  </div>
@@ -152,15 +176,18 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
             <div 
                 className="relative w-full h-32 overflow-hidden items-center flex"
                 ref={containerRef}
+                style={{
+                    WebkitMaskImage:
+                        "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+                    maskImage:
+                        "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+                }}
             >
-                {/* Fade masks for edges */}
-                <div className="absolute left-0 top-0 bottom-0 w-12 md:w-32 bg-linear-to-r from-brand-bg to-transparent z-20 pointer-events-none" />
-                <div className="absolute right-0 top-0 bottom-0 w-12 md:w-32 bg-linear-to-l from-brand-bg to-transparent z-20 pointer-events-none" />
 
                 {/* Render enough copies to fill buffer */}
                 {Array.from({ length: logoCount }).map((_, i) => {
                     const item = items[i % items.length];
-                    const iconSrc = safeImageSrc(item?.icon || undefined);
+                    const iconSrc = itemIconSrcs[i % itemIconSrcs.length];
                     return (
                         <span
                             key={i}
@@ -178,6 +205,8 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
                                         src={iconSrc}
                                         alt={item.name || "Technology Logo"}
                                         fill
+                                        sizes="140px"
+                                        loading="lazy"
                                                                                 className={`object-contain opacity-90 ${
                                                                                     item.name === 'Vite'
                                                                                         ? 'filter-[brightness(1.75)]'

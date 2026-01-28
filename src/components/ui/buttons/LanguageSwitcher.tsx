@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import NextImage from 'next/image';
 import { useLocale } from 'next-intl';
 import { useMemo, useEffect, useCallback, useTransition } from 'react';
 import { useRouter, usePathname } from '@/i18n/routing';
@@ -95,7 +95,7 @@ export function LanguageSwitcher({ labels }: LanguageSwitcherProps = {}) {
       aria-busy={isPending}
     >
       <div className="absolute inset-0 bg-linear-to-br from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      <Image
+      <NextImage
         src={flagMap[otherLocale as keyof typeof flagMap]}
         alt={otherLocale === 'pl' ? 'Polski' : 'English'}
         width={24}

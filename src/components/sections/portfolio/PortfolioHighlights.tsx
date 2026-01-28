@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { tinaField } from 'tinacms/dist/react';
 import { buildAdminLink, type AdminLinkMode } from '@/lib/routing/adminLink';
-import { RichTextLite } from '@tina/richTextPresets';
+import { RichText } from '@tina/richTextPresets';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { Badge } from '@/components/ui/primitives/Badge';
 import { Button } from '@/components/ui/primitives/Button';
@@ -48,10 +48,10 @@ const PortfolioHighlights: React.FC<PortfolioHighlightsProps> = ({ data, locale 
         <div className="text-center mb-16">
           <div className="w-16 h-0.5 bg-linear-to-r from-blue-600 to-cyan-500 mb-6 mx-auto"></div>
           <div data-tina-field={tinaField(data, 'title')}>
-            <RichTextLite content={data?.title as TinaMarkdownContent | TinaMarkdownContent[]} preset="section-title" />
+            <RichText content={data?.title as TinaMarkdownContent | TinaMarkdownContent[]} preset="section-title" />
           </div>
           <div data-tina-field={tinaField(data, 'description')}>
-            <RichTextLite content={data?.description as TinaMarkdownContent | TinaMarkdownContent[]} preset="subtitle" />
+            <RichText content={data?.description as TinaMarkdownContent | TinaMarkdownContent[]} preset="subtitle" />
           </div>
         </div>
 

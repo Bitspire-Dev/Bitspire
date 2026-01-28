@@ -7,6 +7,7 @@ import About from "@/components/sections/home-page/About";
 import Features from "@/components/sections/home-page/Features";
 import PortfolioHighlights from "@/components/sections/home-page/PortfolioHighlights";
 import { Statistics } from "@/components/sections/home-page/Statistics";
+import { Contact } from "@/components/sections/home-page/Contact";
 
 interface HomePageData {
     locale?: string;
@@ -61,6 +62,11 @@ export default function HomePageWrapper({ data, portfolioHighlightsProjects }: H
             StatisticsSection: (props: object) => (
                 <div data-tina-field={tinaField(props as Record<string, unknown>)}>
                     <Statistics data={props as Record<string, unknown>} />
+                </div>
+            ),
+            ContactSection: (props: object) => (
+                <div data-tina-field={tinaField(props as Record<string, unknown>)}>
+                   <Contact data={props as Record<string, unknown>} />
                 </div>
             ),
         };

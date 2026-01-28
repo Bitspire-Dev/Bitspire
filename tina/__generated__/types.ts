@@ -497,6 +497,23 @@ export type PagesBodyPortfolioHighlightsSectionFilter = {
   projects?: InputMaybe<PagesBodyPortfolioHighlightsSectionProjectsFilter>;
 };
 
+export type PagesBodyContactSectionTitleGradientFilter = {
+  text?: InputMaybe<StringFilter>;
+};
+
+export type PagesBodyContactSectionTitleFilter = {
+  Gradient?: InputMaybe<PagesBodyContactSectionTitleGradientFilter>;
+};
+
+export type PagesBodyContactSectionFilter = {
+  label?: InputMaybe<StringFilter>;
+  title?: InputMaybe<PagesBodyContactSectionTitleFilter>;
+  description?: InputMaybe<RichTextFilter>;
+  buttonLabel?: InputMaybe<StringFilter>;
+  successMessage?: InputMaybe<StringFilter>;
+  errorMessage?: InputMaybe<StringFilter>;
+};
+
 export type PagesBodyFilter = {
   Gradient?: InputMaybe<PagesBodyGradientFilter>;
   HeroSection?: InputMaybe<PagesBodyHeroSectionFilter>;
@@ -505,6 +522,7 @@ export type PagesBodyFilter = {
   FeaturesSection?: InputMaybe<PagesBodyFeaturesSectionFilter>;
   StatisticsSection?: InputMaybe<PagesBodyStatisticsSectionFilter>;
   PortfolioHighlightsSection?: InputMaybe<PagesBodyPortfolioHighlightsSectionFilter>;
+  ContactSection?: InputMaybe<PagesBodyContactSectionFilter>;
 };
 
 export type PagesFilter = {
