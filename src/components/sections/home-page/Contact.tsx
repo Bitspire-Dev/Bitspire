@@ -27,6 +27,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
     status: 'idle' | 'loading' | 'success' | 'error';
     message: string;
   }>({ status: 'idle', message: '' });
+  const [focusedField, setFocusedField] = useState<string | null>(null);
   const locale = useLocale();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -58,35 +59,34 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
     }
   };
 
+  const inputClasses = "w-full bg-transparent border-b border-brand-border py-4 text-brand-fg placeholder:text-transparent focus:outline-none focus:border-brand-accent transition-all duration-300 peer";
+  const labelClasses = "absolute left-0 top-4 text-brand-text-muted-2 text-sm transition-all duration-300 -translate-y-6 scale-75 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-brand-accent cursor-text";
+
   return (
-    <section id="contact" className="w-full py-section relative z-10 bg-brand-bg overflow-visible">
-      {/* Grid Pattern Background */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03]" 
-           style={{ 
-             backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', 
-             backgroundSize: '32px 32px' 
-           }} 
-      />
+    <section id="contact" className="w-full py-section relative z-10 bg-brand-bg overflow-hidden">
       
-      {/* Radial Glows */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-accent/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[100px] pointer-events-none translate-y-1/3 -translate-x-1/4" />
+      {/* Subtle modern background elements */}
+      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-brand-accent/5 rounded-full blur-[150px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none translate-y-1/3 -translate-x-1/4" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-start">
+        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
           
           {/* Left Side: Text Content */}
-          <div className="flex flex-col justify-center h-full pt-8 lg:sticky lg:top-24">
+          <div className="lg:w-5/12 pt-8">
             {data.label && (
               <motion.div
                 key={`contact-label-${locale}`}
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="flex items-center gap-3 mb-6"
+                className="flex items-center gap-3 mb-8"
               >
-                <div className="h-px w-8 bg-brand-accent"></div>
-                <span className="text-brand-accent text-sm font-bold tracking-widest uppercase" data-tina-field={tinaField(data, 'label')}>
+                <span className="flex h-2 w-2 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-accent"></span>
+                </span>
+                <span className="text-brand-accent text-sm font-bold tracking-[0.2em] uppercase" data-tina-field={tinaField(data, 'label')}>
                   {data.label}
                 </span>
               </motion.div>
@@ -94,19 +94,21 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
 
             <motion.div
               key={`contact-title-${locale}`}
-              className="prose prose-invert max-w-none mb-8 [&>h1]:text-4xl [&>h1]:md:text-5xl [&>h1]:font-bold [&>h1]:leading-tight [&>h1]:tracking-tight"
+              className="mb-8"
               data-tina-field={tinaField(data, 'title')}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              <RichText content={data.title ?? []} />
+              <div className="prose prose-invert max-w-none [&>h1]:text-5xl [&>h1]:lg:text-6xl [&>h1]:font-bold [&>h1]:leading-[1.1] [&>h1]:tracking-tight [&>h1]:text-brand-fg">
+                <RichText content={data.title ?? []} />
+              </div>
             </motion.div>
 
             <motion.div
               key={`contact-description-${locale}`}
-               className="prose prose-invert max-w-none text-brand-text-muted text-lg leading-relaxed border-l-2 border-brand-border/50 pl-6"
+               className="prose prose-invert max-w-none text-brand-text-muted text-lg leading-relaxed mb-12"
                data-tina-field={tinaField(data, 'description')}
                initial={{ opacity: 0, y: 20 }}
                whileInView={{ opacity: 1, y: 0 }}
@@ -115,99 +117,109 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
             >
               <RichText content={data.description ?? []} />
             </motion.div>
+            
+            <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4 }}
+                className="hidden lg:block text-brand-text-muted-2 text-sm"
+            >
+                <div className="flex items-center gap-2 mb-2">
+                    <svg className="w-5 h-5 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    <span>contact@bitspire.dev</span>
+                </div>
+            </motion.div>
           </div>
 
-          {/* Right Side: Card Form */}
+          {/* Right Side: Clean Form */}
           <motion.div
             key={`contact-form-${locale}`}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="w-full relative group"
+            className="lg:w-7/12 mt-4 lg:mt-0"
           >
-            {/* Form Glow Effect behind card */}
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-brand-accent/20 to-blue-600/20 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-            
-            <form onSubmit={handleSubmit} className="relative bg-brand-surface p-6 sm:p-8 rounded-2xl border border-brand-border/40 shadow-2xl space-y-6">
+            <form onSubmit={handleSubmit} className="relative space-y-8 bg-brand-surface/30 p-8 md:p-12 rounded-3xl border border-white/5 backdrop-blur-sm shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]">
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div className="space-y-2">
-                  <label htmlFor="name" className="text-xs font-bold text-brand-text-muted-2 uppercase tracking-wider ml-1">Name</label>
-                  <div className="group/input relative">
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      required
-                      className="w-full bg-brand-bg border border-brand-border rounded-lg px-4 py-3 text-brand-fg placeholder:text-brand-text-muted-2/30 focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-all duration-300"
-                      placeholder="John Doe"
-                    />
-                  </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                <div className="relative group">
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    className={inputClasses}
+                    placeholder=" "
+                    onFocus={() => setFocusedField('name')}
+                    onBlur={() => setFocusedField(null)}
+                  />
+                  <label htmlFor="name" className={labelClasses}>Your Name</label>
                 </div>
-                <div className="space-y-2">
-                  <label htmlFor="email" className="text-xs font-bold text-brand-text-muted-2 uppercase tracking-wider ml-1">Email</label>
-                  <div className="group/input relative">
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      required
-                      className="w-full bg-brand-bg border border-brand-border rounded-lg px-4 py-3 text-brand-fg placeholder:text-brand-text-muted-2/30 focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-all duration-300"
-                      placeholder="john@example.com"
-                    />
-                  </div>
+                <div className="relative group">
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    className={inputClasses}
+                    placeholder=" "
+                     onFocus={() => setFocusedField('email')}
+                    onBlur={() => setFocusedField(null)}
+                  />
+                  <label htmlFor="email" className={labelClasses}>Email Address</label>
                 </div>
               </div>
               
-              <div className="space-y-2">
-                <label htmlFor="subject" className="text-xs font-bold text-brand-text-muted-2 uppercase tracking-wider ml-1">Subject</label>
-                <div className="relative">
-                 <select
-                    id="subject"
-                    name="subject"
-                    required
-                    className="w-full bg-brand-bg border border-brand-border rounded-lg px-4 py-3 text-brand-fg focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-all duration-300 appearance-none cursor-pointer"
-                  >
-                    <option value="General Inquiry">General Inquiry</option>
-                    <option value="Project Proposal">Project Proposal</option>
-                    <option value="Support">Support</option>
-                    <option value="Other">Other</option>
-                  </select>
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-brand-text-muted-2">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+              <div className="relative group pt-4">
+                  <div className="relative">
+                    <select
+                        id="subject"
+                        name="subject"
+                        required
+                        className="w-full bg-transparent border-b border-brand-border py-4 text-brand-fg focus:outline-none focus:border-brand-accent transition-all duration-300 appearance-none cursor-pointer"
+                        defaultValue=""
+                    >
+                        <option value="" disabled className="text-brand-text-muted-2">Select a subject...</option>
+                        <option value="General Inquiry" className="bg-brand-surface text-brand-fg">General Inquiry</option>
+                        <option value="Project Proposal" className="bg-brand-surface text-brand-fg">Project Proposal</option>
+                        <option value="Support" className="bg-brand-surface text-brand-fg">Support</option>
+                        <option value="Other" className="bg-brand-surface text-brand-fg">Other</option>
+                    </select>
+                    <label htmlFor="subject" className="absolute left-0 -top-2 text-brand-text-muted-2 text-xs uppercase tracking-wider">Subject</label>
+                     <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-brand-text-muted-2">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
                   </div>
-                </div>
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="message" className="text-xs font-bold text-brand-text-muted-2 uppercase tracking-wider ml-1">Message</label>
+              <div className="relative group pt-4">
                 <textarea
                   id="message"
                   name="message"
                   required
-                  rows={5}
-                  className="w-full bg-brand-bg border border-brand-border rounded-lg px-4 py-3 text-brand-fg placeholder:text-brand-text-muted-2/30 focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-all duration-300 resize-none"
-                  placeholder="Tell us about your project..."
+                  rows={4}
+                  className="w-full bg-transparent border-b border-brand-border py-4 text-brand-fg placeholder:text-transparent focus:outline-none focus:border-brand-accent transition-all duration-300 resize-none peer"
+                  placeholder=" "
                 />
+                <label htmlFor="message" className={labelClasses}>Tell us about your project</label>
               </div>
 
-              <div className="pt-2">
-                <button
+              <div className="pt-6 flex items-center justify-between">
+                 <button
                   type="submit"
                   disabled={formState.status === 'loading'}
-                  className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-6 rounded-lg transition-all duration-300 transform shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group-hover:scale-[1.01]"
+                  className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-200 bg-brand-accent font-lg rounded-full hover:bg-brand-accent-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden shadow-lg shadow-brand-accent/20"
                   data-tina-field={tinaField(data, 'buttonLabel')}
                 >
-                  {formState.status === 'loading' ? (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Processing...
-                    </>
-                  ) : (data.buttonLabel || 'Send Message')}
+                    <span className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-black"></span>
+                    <span className="relative flex items-center gap-3">
+                        {formState.status === 'loading' ? 'Sending...' : (data.buttonLabel || 'Send Message')}
+                         {!formState.status && (
+                             <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                         )}
+                    </span>
                 </button>
               </div>
 
@@ -215,13 +227,20 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
                 <motion.div 
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
-                  className={`p-4 rounded-lg text-sm border ${
+                  className={`mt-4 text-sm font-medium ${
                     formState.status === 'success' 
-                      ? 'bg-green-500/10 text-green-400 border-green-500/20' 
-                      : 'bg-red-500/10 text-red-400 border-red-500/20'
+                      ? 'text-green-400' 
+                      : 'text-red-400'
                   }`}
                 >
-                  {formState.message}
+                    <div className="flex items-center gap-2">
+                         {formState.status === 'success' ? (
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                         ) : (
+                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                         )}
+                        {formState.message}
+                    </div>
                 </motion.div>
               )}
             </form>
