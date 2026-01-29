@@ -1,5 +1,5 @@
 import { TinaField } from "tinacms";
-import { richTextField, simpleRichTextField } from "../templates/richText";
+import { richTextField, simpleRichTextField } from "../templates/text styles/richText";
 
 /**
  * Hero section fields for home page

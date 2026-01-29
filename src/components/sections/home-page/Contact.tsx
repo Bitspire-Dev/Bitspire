@@ -101,7 +101,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-               <RichText content={data.title} />
+              <RichText content={data.title ?? []} />
             </motion.div>
 
             <motion.div
@@ -113,7 +113,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
                viewport={{ once: true }}
                transition={{ delay: 0.2 }}
             >
-              <RichText content={data.description} />
+              <RichText content={data.description ?? []} />
             </motion.div>
           </div>
 

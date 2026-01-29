@@ -78,7 +78,7 @@ export async function POST(request: Request) {
     await resend.emails.send({
       from: 'Bitspire Contact <onboarding@resend.dev>', // Update with verified domain if available
       to: [process.env.CONTACT_EMAIL || 'delivered@resend.dev'],
-      reply_to: email,
+      replyTo: email,
       subject: `[Bitspire] Contact: ${subject}`,
       html: `
         <div>
