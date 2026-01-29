@@ -59,7 +59,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
   };
 
   return (
-    <section id="contact" className="w-full py-section relative z-10 bg-brand-bg overflow-hidden">
+    <section id="contact" className="w-full py-section relative z-10 bg-brand-bg overflow-visible">
       {/* Grid Pattern Background */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03]" 
            style={{ 

@@ -41,6 +41,18 @@ export const tileFields: TinaField[] = [
     description: "Row index to place this tile (1-based).",
   },
   {
+    type: "number",
+    name: "mobileColStart",
+    label: "Mobile Grid Column Start",
+    description: "Mobile column index to place this tile (1-based).",
+  },
+  {
+    type: "number",
+    name: "mobileRowStart",
+    label: "Mobile Grid Row Start",
+    description: "Mobile row index to place this tile (1-based).",
+  },
+  {
     type: "boolean",
     name: "withNoise",
     label: "Add Noise Texture",

@@ -28,8 +28,8 @@ export const About: React.FC<AboutProps> = ({ data }) => {
   const locale = useLocale();
 
   return (
-    <section className="w-full py-section lg:pt-64 overflow-hidden bg-brand-bg relative z-10">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="w-full py-section lg:pt-64 overflow-visible bg-brand-bg relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Image Column */}
           <motion.div 

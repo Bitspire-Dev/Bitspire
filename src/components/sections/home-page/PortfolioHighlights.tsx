@@ -123,7 +123,8 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
   };
 
   return (
-    <section className="-mt-12 py-16 md:py-20 bg-brand-bg text-brand-fg overflow-hidden relative" data-tina-field={tinaField(data)}>
+    <section className="-mt-12 py-16 md:py-20 bg-brand-bg text-brand-fg overflow-visible relative" data-tina-field={tinaField(data)}>
+
       {/* Background decoration */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-brand-accent/5 rounded-full blur-[120px] pointer-events-none" />
 

@@ -462,6 +462,8 @@ export type PagesBodyStatisticsSectionTilesFilter = {
   size?: InputMaybe<StringFilter>;
   colStart?: InputMaybe<NumberFilter>;
   rowStart?: InputMaybe<NumberFilter>;
+  mobileColStart?: InputMaybe<NumberFilter>;
+  mobileRowStart?: InputMaybe<NumberFilter>;
   withNoise?: InputMaybe<BooleanFilter>;
   number?: InputMaybe<StringFilter>;
   title?: InputMaybe<StringFilter>;

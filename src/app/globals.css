@@ -2,12 +2,14 @@
 
 /* Minimal global styles. Prefer Tailwind utility classes in JSX. */
 
-html,
-body,
-#__next {
+
+html, body, #__next {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  width: 100vw;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {

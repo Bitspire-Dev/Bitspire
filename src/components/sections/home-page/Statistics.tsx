@@ -23,6 +23,8 @@ type StatisticsTile = {
   size?: string | null;
   colStart?: number | null;
   rowStart?: number | null;
+  mobileColStart?: number | null;
+  mobileRowStart?: number | null;
   withNoise?: boolean | null;
   __typename?: string;
   [key: string]: unknown;
@@ -39,12 +41,22 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
   if (!data) return null;
   const locale = useLocale();
 
+  const normalizePlacement = (col?: number | string | null, row?: number | string | null) => {
+    const parsedCol = typeof col === 'string' ? Number(col) : col;
+    const parsedRow = typeof row === 'string' ? Number(row) : row;
+    const colValue = Number.isFinite(parsedCol) ? Math.floor(parsedCol as number) : null;
+    const rowValue = Number.isFinite(parsedRow) ? Math.floor(parsedRow as number) : null;
+    if (!colValue || !rowValue || colValue < 1 || rowValue < 1) return undefined;
+    return { colStart: colValue, rowStart: rowValue };
+  };
+
   return (
-    <section className="-mt-5 py-16 md:py-24 relative overflow-hidden">
+    <section className="-mt-5 py-16 md:py-24 relative overflow-visible">
+      
       {/* Background decoration */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-250 h-250 bg-blue-900/10 blur-[120px] rounded-full pointer-events-none -z-10" />
 
-      <div className="container mx-auto px-4 md:px-8">
+      <div className="container mx-auto px-4 md:px-8 relative z-10">
         <motion.div 
           key={`statistics-header-${locale}`}
           initial={{ opacity: 0, y: 20 }}
@@ -79,8 +91,9 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
           }}
           data-tina-field={tinaField(data, 'tiles')}
         >
-          {data.tiles?.map((tile, i) => (
+          {(data.tiles ?? []).map((tile, i) => (
             (() => {
+              if (!tile) return null;
               const variant = (tile.variant as TileVariant) || 'transparent';
               const size = (tile.size as TileSize) || '2x2';
               const colSpan = size === '4x2' ? 4 : 2;
@@ -97,13 +110,10 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
                 { colStart: 1, rowStart: 9 },
               ];
 
-              const mobilePlacement = mobileLayout[i];
-              const basePlacement = mobilePlacement || (tile.colStart && tile.rowStart
-                ? { colStart: tile.colStart, rowStart: tile.rowStart }
-                : undefined);
-              const mdPlacement = (tile.colStart && tile.rowStart)
-                ? { colStart: tile.colStart, rowStart: tile.rowStart }
-                : mobilePlacement;
+              const mobilePlacement =
+                normalizePlacement(tile.mobileColStart, tile.mobileRowStart) ?? mobileLayout[i];
+              const basePlacement = mobilePlacement;
+              const mdPlacement = normalizePlacement(tile.colStart, tile.rowStart);
 
               const gridStyle = {
                 '--stat-col-span': String(colSpan),

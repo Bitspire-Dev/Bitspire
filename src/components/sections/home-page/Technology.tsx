@@ -143,7 +143,7 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
     return (
         <motion.section 
             key={`technology-${locale}`}
-            className="py-section mt-2.5 relative bg-brand-bg text-brand-fg overflow-hidden"
+            className="py-section mt-2.5 relative bg-brand-bg text-brand-fg overflow-visible"
             data-tina-field={tinaField(data)}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -152,6 +152,7 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
         >
              {/* Background glow similar to Features */}
              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-250 h-75 bg-brand-accent-2/5 rounded-full blur-[100px] pointer-events-none" />
+
 
             <div className="container mx-auto px-4 relative z-10 mb-6 lg:mb-8">
                  <div className="text-center max-w-3xl mx-auto">

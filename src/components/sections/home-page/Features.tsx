@@ -90,7 +90,7 @@ export default function Features({ data }: FeaturesProps) {
   };
 
   return (
-    <section className="-mt-2.5 py-16 md:py-20 lg:py-24 bg-brand-bg relative z-10 text-brand-fg overflow-hidden" data-tina-field={tinaField(data)}>
+    <section className="-mt-2.5 py-16 md:py-20 lg:py-24 bg-brand-bg relative z-10 text-brand-fg overflow-visible" data-tina-field={tinaField(data)}>
        {/* Background gradient effects */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-200 h-100 bg-brand-accent/5 rounded-full blur-[100px] pointer-events-none" />
 

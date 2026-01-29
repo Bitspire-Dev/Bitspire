@@ -347,6 +347,8 @@ input PagesBodyStatisticsSectionTilesFilter {
   size: StringFilter
   colStart: NumberFilter
   rowStart: NumberFilter
+  mobileColStart: NumberFilter
+  mobileRowStart: NumberFilter
   withNoise: BooleanFilter
   number: StringFilter
   title: StringFilter
