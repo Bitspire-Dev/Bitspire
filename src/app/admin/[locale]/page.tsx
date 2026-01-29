@@ -3,6 +3,7 @@ import { AdminPreviewProvider } from "@/providers/AdminPreviewProvider";
 import { AdminHomePreview } from "@/providers/AdminPreviewRenderer";
 import { getTinaClient } from "@/lib/tina/client";
 import { redirect } from "next/navigation";
+import { AdminMotionFinal } from "@/components/admin/AdminMotionFinal";
 
 const supportedLocales = ["pl", "en"] as const;
 
@@ -25,13 +26,15 @@ export default async function AdminHomePage({ params }: PageProps) {
     const result = await client.queries.pages({ relativePath: `${locale}/home.mdx` });
 
     return (
-      <AdminPreviewProvider
-        query={result.query}
-        variables={result.variables}
-        data={result.data}
-      >
-        <AdminHomePreview locale={locale} />
-      </AdminPreviewProvider>
+      <AdminMotionFinal>
+        <AdminPreviewProvider
+          query={result.query}
+          variables={result.variables}
+          data={result.data}
+        >
+          <AdminHomePreview locale={locale} />
+        </AdminPreviewProvider>
+      </AdminMotionFinal>
     );
   } catch (error) {
     console.error("Admin home page not found", error);

@@ -123,7 +123,7 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
   };
 
   return (
-    <section className="py-24 bg-brand-bg text-brand-fg overflow-hidden relative" data-tina-field={tinaField(data)}>
+    <section className="-mt-12 py-16 md:py-20 bg-brand-bg text-brand-fg overflow-hidden relative" data-tina-field={tinaField(data)}>
       {/* Background decoration */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-brand-accent/5 rounded-full blur-[120px] pointer-events-none" />
 
@@ -134,7 +134,7 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16 max-w-2xl mx-auto"
+          className="text-center mb-10 md:mb-12 max-w-2xl mx-auto"
         >
           {data.title && (
             <div className="mb-4" data-tina-field={tinaField(data, 'title')}>

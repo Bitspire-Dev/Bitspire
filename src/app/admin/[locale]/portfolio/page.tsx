@@ -3,6 +3,7 @@ import { AdminPreviewProvider } from "@/providers/AdminPreviewProvider";
 import { AdminPortfolioIndexPreview } from "@/providers/AdminPreviewRenderer";
 import { getPortfolioIndex } from "@/lib/tina/queries";
 import { getTinaClient } from "@/lib/tina/client";
+import { AdminMotionFinal } from "@/components/admin/AdminMotionFinal";
 
 export const dynamic = "force-dynamic";
 
@@ -22,13 +23,15 @@ export default async function AdminPortfolioIndexPage({ params }: PageProps) {
     ]);
 
     return (
-      <AdminPreviewProvider
-        query={pageResult.query}
-        variables={pageResult.variables}
-        data={pageResult.data}
-      >
-        <AdminPortfolioIndexPreview locale={locale} projects={projects as unknown[]} />
-      </AdminPreviewProvider>
+      <AdminMotionFinal>
+        <AdminPreviewProvider
+          query={pageResult.query}
+          variables={pageResult.variables}
+          data={pageResult.data}
+        >
+          <AdminPortfolioIndexPreview locale={locale} projects={projects as unknown[]} />
+        </AdminPreviewProvider>
+      </AdminMotionFinal>
     );
   } catch (error) {
     console.error("Admin portfolio page not found", error);

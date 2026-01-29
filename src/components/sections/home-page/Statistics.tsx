@@ -40,7 +40,7 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
   const locale = useLocale();
 
   return (
-    <section className="py-20 md:py-32 relative overflow-hidden">
+    <section className="-mt-5 py-16 md:py-24 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-250 h-250 bg-blue-900/10 blur-[120px] rounded-full pointer-events-none -z-10" />
 
@@ -51,7 +51,7 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-20 max-w-4xl"
+          className="mb-12 md:mb-16 max-w-4xl"
         >
             {data.title && (
                 <div data-tina-field={tinaField(data, 'title')}>

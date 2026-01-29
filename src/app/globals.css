@@ -16,6 +16,18 @@ body,
   }
 }
 
+.admin-motion-final :where([style*="transform"], [style*="opacity"], [style*="visibility"]) {
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
+}
+
+.admin-motion-final,
+.admin-motion-final * {
+  animation: none !important;
+  transition: none !important;
+}
+
 @layer components {
   .richtext-body {
     max-width: none;

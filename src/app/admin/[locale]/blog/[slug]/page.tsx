@@ -3,6 +3,7 @@ import { AdminPreviewProvider } from "@/providers/AdminPreviewProvider";
 import { getRelatedBlogPosts } from "@/lib/tina/queries";
 import { AdminBlogPostPreview } from "@/providers/AdminPreviewRenderer";
 import { getTinaClient } from "@/lib/tina/client";
+import { AdminMotionFinal } from "@/components/admin/AdminMotionFinal";
 
 export const dynamic = "force-dynamic";
 
@@ -20,17 +21,19 @@ export default async function AdminBlogPostPage({ params }: PageProps) {
     const relatedPosts = await getRelatedBlogPosts(locale, result.data.blog);
 
     return (
-      <AdminPreviewProvider
-        query={result.query}
-        variables={result.variables}
-        data={result.data}
-      >
-        <AdminBlogPostPreview
-          locale={locale}
-          slug={slug}
-          relatedPosts={relatedPosts as unknown[]}
-        />
-      </AdminPreviewProvider>
+      <AdminMotionFinal>
+        <AdminPreviewProvider
+          query={result.query}
+          variables={result.variables}
+          data={result.data}
+        >
+          <AdminBlogPostPreview
+            locale={locale}
+            slug={slug}
+            relatedPosts={relatedPosts as unknown[]}
+          />
+        </AdminPreviewProvider>
+      </AdminMotionFinal>
     );
   } catch (error) {
     console.error("Admin blog post not found", error);
