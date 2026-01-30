@@ -21,13 +21,6 @@ interface ContactProps {
   data: ContactData;
 }
 
-const subjects = [
-  "General Inquiry",
-  "Project Proposal",
-  "Support",
-  "Other"
-];
-
 export const Contact: React.FC<ContactProps> = ({ data }) => {
   const [formState, setFormState] = useState<{
     status: 'idle' | 'loading' | 'success' | 'error';
@@ -37,6 +30,24 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
   const [selectedSubject, setSelectedSubject] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const locale = useLocale();
+  const isPl = locale === 'pl';
+
+  const subjects = isPl
+    ? ["Ogólne zapytanie", "Wycena projektu", "Wsparcie", "Inne"]
+    : ["General Inquiry", "Project Proposal", "Support", "Other"];
+
+  const labels = {
+    name: isPl ? 'Imię i nazwisko' : 'Your Name',
+    email: isPl ? 'Adres e-mail' : 'Email Address',
+    subject: isPl ? 'Temat' : 'Subject',
+    message: isPl ? 'Wiadomość' : 'Message',
+    namePlaceholder: isPl ? 'Jan Kowalski' : 'John Doe',
+    emailPlaceholder: isPl ? 'jan@przyklad.pl' : 'john@example.com',
+    subjectPlaceholder: isPl ? 'Wybierz temat...' : 'Select a subject...',
+    messagePlaceholder: isPl ? 'Opisz krótko swój projekt...' : 'Tell us about your project...',
+    subjectError: isPl ? 'Wybierz temat.' : 'Please select a subject.',
+    sending: isPl ? 'Wysyłanie...' : 'Sending...'
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -56,8 +67,8 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
     
     if (!selectedSubject) {
         setFormState({
-            status: 'error',
-            message: 'Please select a subject.',
+          status: 'error',
+          message: labels.subjectError,
         });
         return;
     }
@@ -176,31 +187,31 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="relative group">
-                   <label htmlFor="name" className={labelClasses}>Your Name</label>
+                   <label htmlFor="name" className={labelClasses}>{labels.name}</label>
                   <input
                     type="text"
                     id="name"
                     name="name"
                     required
                     className={inputClasses}
-                    placeholder="John Doe"
+                    placeholder={labels.namePlaceholder}
                   />
                 </div>
                 <div className="relative group">
-                   <label htmlFor="email" className={labelClasses}>Email Address</label>
+                   <label htmlFor="email" className={labelClasses}>{labels.email}</label>
                   <input
                     type="email"
                     id="email"
                     name="email"
                     required
                     className={inputClasses}
-                    placeholder="john@example.com"
+                    placeholder={labels.emailPlaceholder}
                   />
                 </div>
               </div>
               
               <div className="relative group" ref={dropdownRef}>
-                  <label htmlFor="subject-trigger" className={labelClasses}>Subject</label>
+                  <label htmlFor="subject-trigger" className={labelClasses}>{labels.subject}</label>
                   <input type="hidden" name="subject" value={selectedSubject} />
                   
                   <div 
@@ -209,7 +220,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
                     onClick={() => setSubjectOpen(!subjectOpen)}
                   >
                      <span className={selectedSubject ? 'text-brand-fg' : 'text-brand-text-muted-2/50'}>
-                         {selectedSubject || "Select a subject..."}
+                         {selectedSubject || labels.subjectPlaceholder}
                      </span>
                      <svg 
                         className={`w-5 h-5 text-brand-text-muted-2 transition-transform duration-300 ${subjectOpen ? 'rotate-180' : ''}`} 
@@ -248,14 +259,14 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
               </div>
 
               <div className="relative group">
-                 <label htmlFor="message" className={labelClasses}>Message</label>
+                 <label htmlFor="message" className={labelClasses}>{labels.message}</label>
                 <textarea
                   id="message"
                   name="message"
                   required
                   rows={4}
                   className={`${inputClasses} resize-none min-h-30`}
-                  placeholder="Tell us about your project..."
+                  placeholder={labels.messagePlaceholder}
                 />
               </div>
 
@@ -267,7 +278,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
                   data-tina-field={tinaField(data, 'buttonLabel')}
                 >
                     <span className="relative flex items-center gap-3">
-                        {formState.status === 'loading' ? 'Sending...' : (data.buttonLabel || 'Send Message')}
+                      {formState.status === 'loading' ? labels.sending : (data.buttonLabel || 'Send Message')}
                          {!formState.status && (
                              <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                          )}
