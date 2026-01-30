@@ -5,7 +5,7 @@ import { tinaField } from 'tinacms/dist/react';
 import { RichText } from '@tina/richTextPresets';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useLocale } from "next-intl";
 
 type TechnologyItem = Record<string, unknown> & {
@@ -29,6 +29,8 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
     const [logoCount, setLogoCount] = useState(items.length > 0 ? items.length * 8 : 0);
     const logoCacheRef = useRef<Map<string, HTMLImageElement>>(new Map());
     const locale = useLocale();
+    const prefersReducedMotion = useReducedMotion();
+    const [isActive, setIsActive] = useState(false);
     
     // animation state stored in refs
     const positionsRef = useRef<number[]>([]);
@@ -61,7 +63,19 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
     }, [uniqueLogoSrcs]);
 
     useEffect(() => {
-        if (items.length === 0) return;
+        if (!containerRef.current || items.length === 0) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => setIsActive(entry.isIntersecting),
+            { rootMargin: '200px 0px' }
+        );
+
+        observer.observe(containerRef.current);
+        return () => observer.disconnect();
+    }, [items.length]);
+
+    useEffect(() => {
+        if (items.length === 0 || prefersReducedMotion || !isActive) return;
 
         // Calculate how many logos are needed to fill the container + buffer
         const computeCount = () => {
@@ -71,7 +85,7 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
             lastWidthRef.current = vw;
 
             // Ensure we have enough copies to cover screen width + buffer
-            const minCount = Math.ceil(vw / LOGO_WIDTH) + items.length * 5;
+            const minCount = Math.ceil(vw / LOGO_WIDTH) + items.length * 3;
             setLogoCount((prev) => (prev === minCount ? prev : minCount));
             
             // initialize or preserve a smooth offset
@@ -98,10 +112,10 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
             if (resizeTimeoutRef.current) window.clearTimeout(resizeTimeoutRef.current);
             if (rafRef.current) cancelAnimationFrame(rafRef.current);
         };
-    }, [items.length]);
+    }, [items.length, prefersReducedMotion, isActive]);
 
     useEffect(() => {
-        if (items.length === 0) return;
+        if (items.length === 0 || prefersReducedMotion || !isActive) return;
         
         const vw = window.visualViewport?.width || window.innerWidth || 2200;
         const isMobile = vw < 768;
@@ -136,7 +150,7 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
         return () => {
             if (rafRef.current) cancelAnimationFrame(rafRef.current);
         };
-    }, [items.length]);
+    }, [items.length, prefersReducedMotion, isActive]);
 
     if (!data || items.length === 0) return null;
 
