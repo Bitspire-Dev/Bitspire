@@ -104,8 +104,8 @@ export function TileNumber({ children, className }: React.ComponentProps<'div'>)
   return <div className={cn("text-[clamp(1.1rem,calc(18cqmin*var(--tile-number-scale,1)),3.25rem)] font-bold tracking-tighter mb-[clamp(6px,3.5cqmin,16px)] opacity-90 leading-none", className)}>{children}</div>
 }
 
-export function TileTitle({ children, className }: React.ComponentProps<'h3'>) {
-  return <h3 className={cn("text-[clamp(0.85rem,8.2cqmin,1.6rem)] font-bold leading-[1.1] mb-[clamp(4px,2.5cqmin,10px)] tracking-tight text-balance overflow-hidden [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical]", className)}>{children}</h3>
+export function TileTitle({ children, className }: React.ComponentProps<'h2'>) {
+  return <h2 className={cn("text-[clamp(0.85rem,8.2cqmin,1.6rem)] font-bold leading-[1.1] mb-[clamp(4px,2.5cqmin,10px)] tracking-tight text-balance overflow-hidden [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical]", className)}>{children}</h2>
 }
 
 export function TileDescription({ children, className }: React.ComponentProps<'p'>) {

@@ -114,9 +114,9 @@ export const Footer: React.FC<{ locale: 'pl' | 'en'; linkMode?: AdminLinkMode }>
 
           {/* Kontakt */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-blue-400">
+            <h2 className="text-lg font-semibold mb-4 text-blue-400">
               {locale === 'en' ? 'Contact' : 'Kontakt'}
-            </h3>
+            </h2>
             <ul className="space-y-3">
               <li className="flex items-center">
                 <FaEnvelope className="w-4 h-4 text-blue-400 mr-3 shrink-0" />
@@ -147,9 +147,9 @@ export const Footer: React.FC<{ locale: 'pl' | 'en'; linkMode?: AdminLinkMode }>
 
           {/* Legal */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-blue-400">
+            <h2 className="text-lg font-semibold mb-4 text-blue-400">
               {locale === 'en' ? 'Legal' : 'Dokumenty'}
-            </h3>
+            </h2>
             <ul className="space-y-2">
               {legalLinks.map((link, index) => (
                 <li key={index}>

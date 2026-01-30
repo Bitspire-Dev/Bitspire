@@ -53,12 +53,12 @@ const FeatureCardContent = ({ feature }: { feature: FeatureItem }) => {
                 )}
             </div>
             
-            <h3 
-                className="text-2xl font-bold mb-3 text-brand-fg group-hover:text-blue-400 transition-colors duration-300 text-center" 
-                data-tina-field={tinaField(feature, 'title')}
+            <h2 
+              className="text-2xl font-bold mb-3 text-brand-fg group-hover:text-blue-400 transition-colors duration-300 text-center" 
+              data-tina-field={tinaField(feature, 'title')}
             >
-                {feature.title}
-            </h3>
+              {feature.title}
+            </h2>
             <p 
                 className="text-brand-text-muted leading-relaxed text-base"
                 data-tina-field={tinaField(feature, 'description')}
@@ -150,7 +150,7 @@ export default function Features({ data }: FeaturesProps) {
         </div>
 
         {/* Mobile 3D Infinite Carousel */}
-        <div className="md:hidden relative h-[550px] flex items-center justify-center perspective-1000">
+        <div className="md:hidden relative h-125 flex items-center justify-center perspective-1000">
            <AnimatePresence mode='popLayout'>
             {[-1, 0, 1].map((offset) => {
               const index = getIndex(currentIndex + offset);
@@ -165,9 +165,12 @@ export default function Features({ data }: FeaturesProps) {
               const zIndex = isCenter ? 10 : 0;
               const rotateY = offset * -25;
 
+              const layoutKey = typeof feature.title === 'string' ? feature.title : `feature-${index}`;
+
               return (
                 <motion.div
-                  key={`${index}-${offset}`}
+                  key={`${layoutKey}-${index}`}
+                  layoutId={layoutKey}
                   initial={{ x: xOffset, scale, opacity, zIndex, rotateY }}
                   animate={{ 
                     x: xOffset, 
@@ -183,16 +186,16 @@ export default function Features({ data }: FeaturesProps) {
                   }}
                   style={{
                     position: 'absolute',
-                    width: '350px', // Same width as PortfolioHighlights
+                    width: '350px',
                   }}
-                  className={`pointer-events-auto rounded-2xl cursor-pointer`}
+                  className="rounded-2xl cursor-pointer"
                   onClick={() => {
                     if (offset !== 0) setCurrentIndex(index);
                   }}
                 >
-                    <div className={`p-6 rounded-2xl border border-blue-500/30 bg-blue-950/20 backdrop-blur-sm flex flex-col h-full transition-all duration-300 ${isCenter ? 'border-blue-500/60 shadow-[0_0_30px_rgba(59,130,246,0.15)] bg-blue-950/40' : ''}`}>
-                         <FeatureCardContent feature={feature} />
-                    </div>
+                  <div className={`p-6 rounded-2xl border border-blue-500/30 bg-blue-950/20 backdrop-blur-sm flex flex-col h-full transition-all duration-300 ${isCenter ? 'border-blue-500/60 shadow-[0_0_30px_rgba(59,130,246,0.15)] bg-blue-950/40' : ''}`}>
+                    <FeatureCardContent feature={feature} />
+                  </div>
                 </motion.div>
               );
             })}

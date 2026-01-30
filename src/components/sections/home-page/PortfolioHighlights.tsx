@@ -222,7 +222,7 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
                      </div>
                      {/* Content */}
                      <div className="p-6 flex flex-col grow">
-                        <h3 className="text-xl font-bold mb-2 text-white">{project.title}</h3>
+                        <h2 className="text-xl font-bold mb-2 text-white">{project.title}</h2>
                         <p className="text-white/60 text-sm line-clamp-3 mb-4 grow">
                           {project.excerpt || project.description || "Zobacz szczegóły projektu..."}
                         </p>
