@@ -3,8 +3,6 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { locales } from './src/i18n/locales';
 
-export const runtime = 'edge';
-
 const intlMiddleware = createMiddleware({
 	locales,
 	defaultLocale: 'pl',
@@ -45,5 +43,4 @@ export const config = {
 	matcher: [
 		'/((?!_next|_vercel|api|favicon.ico|.*\\.[^/]+$).*)',
 	],
-	runtime: 'edge',
 };
