@@ -217,9 +217,12 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
                     alt="Hero illustration"
                     fill
                     className="object-contain object-bottom"
-                    sizes="100vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1200px"
+                    quality={78}
                     data-tina-field={data ? tinaField(data, 'image') : undefined}
                     priority
+                    fetchPriority="high"
+                    loading="eager"
                     placeholder="blur"
                     blurDataURL={HERO_BLUR_DATA_URL}
                    />

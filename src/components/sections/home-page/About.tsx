@@ -49,6 +49,8 @@ export const About: React.FC<AboutProps> = ({ data }) => {
                   width={800}
                   height={600}
                   className="w-full h-auto object-cover"
+                  sizes="(max-width: 768px) 90vw, (max-width: 1024px) 45vw, 800px"
+                  quality={78}
                 />
               </div>
             )}

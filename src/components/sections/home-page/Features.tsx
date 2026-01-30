@@ -43,6 +43,8 @@ const FeatureCardContent = ({ feature }: { feature: FeatureItem }) => {
                         alt={feature.title || "Feature icon"}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="(max-width: 640px) 80vw, (max-width: 768px) 350px, 380px"
+                      quality={78}
                     />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center text-brand-text-muted/20">
