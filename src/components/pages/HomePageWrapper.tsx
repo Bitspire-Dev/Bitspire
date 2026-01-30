@@ -1,34 +1,15 @@
 import type { TinaMarkdownContent } from "tinacms/dist/rich-text";
 import { tinaField } from "tinacms/dist/react";
 import { RichText } from "@tina/richTextPresets";
-import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/home-page/Hero";
 import About from "@/components/sections/home-page/About";
 import { Contact } from "@/components/sections/home-page/Contact";
-
-const SectionPlaceholder = ({ minHeight }: { minHeight: string }) => (
-    <div className="w-full" style={{ minHeight }} aria-hidden="true" />
-);
-
-const Technology = dynamic(() => import("@/components/sections/home-page/Technology"), {
-    ssr: false,
-    loading: () => <SectionPlaceholder minHeight="240px" />
-});
-
-const Features = dynamic(() => import("@/components/sections/home-page/Features"), {
-    ssr: false,
-    loading: () => <SectionPlaceholder minHeight="520px" />
-});
-
-const PortfolioHighlights = dynamic(() => import("@/components/sections/home-page/PortfolioHighlights"), {
-    ssr: false,
-    loading: () => <SectionPlaceholder minHeight="520px" />
-});
-
-const Statistics = dynamic(() => import("@/components/sections/home-page/Statistics").then((mod) => mod.Statistics), {
-    ssr: false,
-    loading: () => <SectionPlaceholder minHeight="420px" />
-});
+import {
+    TechnologySectionClient,
+    FeaturesSectionClient,
+    PortfolioHighlightsSectionClient,
+    StatisticsSectionClient
+} from "@/components/pages/HomePageSections.client";
 
 interface HomePageData {
     locale?: string;
@@ -58,9 +39,7 @@ export default function HomePageWrapper({ data, portfolioHighlightsProjects }: H
                 </div>
             ),
             TechnologySection: (props: object) => (
-                <div data-tina-field={tinaField(props as Record<string, unknown>)}>
-                    <Technology data={props as Record<string, unknown>} />
-                </div>
+                <TechnologySectionClient data={props as Record<string, unknown>} />
             ),
             AboutSection: (props: object) => (
                 <div data-tina-field={tinaField(props as Record<string, unknown>)}>
@@ -68,22 +47,16 @@ export default function HomePageWrapper({ data, portfolioHighlightsProjects }: H
                 </div>
             ),
             FeaturesSection: (props: object) => (
-                <div data-tina-field={tinaField(props as Record<string, unknown>)}>
-                    <Features data={props as Record<string, unknown>} />
-                </div>
+                <FeaturesSectionClient data={props as Record<string, unknown>} />
             ),
             PortfolioHighlightsSection: (props: object) => (
-                <div data-tina-field={tinaField(props as Record<string, unknown>)}>
-                                        <PortfolioHighlights
-                                            data={props as Record<string, unknown>}
-                                            projectsIndex={portfolioHighlightsProjects}
-                                        />
-                </div>
+                <PortfolioHighlightsSectionClient
+                    data={props as Record<string, unknown>}
+                    projectsIndex={portfolioHighlightsProjects}
+                />
             ),
             StatisticsSection: (props: object) => (
-                <div data-tina-field={tinaField(props as Record<string, unknown>)}>
-                    <Statistics data={props as Record<string, unknown>} />
-                </div>
+                <StatisticsSectionClient data={props as Record<string, unknown>} />
             ),
             ContactSection: (props: object) => (
                 <div data-tina-field={tinaField(props as Record<string, unknown>)}>
