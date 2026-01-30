@@ -118,6 +118,10 @@ export default async function RootLayout({
       <head>
         {/* Podstawowa responsywność */}
         
+        {/* Preconnect for Tina-hosted images */}
+        <link rel="preconnect" href="https://assets.tina.io" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://assets.tina.io" />
+
         {/* PWA - Tryb aplikacji na iOS */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
