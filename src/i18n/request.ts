@@ -1,8 +1,5 @@
 import { getRequestConfig } from 'next-intl/server';
-
-// Supported locales (kept sync with middleware)
-export const locales = ['pl', 'en'] as const;
-export type Locale = (typeof locales)[number];
+import { locales, type Locale } from './locales';
 
 export default getRequestConfig(async ({ requestLocale }) => {
   // Get locale from request (set by middleware)
