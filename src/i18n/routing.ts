@@ -1,4 +1,4 @@
-import type { Locale } from './request';
+import type { Locale } from './locales';
 import { defineRouting } from 'next-intl/routing';
 import { createNavigation } from 'next-intl/navigation';
 
