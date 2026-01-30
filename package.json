@@ -7,6 +7,7 @@
     "build": "tinacms build && cross-env NEXT_DISABLE_TURBOPACK=1 next build",
     "build:next": "cross-env NEXT_DISABLE_TURBOPACK=1 next build",
     "build:skip-cloud-checks": "tinacms build --skip-cloud-checks && cross-env NEXT_DISABLE_TURBOPACK=1 next build",
+    "postbuild": "node scripts/fix-middleware-runtime.cjs",
     "start": "tinacms build && node app.js",
     "prod": "cross-env NODE_ENV=production npm run start",
     "lint": "eslint"

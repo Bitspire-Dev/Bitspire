@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { tinaField } from 'tinacms/dist/react';
 import { RichText } from '@tina/richTextPresets';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { useLocale } from 'next-intl';
 
@@ -21,6 +21,12 @@ interface ContactProps {
   data: ContactData;
 }
 
+const subjects = [
+  "General Inquiry",
+  "Project Proposal",
+  "Support",
+  "Other"
+];
 
 export const Contact: React.FC<ContactProps> = ({ data }) => {
   const [formState, setFormState] = useState<{
@@ -28,10 +34,35 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
     message: string;
   }>({ status: 'idle', message: '' });
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [subjectOpen, setSubjectOpen] = useState(false);
+  const [selectedSubject, setSelectedSubject] = useState("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const locale = useLocale();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setSubjectOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    if (!selectedSubject) {
+        setFormState({
+            status: 'error',
+            message: 'Please select a subject.',
+        });
+        return;
+    }
+
     setFormState({ status: 'loading', message: '' });
 
     const formData = new FormData(e.currentTarget);
@@ -51,6 +82,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
         message: data.successMessage || 'Message sent successfully!',
       });
       (e.target as HTMLFormElement).reset();
+      setSelectedSubject("");
     } catch (error) {
       setFormState({
         status: 'error',
@@ -59,11 +91,11 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
     }
   };
 
-  const inputClasses = "w-full bg-transparent border-b border-brand-border py-4 text-brand-fg placeholder:text-transparent focus:outline-none focus:border-brand-accent transition-all duration-300 peer";
-  const labelClasses = "absolute left-0 top-4 text-brand-text-muted-2 text-sm transition-all duration-300 -translate-y-6 scale-75 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-brand-accent cursor-text";
+  const inputClasses = "w-full bg-[#0b1223] border border-[#1e2a44] rounded-xl px-4 py-3 text-brand-fg placeholder:text-brand-text-muted-2/60 focus:outline-none focus:border-brand-accent/60 focus:bg-[#0e162a] transition-all duration-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]";
+  const labelClasses = "block text-brand-text-muted-2 text-sm font-medium mb-2 ml-1";
 
   return (
-    <section id="contact" className="w-full py-section relative z-10 bg-brand-bg overflow-hidden">
+    <section id="contact" className="w-full py-section mb-8 relative z-10 bg-brand-bg overflow-hidden">
       
       {/* Subtle modern background elements */}
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-brand-accent/5 rounded-full blur-[150px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
@@ -141,79 +173,106 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
             transition={{ delay: 0.3 }}
             className="lg:w-7/12 mt-4 lg:mt-0"
           >
-            <form onSubmit={handleSubmit} className="relative space-y-8 bg-brand-surface/30 p-8 md:p-12 rounded-3xl border border-white/5 backdrop-blur-sm shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]">
+            <form onSubmit={handleSubmit} className="relative space-y-6 bg-[#0a1326] p-8 md:p-10 rounded-3xl border border-[#1a2740] shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="relative group">
+                   <label htmlFor="name" className={labelClasses}>Your Name</label>
                   <input
                     type="text"
                     id="name"
                     name="name"
                     required
                     className={inputClasses}
-                    placeholder=" "
+                    placeholder="John Doe"
                     onFocus={() => setFocusedField('name')}
                     onBlur={() => setFocusedField(null)}
                   />
-                  <label htmlFor="name" className={labelClasses}>Your Name</label>
                 </div>
                 <div className="relative group">
+                   <label htmlFor="email" className={labelClasses}>Email Address</label>
                   <input
                     type="email"
                     id="email"
                     name="email"
                     required
                     className={inputClasses}
-                    placeholder=" "
+                    placeholder="john@example.com"
                      onFocus={() => setFocusedField('email')}
                     onBlur={() => setFocusedField(null)}
                   />
-                  <label htmlFor="email" className={labelClasses}>Email Address</label>
                 </div>
               </div>
               
-              <div className="relative group pt-4">
-                  <div className="relative">
-                    <select
-                        id="subject"
-                        name="subject"
-                        required
-                        className="w-full bg-transparent border-b border-brand-border py-4 text-brand-fg focus:outline-none focus:border-brand-accent transition-all duration-300 appearance-none cursor-pointer"
-                        defaultValue=""
+              <div className="relative group" ref={dropdownRef}>
+                  <label htmlFor="subject-trigger" className={labelClasses}>Subject</label>
+                  <input type="hidden" name="subject" value={selectedSubject} />
+                  
+                  <div 
+                    id="subject-trigger"
+                    className={`cursor-pointer ${inputClasses} flex items-center justify-between ${subjectOpen ? 'border-brand-accent ring-1 ring-brand-accent' : ''}`}
+                    onClick={() => setSubjectOpen(!subjectOpen)}
+                  >
+                     <span className={selectedSubject ? 'text-brand-fg' : 'text-brand-text-muted-2/50'}>
+                         {selectedSubject || "Select a subject..."}
+                     </span>
+                     <svg 
+                        className={`w-5 h-5 text-brand-text-muted-2 transition-transform duration-300 ${subjectOpen ? 'rotate-180' : ''}`} 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
                     >
-                        <option value="" disabled className="text-brand-text-muted-2">Select a subject...</option>
-                        <option value="General Inquiry" className="bg-brand-surface text-brand-fg">General Inquiry</option>
-                        <option value="Project Proposal" className="bg-brand-surface text-brand-fg">Project Proposal</option>
-                        <option value="Support" className="bg-brand-surface text-brand-fg">Support</option>
-                        <option value="Other" className="bg-brand-surface text-brand-fg">Other</option>
-                    </select>
-                    <label htmlFor="subject" className="absolute left-0 -top-2 text-brand-text-muted-2 text-xs uppercase tracking-wider">Subject</label>
-                     <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-brand-text-muted-2">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 9l-7 7-7-7"></path></svg>
-                    </div>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 9l-7 7-7-7"></path>
+                    </svg>
                   </div>
+
+                  <AnimatePresence>
+                    {subjectOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                            transition={{ duration: 0.2 }}
+                            className="absolute left-0 right-0 mt-2 bg-[#0b1223] border border-[#1e2a44] rounded-xl shadow-2xl z-50 overflow-hidden"
+                        >
+                            {subjects.map((subject) => (
+                                <div
+                                    key={subject}
+                                className={`px-4 py-3 cursor-pointer transition-colors duration-200 hover:bg-[#0f1b35] hover:text-brand-accent ${selectedSubject === subject ? 'bg-[#0f1b35] text-brand-accent' : 'text-brand-fg'}`}
+                                    onClick={() => {
+                                        setSelectedSubject(subject);
+                                        setSubjectOpen(false);
+                                    }}
+                                >
+                                    {subject}
+                                </div>
+                            ))}
+                        </motion.div>
+                    )}
+                  </AnimatePresence>
               </div>
 
-              <div className="relative group pt-4">
+              <div className="relative group">
+                 <label htmlFor="message" className={labelClasses}>Message</label>
                 <textarea
                   id="message"
                   name="message"
                   required
                   rows={4}
-                  className="w-full bg-transparent border-b border-brand-border py-4 text-brand-fg placeholder:text-transparent focus:outline-none focus:border-brand-accent transition-all duration-300 resize-none peer"
-                  placeholder=" "
+                  className={`${inputClasses} resize-none min-h-[120px]`}
+                  placeholder="Tell us about your project..."
+                  onFocus={() => setFocusedField('message')}
+                  onBlur={() => setFocusedField(null)}
                 />
-                <label htmlFor="message" className={labelClasses}>Tell us about your project</label>
               </div>
 
               <div className="pt-6 flex items-center justify-between">
                  <button
                   type="submit"
                   disabled={formState.status === 'loading'}
-                  className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-200 bg-brand-accent font-lg rounded-full hover:bg-brand-accent-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden shadow-lg shadow-brand-accent/20"
+                  className="group relative inline-flex items-center justify-center px-8 py-3.5 font-semibold text-white transition-all duration-200 bg-[#2563eb] rounded-xl hover:bg-[#1d4ed8] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2563eb] disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_10px_24px_-12px_rgba(37,99,235,0.8)]"
                   data-tina-field={tinaField(data, 'buttonLabel')}
                 >
-                    <span className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-black"></span>
                     <span className="relative flex items-center gap-3">
                         {formState.status === 'loading' ? 'Sending...' : (data.buttonLabel || 'Send Message')}
                          {!formState.status && (
