@@ -3,10 +3,11 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "tinacms dev -c \"next dev\"",
+    "build": "tinacms build && next build",
+    "build:skip-cloud-checks": "tinacms build --skip-cloud-checks && cross-env NEXT_DISABLE_TURBOPACK=1 next build",
+    "start": "tinacms build && node app.js",
+    "lint": "eslint"
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.16",
