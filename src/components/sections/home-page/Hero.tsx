@@ -201,8 +201,9 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
         <motion.div
           key={`hero-image-${locale}`}
             variants={imageVariants}
-            initial="hidden"
+            initial={false}
             animate="visible"
+            transition={{ duration: 0 }}
             /**
              * IMAGE WRAPP2 (Reduced from 6) Moves Gryf closer to buttons
              * Desktop: lg:absolute lg:bottom-0 

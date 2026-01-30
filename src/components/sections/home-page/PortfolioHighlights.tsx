@@ -193,8 +193,7 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
                     scale, 
                     opacity, 
                     zIndex,
-                    rotateY,
-                    filter: isCenter ? 'blur(0px)' : 'blur(2px)' // Blur effect for background items
+                    rotateY
                   }}
                   transition={{ 
                     duration: 0.5, 

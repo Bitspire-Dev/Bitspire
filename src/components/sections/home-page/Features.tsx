@@ -183,8 +183,7 @@ export default function Features({ data }: FeaturesProps) {
                     scale, 
                     opacity, 
                     zIndex,
-                    rotateY,
-                    filter: isCenter ? 'blur(0px)' : 'blur(2px)' 
+                    rotateY
                   }}
                   transition={{ 
                     duration: 0.5, 
