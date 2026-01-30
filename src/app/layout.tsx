@@ -1,6 +1,6 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
-import { Metadata } from 'next';
+import { Metadata, type Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -91,6 +91,12 @@ export const metadata: Metadata = {
   category: 'technology',
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+};
+
 export default async function RootLayout({
   children,
   params,
@@ -111,7 +117,6 @@ export default async function RootLayout({
     <html lang={currentLocale} suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
         {/* Podstawowa responsywność */}
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         
         {/* PWA - Tryb aplikacji na iOS */}
         <meta name="apple-mobile-web-app-capable" content="yes" />

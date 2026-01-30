@@ -250,6 +250,7 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
              className="absolute left-4 md:left-10 z-20 p-3 rounded-full bg-black/30 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors"
              aria-label={controlLabels.prev}
            >
+             <span className="sr-only">{controlLabels.prev}</span>
              <FaChevronLeft className="text-white text-xl" />
            </button>
            <button 
@@ -257,6 +258,7 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
              className="absolute right-4 md:right-10 z-20 p-3 rounded-full bg-black/30 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors"
              aria-label={controlLabels.next}
            >
+             <span className="sr-only">{controlLabels.next}</span>
              <FaChevronRight className="text-white text-xl" />
            </button>
         </motion.div>

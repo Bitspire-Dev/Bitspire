@@ -72,6 +72,10 @@ const FeatureCardContent = ({ feature }: { feature: FeatureItem }) => {
 export default function Features({ data }: FeaturesProps) {
   if (!data) return null;
   const locale = useLocale();
+  const controlLabels = {
+    prev: locale === 'pl' ? 'Poprzednia funkcja' : 'Previous feature',
+    next: locale === 'pl' ? 'Następna funkcja' : 'Next feature',
+  };
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const features = data.features || [];
 
@@ -205,15 +209,17 @@ export default function Features({ data }: FeaturesProps) {
            <button 
              onClick={handlePrev}
             className="absolute left-4 z-20 p-3 rounded-full bg-black/30 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors"
-             aria-label="Previous feature"
+             aria-label={controlLabels.prev}
            >
+             <span className="sr-only">{controlLabels.prev}</span>
              <FaChevronLeft className="text-white text-xl" />
            </button>
            <button 
              onClick={handleNext}
              className="absolute right-4 z-20 p-3 rounded-full bg-black/30 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors"
-             aria-label="Next feature"
+             aria-label={controlLabels.next}
            >
+             <span className="sr-only">{controlLabels.next}</span>
              <FaChevronRight className="text-white text-xl" />
            </button>
         </div>
