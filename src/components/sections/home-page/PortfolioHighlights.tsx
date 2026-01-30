@@ -66,6 +66,10 @@ function normalizeIndexProject(item: Record<string, unknown>): PortfolioProject 
 export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHighlightsProps) {
   const [currentIndex, setCurrentIndex] = useState(1);
   const locale = useLocale();
+  const controlLabels = {
+    prev: locale === 'pl' ? 'Poprzedni projekt' : 'Previous project',
+    next: locale === 'pl' ? 'Następny projekt' : 'Next project',
+  };
   
   if (!data) return null;
 
@@ -244,12 +248,14 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
            <button 
              onClick={handlePrev}
              className="absolute left-4 md:left-10 z-20 p-3 rounded-full bg-black/30 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors"
+             aria-label={controlLabels.prev}
            >
              <FaChevronLeft className="text-white text-xl" />
            </button>
            <button 
              onClick={handleNext}
              className="absolute right-4 md:right-10 z-20 p-3 rounded-full bg-black/30 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors"
+             aria-label={controlLabels.next}
            >
              <FaChevronRight className="text-white text-xl" />
            </button>

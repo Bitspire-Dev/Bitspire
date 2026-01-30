@@ -66,10 +66,11 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
           className="mb-12 md:mb-16 max-w-4xl"
         >
             {data.title && (
-                <div data-tina-field={tinaField(data, 'title')}>
-                   <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-white/95">
-                     <RichText content={data.title} />
-                   </h2>
+                <div
+                  data-tina-field={tinaField(data, 'title')}
+                  className="prose prose-invert max-w-none [&>h1]:text-4xl [&>h1]:md:text-6xl [&>h1]:font-bold [&>h1]:mb-6 [&>h1]:tracking-tight [&>h1]:text-white/95 [&>h2]:text-4xl [&>h2]:md:text-6xl [&>h2]:font-bold [&>h2]:mb-6 [&>h2]:tracking-tight [&>h2]:text-white/95"
+                >
+                  <RichText content={data.title} />
                 </div>
             )}
             {data.description && (

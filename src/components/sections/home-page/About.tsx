@@ -84,7 +84,7 @@ export const About: React.FC<AboutProps> = ({ data }) => {
             )}
 
             <motion.div  
-              className="prose prose-invert max-w-none [&>h1]:text-3xl [&>h1]:md:text-4xl [&>h1]:font-bold [&>h1]:text-brand-fg [&>h1]:leading-tight"
+              className="prose prose-invert max-w-none [&>h1]:text-3xl [&>h1]:md:text-4xl [&>h1]:font-bold [&>h1]:text-brand-fg [&>h1]:leading-tight [&>h2]:text-3xl [&>h2]:md:text-4xl [&>h2]:font-bold [&>h2]:text-brand-fg [&>h2]:leading-tight"
               data-tina-field={tinaField(data, 'title')}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}

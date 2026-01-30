@@ -120,7 +120,7 @@ export default function Features({ data }: FeaturesProps) {
           
           <div 
             data-tina-field={tinaField(data, 'title')} 
-            className="prose prose-invert max-w-none [&>h1]:text-4xl [&>h1]:md:text-5xl [&>h1]:font-bold [&>h1]:leading-tight mb-6"
+            className="prose prose-invert max-w-none [&>h1]:text-4xl [&>h1]:md:text-5xl [&>h1]:font-bold [&>h1]:leading-tight [&>h2]:text-4xl [&>h2]:md:text-5xl [&>h2]:font-bold [&>h2]:leading-tight mb-6"
           >
              {data.title && <RichText content={data.title} />}
           </div>

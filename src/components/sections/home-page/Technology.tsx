@@ -158,7 +158,7 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
                  <div className="text-center max-w-3xl mx-auto">
                     {data.title && (
                         <div 
-                            className="prose prose-invert max-w-none [&>h1]:text-3xl [&>h1]:md:text-4xl [&>h1]:font-bold mb-4"
+                            className="prose prose-invert max-w-none [&>h1]:text-3xl [&>h1]:md:text-4xl [&>h1]:font-bold [&>h2]:text-3xl [&>h2]:md:text-4xl [&>h2]:font-bold mb-4"
                             data-tina-field={tinaField(data, 'title')}
                         >
                             <RichText content={data.title} />

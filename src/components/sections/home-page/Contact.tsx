@@ -33,7 +33,6 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
     status: 'idle' | 'loading' | 'success' | 'error';
     message: string;
   }>({ status: 'idle', message: '' });
-  const [focusedField, setFocusedField] = useState<string | null>(null);
   const [subjectOpen, setSubjectOpen] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -83,7 +82,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
       });
       (e.target as HTMLFormElement).reset();
       setSelectedSubject("");
-    } catch (error) {
+    } catch {
       setFormState({
         status: 'error',
         message: data.errorMessage || 'Something went wrong. Please try again.',
@@ -98,8 +97,8 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
     <section id="contact" className="w-full py-section mb-8 relative z-10 bg-brand-bg overflow-hidden">
       
       {/* Subtle modern background elements */}
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-brand-accent/5 rounded-full blur-[150px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none translate-y-1/3 -translate-x-1/4" />
+      <div className="absolute top-0 right-0 w-200 h-200 bg-brand-accent/5 rounded-full blur-[150px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
+      <div className="absolute bottom-0 left-0 w-150 h-150 bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none translate-y-1/3 -translate-x-1/4" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
@@ -133,7 +132,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              <div className="prose prose-invert max-w-none [&>h1]:text-5xl [&>h1]:lg:text-6xl [&>h1]:font-bold [&>h1]:leading-[1.1] [&>h1]:tracking-tight [&>h1]:text-brand-fg">
+              <div className="prose prose-invert max-w-none [&>h1]:text-5xl [&>h1]:lg:text-6xl [&>h1]:font-bold [&>h1]:leading-[1.1] [&>h1]:tracking-tight [&>h1]:text-brand-fg [&>h2]:text-5xl [&>h2]:lg:text-6xl [&>h2]:font-bold [&>h2]:leading-[1.1] [&>h2]:tracking-tight [&>h2]:text-brand-fg">
                 <RichText content={data.title ?? []} />
               </div>
             </motion.div>
@@ -185,8 +184,6 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
                     required
                     className={inputClasses}
                     placeholder="John Doe"
-                    onFocus={() => setFocusedField('name')}
-                    onBlur={() => setFocusedField(null)}
                   />
                 </div>
                 <div className="relative group">
@@ -198,8 +195,6 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
                     required
                     className={inputClasses}
                     placeholder="john@example.com"
-                     onFocus={() => setFocusedField('email')}
-                    onBlur={() => setFocusedField(null)}
                   />
                 </div>
               </div>
@@ -259,10 +254,8 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
                   name="message"
                   required
                   rows={4}
-                  className={`${inputClasses} resize-none min-h-[120px]`}
+                  className={`${inputClasses} resize-none min-h-30`}
                   placeholder="Tell us about your project..."
-                  onFocus={() => setFocusedField('message')}
-                  onBlur={() => setFocusedField(null)}
                 />
               </div>
 
