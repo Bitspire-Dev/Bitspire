@@ -2,7 +2,7 @@
 
 import NextImage from 'next/image';
 import { useLocale } from 'next-intl';
-import { useMemo, useEffect, useCallback, useTransition } from 'react';
+import { useMemo, useEffect, useCallback, useTransition, useRef } from 'react';
 import { useRouter, usePathname } from '@/i18n/routing';
 
 const flagMap = {
@@ -22,6 +22,7 @@ export function LanguageSwitcher({ labels }: LanguageSwitcherProps = {}) {
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
+  const hasPrefetchedRef = useRef(false);
 
   const stripLocalePrefix = useCallback((path: string) => {
     if (path.startsWith('/en')) return path.replace(/^\/en(\/|$)/, '/');
@@ -59,15 +60,46 @@ export function LanguageSwitcher({ labels }: LanguageSwitcherProps = {}) {
   }, [pathname, stripLocalePrefix, isAdminPath, otherLocale]);
 
   const prefetchTarget = useCallback(() => {
-    if (!targetPath || isAdminPath) return;
+    if (!targetPath || isAdminPath || hasPrefetchedRef.current) return;
+    hasPrefetchedRef.current = true;
     if (typeof router.prefetch === 'function') {
       router.prefetch(targetPath, { locale: otherLocale });
     }
   }, [router, targetPath, isAdminPath, otherLocale]);
 
   useEffect(() => {
-    prefetchTarget();
-  }, [prefetchTarget]);
+    if (isAdminPath) return;
+    let idleId: number | null = null;
+    let timeoutId: number | null = null;
+
+    const schedulePrefetch = () => {
+      if (typeof window === 'undefined') return;
+      const ric = (window as Window & {
+        requestIdleCallback?: (cb: () => void, options?: { timeout: number }) => number;
+      }).requestIdleCallback;
+
+      if (ric) {
+        idleId = ric(() => prefetchTarget(), { timeout: 5000 });
+      } else {
+        timeoutId = window.setTimeout(() => prefetchTarget(), 1500);
+      }
+    };
+
+    if (document.readyState === 'complete') {
+      schedulePrefetch();
+    } else {
+      const onLoad = () => schedulePrefetch();
+      window.addEventListener('load', onLoad, { once: true });
+      return () => window.removeEventListener('load', onLoad);
+    }
+
+    return () => {
+      if (idleId !== null && 'cancelIdleCallback' in window) {
+        (window as Window & { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback?.(idleId);
+      }
+      if (timeoutId !== null) window.clearTimeout(timeoutId);
+    };
+  }, [prefetchTarget, isAdminPath]);
 
   const handleSwitch = () => {
     if (!targetPath) return;
