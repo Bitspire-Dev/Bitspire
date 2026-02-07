@@ -1,6 +1,7 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { Metadata, type Viewport } from 'next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -139,6 +140,7 @@ export default async function RootLayout({
         <NextIntlClientProvider locale={currentLocale} messages={messages}>
           {children}
         </NextIntlClientProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
