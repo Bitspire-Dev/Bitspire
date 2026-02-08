@@ -81,7 +81,6 @@ export const metadata: Metadata = {
       },
     ],
   },
-  manifest: '/manifest.json',
   alternates: {
     canonical: 'https://bitspire.pl',
     languages: {

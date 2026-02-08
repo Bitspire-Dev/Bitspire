@@ -211,15 +211,15 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
             className="relative w-full z-10 flex justify-center mt-2 lg:mt-0 lg:absolute lg:bottom-0 pointer-events-none"
         >
              {/* Large screens: Absolute bottom. Desktop: translate-y-40% (was 55%) moves image UP closer to buttons */}
-             <div className="w-full lg:w-[120%] 2xl:w-full lg:translate-y-[30%]">
+                  <div className="w-[120vw] max-w-none lg:translate-y-[30%]">
                <div className="relative aspect-video lg:aspect-[1.8/1] w-full">
                    <Image
                     src={imageSrc}
                     alt="Hero illustration"
                     fill
                     className="object-contain object-bottom"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1200px"
-                    quality={78}
+                    sizes="(max-width: 768px) 120vw, (max-width: 1280px) 120vw, 120vw"
+                    quality={90}
                     data-tina-field={data ? tinaField(data, 'image') : undefined}
                     priority
                     fetchPriority="high"
