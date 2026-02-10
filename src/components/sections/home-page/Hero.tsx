@@ -6,10 +6,11 @@ import { tinaField } from 'tinacms/dist/react';
 import { RichText } from '@tina/richTextPresets';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { safeImageSrc } from '@/lib/ui/helpers';
-import { Link } from '@/i18n/routing';
+import { Link, resolvePathnameKey } from '@/i18n/routing';
 import { motion, type Variants } from 'framer-motion';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
+import type { Locale } from '@/i18n/locales';
 
 const HERO_BLUR_DATA_URL =
   'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=';
@@ -39,7 +40,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
   const titleValue = data?.title;
   const subtitleValue = data?.subtitle;
   const actions = data?.actions || [];
-  const locale = useLocale();
+  const locale = useLocale() as Locale;
 
   const renderTitle = () => {
     if (!titleValue) return null;
@@ -185,11 +186,37 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
           >
             {actions.map((action, idx) => (
               <motion.div key={idx} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link href={action.url}>
-                  <Button variant={action.type} size="lg" className="shadow-lg shadow-blue-500/20">
-                    {action.label}
-                  </Button>
-                </Link>
+                {(() => {
+                  const resolvedPathname = resolvePathnameKey(action.url, locale);
+                  const isExternal = /^(https?:)?\/\//.test(action.url);
+
+                  if (resolvedPathname) {
+                    return (
+                      <Link href={resolvedPathname}>
+                        <Button variant={action.type} size="lg" className="shadow-lg shadow-blue-500/20">
+                          {action.label}
+                        </Button>
+                      </Link>
+                    );
+                  }
+
+                  return (
+                    <Button
+                      asChild
+                      variant={action.type}
+                      size="lg"
+                      className="shadow-lg shadow-blue-500/20"
+                    >
+                      <a
+                        href={action.url}
+                        target={isExternal ? '_blank' : undefined}
+                        rel={isExternal ? 'noreferrer noopener' : undefined}
+                      >
+                        {action.label}
+                      </a>
+                    </Button>
+                  );
+                })()}
               </motion.div>
             ))}
           </motion.div>

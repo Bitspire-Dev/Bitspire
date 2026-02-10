@@ -3,7 +3,8 @@
 import NextImage from 'next/image';
 import { useLocale } from 'next-intl';
 import { useMemo, useEffect, useCallback, useTransition, useRef } from 'react';
-import { useRouter, usePathname } from '@/i18n/routing';
+import { useRouter, usePathname, resolvePathnameKey } from '@/i18n/routing';
+import type { Locale } from '@/i18n/locales';
 
 const flagMap = {
   pl: '/flags/pl.svg',
@@ -59,13 +60,19 @@ export function LanguageSwitcher({ labels }: LanguageSwitcherProps = {}) {
     return normalized === '' ? '/' : normalized;
   }, [pathname, stripLocalePrefix, isAdminPath, otherLocale]);
 
+  const targetKey = useMemo(() => {
+    if (isAdminPath) return null;
+    return resolvePathnameKey(targetPath, otherLocale as Locale);
+  }, [isAdminPath, targetPath, otherLocale]);
+
   const prefetchTarget = useCallback(() => {
     if (!targetPath || isAdminPath || hasPrefetchedRef.current) return;
+    if (!targetKey) return;
     hasPrefetchedRef.current = true;
     if (typeof router.prefetch === 'function') {
-      router.prefetch(targetPath, { locale: otherLocale });
+      router.prefetch(targetKey, { locale: otherLocale });
     }
-  }, [router, targetPath, isAdminPath, otherLocale]);
+  }, [router, targetPath, isAdminPath, otherLocale, targetKey]);
 
   useEffect(() => {
     if (isAdminPath) return;
@@ -108,7 +115,14 @@ export function LanguageSwitcher({ labels }: LanguageSwitcherProps = {}) {
       return;
     }
     startTransition(() => {
-      router.replace(targetPath, { locale: otherLocale, scroll: false });
+      if (targetKey) {
+        router.replace(targetKey, { locale: otherLocale, scroll: false });
+        return;
+      }
+
+      const localePrefix = otherLocale === 'en' ? '/en' : '';
+      const resolved = targetPath === '/' ? localePrefix || '/' : `${localePrefix}${targetPath}`;
+      window.location.assign(resolved);
     });
   };
 

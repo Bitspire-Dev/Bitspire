@@ -29,7 +29,7 @@ export const routing = defineRouting({
 
 export const { Link, redirect, usePathname, useRouter } = createNavigation(routing);
 
-function normalizePathname(pathname: string): string {
+export function normalizePathname(pathname: string): string {
   if (!pathname) return '/';
   const withSlash = pathname.startsWith('/') ? pathname : `/${pathname}`;
   if (withSlash === '/') return '/';
@@ -64,6 +64,41 @@ export function resolveLocalizedPathname(pathname: string, locale: Locale): stri
   }
 
   return normalized;
+}
+
+export function resolvePathnameKey(
+  pathname: string,
+  locale: Locale
+): keyof typeof pathnames | null {
+  const normalized = normalizePathname(pathname);
+
+  for (const [key, value] of Object.entries(pathnames)) {
+    const normalizedKey = normalizePathname(key);
+    if (normalized === normalizedKey) {
+      return key as keyof typeof pathnames;
+    }
+
+    if (typeof value === 'string') {
+      if (normalized === normalizePathname(value)) {
+        return key as keyof typeof pathnames;
+      }
+      continue;
+    }
+
+    const localizedValue = value[locale];
+    if (localizedValue && normalized === normalizePathname(localizedValue)) {
+      return key as keyof typeof pathnames;
+    }
+
+    const matchesAnyLocale = Object.values(value).some(
+      (candidate) => normalizePathname(candidate) === normalized
+    );
+    if (matchesAnyLocale) {
+      return key as keyof typeof pathnames;
+    }
+  }
+
+  return null;
 }
 
 // File name mappings for MDX files
