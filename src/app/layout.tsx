@@ -83,13 +83,6 @@ export const metadata: Metadata = {
       },
     ],
   },
-  alternates: {
-    canonical: 'https://bitspire.pl',
-    languages: {
-      'pl': 'https://bitspire.pl',
-      'en': 'https://bitspire.pl/en',
-    },
-  },
   category: 'technology',
 };
 

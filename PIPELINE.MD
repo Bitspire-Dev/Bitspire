@@ -34,14 +34,14 @@ Ten dokument opisuje **pełny pipeline projektu**: od tworzenia treści (MDX + T
 
 - App Router: [src/app/](src/app/)
 - Konfiguracja Next: [next.config.ts](next.config.ts)
-- Starter produkcyjny (Node HTTP server): [app.js](app.js)
+- Produkcyjny runtime: standardowy `next start` (bez custom servera).
 
 ### 1.4. i18n (next-intl)
 
 - Konfiguracja requestów: [src/i18n/request.ts](src/i18n/request.ts)
 - Nawigacja + mapowania: [src/i18n/routing.ts](src/i18n/routing.ts)
-- Middleware (realnie wykonywany): [src/proxy.ts](src/proxy.ts)
-- Entry middleware: [middleware.ts](middleware.ts)
+- Routing lokalizacji realizowany przez segment [locale] w App Router.
+- Middleware został wycofany; plik [src/proxy.ts](src/proxy.ts) jest legacy i nie jest podpięty.
 
 ### 1.5. SEO (metadata + sitemap)
 
@@ -90,12 +90,12 @@ Skrypt: `tinacms dev -c "next dev"` w [package.json](package.json).
 Co się dzieje:
 1) Tina uruchamia tryb dev (panel/GraphQL do preview i edycji).
 2) Równolegle uruchamia Next dev server.
-3) Middleware (i18n) wymusza prefix języka.
-4) Panel admin jest dostępny pod `/admin` (z redirectem do SPA).
+3) i18n działa przez segment URL `/[locale]` (np. `/pl`, `/en`).
+4) Panel admin jest dostępny pod `/admin` (SPA w `public/admin`).
 
 Najważniejsze wejścia:
 - Strona: `http://localhost:3000/pl` / `http://localhost:3000/en`
-- Admin: `http://localhost:3000/admin` (middleware przekieruje na `/admin/index.html#/~/admin/pl`)
+- Admin: `http://localhost:3000/admin` (SPA: `/admin/index.html#/~/admin/pl`)
 
 ### 3.2. Lint
 

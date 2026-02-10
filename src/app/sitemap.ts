@@ -7,7 +7,7 @@ const LOCALES = ['pl', 'en'] as const;
 
 export const revalidate = 3600;
 
-const prefixFor = (locale: string) => (locale === 'pl' ? '/pl' : '/en');
+const prefixFor = (locale: string) => (locale === 'pl' ? '' : '/en');
 
 const client = getTinaClient();
 
@@ -108,7 +108,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const prefix = prefixFor(locale);
     return [
       {
-        url: `${BASE_URL}${prefix}`,
+        url: `${BASE_URL}${prefix || '/'}`,
         lastModified: now,
         changeFrequency: 'monthly' as const,
         priority: 1,
@@ -131,7 +131,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Legal pages
   const legalPages: MetadataRoute.Sitemap = [
     ...LEGAL_PAGES_PL.map(slug => ({
-      url: `${BASE_URL}/pl/${slug}`,
+      url: `${BASE_URL}/${slug}`,
       lastModified: now,
       changeFrequency: 'yearly' as const,
       priority: 0.5,

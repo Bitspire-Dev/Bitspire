@@ -2,14 +2,6 @@ import type { Locale } from './locales';
 import { defineRouting } from 'next-intl/routing';
 import { createNavigation } from 'next-intl/navigation';
 
-export const routing = defineRouting({
-  locales: ['pl', 'en'],
-  defaultLocale: 'pl',
-  localePrefix: 'always'
-});
-
-export const { Link, redirect, usePathname, useRouter } = createNavigation(routing);
-
 // Path mappings for different locales
 export const pathnames = {
   '/': '/',
@@ -27,6 +19,52 @@ export const pathnames = {
     en: '/terms',
   },
 } as const;
+
+export const routing = defineRouting({
+  locales: ['pl', 'en'],
+  defaultLocale: 'pl',
+  localePrefix: 'as-needed',
+  pathnames,
+});
+
+export const { Link, redirect, usePathname, useRouter } = createNavigation(routing);
+
+function normalizePathname(pathname: string): string {
+  if (!pathname) return '/';
+  const withSlash = pathname.startsWith('/') ? pathname : `/${pathname}`;
+  if (withSlash === '/') return '/';
+  return withSlash.replace(/\/$/, '');
+}
+
+export function resolveLocalizedPathname(pathname: string, locale: Locale): string {
+  const normalized = normalizePathname(pathname);
+
+  for (const [key, value] of Object.entries(pathnames)) {
+    const normalizedKey = normalizePathname(key);
+    if (typeof value === 'string') {
+      const normalizedValue = normalizePathname(value);
+      if (normalized === normalizedKey || normalized === normalizedValue) {
+        return normalizedValue;
+      }
+      continue;
+    }
+
+    const localizedValue = value[locale];
+    const normalizedLocalized = normalizePathname(localizedValue);
+    if (normalized === normalizedKey) {
+      return normalizedLocalized;
+    }
+
+    const matchesAnyLocale = Object.values(value).some((candidate) =>
+      normalizePathname(candidate) === normalized
+    );
+    if (matchesAnyLocale) {
+      return normalizedLocalized;
+    }
+  }
+
+  return normalized;
+}
 
 // File name mappings for MDX files
 export const mdxFileNames: Record<string, Record<Locale, string>> = {

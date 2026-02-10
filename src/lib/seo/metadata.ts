@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { resolveLocalizedPathname } from "@/i18n/routing";
 
 export const BASE_URL = "https://bitspire.pl";
 export const SUPPORTED_LOCALES = ["pl", "en"] as const;
@@ -9,13 +10,15 @@ export function normalizeLocale(locale: string | undefined): SupportedLocale {
 }
 
 export function localePrefix(locale: SupportedLocale): string {
-  return locale === "en" ? "/en" : "/pl";
+  return locale === "en" ? "/en" : "";
 }
 
 export function buildLocalePath(locale: SupportedLocale, path: string): string {
   const clean = path.startsWith("/") ? path : `/${path}`;
+  const localized = resolveLocalizedPathname(clean, locale);
   const prefix = localePrefix(locale);
-  return clean === "/" ? prefix : `${prefix}${clean}`;
+  if (!prefix) return localized === "/" ? "/" : localized;
+  return localized === "/" ? prefix : `${prefix}${localized}`;
 }
 
 export function absoluteUrl(path: string): string {

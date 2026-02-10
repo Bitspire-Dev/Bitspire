@@ -1,3 +1,6 @@
+import { buildLocalePath, type SupportedLocale } from "@/lib/seo/metadata";
+import { resolveLocalizedPathname } from "@/i18n/routing";
+
 export type AdminLinkMode = "production" | "admin" | "preview";
 
 export interface AdminLinkContext {
@@ -30,7 +33,10 @@ export function buildAdminLink(href: string, context: AdminLinkContext): string 
     const localeMatch = pathname.match(/\/admin\/preview\/([^\/]+)/);
     const previewLocale = context.previewLocale ?? localeMatch?.[1] ?? locale;
 
-    const cleanHref = href.replace(/^\/(pl|en)/, "").replace(/\/$/, "");
+    const cleanHref = resolveLocalizedPathname(
+      href.replace(/^\/(pl|en)/, "").replace(/\/$/, "") || "/",
+      previewLocale === "en" ? "en" : "pl"
+    );
 
     let newPath = "home";
     if (href === "/" || href === `/${previewLocale}` || href === `/${previewLocale}/`) {
@@ -47,11 +53,16 @@ export function buildAdminLink(href: string, context: AdminLinkContext): string 
       newPath = cleanHref.substring(1) || "home";
     }
 
-    return `/admin/preview/${previewLocale}/${newPath}`;
+    return `/admin/index.html#/~/admin/${previewLocale}/${newPath}`;
   }
 
   if (mode === "admin") {
-    const cleanHref = href.startsWith("/") ? href.slice(1) : href;
+    const raw = href.startsWith("/") ? href.slice(1) : href;
+    const withoutLocale = raw.replace(/^(pl|en)(\/|$)/, "");
+    const cleanHref = resolveLocalizedPathname(
+      withoutLocale ? `/${withoutLocale}` : "/",
+      locale === "en" ? "en" : "pl"
+    ).replace(/^\//, "");
     if (cleanHref === "" || cleanHref === "/") {
       return `/admin/${locale}`;
     }
@@ -60,18 +71,9 @@ export function buildAdminLink(href: string, context: AdminLinkContext): string 
 
   const withSlash = normalizeHref(href);
   const normalized = withSlash.replace(/\/$/, "") || "/";
-
-  if (normalized === "/") return `/${locale}`;
-  if (
-    normalized === "/pl" ||
-    normalized === "/en" ||
-    normalized.startsWith("/pl/") ||
-    normalized.startsWith("/en/")
-  ) {
-    return normalized;
-  }
-
-  return `/${locale}${normalized}`;
+  const withoutLocale = normalized.replace(/^\/(pl|en)(?=\/|$)/, "") || "/";
+  const supportedLocale = (locale === "en" ? "en" : "pl") as SupportedLocale;
+  return buildLocalePath(supportedLocale, withoutLocale);
 }
 
 export function isAdminPath(pathname?: string | null): boolean {

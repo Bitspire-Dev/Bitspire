@@ -68,8 +68,9 @@ function filterProjects<T extends { title?: string | null; description?: string 
 export default async function PortfolioIndexPage({ params, searchParams }: PageProps) {
   const { locale } = await params;
   const { q = "", tags = "" } = (await searchParams) ?? {};
-  const page = await getPage(locale, "portfolio");
-  const allProjects = await getPortfolioIndex(locale);
+  const currentLocale = normalizeLocale(locale);
+  const page = await getPage(currentLocale, "portfolio");
+  const allProjects = await getPortfolioIndex(currentLocale);
   const selectedTags = tags.split(",").map((tag) => tag.trim()).filter(Boolean);
   const filteredProjects = filterProjects(allProjects, q, selectedTags);
   const allTags = extractTags(allProjects);
@@ -79,7 +80,7 @@ export default async function PortfolioIndexPage({ params, searchParams }: PageP
       data={{
         ...page,
         projects: filteredProjects,
-        locale,
+        locale: currentLocale,
       }}
       allTags={allTags}
       searchQuery={q}

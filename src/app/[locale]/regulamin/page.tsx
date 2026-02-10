@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import LegalPageWrapper from "@/components/pages/LegalPageWrapper";
 import { buildLocalePath, buildMetadata, normalizeLocale } from "@/lib/seo/metadata";
 import { getLegalPage } from "@/lib/tina/queries";
@@ -40,13 +40,11 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function RegulaminPage({ params }: PageProps) {
   const { locale } = await params;
-  if (!supportedLocales.includes(locale as (typeof supportedLocales)[number])) {
-    redirect(`/pl/${locale}`);
-  }
   try {
-    const slug = slugMap[locale as (typeof supportedLocales)[number]];
-    const data = await getLegalPage(locale, slug);
-    return <LegalPageWrapper data={{ ...data, locale }} />;
+    const currentLocale = normalizeLocale(locale);
+    const slug = slugMap[currentLocale];
+    const data = await getLegalPage(currentLocale, slug);
+    return <LegalPageWrapper data={{ ...data, locale: currentLocale }} />;
   } catch (error) {
     console.error("Regulamin not found", error);
     notFound();

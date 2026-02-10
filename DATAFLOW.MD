@@ -48,6 +48,7 @@ Poniższy dokument to **wyczerpująca lista kontrolna** procesu tworzenia nowego
 - Routing i mapowania: src/i18n/routing.ts.
 - Legal pages mapowane: src/lib/routing/legal-pages/config.ts.
 - Każda nowa treść musi mieć plik w obu językach i mieć spójny slug.
+- **Prefix locale jest as-needed:** domyślny PL bez `/pl`, EN z `/en`.
 
 ---
 
@@ -140,7 +141,7 @@ To osobne kolekcje z własnym MDX.
 ### 3.6. Routing i i18n
 - [ ] Dodaj route w src/app/[locale]/.../page.tsx.
 - [ ] generateStaticParams dla obu locale.
-- [ ] Obsłuż redirect jeśli locale niepoprawne.
+- [ ] Dla niepoprawnego locale zwróć `notFound()` (bez redirectu na `/pl`).
 - [ ] Update i18n mapowania w src/i18n/routing.ts, jeśli slugy różne.
 
 ### 3.7. Wrapper strony
@@ -292,7 +293,7 @@ To osobne kolekcje z własnym MDX.
 - **content** to jedyny punkt prawdy.
 - **Tina schema** musi odzwierciedlać każde pole frontmatter.
 - **MDX body** renderujemy zawsze przez TinaMarkdown.
-- **Locale** musi być częścią ścieżki i danych.
+- **Locale** jest częścią ścieżki tylko dla EN (PL bez prefiksu `/pl`).
 - **Admin Preview** musi działać dla każdego nowego typu treści.
 - **Sitemap + SEO** aktualizowane dla nowych stron i kolekcji.
 - **Generated Tina files** muszą być aktualne po każdej zmianie schema.

@@ -23,7 +23,30 @@ const contentApiUrl =
 
 const localApiUrl = process.env.TINA_LOCAL_API_URL ?? "http://localhost:4001/graphql";
 
-const apiUrl = token && contentApiUrl ? contentApiUrl : localApiUrl;
+const isProduction = process.env.NODE_ENV === "production";
+const allowPublicContentApi = process.env.TINA_ALLOW_PUBLIC_CONTENT_API === "true";
+
+const resolveApiUrl = () => {
+  if (isProduction) {
+    if (!contentApiUrl) {
+      throw new Error(
+        "TinaCMS: Missing content API URL in production. Set NEXT_PUBLIC_TINA_CONTENT_API_URL or TINA_CONTENT_API_URL."
+      );
+    }
+
+    if (!token && !allowPublicContentApi) {
+      throw new Error(
+        "TinaCMS: Missing token in production. Set TINA_TOKEN (or NEXT_PUBLIC_TINA_TOKEN) or explicitly allow public access via TINA_ALLOW_PUBLIC_CONTENT_API=true."
+      );
+    }
+
+    return contentApiUrl;
+  }
+
+  return token && contentApiUrl ? contentApiUrl : localApiUrl;
+};
+
+const apiUrl = resolveApiUrl();
 
 type TinaGeneratedClient = typeof GeneratedClient;
 
