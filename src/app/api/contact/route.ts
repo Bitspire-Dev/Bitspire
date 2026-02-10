@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { Resend } from "resend";
-import { kv } from "@vercel/kv";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1),
@@ -13,11 +14,11 @@ const contactSchema = z.object({
 });
 
 const RATE_LIMIT_MAX = 5;
-const RATE_LIMIT_WINDOW_SEC = 10 * 60;
+const RATE_LIMIT_WINDOW = "10 m";
 const isProduction = process.env.NODE_ENV === "production";
 
 let cachedResend: Resend | null = null;
-const memoryRateLimitMap = new Map<string, { count: number; resetAt: number }>();
+let cachedRatelimit: Ratelimit | null = null;
 
 function getResendClient() {
   const apiKey = process.env.RESEND_API_KEY;
@@ -48,56 +49,31 @@ function getResendRecipients() {
   };
 }
 
-function memoryRateLimit(ip: string) {
-  const now = Date.now();
-  const entry = memoryRateLimitMap.get(ip);
+function getRatelimit() {
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-  if (!entry || entry.resetAt < now) {
-    memoryRateLimitMap.set(ip, {
-      count: 1,
-      resetAt: now + RATE_LIMIT_WINDOW_SEC * 1000,
-    });
-    return { success: true, resetAt: now + RATE_LIMIT_WINDOW_SEC * 1000 };
-  }
-
-  if (entry.count >= RATE_LIMIT_MAX) {
-    return { success: false, resetAt: entry.resetAt };
-  }
-
-  entry.count += 1;
-  return { success: true, resetAt: entry.resetAt };
-}
-
-async function kvRateLimit(ip: string) {
-  const key = `bitspire:contact:rl:${ip}`;
-  const count = await kv.incr(key);
-
-  if (count === 1) {
-    await kv.expire(key, RATE_LIMIT_WINDOW_SEC);
-  }
-
-  const ttl = await kv.ttl(key);
-  const resetAt = Date.now() + Math.max(ttl, 0) * 1000;
-
-  return { success: count <= RATE_LIMIT_MAX, resetAt };
-}
-
-async function checkRateLimit(ip: string) {
-  const hasKvConfig = Boolean(
-    process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN
-  );
-
-  if (!hasKvConfig) {
+  if (!url || !token) {
     if (isProduction) {
       throw new Error(
-        "Missing KV_REST_API_URL or KV_REST_API_TOKEN in production."
+        "Missing UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN in production."
       );
     }
 
-    return memoryRateLimit(ip);
+    return null;
   }
 
-  return kvRateLimit(ip);
+  if (!cachedRatelimit) {
+    const redis = new Redis({ url, token });
+    cachedRatelimit = new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(RATE_LIMIT_MAX, RATE_LIMIT_WINDOW),
+      analytics: true,
+      prefix: "bitspire:contact",
+    });
+  }
+
+  return cachedRatelimit;
 }
 
 function getClientIp(request: Request) {
@@ -109,10 +85,19 @@ function getClientIp(request: Request) {
 export async function POST(request: Request) {
   const ip = getClientIp(request);
   try {
-    const { success, resetAt } = await checkRateLimit(ip);
+    const ratelimit = getRatelimit();
+
+    if (!ratelimit) {
+      return NextResponse.json(
+        { ok: false, error: "Rate limit not configured" },
+        { status: 500 }
+      );
+    }
+
+    const { success, reset } = await ratelimit.limit(ip);
     if (!success) {
       return NextResponse.json(
-        { ok: false, error: "Rate limit exceeded", resetAt },
+        { ok: false, error: "Rate limit exceeded", resetAt: reset },
         { status: 429 }
       );
     }
