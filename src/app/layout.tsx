@@ -2,6 +2,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { Metadata, type Viewport } from 'next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import Script from 'next/script';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -129,6 +130,19 @@ export default async function RootLayout({
         {/* Microsoft Tiles */}
         <meta name="msapplication-TileColor" content="#0f172a" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
+
+        {/* Google tag (gtag.js) */}
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-1M0G821XEX"
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-1M0G821XEX');`}
+        </Script>
       </head>
       <body className="antialiased bg-slate-950 text-slate-100 min-h-screen font-sans">
         <NextIntlClientProvider locale={currentLocale} messages={messages}>
