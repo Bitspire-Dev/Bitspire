@@ -6,8 +6,8 @@ import { buildLocalePath, buildMetadata } from "@/lib/seo/metadata";
 
 export const dynamic = "force-dynamic";
 
-function getCountry(): string | undefined {
-  const h = headers();
+async function getCountry(): Promise<string | undefined> {
+  const h = await headers();
   return (
     h.get("x-vercel-ip-country") ??
     h.get("x-geo-country") ??
@@ -33,7 +33,7 @@ export async function generateMetadata() {
 }
 
 export default async function RootPage() {
-  const country = getCountry();
+  const country = await getCountry();
   if (country?.toUpperCase() !== "PL") {
     redirect("/en");
   }

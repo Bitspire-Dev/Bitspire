@@ -3,27 +3,6 @@
 ## Streszczenie
 Zidentyfikowano **7** obszarów do poprawy: spójność dokumentacji i konfiguracji i18n/SEO, stabilność builda (Tina + sitemap), bezpieczeństwo/utrzymanie API kontaktu oraz jakość dokumentacji i skryptów uruchomieniowych.
 
-### 2) Niespójne canonical/alternates względem i18n
-**Problem:** Routing wymusza prefiks `/pl` i `/en` ([src/i18n/routing.ts](src/i18n/routing.ts#L5-L9)), natomiast `metadata.alternates` wskazuje canonical i wersję PL bez prefiksu ([src/app/layout.tsx](src/app/layout.tsx#L86-L91)).
-
-**Skutek:** Duplikacja treści (kanoniczny URL niezgodny z realnym routingiem) i ryzyko błędnej indeksacji.
-
-**Rekomendacja:**
-- Albo zmienić canonical na `/pl`, albo ustawić `localePrefix: 'as-needed'` dla domyślnego języka.
-- Ujednolicić `alternates` z faktycznym routingiem.
-
----
-
-### 3) Tina: fallback do localhost w produkcji
-**Problem:** Gdy brak tokenu, klient Tina przełącza się na lokalny endpoint (`http://localhost:4001/graphql`) ([src/lib/tina/client.ts](src/lib/tina/client.ts#L16-L26)).
-
-**Skutek:** W środowisku produkcyjnym build/sitemap może próbować łączyć się z lokalnym serwerem i kończyć błędem lub timeoutem.
-
-**Rekomendacja:**
-- Wymusić poprawną konfigurację env w produkcji (np. rzucać błąd, gdy `NODE_ENV === 'production'` i brak tokenu/URL).
-- Alternatywnie jawnie pozwolić na publiczny `contentApiUrl` tylko, gdy jest ustawiony.
-
----
 
 ### 4) Sitemap: inicjalizacja klienta na poziomie modułu
 **Problem:** `getTinaClient()` jest wykonywany podczas importu modułu ([src/app/sitemap.ts](src/app/sitemap.ts#L10-L13)).
