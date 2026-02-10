@@ -1,0 +1,41 @@
+fragment PortfolioParts on Portfolio {
+  __typename
+  title
+  slug
+  description
+  excerpt
+  date
+  category
+  tags
+  image
+  imageAlt
+  link
+  client
+  year
+  body
+}
+
+fragment BlogParts on Blog {
+  __typename
+  title
+  slug
+  description
+  excerpt
+  date
+  author
+  category
+  tags
+  image
+  imageAlt
+  readTime
+  body
+}
+
+fragment PagesParts on Pages {
+  __typename
+  title
+  description
+  lastUpdate
+  tocTitle
+  body
+}
