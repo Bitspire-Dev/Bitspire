@@ -5,12 +5,32 @@ import { routing } from './i18n/routing';
 
 const intlMiddleware = createMiddleware(routing);
 
+function getCountry(request: NextRequest): string | undefined {
+  return (
+    request.headers.get('x-vercel-ip-country') ??
+    request.headers.get('x-geo-country') ??
+    request.headers.get('x-country') ??
+    request.headers.get('cf-ipcountry') ??
+    undefined
+  );
+}
+
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Admin routes should bypass locale normalization
   if (pathname.startsWith('/admin')) {
     return NextResponse.next();
+  }
+
+  // Geo-redirect only for the root path
+  if (pathname === '/') {
+    const country = getCountry(request);
+    if (country && country.toUpperCase() !== 'PL') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/en';
+      return NextResponse.redirect(url);
+    }
   }
 
   return intlMiddleware(request);

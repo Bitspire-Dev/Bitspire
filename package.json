@@ -6,7 +6,7 @@
     "dev": "tinacms dev -c \"next dev\"",
     "build": "tinacms build && next build",
     "build:skip-cloud-checks": "tinacms build --skip-cloud-checks && cross-env NEXT_DISABLE_TURBOPACK=1 next build",
-    "start": "tinacms build && next start",
+    "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
