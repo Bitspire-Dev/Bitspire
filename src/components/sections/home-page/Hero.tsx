@@ -192,11 +192,14 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
 
                   if (resolvedPathname) {
                     return (
-                      <Link href={resolvedPathname}>
-                        <Button variant={action.type} size="lg" className="shadow-lg shadow-blue-500/20">
-                          {action.label}
-                        </Button>
-                      </Link>
+                      <Button
+                        asChild
+                        variant={action.type}
+                        size="lg"
+                        className="shadow-lg shadow-blue-500/20"
+                      >
+                        <Link href={resolvedPathname}>{action.label}</Link>
+                      </Button>
                     );
                   }
 
