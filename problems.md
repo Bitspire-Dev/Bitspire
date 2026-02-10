@@ -12,9 +12,6 @@ Brak sanitizacji HTML w mailu
 W route.ts message trafia do HTML bez escapingu. To ryzyko wstrzyknięcia HTML w mailu.
 Propozycja: escapuj name/email/subject/message (np. mała funkcja escapeHtml lub biblioteka).
 
-Strona główna zawsze dynamiczna i kosztowna
-W page.tsx użycie headers() + dynamic = "force-dynamic" powoduje brak cache i pobieranie danych z Tina na każde żądanie.
-Propozycja: przenieś georedirect do middleware (edge) i ustaw revalidate lub cache dla zapytań. To przywróci statyczność i poprawi TTFB.
 
 Wyszukiwarka wywołuje pełny rerender i pobranie danych na każde wpisanie
 W SearchBarRouter.tsx każda zmiana query robi router.replace, co w src/app/[locale]/blog/page.tsx i src/app/[locale]/portfolio/page.tsx oznacza nowe zapytania do Tina.
