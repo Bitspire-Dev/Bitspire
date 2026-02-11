@@ -6,6 +6,7 @@ import { createNavigation } from 'next-intl/navigation';
 export const pathnames = {
   '/': '/',
   '/portfolio': '/portfolio',
+  '/blog': '/blog',
   '/polityka-prywatnosci': {
     pl: '/polityka-prywatnosci',
     en: '/privacy-policy',

@@ -241,7 +241,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
             className="relative w-full z-10 flex justify-center mt-2 lg:mt-0 lg:absolute lg:bottom-0 pointer-events-none"
         >
              {/* Large screens: Absolute bottom. Desktop: translate-y-40% (was 55%) moves image UP closer to buttons */}
-                  <div className="w-[120vw] max-w-none lg:translate-y-[30%]">
+                  <div className="w-[130vw] max-w-none lg:translate-y-[30%]">
                <div className="relative aspect-video lg:aspect-[1.8/1] w-full">
                    <Image
                     src={imageSrc}

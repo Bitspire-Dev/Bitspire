@@ -44,9 +44,17 @@ export function proxy(request: NextRequest) {
 	return intlMiddleware(request);
 }
 
+export default function middleware(request: NextRequest) {
+	return proxy(request);
+}
+
 export const config = {
 	matcher: [
-		// Exclude static assets and Next internals; include admin and root
+		// Explicit coverage for root, locale paths and admin
+		'/',
+		'/(pl|en)/:path*',
+		'/admin/:path*',
+		// Exclude static assets and Next internals
 		'/((?!_next|_vercel|api|favicon.ico|.*\.[^/]+$).*)',
 	],
 };
