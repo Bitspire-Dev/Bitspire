@@ -62,8 +62,11 @@ export const Footer: React.FC<{ locale: 'pl' | 'en'; linkMode?: AdminLinkMode }>
   const description = DESCRIPTION[locale];
   const legalLinks = LEGAL_LINKS[locale];
   const cookieSettingsText = COOKIE_SETTINGS_TEXT[locale];
+  const stripLocalePrefix = (href: string) => href.replace(/^\/(pl|en)(?=\/|$)/, '');
   const getLink = (href: string) =>
-    linkMode ? buildAdminLink(href, { locale, mode: linkMode }) : buildLocalePath(locale, href);
+    linkMode
+      ? buildAdminLink(href, { locale, mode: linkMode })
+      : buildLocalePath(locale, stripLocalePrefix(href) || '/');
 
   const getSocialIcon = (icon: string) => {
     switch (icon.toLowerCase()) {

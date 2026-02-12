@@ -24,7 +24,7 @@ export const pathnames = {
 export const routing = defineRouting({
   locales: ['pl', 'en'],
   defaultLocale: 'pl',
-  localePrefix: 'as-needed',
+  localePrefix: 'always',
   pathnames,
 });
 

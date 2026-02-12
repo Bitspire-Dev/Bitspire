@@ -7,6 +7,7 @@ import { RichText } from '@tina/richTextPresets';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import { Link, resolvePathnameKey } from '@/i18n/routing';
+import { buildLocalePath } from '@/lib/seo/metadata';
 import { motion, type Variants } from 'framer-motion';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
@@ -188,7 +189,8 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
               <motion.div key={idx} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 {(() => {
                   const resolvedPathname = resolvePathnameKey(action.url, locale);
-                  const isExternal = /^(https?:)?\/\//.test(action.url);
+                  const isExternal = /^(https?:)?\/\//.test(action.url) || action.url.startsWith('mailto:') || action.url.startsWith('tel:');
+                  const isHashOnly = action.url.startsWith('#');
 
                   if (resolvedPathname) {
                     return (
@@ -199,6 +201,26 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
                         className="shadow-lg shadow-blue-500/20"
                       >
                         <Link href={resolvedPathname}>{action.label}</Link>
+                      </Button>
+                    );
+                  }
+
+                  if (!isExternal) {
+                    const base = isHashOnly ? '/' : action.url;
+                    const [pathAndQuery, hash] = base.split('#');
+                    const [path, query] = pathAndQuery.split('?');
+                    const localizedPath = buildLocalePath(locale as 'pl' | 'en', path || '/');
+                    const withQuery = query ? `${localizedPath}?${query}` : localizedPath;
+                    const localizedHref = hash ? `${withQuery}#${hash}` : withQuery;
+
+                    return (
+                      <Button
+                        asChild
+                        variant={action.type}
+                        size="lg"
+                        className="shadow-lg shadow-blue-500/20"
+                      >
+                        <Link href={localizedHref}>{action.label}</Link>
                       </Button>
                     );
                   }
@@ -248,7 +270,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
                     alt="Hero illustration"
                     fill
                     className="object-contain object-bottom"
-                    sizes="(max-width: 768px) 120vw, (max-width: 1280px) 120vw, 120vw"
+                    sizes="(max-width: 768px) 130vw, (max-width: 1280px) 130vw, 130vw"
                     quality={90}
                     data-tina-field={data ? tinaField(data, 'image') : undefined}
                     priority

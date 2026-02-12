@@ -1,5 +1,8 @@
 "use client";
 import React from "react";
+import Link from "next/link";
+import { useLocale } from "next-intl";
+import { buildLocalePath } from "@/lib/seo/metadata";
 import { Button } from '@/components/ui/primitives/Button';
 
 export const CTAButton: React.FC<{
@@ -8,6 +11,7 @@ export const CTAButton: React.FC<{
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   href?: string;
 }> = ({ children, className = "", onClick, href }) => {
+  const locale = useLocale() as 'pl' | 'en';
   const content = (
     <>
       <svg width="20" height="20" fill="none" viewBox="0 0 24 24" aria-hidden="true">
@@ -27,6 +31,25 @@ export const CTAButton: React.FC<{
   `;
 
   if (href) {
+    const isExternal = /^(https?:)?\/\//.test(href) || href.startsWith('mailto:') || href.startsWith('tel:');
+    const isHashOnly = href.startsWith('#');
+    const stripLocalePrefix = (value: string) => value.replace(/^\/(pl|en)(?=\/|$)/, '');
+
+    if (!isExternal) {
+      const base = isHashOnly ? '/' : stripLocalePrefix(href);
+      const [pathAndQuery, hash] = base.split('#');
+      const [path, query] = pathAndQuery.split('?');
+      const localizedPath = buildLocalePath(locale, path || '/');
+      const withQuery = query ? `${localizedPath}?${query}` : localizedPath;
+      const localizedHref = hash ? `${withQuery}#${hash}` : withQuery;
+
+      return (
+        <Button asChild variant="ghost" size="lg" className={classNames}>
+          <Link href={localizedHref}>{content}</Link>
+        </Button>
+      );
+    }
+
     return (
       <Button asChild variant="ghost" size="lg" className={classNames}>
         <a href={href}>{content}</a>

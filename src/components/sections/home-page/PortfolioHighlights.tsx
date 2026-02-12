@@ -10,6 +10,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FaArrowRight, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useLocale } from 'next-intl';
+import { buildLocalePath } from '@/lib/seo/metadata';
 
 interface PortfolioProject {
   title?: string;
@@ -65,7 +66,7 @@ function normalizeIndexProject(item: Record<string, unknown>): PortfolioProject 
 
 export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHighlightsProps) {
   const [currentIndex, setCurrentIndex] = useState(1);
-  const locale = useLocale();
+  const locale = useLocale() as 'pl' | 'en';
   const controlLabels = {
     prev: locale === 'pl' ? 'Poprzedni projekt' : 'Previous project',
     next: locale === 'pl' ? 'Następny projekt' : 'Next project',
@@ -229,7 +230,7 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
                         <div className={`mt-auto transition-opacity duration-300 ${isCenter ? 'opacity-100' : 'opacity-0'}`}>
                            {slug && (
                              <Link 
-                               href={`/portfolio/${slug}`}
+                               href={buildLocalePath(locale, `/portfolio/${slug}`)}
                                className="inline-flex items-center gap-2 text-brand-accent hover:text-brand-accent/80 font-medium text-sm transition-colors"
                              >
                                 Zobacz projekt <FaArrowRight />

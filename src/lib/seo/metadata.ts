@@ -10,7 +10,7 @@ export function normalizeLocale(locale: string | undefined): SupportedLocale {
 }
 
 export function localePrefix(locale: SupportedLocale): string {
-  return locale === "en" ? "/en" : "";
+  return locale === "en" ? "/en" : "/pl";
 }
 
 export function buildLocalePath(locale: SupportedLocale, path: string): string {
