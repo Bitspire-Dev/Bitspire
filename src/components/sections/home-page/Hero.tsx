@@ -7,6 +7,7 @@ import { RichText } from '@tina/richTextPresets';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import { Link, resolvePathnameKey } from '@/i18n/routing';
+import NextLink from 'next/link';
 import { buildLocalePath } from '@/lib/seo/metadata';
 import { motion, type Variants } from 'framer-motion';
 import Image from 'next/image';
@@ -220,7 +221,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
                         size="lg"
                         className="shadow-lg shadow-blue-500/20"
                       >
-                        <Link href={localizedHref}>{action.label}</Link>
+                        <NextLink href={localizedHref}>{action.label}</NextLink>
                       </Button>
                     );
                   }
