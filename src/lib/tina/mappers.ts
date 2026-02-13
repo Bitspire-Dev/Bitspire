@@ -1,17 +1,6 @@
 // Normalization and helpers for Tina data.
 
-export function formatDate(date: string | null | undefined, locale: string): string | undefined {
-  if (!date) return undefined;
-  try {
-    return new Date(date).toLocaleDateString(locale || "pl-PL", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  } catch {
-    return date;
-  }
-}
+import { formatDate } from "@/lib/ui/helpers";
 
 export function normalizePost<T extends { _sys?: { filename?: string }; date?: string | null; title?: string; excerpt?: string | null; description?: string | null; readTime?: number | null; image?: string | null; imageAlt?: string | null; category?: string | null; tags?: (string | null)[] | null; author?: string | null; body?: unknown; }>(raw: T, options?: { locale?: string; relatedPosts?: unknown[] }) {
   const { locale = "pl", relatedPosts = [] } = options || {};

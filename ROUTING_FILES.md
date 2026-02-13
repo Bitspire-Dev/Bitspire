@@ -2,7 +2,7 @@
 
 Poniżej lista plików w projekcie, które zawierają treści powiązane z routingiem (App Router, i18n routing, middleware, redirecty, sitemap, linkowanie, itp.).
 
-## Root
+n
 - DATAFLOW.MD
 - PIPELINE.MD
 - README.md

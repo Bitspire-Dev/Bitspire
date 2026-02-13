@@ -4,6 +4,7 @@ import { SearchBarRouter } from "@/components/ui/composites/SearchBarRouter";
 import PageBackground from "@/components/layout/PageBackground";
 import BlogHeader from "@/components/sections/blog/BlogHeader";
 import BlogGrid from "@/components/sections/blog/BlogGrid";
+import { extractTags } from "@/lib/ui/helpers";
 
 interface BlogPost {
     _sys: {
@@ -52,14 +53,7 @@ export default function BlogPageWrapper({
     const locale = data?.locale || "pl";
     const normalizedAllTags = allTags && allTags.length > 0
         ? allTags
-        : Array.from(
-            posts.reduce((acc, post) => {
-                post.tags?.forEach(tag => {
-                    if (tag) acc.add(tag);
-                });
-                return acc;
-            }, new Set<string>())
-        ).sort();
+        : extractTags(posts);
 
     const getLink = (href: string) =>
         buildAdminLink(href, {
@@ -71,6 +65,7 @@ export default function BlogPageWrapper({
         <PageBackground variant="blue">
             <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-20 md:pt-32 pb-16 md:pb-20">
                 <BlogHeader
+                    badgeLabel="Blog"
                     title={data?.title || undefined}
                     description={data?.description || undefined}
                     data={data}

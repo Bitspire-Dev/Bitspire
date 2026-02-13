@@ -8,7 +8,7 @@ import { Card, CardAccent, CardContent, CardMedia } from '@/components/ui/primit
 import { Heading } from '@/components/ui/primitives/Heading';
 import { Text } from '@/components/ui/primitives/Text';
 import FeaturedImage from '@/components/ui/media/FeaturedImage';
-import { safeImageSrc } from '@/lib/ui/helpers';
+import { safeImageSrc, formatDate } from '@/lib/ui/helpers';
 
 interface Article {
   title: string;
@@ -94,11 +94,7 @@ export const RelatedArticles: React.FC<RelatedArticlesProps> = ({
                   {article.date && (
                     <div className="flex items-center gap-3 mb-1 text-xs text-slate-500">
                       <time dateTime={article.date}>
-                        {new Date(article.date).toLocaleDateString(locale === 'pl' ? 'pl-PL' : 'en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
+                        {formatDate(article.date, locale) ?? article.date}
                       </time>
                       {article.readTime && readTimeLabel && (
                         <>

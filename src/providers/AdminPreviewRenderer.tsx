@@ -1,7 +1,7 @@
 "use client";
 
 import HomePageWrapper from "@/components/pages/HomePageWrapper";
-import LegalPageWrapper from "@/components/pages/LegalPageWrapper";
+import LegalPage from "@/components/sections/LegalPage";
 import BlogPageWrapper from "@/components/pages/BlogPageWrapper";
 import BlogPostWrapper from "@/components/pages/BlogPostWrapper";
 import PortfolioPageWrapper from "@/components/pages/PortfolioPageWrapper";
@@ -19,7 +19,7 @@ import type { ComponentProps } from "react";
 
 type JsonRecord = Record<string, unknown>;
 type HomeData = ComponentProps<typeof HomePageWrapper>["data"];
-type LegalData = ComponentProps<typeof LegalPageWrapper>["data"];
+type LegalData = ComponentProps<typeof LegalPage>["data"];
 type BlogPageData = ComponentProps<typeof BlogPageWrapper>["data"];
 type BlogPostData = ComponentProps<typeof BlogPostWrapper>["data"];
 type PortfolioIndexData = ComponentProps<typeof PortfolioPageWrapper>["data"];
@@ -34,7 +34,7 @@ export function AdminHomePreview({ locale }: { locale: string }) {
 export function AdminLegalPagePreview({ locale }: { locale: string }) {
   const data = useAdminPreviewData<{ pages: JsonRecord }>();
   const pages = mapLegalPageData(data.pages as Record<string, unknown>, locale) as LegalData;
-  return <LegalPageWrapper data={pages} hideToc />;
+  return <LegalPage data={pages} hideToc />;
 }
 
 export function AdminBlogIndexPreview({ locale, posts }: { locale: string; posts: unknown[] }) {

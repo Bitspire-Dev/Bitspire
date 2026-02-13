@@ -94,7 +94,6 @@ export function SearchBar({
     handleTagToggle,
     handleClearSearch,
     handleClearFilters,
-    handleClearTag: _handleClearTag,
     getDisplayedTags,
     getRemainingTagsCount,
     shouldShowMoreButton,
@@ -250,7 +249,3 @@ export function SearchBar({
     </div>
   );
 }
-
-// Export aliases for backward compatibility
-export { SearchBar as BlogSearch };
-export { SearchBar as PortfolioSearch };

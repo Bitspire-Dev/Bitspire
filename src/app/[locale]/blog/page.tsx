@@ -1,6 +1,7 @@
 import BlogPageWrapper from "@/components/pages/BlogPageWrapper";
 import { buildLocalePath, buildMetadata, normalizeLocale } from "@/lib/seo/metadata";
 import { getBlogIndex, getPage } from "@/lib/tina/queries";
+import { extractTags, filterByQueryAndTags } from "@/lib/ui/helpers";
 
 export const revalidate = 3600;
 
@@ -31,41 +32,6 @@ export async function generateMetadata({ params }: PageProps) {
   });
 }
 
-function extractTags(posts: Array<{ tags?: (string | null)[] | null }>) {
-  const tagsSet = new Set<string>();
-  posts.forEach((post) => {
-    post.tags?.forEach((tag) => {
-      if (tag) tagsSet.add(tag);
-    });
-  });
-  return Array.from(tagsSet).sort();
-}
-
-function filterPosts<T extends { title?: string; description?: string; excerpt?: string | null; tags?: (string | null)[] | null }>(
-  posts: T[],
-  query: string,
-  tags: string[]
-): T[] {
-  const normalizedQuery = query.trim().toLowerCase();
-  const normalizedTags = tags.map((tag) => tag.toLowerCase());
-
-  return posts.filter((post) => {
-    const matchesSearch =
-      !normalizedQuery ||
-      (post.title?.toLowerCase() || "").includes(normalizedQuery) ||
-      (post.description?.toLowerCase() || "").includes(normalizedQuery) ||
-      (post.excerpt?.toLowerCase() || "").includes(normalizedQuery);
-
-    const matchesTags =
-      normalizedTags.length === 0 ||
-      normalizedTags.some((tag) =>
-        post.tags?.some((postTag) => postTag?.toLowerCase() === tag)
-      );
-
-    return matchesSearch && matchesTags;
-  });
-}
-
 export default async function BlogIndexPage({ params, searchParams }: PageProps) {
   const { locale } = await params;
   const { q = "", tags = "" } = (await searchParams) ?? {};
@@ -73,7 +39,7 @@ export default async function BlogIndexPage({ params, searchParams }: PageProps)
   const page = await getPage(currentLocale, "blog");
   const allPosts = await getBlogIndex(currentLocale);
   const selectedTags = tags.split(",").map((tag) => tag.trim()).filter(Boolean);
-  const filteredPosts = filterPosts(allPosts, q, selectedTags);
+  const filteredPosts = filterByQueryAndTags(allPosts, q, selectedTags);
   const allTags = extractTags(allPosts);
 
   return (

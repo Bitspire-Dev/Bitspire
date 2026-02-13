@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { resolveLocalizedPathname } from "@/i18n/routing";
+import { locales, type Locale } from "@/i18n/locales";
 
 export const BASE_URL = "https://bitspire.pl";
-export const SUPPORTED_LOCALES = ["pl", "en"] as const;
-export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
+export const SUPPORTED_LOCALES = locales;
+export type SupportedLocale = Locale;
 
 export function normalizeLocale(locale: string | undefined): SupportedLocale {
   return locale === "en" ? "en" : "pl";

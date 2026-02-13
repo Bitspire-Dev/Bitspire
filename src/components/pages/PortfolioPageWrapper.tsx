@@ -2,6 +2,7 @@ import { SearchBarRouter } from "@/components/ui/composites/SearchBarRouter";
 import PageBackground from "@/components/layout/PageBackground";
 import PortfolioHeader from "@/components/sections/portfolio/PortfolioHeader";
 import PortfolioGrid from "@/components/sections/portfolio/PortfolioGrid";
+import { extractTags } from "@/lib/ui/helpers";
 
 interface PortfolioProject {
     title?: string | null;
@@ -54,14 +55,7 @@ export default function PortfolioPageWrapper({
     const safeDescription = typeof data?.description === 'string' ? data.description : undefined;
     const normalizedAllTags = allTags && allTags.length > 0
         ? allTags
-        : Array.from(
-            projects.reduce((acc, project) => {
-                project.tags?.forEach(tag => {
-                    if (tag) acc.add(tag);
-                });
-                return acc;
-            }, new Set<string>())
-        ).sort();
+        : extractTags(projects);
 
     return (
         <PageBackground variant="blue">

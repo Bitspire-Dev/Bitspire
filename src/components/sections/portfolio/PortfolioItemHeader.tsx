@@ -12,13 +12,12 @@ interface PortfolioItemHeaderProps {
     };
 }
 
-export default function PortfolioItemHeader({ 
-    title, 
-    description, 
-    category, 
+export default function PortfolioItemHeader({
+    title,
+    description,
+    category,
     year,
     data,
-    translations: _t 
 }: PortfolioItemHeaderProps) {
     return (
         <>

@@ -3,6 +3,7 @@ import { tinaField } from 'tinacms/dist/react';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { RichText } from '@tina/richTextPresets';
 import { Card, CardContent } from '@/components/ui/primitives/Card';
+import { toSlug } from '@/lib/ui/helpers';
 
 interface Section {
   __typename?: string;
@@ -24,11 +25,7 @@ interface LegalPageData {
 
 // --- Helpers ---------------------------------------------------------------
 
-const slugify = (text: string) =>
-  text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '') || 'section';
+const slugify = (text: string) => toSlug(text) || 'section';
 
 const extractTextFromNode = (node: unknown): string => {
   if (!node) return '';

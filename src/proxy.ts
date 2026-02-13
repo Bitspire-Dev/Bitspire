@@ -50,11 +50,7 @@ export default function middleware(request: NextRequest) {
 
 export const config = {
 	matcher: [
-		// Explicit coverage for root, locale paths and admin
-		'/',
-		'/(pl|en)/:path*',
-		'/admin/:path*',
-		// Exclude static assets and Next internals
+		// Exclude static assets and Next internals; include admin and root
 		'/((?!_next|_vercel|api|favicon.ico|.*\.[^/]+$).*)',
 	],
 };

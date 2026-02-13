@@ -1,6 +1,7 @@
 import PortfolioPageWrapper from "@/components/pages/PortfolioPageWrapper";
 import { buildLocalePath, buildMetadata, normalizeLocale } from "@/lib/seo/metadata";
 import { getPortfolioIndex, getPage } from "@/lib/tina/queries";
+import { extractTags, filterByQueryAndTags } from "@/lib/ui/helpers";
 
 export const revalidate = 3600;
 
@@ -31,40 +32,6 @@ export async function generateMetadata({ params }: PageProps) {
   });
 }
 
-function extractTags(projects: Array<{ tags?: (string | null)[] | null }>) {
-  const tagsSet = new Set<string>();
-  projects.forEach((project) => {
-    project.tags?.forEach((tag) => {
-      if (tag) tagsSet.add(tag);
-    });
-  });
-  return Array.from(tagsSet).sort();
-}
-
-function filterProjects<T extends { title?: string | null; description?: string | null; tags?: (string | null)[] | null }>(
-  projects: T[],
-  query: string,
-  tags: string[]
-): T[] {
-  const normalizedQuery = query.trim().toLowerCase();
-  const normalizedTags = tags.map((tag) => tag.toLowerCase());
-
-  return projects.filter((project) => {
-    const matchesSearch =
-      !normalizedQuery ||
-      (project.title?.toLowerCase() || "").includes(normalizedQuery) ||
-      (project.description?.toLowerCase() || "").includes(normalizedQuery);
-
-    const matchesTags =
-      normalizedTags.length === 0 ||
-      normalizedTags.some((tag) =>
-        project.tags?.some((projectTag) => projectTag?.toLowerCase() === tag)
-      );
-
-    return matchesSearch && matchesTags;
-  });
-}
-
 export default async function PortfolioIndexPage({ params, searchParams }: PageProps) {
   const { locale } = await params;
   const { q = "", tags = "" } = (await searchParams) ?? {};
@@ -72,7 +39,7 @@ export default async function PortfolioIndexPage({ params, searchParams }: PageP
   const page = await getPage(currentLocale, "portfolio");
   const allProjects = await getPortfolioIndex(currentLocale);
   const selectedTags = tags.split(",").map((tag) => tag.trim()).filter(Boolean);
-  const filteredProjects = filterProjects(allProjects, q, selectedTags);
+  const filteredProjects = filterByQueryAndTags(allProjects, q, selectedTags);
   const allTags = extractTags(allProjects);
 
   return (

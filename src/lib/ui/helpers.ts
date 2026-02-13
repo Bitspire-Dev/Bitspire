@@ -46,3 +46,47 @@ export function safeImageSrc(src?: string | null): string | undefined {
 
   return `/${trimmed}`;
 }
+
+/**
+ * Extract unique, sorted tags from a list of items that have a `tags` property.
+ */
+export function extractTags(items: Array<{ tags?: (string | null)[] | null }>): string[] {
+  const tagsSet = new Set<string>();
+  items.forEach((item) => {
+    item.tags?.forEach((tag) => {
+      if (tag) tagsSet.add(tag);
+    });
+  });
+  return Array.from(tagsSet).sort();
+}
+
+/**
+ * Filter items by search query and selected tags.
+ * Searches across title, description, and (optionally) excerpt fields.
+ */
+export function filterByQueryAndTags<
+  T extends { title?: string | null; description?: string | null; excerpt?: string | null; tags?: (string | null)[] | null }
+>(
+  items: T[],
+  query: string,
+  tags: string[]
+): T[] {
+  const normalizedQuery = query.trim().toLowerCase();
+  const normalizedTags = tags.map((tag) => tag.toLowerCase());
+
+  return items.filter((item) => {
+    const matchesSearch =
+      !normalizedQuery ||
+      (item.title?.toLowerCase() || "").includes(normalizedQuery) ||
+      (item.description?.toLowerCase() || "").includes(normalizedQuery) ||
+      (item.excerpt?.toLowerCase() || "").includes(normalizedQuery);
+
+    const matchesTags =
+      normalizedTags.length === 0 ||
+      normalizedTags.some((tag) =>
+        item.tags?.some((itemTag) => itemTag?.toLowerCase() === tag)
+      );
+
+    return matchesSearch && matchesTags;
+  });
+}

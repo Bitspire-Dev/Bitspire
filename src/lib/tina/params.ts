@@ -1,72 +1,27 @@
 import { LEGAL_PAGES_EN, LEGAL_PAGES_PL } from "@/lib/routing/legal-pages/config";
-import { getTinaClient } from "@/lib/tina/client";
-
-function prefix(locale: string): string {
-  return `${locale}/`;
-}
-
-const client = getTinaClient();
-
-async function fetchAllBlogRelativePaths() {
-  const paths: string[] = [];
-  let after: string | undefined = undefined;
-
-  do {
-    const response = await client.queries.blogConnection({
-      first: 50,
-      after,
-      filter: {
-        slug: { startsWith: "" },
-        author: { startsWith: "" },
-      },
-    });
-    const connection = response.data.blogConnection;
-    const edges = connection.edges || [];
-    edges.forEach((edge) => {
-      const relativePath = edge?.node?._sys?.relativePath;
-      if (relativePath) paths.push(relativePath);
-    });
-    after = connection.pageInfo?.hasNextPage ? connection.pageInfo.endCursor : undefined;
-  } while (after);
-
-  return paths;
-}
-
-async function fetchAllPortfolioRelativePaths() {
-  const paths: string[] = [];
-  let after: string | undefined = undefined;
-
-  do {
-    const response = await client.queries.portfolioConnection({ first: 50, after });
-    const connection = response.data.portfolioConnection;
-    const edges = connection.edges || [];
-    edges.forEach((edge) => {
-      const relativePath = edge?.node?._sys?.relativePath;
-      if (relativePath) paths.push(relativePath);
-    });
-    after = connection.pageInfo?.hasNextPage ? connection.pageInfo.endCursor : undefined;
-  } while (after);
-
-  return paths;
-}
+import { fetchAllBlogNodes, fetchAllPortfolioNodes, localePrefix } from "@/lib/tina/queries";
 
 export async function getAllBlogSlugs(locale: string) {
-  const relativePaths = await fetchAllBlogRelativePaths();
-  return relativePaths
-    .filter((relativePath) => relativePath.startsWith(prefix(locale)))
-    .map((relativePath) => ({
+  const nodes = await fetchAllBlogNodes();
+  const pfx = localePrefix(locale);
+  return nodes
+    .filter((node): node is NonNullable<typeof node> & { _sys: { filename: string; relativePath: string } } =>
+      Boolean(node?._sys?.relativePath?.startsWith(pfx)))
+    .map((node) => ({
       locale,
-      slug: relativePath.replace(prefix(locale), "").replace(/\.mdx$/, ""),
+      slug: node._sys.filename,
     }));
 }
 
 export async function getAllPortfolioSlugs(locale: string) {
-  const relativePaths = await fetchAllPortfolioRelativePaths();
-  return relativePaths
-    .filter((relativePath) => relativePath.startsWith(prefix(locale)))
-    .map((relativePath) => ({
+  const nodes = await fetchAllPortfolioNodes();
+  const pfx = localePrefix(locale);
+  return nodes
+    .filter((node): node is NonNullable<typeof node> & { _sys: { filename: string; relativePath: string } } =>
+      Boolean(node?._sys?.relativePath?.startsWith(pfx)))
+    .map((node) => ({
       locale,
-      slug: relativePath.replace(prefix(locale), "").replace(/\.mdx$/, ""),
+      slug: node._sys.filename,
     }));
 }
 
@@ -80,5 +35,5 @@ export function getHomeParam(locale: string) {
 }
 
 export function mapPathForPagesCollection(locale: string, slug: string) {
-  return `${prefix(locale)}${slug}.mdx`;
+  return `${localePrefix(locale)}${slug}.mdx`;
 }
