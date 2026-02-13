@@ -4,6 +4,8 @@ import React from 'react';
 import Image from 'next/image';
 import { tinaField } from 'tinacms/dist/react';
 import { safeImageSrc } from '@/lib/ui/helpers';
+import { getTranslations } from '@/i18n/translations';
+import { DEFAULT_LOCALE } from '@/i18n/locales';
 
 interface Project {
   __typename?: string;
@@ -25,7 +27,8 @@ interface PortfolioData {
   [key: string]: unknown;
 }
 
-export default function Portfolio({ data }: { data?: PortfolioData }) {
+export default function Portfolio({ data, locale }: { data?: PortfolioData; locale?: string }) {
+  const t = getTranslations(locale || DEFAULT_LOCALE).portfolio;
   // Filter out null values from projects array
   const projects = (data?.projects || []).filter((p): p is Project => p !== null);
 
@@ -134,7 +137,7 @@ export default function Portfolio({ data }: { data?: PortfolioData }) {
                         rel={project.link.startsWith("http") ? "noopener noreferrer" : undefined}
                         className="inline-flex items-center gap-2 text-sm font-medium text-blue-400 hover:text-cyan-400 transition-colors group/link"
                       >
-                        <span>Zobacz projekt</span>
+                        <span>{t.viewProject}</span>
                         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="transition-transform group-hover/link:translate-x-1">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                         </svg>
@@ -145,7 +148,7 @@ export default function Portfolio({ data }: { data?: PortfolioData }) {
               ) : null;
             })
           ) : (
-            <p className="text-slate-400 col-span-full text-center py-20">Brak projektów do wyświetlenia.</p>
+            <p className="text-slate-400 col-span-full text-center py-20">{t.noProjects}</p>
           )}
         </section>
 
@@ -153,16 +156,16 @@ export default function Portfolio({ data }: { data?: PortfolioData }) {
           <div className="mt-24 text-center">
             <div className="inline-flex flex-col items-center gap-4 p-8 rounded-2xl glass-panel">
               <p className="text-slate-300 text-lg font-medium">
-                Chcesz zobaczyć coś konkretnego?
+                {t.ctaQuestion}
               </p>
               <a 
                 href="#contact" 
                 className="text-blue-400 font-bold hover:text-cyan-400 transition-colors underline decoration-blue-500/30 hover:decoration-cyan-400 underline-offset-4"
               >
-                Napisz do nas
+                {t.ctaContact}
               </a>
               <p className="text-slate-500 text-sm">
-                Przygotujemy spersonalizowane case study
+                {t.ctaNote}
               </p>
             </div>
           </div>

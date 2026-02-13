@@ -33,7 +33,7 @@ interface PortfolioHighlightsProps {
   linkMode?: AdminLinkMode;
 }
 
-const PortfolioHighlights: React.FC<PortfolioHighlightsProps> = ({ data, locale = DEFAULT_LOCALE, linkMode = 'production' }) => {
+const FeaturedProjectsGrid: React.FC<PortfolioHighlightsProps> = ({ data, locale = DEFAULT_LOCALE, linkMode = 'production' }) => {
   const t = getTranslations(locale).portfolio;
   // Filter featured projects
   const featuredProjects = data?.projects?.filter(project => project?.featured) || [];
@@ -174,4 +174,4 @@ const PortfolioHighlights: React.FC<PortfolioHighlightsProps> = ({ data, locale 
   );
 };
 
-export default PortfolioHighlights;
+export default FeaturedProjectsGrid;

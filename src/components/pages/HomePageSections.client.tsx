@@ -17,7 +17,7 @@ const Features = dynamic(() => import("@/components/sections/home-page/Features"
   loading: () => <SectionPlaceholder minHeight="520px" />
 });
 
-const PortfolioHighlights = dynamic(() => import("@/components/sections/home-page/PortfolioHighlights"), {
+const FeaturedProjectsCarousel = dynamic(() => import("@/components/sections/home-page/FeaturedProjectsCarousel"), {
   ssr: false,
   loading: () => <SectionPlaceholder minHeight="520px" />
 });
@@ -55,7 +55,7 @@ export function PortfolioHighlightsSectionClient({
 }) {
   return (
     <div data-tina-field={tinaField(data)}>
-      <PortfolioHighlights data={data} projectsIndex={projectsIndex} />
+      <FeaturedProjectsCarousel data={data} projectsIndex={projectsIndex} />
     </div>
   );
 }

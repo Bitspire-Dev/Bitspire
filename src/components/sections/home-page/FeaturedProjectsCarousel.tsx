@@ -66,7 +66,7 @@ function normalizeIndexProject(item: Record<string, unknown>): PortfolioProject 
   };
 }
 
-export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHighlightsProps) {
+export default function FeaturedProjectsCarousel({ data, projectsIndex }: PortfolioHighlightsProps) {
   const [currentIndex, setCurrentIndex] = useState(1);
   const locale = useLocale() as Locale;
   const t = getTranslations(locale);

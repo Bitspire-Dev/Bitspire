@@ -5,6 +5,8 @@ import { useCookieConsent } from "@/hooks/useCookies";
 import { useAdminLink } from "@/hooks/useAdminLink";
 import { CookieSettingsModal } from "./CookieSettingsModal";
 import { Button } from "@/components/ui/primitives/Button";
+import { useLocale } from "next-intl";
+import { getTranslations } from "@/i18n/translations";
 
 export const CookieBanner: React.FC = () => {
   const { consent, ready, grantAll, rejectAll } = useCookieConsent();
@@ -12,6 +14,8 @@ export const CookieBanner: React.FC = () => {
   const [openSettings, setOpenSettings] = useState(false);
   const [visible, setVisible] = useState(false);
   const [closing, setClosing] = useState(false);
+  const locale = useLocale();
+  const t = getTranslations(locale).cookieBanner;
 
   useEffect(() => {
     if (ready && !consent) {
@@ -56,12 +60,11 @@ export const CookieBanner: React.FC = () => {
           ` ${closing ? 'opacity-0 translate-y-3' : 'opacity-100 translate-y-0'}`
         }
         role="dialog"
-        aria-label="Komunikat o cookies"
+        aria-label={t.ariaLabel}
       >
-        <h2 className="text-lg font-semibold text-white mb-2">Szanujemy Twoją prywatność</h2>
+        <h2 className="text-lg font-semibold text-white mb-2">{t.heading}</h2>
         <p className="text-sm text-slate-300 leading-relaxed mb-4">
-          Używamy plików cookies niezbędnych oraz – po wyrażeniu zgody – analitycznych, personalizacyjnych i marketingowych aby ulepszać
-          działanie serwisu. Szczegóły znajdziesz w <Link href={getLink("/polityka-prywatnosci/")} className="text-blue-400 underline">polityce prywatności</Link> i <Link href={getLink("/polityka-cookies/")} className="text-blue-400 underline">polityce cookies</Link>.
+          {t.description} <Link href={getLink("/polityka-prywatnosci/")} className="text-blue-400 underline">{t.privacyPolicy}</Link> i <Link href={getLink("/polityka-cookies/")} className="text-blue-400 underline">{t.cookiePolicy}</Link>.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-end">
           <Button
@@ -69,14 +72,14 @@ export const CookieBanner: React.FC = () => {
             variant="secondary"
             className="px-5 py-2 bg-slate-700 hover:bg-slate-600 text-sm font-medium text-slate-200 border border-slate-600 focus:ring-offset-2 focus:ring-offset-slate-900"
           >
-            Odrzuć
+            {t.reject}
           </Button>
           <Button
             onClick={() => setOpenSettings(true)}
             variant="secondary"
             className="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-sm font-medium text-slate-200 border border-slate-600 focus:ring-offset-2 focus:ring-offset-slate-900"
           >
-            Ustawienia
+            {t.settings}
           </Button>
           <Button
             onClick={() => handleAction(grantAll)}
@@ -84,7 +87,7 @@ export const CookieBanner: React.FC = () => {
             className="px-5 py-2 text-sm font-semibold shadow focus:ring-offset-2 focus:ring-offset-slate-900"
             autoFocus
           >
-            Akceptuj wszystkie
+            {t.acceptAll}
           </Button>
         </div>
       </div>

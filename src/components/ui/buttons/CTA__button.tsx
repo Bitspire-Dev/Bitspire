@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLocale } from "next-intl";
 import { buildLocalePath } from "@/lib/seo/metadata";
 import { Button } from '@/components/ui/primitives/Button';
+import type { Locale } from "@/i18n/locales";
 
 export const CTAButton: React.FC<{
   children: React.ReactNode;
@@ -11,7 +12,7 @@ export const CTAButton: React.FC<{
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   href?: string;
 }> = ({ children, className = "", onClick, href }) => {
-  const locale = useLocale() as 'pl' | 'en';
+  const locale = useLocale() as Locale;
   const content = (
     <>
       <svg width="20" height="20" fill="none" viewBox="0 0 24 24" aria-hidden="true">

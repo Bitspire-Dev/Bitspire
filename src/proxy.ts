@@ -2,6 +2,7 @@ import createMiddleware from 'next-intl/middleware';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { routing } from './i18n/routing';
+import { DEFAULT_LOCALE } from './i18n/locales';
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -20,7 +21,7 @@ export function proxy(request: NextRequest) {
 
 	if (pathname === '/admin' || pathname === '/admin/') {
 		const url = request.nextUrl.clone();
-		const locale = request.nextUrl.locale === 'en' ? 'en' : 'pl';
+		const locale = request.nextUrl.locale === 'en' ? 'en' : DEFAULT_LOCALE;
 		url.pathname = '/admin/index.html';
 		url.hash = `#/~/admin/${locale}`;
 		return NextResponse.redirect(url);

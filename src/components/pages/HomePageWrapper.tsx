@@ -10,6 +10,7 @@ import {
     PortfolioHighlightsSectionClient,
     StatisticsSectionClient
 } from "@/components/pages/HomePageSections.client";
+import { DEFAULT_LOCALE } from "@/i18n/locales";
 
 interface HomePageData {
     locale?: string;
@@ -24,7 +25,7 @@ interface HomePageWrapperProps {
 }
 
 export default function HomePageWrapper({ data, portfolioHighlightsProjects }: HomePageWrapperProps) {
-    const locale = data?.locale || 'pl';
+    const locale = data?.locale || DEFAULT_LOCALE;
     
     if (!data) {
         return null;

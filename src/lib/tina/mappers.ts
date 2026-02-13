@@ -1,9 +1,10 @@
 // Normalization and helpers for Tina data.
 
 import { formatDate } from "@/lib/ui/helpers";
+import { DEFAULT_LOCALE } from "@/i18n/locales";
 
 export function normalizePost<T extends { _sys?: { filename?: string }; date?: string | null; title?: string; excerpt?: string | null; description?: string | null; readTime?: number | null; image?: string | null; imageAlt?: string | null; category?: string | null; tags?: (string | null)[] | null; author?: string | null; body?: unknown; }>(raw: T, options?: { locale?: string; relatedPosts?: unknown[] }) {
-  const { locale = "pl", relatedPosts = [] } = options || {};
+  const { locale = DEFAULT_LOCALE, relatedPosts = [] } = options || {};
   return {
     ...raw,
     slug: raw._sys?.filename?.replace(/\.mdx$/, ""),
@@ -13,7 +14,7 @@ export function normalizePost<T extends { _sys?: { filename?: string }; date?: s
 }
 
 export function normalizeProject<T extends { _sys?: { filename?: string }; title?: string; description?: string; tags?: (string | null)[] | null; year?: string | null; image?: string | null; imageAlt?: string | null; body?: unknown; }>(raw: T, options?: { locale?: string }) {
-  const { locale = "pl" } = options || {};
+  const { locale = DEFAULT_LOCALE } = options || {};
   return {
     ...raw,
     slug: raw._sys?.filename?.replace(/\.mdx$/, ""),

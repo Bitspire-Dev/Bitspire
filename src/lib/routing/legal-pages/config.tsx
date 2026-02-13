@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import LegalPage from "@/components/sections/LegalPage";
-import { buildLocalePath, buildMetadata, normalizeLocale, type SupportedLocale } from "@/lib/seo/metadata";
+import { buildLocalePath, buildMetadata, normalizeLocale, SUPPORTED_LOCALES, type SupportedLocale } from "@/lib/seo/metadata";
 import { getLegalPage } from "@/lib/tina/queries";
 import { AdminPreviewProvider } from "@/providers/AdminPreviewProvider";
 import { AdminLegalPagePreview } from "@/providers/AdminPreviewRenderer";
@@ -20,7 +20,7 @@ export const LEGAL_PAGES_EN = [
   "terms",
 ];
 
-const supportedLocales: SupportedLocale[] = ["pl", "en"];
+const supportedLocales = SUPPORTED_LOCALES;
 
 interface LegalPageConfig {
   slugMap: Record<SupportedLocale, string>;

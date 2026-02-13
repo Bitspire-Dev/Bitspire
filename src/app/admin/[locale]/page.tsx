@@ -1,43 +1,13 @@
-import { notFound } from "next/navigation";
-import { AdminPreviewProvider } from "@/providers/AdminPreviewProvider";
 import { AdminHomePreview } from "@/providers/AdminPreviewRenderer";
-import { getTinaClient } from "@/lib/tina/client";
-import { redirect } from "next/navigation";
-import { AdminMotionFinal } from "@/components/admin/AdminMotionFinal";
+import { createAdminPage } from "@/lib/routing/admin-pages/createAdminPage";
 
-const supportedLocales = ["pl", "en"] as const;
+export const dynamic = 'force-dynamic';
 
-const client = getTinaClient();
-
-export const dynamic = "force-dynamic";
-
-interface PageProps {
-  params: Promise<{ locale: string }>;
-}
-
-export default async function AdminHomePage({ params }: PageProps) {
-  const { locale } = await params;
-
-  if (!supportedLocales.includes(locale as (typeof supportedLocales)[number])) {
-    redirect(`/admin/pl`);
-  }
-
-  try {
+export default createAdminPage({
+  validateLocale: true,
+  fetchData: async ({ client, locale }) => {
     const result = await client.queries.pages({ relativePath: `${locale}/home.mdx` });
-
-    return (
-      <AdminMotionFinal>
-        <AdminPreviewProvider
-          query={result.query}
-          variables={result.variables}
-          data={result.data}
-        >
-          <AdminHomePreview locale={locale} />
-        </AdminPreviewProvider>
-      </AdminMotionFinal>
-    );
-  } catch (error) {
-    console.error("Admin home page not found", error);
-    notFound();
-  }
-}
+    return { result };
+  },
+  renderPreview: ({ locale }) => <AdminHomePreview locale={locale} />,
+});

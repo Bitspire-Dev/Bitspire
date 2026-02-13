@@ -2,6 +2,7 @@ import type { TinaMarkdownContent } from "tinacms/dist/rich-text";
 import type { BlogListItem, BlogPostData, PortfolioItemData, PortfolioListItem } from "@/lib/tina/types";
 import { extractBody } from "./body";
 import { getRelatedPosts, normalizePost, normalizeProject } from "./mappers";
+import { cmsPageSchema, cmsBlogPostSchema, cmsPortfolioSchema, validateCmsData } from "./schemas";
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -28,6 +29,7 @@ export function normalizeBody(value?: { body?: unknown; _body?: unknown } | null
 }
 
 export function mapPageWithBody<T extends UnknownRecord>(raw: T, extra?: UnknownRecord): T & WithContentSource {
+  validateCmsData(cmsPageSchema, raw, "page");
   const { body, _body } = normalizeBody(raw as { body?: unknown; _body?: unknown });
   const mapped = {
     ...raw,
@@ -76,6 +78,7 @@ function normalizeBlogImage(image?: string | null): string | undefined {
 }
 
 export function mapBlogListItem(raw: RawPost, locale: string): BlogListItem {
+  validateCmsData(cmsBlogPostSchema, raw, "blogListItem");
   const normalized = normalizePost(raw, { locale });
   const fallbackSlug = normalized._sys?.filename ?? "";
 
@@ -126,6 +129,7 @@ export function mapBlogPostData(
     slug?: string;
   }
 ): BlogPostData {
+  validateCmsData(cmsBlogPostSchema, raw, "blogPost");
   const { locale, allPosts, relatedPosts: providedRelated, slug } = options;
   const relatedPosts = providedRelated
     ? providedRelated
@@ -186,6 +190,7 @@ type RawProject = {
 };
 
 export function mapPortfolioProject(raw: RawProject, locale: string): PortfolioListItem {
+  validateCmsData(cmsPortfolioSchema, raw, "portfolioProject");
   const normalized = normalizeProject(raw as Parameters<typeof normalizeProject>[0], { locale });
   return ensureContentSource(raw as UnknownRecord, normalized as UnknownRecord) as PortfolioListItem;
 }
@@ -202,6 +207,7 @@ export function mapPortfolioIndexData<T extends UnknownRecord>(rawPage: T, proje
 }
 
 export function mapPortfolioItemData(raw: RawProject, locale: string): PortfolioItemData {
+  validateCmsData(cmsPortfolioSchema, raw, "portfolioItem");
   const normalized = normalizeProject(raw as Parameters<typeof normalizeProject>[0], { locale });
   const { body, _body } = normalizeBody(raw);
   const mapped = {

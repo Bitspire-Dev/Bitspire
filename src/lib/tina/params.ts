@@ -1,9 +1,9 @@
 import { LEGAL_PAGES_EN, LEGAL_PAGES_PL } from "@/lib/routing/legal-pages/config";
-import { fetchAllBlogNodes, fetchAllPortfolioNodes, localePrefix } from "@/lib/tina/queries";
+import { fetchAllBlogNodes, fetchAllPortfolioNodes, cmsPathPrefix } from "@/lib/tina/queries";
 
 export async function getAllBlogSlugs(locale: string) {
   const nodes = await fetchAllBlogNodes();
-  const pfx = localePrefix(locale);
+  const pfx = cmsPathPrefix(locale);
   return nodes
     .filter((node): node is NonNullable<typeof node> & { _sys: { filename: string; relativePath: string } } =>
       Boolean(node?._sys?.relativePath?.startsWith(pfx)))
@@ -15,7 +15,7 @@ export async function getAllBlogSlugs(locale: string) {
 
 export async function getAllPortfolioSlugs(locale: string) {
   const nodes = await fetchAllPortfolioNodes();
-  const pfx = localePrefix(locale);
+  const pfx = cmsPathPrefix(locale);
   return nodes
     .filter((node): node is NonNullable<typeof node> & { _sys: { filename: string; relativePath: string } } =>
       Boolean(node?._sys?.relativePath?.startsWith(pfx)))
@@ -35,5 +35,5 @@ export function getHomeParam(locale: string) {
 }
 
 export function mapPathForPagesCollection(locale: string, slug: string) {
-  return `${localePrefix(locale)}${slug}.mdx`;
+  return `${cmsPathPrefix(locale)}${slug}.mdx`;
 }

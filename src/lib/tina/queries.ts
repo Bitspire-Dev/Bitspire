@@ -14,7 +14,7 @@ import type { BlogListItem, BlogPostData, PortfolioItemData, PortfolioListItem }
 
 const client = getTinaClient();
 
-export function localePrefix(locale: string): string {
+export function cmsPathPrefix(locale: string): string {
   return `${locale}/`;
 }
 
@@ -69,28 +69,28 @@ export async function fetchAllPortfolioNodes(sort?: string) {
 }
 
 export async function getHomePage(locale: string) {
-  const relativePath = `${localePrefix(locale)}home.mdx`;
+  const relativePath = `${cmsPathPrefix(locale)}home.mdx`;
   const result = await client.queries.pages({ relativePath });
   const page = result.data.pages;
   return page ? mapHomePageData(page, locale) : page;
 }
 
 export async function getPage(locale: string, slug: string) {
-  const relativePath = `${localePrefix(locale)}${slug}.mdx`;
+  const relativePath = `${cmsPathPrefix(locale)}${slug}.mdx`;
   const result = await client.queries.pages({ relativePath });
   const page = result.data.pages;
   return page ? mapPageWithBody(page, { locale }) : page;
 }
 
 export async function getLegalPage(locale: string, slug: string) {
-  const relativePath = `${localePrefix(locale)}${slug}.mdx`;
+  const relativePath = `${cmsPathPrefix(locale)}${slug}.mdx`;
   const result = await client.queries.pages({ relativePath });
   const page = result.data.pages;
   return page ? mapLegalPageData(page, locale) : page;
 }
 
 export async function getBlogPost(locale: string, slug: string): Promise<BlogPostData | null> {
-  const relativePath = `${localePrefix(locale)}${slug}.mdx`;
+  const relativePath = `${cmsPathPrefix(locale)}${slug}.mdx`;
   const result = await client.queries.blog({ relativePath });
   const blog = result.data.blog;
   if (!blog) return null;
@@ -171,7 +171,7 @@ export async function getBlogIndex(locale: string): Promise<BlogListItem[]> {
   try {
     const nodes = await fetchAllBlogNodes("date_desc");
     const posts = nodes
-      .filter((node): node is NonNullable<typeof node> => Boolean(node?._sys?.relativePath?.startsWith(localePrefix(locale))));
+      .filter((node): node is NonNullable<typeof node> => Boolean(node?._sys?.relativePath?.startsWith(cmsPathPrefix(locale))));
     return mapBlogList(posts, locale);
   } catch (error) {
     console.error("Failed to load blog index:", error);
@@ -180,7 +180,7 @@ export async function getBlogIndex(locale: string): Promise<BlogListItem[]> {
 }
 
 export async function getPortfolioItem(locale: string, slug: string): Promise<PortfolioItemData | null> {
-  const relativePath = `${localePrefix(locale)}${slug}.mdx`;
+  const relativePath = `${cmsPathPrefix(locale)}${slug}.mdx`;
   const result = await client.queries.portfolio({ relativePath });
   const portfolio = result.data.portfolio;
   if (!portfolio) return null;
@@ -190,6 +190,6 @@ export async function getPortfolioItem(locale: string, slug: string): Promise<Po
 export async function getPortfolioIndex(locale: string): Promise<PortfolioListItem[]> {
   const nodes = await fetchAllPortfolioNodes();
   const projects = nodes
-    .filter((node): node is NonNullable<typeof node> => Boolean(node?._sys?.relativePath?.startsWith(localePrefix(locale))));
+    .filter((node): node is NonNullable<typeof node> => Boolean(node?._sys?.relativePath?.startsWith(cmsPathPrefix(locale))));
   return mapPortfolioProjects(projects, locale);
 }

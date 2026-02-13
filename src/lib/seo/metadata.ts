@@ -1,23 +1,23 @@
 import type { Metadata } from "next";
 import { resolveLocalizedPathname } from "@/i18n/routing";
-import { locales, type Locale } from "@/i18n/locales";
+import { locales, DEFAULT_LOCALE, OG_LOCALES, type Locale, normalizeLocale as _normalizeLocale } from "@/i18n/locales";
 
 export const BASE_URL = "https://bitspire.pl";
 export const SUPPORTED_LOCALES = locales;
 export type SupportedLocale = Locale;
 
 export function normalizeLocale(locale: string | undefined): SupportedLocale {
-  return locale === "en" ? "en" : "pl";
+  return _normalizeLocale(locale);
 }
 
-export function localePrefix(locale: SupportedLocale): string {
-  return locale === "en" ? "/en" : "/pl";
+export function urlLocalePrefix(locale: SupportedLocale): string {
+  return `/${locale}`;
 }
 
 export function buildLocalePath(locale: SupportedLocale, path: string): string {
   const clean = path.startsWith("/") ? path : `/${path}`;
   const localized = resolveLocalizedPathname(clean, locale);
-  const prefix = localePrefix(locale);
+  const prefix = urlLocalePrefix(locale);
   if (!prefix) return localized === "/" ? "/" : localized;
   return localized === "/" ? prefix : `${prefix}${localized}`;
 }
@@ -55,7 +55,7 @@ export function buildMetadata({
   const safeTitle = title ?? "Bitspire";
   const safeDescription = description ?? "";
   const imageUrl = image ? absoluteUrl(image) : undefined;
-  const otherLocale = locale === "pl" ? "en" : "pl";
+  const otherLocale: Locale = locale === "pl" ? "en" : "pl";
   const openGraphImages = imageUrl
     ? [{ url: imageUrl, width: 1200, height: 630, alt: safeTitle }]
     : undefined;
@@ -69,8 +69,8 @@ export function buildMetadata({
       title: safeTitle,
       description: safeDescription,
       url: absoluteUrl(paths[locale]),
-      locale: locale === "pl" ? "pl_PL" : "en_US",
-      alternateLocale: [otherLocale === "pl" ? "pl_PL" : "en_US"],
+      locale: OG_LOCALES[locale],
+      alternateLocale: [OG_LOCALES[otherLocale]],
       images: openGraphImages,
     },
     twitter: {

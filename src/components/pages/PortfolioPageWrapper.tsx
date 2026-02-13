@@ -3,6 +3,7 @@ import PageBackground from "@/components/layout/PageBackground";
 import PortfolioHeader from "@/components/sections/portfolio/PortfolioHeader";
 import PortfolioGrid from "@/components/sections/portfolio/PortfolioGrid";
 import { extractTags } from "@/lib/ui/helpers";
+import { DEFAULT_LOCALE } from "@/i18n/locales";
 
 interface PortfolioProject {
     title?: string | null;
@@ -49,7 +50,7 @@ export default function PortfolioPageWrapper({
     selectedTags,
 }: PortfolioPageWrapperProps) {
     const projects = data?.projects || [];
-    const locale = (data?.locale as string) || 'pl';
+    const locale = (data?.locale as string) || DEFAULT_LOCALE;
     const t = translations[locale as keyof typeof translations] || translations.en;
     const safeTitle = typeof data?.title === 'string' ? data.title : undefined;
     const safeDescription = typeof data?.description === 'string' ? data.description : undefined;

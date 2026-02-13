@@ -4,6 +4,8 @@ import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { RichText } from '@tina/richTextPresets';
 import { Card, CardContent } from '@/components/ui/primitives/Card';
 import { toSlug } from '@/lib/ui/helpers';
+import { getTranslations } from '@/i18n/translations';
+import { DEFAULT_LOCALE } from '@/i18n/locales';
 
 interface Section {
   __typename?: string;
@@ -69,9 +71,11 @@ const textFromChildren = (children: React.ReactNode): string => {
 };
 
 export default function LegalPage({ data, hideToc = false }: { data?: LegalPageData; hideToc?: boolean }) {
-  const bodyContent = (data as { _body?: TinaMarkdownContent | TinaMarkdownContent[] | null | undefined })?._body
-    ?? (data?.body as TinaMarkdownContent | TinaMarkdownContent[] | null | undefined)
-    ?? null;
+  const locale = (data as { locale?: string })?.locale || DEFAULT_LOCALE;
+  const t = getTranslations(locale).legal;
+  // After unification in adapters, `body` is always the canonical field.
+  // We still fall back to `_body` for safety (e.g., raw CMS data bypassing adapters).
+  const bodyContent = data?.body ?? (data as { _body?: TinaMarkdownContent | TinaMarkdownContent[] | null | undefined })?._body ?? null;
   const sections = (data?.sections || []).filter((s): s is Section => s !== null);
   const hasBody = Boolean(bodyContent);
 
@@ -94,7 +98,7 @@ export default function LegalPage({ data, hideToc = false }: { data?: LegalPageD
           <span>{children}</span>
           <a
             href={`#${id}`}
-            aria-label={`Bezpośredni link: ${textFromChildren(children)}`}
+            aria-label={`${t.directLink}: ${textFromChildren(children)}`}
             className="opacity-0 group-hover:opacity-100 text-blue-400 hover:text-blue-300 transition text-sm"
           >
             #
@@ -201,7 +205,7 @@ export default function LegalPage({ data, hideToc = false }: { data?: LegalPageD
                 className="mt-3 text-sm text-slate-400"
                 data-tina-field={tinaField(data, 'lastUpdate')}
               >
-                Data ostatniej aktualizacji: {data.lastUpdate}
+                {t.lastUpdate}: {data.lastUpdate}
               </p>
             )}
             </CardContent>
@@ -232,7 +236,7 @@ export default function LegalPage({ data, hideToc = false }: { data?: LegalPageD
                       <span>{section.title}</span>
                       <a
                         href={`#${section.id}`}
-                        aria-label={`Bezpośredni link: ${section.title}`}
+                        aria-label={`${t.directLink}: ${section.title}`}
                         className="opacity-0 group-hover:opacity-100 text-blue-400 hover:text-blue-300 transition text-sm"
                       >
                         #
@@ -250,10 +254,10 @@ export default function LegalPage({ data, hideToc = false }: { data?: LegalPageD
                 )
               ))
             ) : (
-              <p className="text-slate-400">Brak sekcji do wyświetlenia.</p>
+              <p className="text-slate-400">{t.noSections}</p>
             )}
             <p className="mt-4 text-xs text-slate-500">
-              Dokument informacyjny – nie stanowi porady prawnej.
+              {t.disclaimer}
             </p>
             </CardContent>
           </Card>

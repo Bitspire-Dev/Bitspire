@@ -15,6 +15,7 @@ import {
   mapPortfolioItemData,
 } from "@/lib/tina/adapters";
 import { useAdminPreviewData } from "./AdminPreviewProvider";
+import { validateCmsData, cmsPageSchema, cmsBlogPostSchema, cmsPortfolioSchema } from "@/lib/tina/schemas";
 import type { ComponentProps } from "react";
 
 type JsonRecord = Record<string, unknown>;
@@ -27,20 +28,22 @@ type PortfolioItemData = ComponentProps<typeof PortfolioItemWrapper>["data"];
 
 export function AdminHomePreview({ locale }: { locale: string }) {
   const data = useAdminPreviewData<{ pages: JsonRecord }>();
-  const pages = mapHomePageData(data.pages as Record<string, unknown>, locale) as HomeData;
-  return <HomePageWrapper data={pages} />;
+  const pages = validateCmsData(cmsPageSchema, data.pages, "adminHomePage");
+  const mapped = mapHomePageData(pages as Record<string, unknown>, locale) as HomeData;
+  return <HomePageWrapper data={mapped} />;
 }
 
 export function AdminLegalPagePreview({ locale }: { locale: string }) {
   const data = useAdminPreviewData<{ pages: JsonRecord }>();
-  const pages = mapLegalPageData(data.pages as Record<string, unknown>, locale) as LegalData;
-  return <LegalPage data={pages} hideToc />;
+  const pages = validateCmsData(cmsPageSchema, data.pages, "adminLegalPage");
+  const mapped = mapLegalPageData(pages as Record<string, unknown>, locale) as LegalData;
+  return <LegalPage data={mapped} hideToc />;
 }
 
 export function AdminBlogIndexPreview({ locale, posts }: { locale: string; posts: unknown[] }) {
   const data = useAdminPreviewData<{ pages: JsonRecord }>();
-  const pages = data.pages as Record<string, unknown>;
-  const mapped = mapBlogIndexData(pages, posts as Record<string, unknown>[], locale) as BlogPageData;
+  const pages = validateCmsData(cmsPageSchema, data.pages, "adminBlogIndex");
+  const mapped = mapBlogIndexData(pages as Record<string, unknown>, posts as Record<string, unknown>[], locale) as BlogPageData;
   return <BlogPageWrapper data={mapped} linkMode="admin" />;
 }
 
@@ -54,7 +57,8 @@ export function AdminBlogPostPreview({
   relatedPosts: unknown[];
 }) {
   const data = useAdminPreviewData<{ blog: unknown }>();
-  const mapped = mapBlogPostData(data.blog as Record<string, unknown>, {
+  const blog = validateCmsData(cmsBlogPostSchema, data.blog, "adminBlogPost");
+  const mapped = mapBlogPostData(blog as Record<string, unknown>, {
     locale,
     slug,
     relatedPosts: relatedPosts as Record<string, unknown>[],
@@ -65,13 +69,14 @@ export function AdminBlogPostPreview({
 
 export function AdminPortfolioIndexPreview({ locale, projects }: { locale: string; projects: unknown[] }) {
   const data = useAdminPreviewData<{ pages: JsonRecord }>();
-  const pages = data.pages as Record<string, unknown>;
-  const mapped = mapPortfolioIndexData(pages, projects as Record<string, unknown>[], locale) as PortfolioIndexData;
+  const pages = validateCmsData(cmsPageSchema, data.pages, "adminPortfolioIndex");
+  const mapped = mapPortfolioIndexData(pages as Record<string, unknown>, projects as Record<string, unknown>[], locale) as PortfolioIndexData;
   return <PortfolioPageWrapper data={mapped} />;
 }
 
 export function AdminPortfolioItemPreview({ locale }: { locale: string }) {
   const data = useAdminPreviewData<{ portfolio: unknown }>();
-  const mapped = mapPortfolioItemData(data.portfolio as Record<string, unknown>, locale) as PortfolioItemData;
+  const portfolio = validateCmsData(cmsPortfolioSchema, data.portfolio, "adminPortfolioItem");
+  const mapped = mapPortfolioItemData(portfolio as Record<string, unknown>, locale) as PortfolioItemData;
   return <PortfolioItemWrapper data={mapped} />;
 }

@@ -2,12 +2,14 @@ import { MetadataRoute } from 'next';
 import { fetchAllBlogNodes, fetchAllPortfolioNodes } from '@/lib/tina/queries';
 import { LEGAL_PAGES_EN, LEGAL_PAGES_PL } from '@/lib/routing/legal-pages/config';
 
+import { locales, DEFAULT_LOCALE, type Locale } from '@/i18n/locales';
+
 const BASE_URL = 'https://bitspire.pl';
-const LOCALES = ['pl', 'en'] as const;
+const LOCALES = locales;
 
 export const revalidate = 3600;
 
-const prefixFor = (locale: string) => (locale === 'pl' ? '' : '/en');
+const prefixFor = (locale: string) => (locale === DEFAULT_LOCALE ? '' : `/${locale}`);
 
 function mapNodesToSitemapEntries(
   nodes: Array<{ _sys: { filename: string; relativePath: string }; date?: string | null }>,
