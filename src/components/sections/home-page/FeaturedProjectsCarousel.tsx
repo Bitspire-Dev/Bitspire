@@ -1,18 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { tinaField } from 'tinacms/dist/react';
 import { RichText } from '@tina/richTextPresets';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaArrowRight, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaArrowRight } from 'react-icons/fa';
 import { useLocale } from 'next-intl';
 import { buildLocalePath } from '@/lib/seo/metadata';
 import type { Locale } from '@/i18n/locales';
 import { getTranslations } from '@/i18n/translations';
+import Carousel3D from '@/components/ui/composites/Carousel3D';
 
 interface PortfolioProject {
   title?: string;
@@ -67,17 +68,15 @@ function normalizeIndexProject(item: Record<string, unknown>): PortfolioProject 
 }
 
 export default function FeaturedProjectsCarousel({ data, projectsIndex }: PortfolioHighlightsProps) {
-  const [currentIndex, setCurrentIndex] = useState(1);
   const locale = useLocale() as Locale;
   const t = getTranslations(locale);
   const controlLabels = {
     prev: t.carousel.prev,
     next: t.carousel.next,
   };
-  
+
   if (!data) return null;
 
-  // Filter out any items that don't have a project or valid project data
   const indexLookup = (projectsIndex || [])
     .map(item => normalizeIndexProject(item))
     .reduce<Record<string, PortfolioProject>>((acc, item) => {
@@ -112,32 +111,14 @@ export default function FeaturedProjectsCarousel({ data, projectsIndex }: Portfo
 
   if (projects.length === 0) return null;
 
-  // Ensure we have at least 3 items for the carousel effect by duplicating if needed?
-  // User asked to show 3 selected projects. I'll assume they select 3.
-  // If they select < 3, we just show them centered.
-  
-  // Safe circular index
-  const getIndex = (idx: number) => {
-    const len = projects.length;
-    return ((idx % len) + len) % len;
-  };
-
-  const handleNext = () => {
-    setCurrentIndex((prev) => getIndex(prev + 1));
-  };
-
-  const handlePrev = () => {
-    setCurrentIndex((prev) => getIndex(prev - 1));
-  };
-
   return (
-    <section className="-mt-12 py-16 md:py-20 bg-brand-bg text-brand-fg overflow-visible relative" data-tina-field={tinaField(data)}>
+    <section className="pt-0 pb-12 md:pt-0 md:pb-16 lg:pt-0 lg:pb-16 bg-brand-bg text-brand-fg overflow-visible relative" data-tina-field={tinaField(data)}>
 
       {/* Background decoration */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-brand-accent/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="container mx-auto px-4 relative z-10">
-        <motion.div 
+        <motion.div
           key={`portfolio-highlights-header-${locale}`}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -158,112 +139,50 @@ export default function FeaturedProjectsCarousel({ data, projectsIndex }: Portfo
         </motion.div>
 
         {/* Carousel */}
-        <motion.div 
+        <motion.div
           key={`portfolio-highlights-carousel-${locale}`}
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="relative h-125 flex items-center justify-center perspective-1000"
         >
-          <AnimatePresence mode='popLayout'>
-            {[-1, 0, 1].map((offset) => {
-              const index = getIndex(currentIndex + offset);
-              const project = projects[index];
-              if (!project) return null;
-
-              // Determine visual state based on offset
-              const isCenter = offset === 0;
-              
-              // Only render 3 items: prev, current, next
-              // If we have fewer than 3 items, the logic might need adjustment but for 3 selects it's fine.
-              
-              const xOffset = offset * 320; // 320px spacing
-              const scale = isCenter ? 1.1 : 0.85;
-              const opacity = isCenter ? 1 : 0.5;
-              const zIndex = isCenter ? 10 : 0;
-              const rotateY = offset * -25; // slight rotation for "3D" feel
-
-              const imageUrl = safeImageSrc(project.image) || '/blog/web-design-mistakes.avif'; // fallback
+          <Carousel3D<PortfolioProject>
+            items={projects}
+            getKey={(project) => project._sys?.filename || project.slug || 'project'}
+            controlLabels={controlLabels}
+            renderItem={(project, _index, isCenter) => {
+              const imageUrl = safeImageSrc(project.image) || '/blog/web-design-mistakes.avif';
               const slug = project.slug || project._sys?.filename;
-
               return (
-                <motion.div
-                  key={`${project._sys?.filename}-${index}`}
-                  layoutId={project._sys?.filename}
-                  initial={{ x: xOffset, scale, opacity, zIndex, rotateY }}
-                  animate={{ 
-                    x: xOffset, 
-                    scale, 
-                    opacity, 
-                    zIndex,
-                    rotateY
-                  }}
-                  transition={{ 
-                    duration: 0.5, 
-                    ease: "circOut" 
-                  }}
-                  style={{
-                    position: 'absolute',
-                    width: '350px', 
-                    // height: '450px',
-                  }}
-                  className="rounded-2xl cursor-pointer"
-                  onClick={() => {
-                    if (offset !== 0) setCurrentIndex(index);
-                  }}
-                >
-                  <div className="bg-brand-surface border border-white/10 rounded-2xl overflow-hidden shadow-2xl h-full flex flex-col">
-                     {/* Image */}
-                     <div className="relative h-64 w-full overflow-hidden">
-                        <Image 
-                            src={imageUrl} 
-                            alt={project.title || 'Project'} 
-                            fill
-                            className="object-cover"
-                        />
-                     </div>
-                     {/* Content */}
-                     <div className="p-6 flex flex-col grow">
-                        <h2 className="text-xl font-bold mb-2 text-white">{project.title}</h2>
-                        <p className="text-white/60 text-sm line-clamp-3 mb-4 grow">
-                          {project.excerpt || project.description || t.portfolio.viewDetails}
-                        </p>
-                        
-                        <div className={`mt-auto transition-opacity duration-300 ${isCenter ? 'opacity-100' : 'opacity-0'}`}>
-                           {slug && (
-                             <Link 
-                               href={buildLocalePath(locale, `/portfolio/${slug}`)}
-                               className="inline-flex items-center gap-2 text-brand-accent hover:text-brand-accent/80 font-medium text-sm transition-colors"
-                             >
-                                {t.portfolio.viewProject} <FaArrowRight />
-                             </Link>
-                           )}
-                        </div>
-                     </div>
+                <div className="bg-brand-surface border border-white/10 rounded-2xl overflow-hidden shadow-2xl h-full flex flex-col">
+                  <div className="relative h-64 w-full overflow-hidden">
+                    <Image
+                      src={imageUrl}
+                      alt={project.title || 'Project'}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
-                </motion.div>
+                  <div className="p-6 flex flex-col grow">
+                    <h2 className="text-xl font-bold mb-2 text-white">{project.title}</h2>
+                    <p className="text-white/60 text-sm line-clamp-3 mb-4 grow">
+                      {project.excerpt || project.description || t.portfolio.viewDetails}
+                    </p>
+                    <div className={`mt-auto transition-opacity duration-300 ${isCenter ? 'opacity-100' : 'opacity-0'}`}>
+                      {slug && (
+                        <Link
+                          href={buildLocalePath(locale, `/portfolio/${slug}`)}
+                          className="inline-flex items-center gap-2 text-brand-accent hover:text-brand-accent/80 font-medium text-sm transition-colors"
+                        >
+                          {t.portfolio.viewProject} <FaArrowRight />
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                </div>
               );
-            })}
-          </AnimatePresence>
-          
-           {/* Controls */}
-           <button 
-             onClick={handlePrev}
-             className="absolute left-4 md:left-10 z-20 p-3 rounded-full bg-black/30 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors"
-             aria-label={controlLabels.prev}
-           >
-             <span className="sr-only">{controlLabels.prev}</span>
-             <FaChevronLeft className="text-white text-xl" />
-           </button>
-           <button 
-             onClick={handleNext}
-             className="absolute right-4 md:right-10 z-20 p-3 rounded-full bg-black/30 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors"
-             aria-label={controlLabels.next}
-           >
-             <span className="sr-only">{controlLabels.next}</span>
-             <FaChevronRight className="text-white text-xl" />
-           </button>
+            }}
+          />
         </motion.div>
       </div>
     </section>

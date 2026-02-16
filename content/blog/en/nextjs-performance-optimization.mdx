@@ -1,8 +1,8 @@
 ---
 title: 'Next.js Performance Optimization - 10 Proven Techniques'
 slug: 'nextjs-performance-optimization'
-description: 'A practical guide to optimizing Next.js applications. Learn how to improve Core Web Vitals and speed up your website.'
-excerpt: 'A Next.js app can be blazingly fast if you know how to optimize it. Discover 10 techniques that will immediately improve performance.'
+description: 'A practical guide to optimizing Next.js applications. Learn how to improve Core Web Vitals and speed up your site.'
+excerpt: 'A Next.js application can be blazing fast if you know how to optimize it. Discover 10 techniques that will immediately improve performance.'
 date: '2025-11-15T14:30:00.000Z'
 author: 'Bitspire Team'
 category: 'Performance'
@@ -17,86 +17,44 @@ imageAlt: 'Dashboard with Next.js performance metrics'
 readTime: 12
 ---
 
-## TL;DR
+## Why Performance Matters?
 
-Treat performance as a product feature. Optimize rendering, assets, and caching, then measure with Core Web Vitals.
+In 2025, site speed is not just nice-to-have - it's **must-have**. Google prioritizes fast sites in search results, and users abandon slow websites within seconds.
 
-## 10 proven techniques
+### Performance Facts:
 
-### 1) Use Server Components by default
-Keep data fetching on the server to reduce client JS.
+- **53%** of mobile users abandon a page that takes longer than 3 seconds to load
+- Every second of delay can reduce conversions by **7%**
+- Sites in the top 10% in terms of performance have **2x higher** conversion rates
 
+## 1. Use Server Components
+
+Next.js 15 introduces **Server Components** as default. This is a revolutionary change!
+
+### Before (Client Component):
 ```tsx
-export default async function Page() {
-  const data = await fetch('https://api.example.com/posts').then(r => r.json());
-  return <pre>{JSON.stringify(data, null, 2)}</pre>;
-}
-```
+'use client';
 
-### 2) Avoid heavy client bundles
-- Minimize `use client`
-- Split interactive widgets
+import { useState, useEffect } from 'react';
 
-### 3) Optimize images
-- Use `next/image`
-- Provide sizes and lazy loading
-
-### 4) Cache aggressively
-- Use `fetch` cache
-- Revalidate per route
-
-### 5) Reduce third‑party scripts
-- Load analytics after interaction
-- Remove unused tags
-
-### 6) Stream the UI
-- Use Suspense for content chunks
-
-### 7) Use route segment config
-- `dynamic`, `revalidate`, `fetchCache`
-
-### 8) Minimize layout shifts
-- Reserve media sizes
-- Avoid late‑loading fonts
-
-### 9) Use edge/CDN
-- Cache static assets globally
-
-### 10) Measure & iterate
-- Lighthouse
-- WebPageTest
-
-```bash
-pnpm dlx lighthouse https://yoursite.com
-```
-
-## Checklist
-
-- [ ] LCP < 2.5s
-- [ ] CLS < 0.1
-- [ ] INP < 200ms
-
-## Final note
-
-Optimizations are cumulative. Ship, measure, adjust — repeat.
+export default function Posts() {
   const [posts, setPosts] = useState([]);
-  
+
   useEffect(() => {
     fetch('/api/posts')
       .then(res => res.json())
       .then(setPosts);
   }, []);
-  
+
   return <div>{/* render posts */}</div>;
 }
 ```
 
-### After (Server Component):
 ```tsx
 // app/blog/page.tsx
 export default async function BlogPage() {
   const posts = await fetch('https://api.example.com/posts').then(r => r.json());
-  
+
   return (
     <div>
       {posts.map(post => (
@@ -108,7 +66,6 @@ export default async function BlogPage() {
 ```
 
 **Benefits:**
-- ✅ Zero JavaScript sent to client
 - ✅ Data fetched on server (faster)
 - ✅ Better SEO
 
@@ -126,45 +83,29 @@ import Image from 'next/image';
 export function Hero() {
   return (
     <Image
-      src="/hero.jpg"
-      alt="Hero image"
       width={1200}
       height={600}
-      priority // for above-the-fold images
-      placeholder="blur"
       blurDataURL="data:image/jpeg;base64,..."
     />
-  );
-}
 ```
-
-**Pro tip:** Use `priority` only for above-the-fold images!
 
 ## 3. Implement Static Generation (SSG)
 
-Static pages are **ultra-fast** and cheap to host.
 
 ```tsx
-// app/blog/[slug]/page.tsx
-export async function generateStaticParams() {
   const posts = await getPosts();
-  
-  return posts.map((post) => ({
+
     slug: post.slug,
   }));
-}
 
 export default async function BlogPost({ params }: { params: { slug: string } }) {
   const post = await getPost(params.slug);
-  
+
   return <article>{/* render post */}</article>;
 }
 ```
 
 **When to use SSG:**
-- ✅ Pages that rarely change
-- ✅ Blogs, portfolios, landing pages
-- ✅ Documentation
 
 ## 4. Use Dynamic Imports
 
@@ -188,7 +129,7 @@ export default function Dashboard() {
 }
 ```
 
-**You save:** Up to 200-300KB of JavaScript bundle!
+**You save:** Up to 200-300KB JavaScript bundle!
 
 ## 5. Optimize Fonts
 
@@ -235,7 +176,7 @@ export default async function BlogPage() {
   const posts = await fetch('https://api.example.com/posts', {
     next: { revalidate: 3600 }
   }).then(r => r.json());
-  
+
   return <div>{/* posts */}</div>;
 }
 ```
@@ -253,7 +194,7 @@ Instead of API routes, use Server Actions:
 // app/contact/page.tsx
 async function submitForm(formData: FormData) {
   'use server';
-  
+
   const email = formData.get('email');
   // Process form server-side
   await saveToDatabase(email);
@@ -320,7 +261,7 @@ export function Navigation() {
 
 ## 10. Bundle Analyzer
 
-Identify what's slowing down your app:
+Identify what's slowing down your application:
 
 ```bash
 npm install @next/bundle-analyzer
@@ -363,7 +304,7 @@ Before deployment, make sure:
 
 ## Real Results
 
-After applying these techniques to our clients' projects:
+After applying these techniques to our client projects:
 
 - 📈 **LCP** improved from 4.2s → **1.1s**
 - 📈 **FID** improved from 180ms → **45ms**

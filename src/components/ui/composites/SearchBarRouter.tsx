@@ -29,75 +29,49 @@ export function SearchBarRouter({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const initialQueryValue = initialQuery ?? "";
-  const initialTagsValue = useMemo(() => normalizeTags(initialTags), [initialTags]);
-
+  // Read URL params once at mount for initial state
   const urlQuery = searchParams?.get("q") ?? "";
   const urlTagsRaw = searchParams?.get("tags") ?? "";
-  const urlTags = useMemo(() => normalizeTags(urlTagsRaw.split(",")), [urlTagsRaw]);
-  const urlTagsKey = useMemo(() => urlTags.join("|"), [urlTags]);
-  const currentQueryString = searchParams?.toString() ?? "";
-  const currentUrl = currentQueryString ? `${pathname}?${currentQueryString}` : pathname;
+  const mountUrlTags = useMemo(() => normalizeTags(urlTagsRaw.split(",")), [urlTagsRaw]);
 
-  const [query, setQuery] = useState(initialQueryValue);
-  const [tags, setTags] = useState(initialTagsValue);
-  const tagsKey = useMemo(() => normalizeTags(tags).join("|"), [tags]);
-  const initializedRef = useRef(false);
-  const lastUrlRef = useRef<string | null>(null);
+  // Local state is the single source of truth.
+  // Initialized from props (server) or URL params (client navigation).
+  const [query, setQuery] = useState(initialQuery ?? urlQuery);
+  const [tags, setTags] = useState<string[]>(() => {
+    const fromProps = normalizeTags(initialTags);
+    return fromProps.length > 0 ? fromProps : mountUrlTags;
+  });
 
+  // Build the URL that corresponds to current state
+  const buildUrl = useCallback(
+    (q: string, t: string[]) => {
+      const params = new URLSearchParams();
+      if (q.trim()) params.set("q", q.trim());
+      const normalized = normalizeTags(t);
+      if (normalized.length > 0) params.set("tags", normalized.join(","));
+      const qs = params.toString();
+      return qs ? `${pathname}?${qs}` : pathname;
+    },
+    [pathname],
+  );
+
+  // Track the last URL we pushed so we don't re-push the same thing
+  const lastPushedUrlRef = useRef<string>(
+    buildUrl(initialQuery ?? urlQuery, normalizeTags(initialTags).length > 0 ? normalizeTags(initialTags) : mountUrlTags),
+  );
+
+  // Debounce: push state -> URL after 300ms of inactivity
   useEffect(() => {
-    if (!initializedRef.current) {
-      setQuery(urlQuery);
-      setTags(urlTags);
-      initializedRef.current = true;
-      return;
-    }
-
-    if (lastUrlRef.current === currentUrl) return;
-
-    if (query !== urlQuery) {
-      setQuery(urlQuery);
-    }
-
-    if (tagsKey !== urlTagsKey) {
-      setTags(urlTags);
-    }
-  }, [currentUrl, query, urlQuery, tagsKey, urlTagsKey, urlTags]);
-
-  const updateParams = useCallback((nextQuery: string, nextTags: string[]) => {
-    const params = new URLSearchParams(searchParams?.toString());
-
-    if (nextQuery.trim()) {
-      params.set("q", nextQuery.trim());
-    } else {
-      params.delete("q");
-    }
-
-    const normalizedTags = normalizeTags(nextTags);
-    if (normalizedTags.length > 0) {
-      params.set("tags", normalizedTags.join(","));
-    } else {
-      params.delete("tags");
-    }
-
-    const query = params.toString();
-    const nextUrl = query ? `${pathname}?${query}` : pathname;
-    if (nextUrl !== currentUrl) {
-      lastUrlRef.current = nextUrl;
-      router.replace(nextUrl, { scroll: false });
-    }
-  }, [currentUrl, pathname, router, searchParams]);
-
-  useEffect(() => {
-    if (!initializedRef.current) return;
-    if (query === urlQuery && tagsKey === urlTagsKey) return;
+    const nextUrl = buildUrl(query, tags);
+    if (nextUrl === lastPushedUrlRef.current) return;
 
     const handle = window.setTimeout(() => {
-      updateParams(query, tags);
+      lastPushedUrlRef.current = nextUrl;
+      router.replace(nextUrl, { scroll: false });
     }, 300);
 
     return () => window.clearTimeout(handle);
-  }, [query, tags, tagsKey, urlQuery, urlTagsKey, updateParams]);
+  }, [query, tags, buildUrl, router]);
 
   return (
     <SearchBar
@@ -106,12 +80,8 @@ export function SearchBarRouter({
       type={type}
       initialQuery={query}
       initialTags={tags}
-      onSearchChange={(nextQuery) => {
-        setQuery(nextQuery);
-      }}
-      onTagsChange={(nextTags) => {
-        setTags(nextTags);
-      }}
+      onSearchChange={setQuery}
+      onTagsChange={setTags}
     />
   );
 }

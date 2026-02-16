@@ -28,7 +28,7 @@ export const About: React.FC<AboutProps> = ({ data }) => {
   const locale = useLocale();
 
   return (
-    <section className="w-full py-section lg:pt-64 overflow-visible bg-brand-bg relative z-10">
+    <section className="w-full pt-16 pb-4 md:pt-20 md:pb-6 lg:pt-48 lg:pb-8 overflow-visible bg-brand-bg relative z-10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Image Column */}
@@ -68,7 +68,7 @@ export const About: React.FC<AboutProps> = ({ data }) => {
             
             {data.label && (
               <motion.div
-                className="inline-flex w-fit items-center gap-2 px-3 py-1.5 mb-1 mt-3.75 rounded-full border border-blue-500/30 bg-blue-950/30 backdrop-blur-md shadow-[0_0_15px_rgba(59,130,246,0.2)]"
+                className="inline-flex w-fit items-center gap-2 px-3 py-1.5 mb-1 mt-7 rounded-full border border-blue-500/30 bg-blue-950/30 backdrop-blur-md shadow-[0_0_15px_rgba(59,130,246,0.2)]"
                 data-tina-field={tinaField(data, 'label')}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}

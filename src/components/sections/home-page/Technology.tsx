@@ -1,244 +1,194 @@
 "use client";
-import React, { useRef, useEffect, useState, useMemo } from "react";
+
+import React, { useMemo } from "react";
 import Image from "next/image";
-import { tinaField } from 'tinacms/dist/react';
-import { RichText } from '@tina/richTextPresets';
-import { safeImageSrc } from '@/lib/ui/helpers';
-import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
-import { motion, useReducedMotion } from 'framer-motion';
+import { tinaField } from "tinacms/dist/react";
+import { RichText } from "@tina/richTextPresets";
+import { safeImageSrc } from "@/lib/ui/helpers";
+import type { TinaMarkdownContent } from "tinacms/dist/rich-text";
 import { useLocale } from "next-intl";
 
+/* ------------------------------------------------------------------ */
+/*  Types                                                              */
+/* ------------------------------------------------------------------ */
+
 type TechnologyItem = Record<string, unknown> & {
-    name?: string | null;
-    icon?: string | null;
+  name?: string | null;
+  icon?: string | null;
 };
 
 interface TechnologyData {
-    title?: TinaMarkdownContent | TinaMarkdownContent[] | null;
-    description?: TinaMarkdownContent | TinaMarkdownContent[] | null;
-    items?: TechnologyItem[] | null;
-    [key: string]: unknown;
+  title?: TinaMarkdownContent | TinaMarkdownContent[] | null;
+  description?: TinaMarkdownContent | TinaMarkdownContent[] | null;
+  items?: TechnologyItem[] | null;
+  [key: string]: unknown;
 }
 
-const LOGO_WIDTH = 140; // 80px image + 60px gap
-const SPEED = 0.8;
+/* ------------------------------------------------------------------ */
+/*  Constants                                                          */
+/* ------------------------------------------------------------------ */
+
+/** Seconds per logo — controls scroll speed. */
+const SECONDS_PER_ITEM = 3;
+
+/** Width of each logo slot in pixels (must match w-[140px] in LogoIcon). */
+const ITEM_WIDTH = 140;
+
+/**
+ * Minimum width (px) one set of logos must span.
+ * Must be >= the widest expected viewport (2560px covers 4K scaled).
+ * This guarantees the set fills the screen at every animation frame
+ * so the infinite loop has no gaps.
+ */
+const MIN_SET_WIDTH = 2560;
+
+/** CSS mask that fades edges to transparent. */
+const EDGE_FADE =
+  "linear-gradient(to right, transparent, black 8%, black 92%, transparent)";
+
+/* ------------------------------------------------------------------ */
+/*  LogoIcon                                                           */
+/* ------------------------------------------------------------------ */
+
+function LogoIcon({
+  item,
+  src,
+}: {
+  item: TechnologyItem;
+  src: string | undefined;
+}) {
+  const isVite = item.name === "Vite";
+
+  return (
+    <div
+      className="flex w-[140px] shrink-0 items-center justify-center px-4"
+      data-tina-field={tinaField(item)}
+    >
+      <div className="relative w-full h-[60px] grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 hover:scale-110 cursor-pointer">
+        {src ? (
+          <Image
+            src={src}
+            alt={item.name ?? "Technology logo"}
+            fill
+            sizes="140px"
+            loading="eager"
+            className={`object-contain opacity-90 ${
+              isVite
+                ? "filter-[brightness(1.75)]"
+                : "filter-[brightness(0)_invert(1)_brightness(1.75)]"
+            }`}
+          />
+        ) : (
+          <span className="text-brand-text-muted text-sm font-bold">
+            {item.name}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  MarqueeTrack                                                       */
+/* ------------------------------------------------------------------ */
+
+function MarqueeTrack({
+  items,
+  srcs,
+}: {
+  items: TechnologyItem[];
+  srcs: (string | undefined)[];
+}) {
+  // How many times to repeat the item list so one set >= MIN_SET_WIDTH.
+  // e.g. 8 items × 140px = 1120px per round → ceil(2560/1120) = 3 rounds
+  // → one set = 3360px, always wider than the viewport.
+  const repeatCount = Math.max(1, Math.ceil(MIN_SET_WIDTH / (items.length * ITEM_WIDTH)));
+
+  // Duration scales with total items in one set to keep scroll speed constant.
+  const duration = repeatCount * items.length * SECONDS_PER_ITEM;
+
+  const renderSet = () =>
+    Array.from({ length: repeatCount }, (_, r) =>
+      items.map((item, i) => (
+        <LogoIcon key={`${r}-${i}`} item={item} src={srcs[i]} />
+      ))
+    );
+
+  return (
+    <div
+      className="relative w-full overflow-hidden group"
+      style={{ WebkitMaskImage: EDGE_FADE, maskImage: EDGE_FADE }}
+    >
+      {/*
+        Track: w-max prevents wrapping. Contains two identical sets.
+        CSS animates translate(-50%) = exactly one set width → seamless loop.
+        Each set repeats the items enough times to be wider than any viewport.
+      */}
+      <div
+        className="flex w-max animate-marquee group-hover:[animation-play-state:paused]"
+        style={
+          { "--marquee-duration": `${duration}s` } as React.CSSProperties
+        }
+      >
+        <div className="flex shrink-0">{renderSet()}</div>
+        <div className="flex shrink-0" aria-hidden="true">
+          {renderSet()}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Technology – main section                                          */
+/* ------------------------------------------------------------------ */
 
 const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
-    const items = data?.items || [];
-    const containerRef = useRef<HTMLDivElement>(null);
-    const [logoCount, setLogoCount] = useState(items.length > 0 ? items.length * 8 : 0);
-    const logoCacheRef = useRef<Map<string, HTMLImageElement>>(new Map());
-    const locale = useLocale();
-    const prefersReducedMotion = useReducedMotion();
-    const [isActive, setIsActive] = useState(false);
-    
-    // animation state stored in refs
-    const positionsRef = useRef<number[]>([]);
-    const rafRef = useRef<number | null>(null);
-    const itemsRef = useRef<Array<HTMLSpanElement | null>>([]);
-    const lastWidthRef = useRef<number>(0);
-    const resizeTimeoutRef = useRef<number | null>(null);
-  
-    const itemIconSrcs = useMemo(
-        () => items.map((item) => safeImageSrc(item?.icon || undefined)),
-        [items]
-    );
-    const uniqueLogoSrcs = useMemo(
-        () => Array.from(new Set(itemIconSrcs.filter(Boolean) as string[])),
-        [itemIconSrcs]
-    );
+  const items = data?.items ?? [];
+  const locale = useLocale();
 
-    useEffect(() => {
-        if (!uniqueLogoSrcs.length || typeof window === "undefined") return;
+  const srcs = useMemo(
+    () => items.map((it) => safeImageSrc(it?.icon ?? undefined)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [items.length, locale],
+  );
 
-        uniqueLogoSrcs.forEach((src) => {
-            if (!logoCacheRef.current.has(src)) {
-                const img = new window.Image();
-                img.src = src;
-                img.decoding = "async";
-                img.loading = "lazy";
-                logoCacheRef.current.set(src, img);
-            }
-        });
-    }, [uniqueLogoSrcs]);
+  if (!data || items.length === 0) return null;
 
-    useEffect(() => {
-        if (!containerRef.current || items.length === 0) return;
+  return (
+    <section
+      className="pt-2 pb-2 md:pt-2 md:pb-4 lg:pt-2 lg:pb-4 relative bg-brand-bg text-brand-fg overflow-visible"
+      data-tina-field={tinaField(data)}
+    >
+      {/* Background glow */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-250 h-75 bg-brand-accent-2/5 rounded-full blur-[100px] pointer-events-none" />
 
-        const observer = new IntersectionObserver(
-            ([entry]) => setIsActive(entry.isIntersecting),
-            { rootMargin: '200px 0px' }
-        );
-
-        observer.observe(containerRef.current);
-        return () => observer.disconnect();
-    }, [items.length]);
-
-    useEffect(() => {
-        if (items.length === 0 || prefersReducedMotion || !isActive) return;
-
-        // Calculate how many logos are needed to fill the container + buffer
-        const computeCount = () => {
-            const vw = window.visualViewport?.width || window.innerWidth || 2200;
-            // ignore tiny changes that occur when mobile address bar hides/shows
-            if (Math.abs(vw - lastWidthRef.current) < 10 && positionsRef.current.length) return;
-            lastWidthRef.current = vw;
-
-            // Ensure we have enough copies to cover screen width + buffer
-            const minCount = Math.ceil(vw / LOGO_WIDTH) + items.length * 3;
-            setLogoCount((prev) => (prev === minCount ? prev : minCount));
-            
-            // initialize or preserve a smooth offset
-            if (!positionsRef.current.length) {
-                positionsRef.current = Array.from({ length: minCount }, (_, i) => i * LOGO_WIDTH);
-            } else {
-                const base = positionsRef.current[0] || 0;
-                // Rebuild positions array based on new count, continuing from current offset
-                positionsRef.current = Array.from({ length: minCount }, (_, i) => base + i * LOGO_WIDTH);
-            }
-        };
-
-        const onResize = () => {
-            if (resizeTimeoutRef.current) window.clearTimeout(resizeTimeoutRef.current);
-            resizeTimeoutRef.current = window.setTimeout(() => computeCount(), 120) as unknown as number;
-        };
-
-        computeCount();
-        window.visualViewport?.addEventListener("resize", onResize);
-        window.addEventListener("resize", onResize);
-        return () => {
-            window.visualViewport?.removeEventListener("resize", onResize);
-            window.removeEventListener("resize", onResize);
-            if (resizeTimeoutRef.current) window.clearTimeout(resizeTimeoutRef.current);
-            if (rafRef.current) cancelAnimationFrame(rafRef.current);
-        };
-    }, [items.length, prefersReducedMotion, isActive]);
-
-    useEffect(() => {
-        if (items.length === 0 || prefersReducedMotion || !isActive) return;
-        
-        const vw = window.visualViewport?.width || window.innerWidth || 2200;
-        const isMobile = vw < 768;
-        const currentSpeed = isMobile ? 1.0 : SPEED;
-
-        const step = () => {
-            const arr = positionsRef.current;
-            if (!arr.length) {
-                rafRef.current = requestAnimationFrame(step);
-                return;
-            }
-            
-            // Find current max pos to move items wrapped around to the end
-            let maxPos = -Infinity;
-            for (let i = 0; i < arr.length; i++) {
-                if (arr[i] > maxPos) maxPos = arr[i];
-            }
-
-            for (let i = 0; i < arr.length; i++) {
-                let p = arr[i] - currentSpeed;
-                // If item moved completely off-screen to left, move it to the right end
-                if (p < -LOGO_WIDTH) p = maxPos + LOGO_WIDTH; 
-                arr[i] = p;
-                
-                const el = itemsRef.current[i];
-                if (el) el.style.transform = `translate3d(${p}px, -50%, 0)`;
-            }
-            rafRef.current = requestAnimationFrame(step);
-        };
-        
-        rafRef.current = requestAnimationFrame(step);
-        return () => {
-            if (rafRef.current) cancelAnimationFrame(rafRef.current);
-        };
-    }, [items.length, prefersReducedMotion, isActive]);
-
-    if (!data || items.length === 0) return null;
-
-    return (
-        <motion.section 
-            key={`technology-${locale}`}
-            className="py-section mt-2.5 relative bg-brand-bg text-brand-fg overflow-visible"
-            data-tina-field={tinaField(data)}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-             {/* Background glow similar to Features */}
-             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-250 h-75 bg-brand-accent-2/5 rounded-full blur-[100px] pointer-events-none" />
-
-
-            <div className="container mx-auto px-4 relative z-10 mb-6 lg:mb-8">
-                 <div className="text-center max-w-3xl mx-auto">
-                    {data.title && (
-                        <div 
-                            className="prose prose-invert max-w-none [&>h1]:text-3xl [&>h1]:md:text-4xl [&>h1]:font-bold [&>h2]:text-3xl [&>h2]:md:text-4xl [&>h2]:font-bold mb-4"
-                            data-tina-field={tinaField(data, 'title')}
-                        >
-                            <RichText content={data.title} />
-                        </div>
-                    )}
-                    {data.description && (
-                        <div 
-                            className="prose prose-invert max-w-none text-brand-text-muted text-lg"
-                            data-tina-field={tinaField(data, 'description')}
-                        >
-                            <RichText content={data.description} />
-                        </div>
-                    )}
-                 </div>
-            </div>
-
-            <div 
-                className="relative w-full h-32 overflow-hidden items-center flex"
-                ref={containerRef}
-                style={{
-                    WebkitMaskImage:
-                        "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-                    maskImage:
-                        "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-                }}
+      {/* Header */}
+      <div className="container mx-auto px-4 relative z-10 mb-6 lg:mb-8">
+        <div className="text-center max-w-3xl mx-auto">
+          {data.title && (
+            <div
+              className="prose prose-invert max-w-none [&>h1]:text-3xl [&>h1]:md:text-4xl [&>h1]:font-bold [&>h2]:text-3xl [&>h2]:md:text-4xl [&>h2]:font-bold mb-4"
+              data-tina-field={tinaField(data, "title")}
             >
-
-                {/* Render enough copies to fill buffer */}
-                {Array.from({ length: logoCount }).map((_, i) => {
-                    const item = items[i % items.length];
-                    const iconSrc = itemIconSrcs[i % itemIconSrcs.length];
-                    return (
-                        <span
-                            key={i}
-                            ref={(el) => { itemsRef.current[i] = el; }}
-                            className="absolute top-1/2 left-0 w-35 flex justify-center items-center px-4 will-change-transform"
-                            style={{
-                                transform: 'translate3d(2000px, -50%, 0)', // initial offscreen
-                            }}
-                             data-tina-field={tinaField(item)}
-                        >
-                            {/* Icon Container */}
-                                                        <div className="relative w-full h-15 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 transform hover:scale-110 cursor-pointer">
-                                {iconSrc ? (
-                                    <Image
-                                        src={iconSrc}
-                                        alt={item.name || "Technology Logo"}
-                                        fill
-                                        sizes="140px"
-                                        loading="lazy"
-                                                                                className={`object-contain opacity-90 ${
-                                                                                    item.name === 'Vite'
-                                                                                        ? 'filter-[brightness(1.75)]'
-                                                                                        : 'filter-[brightness(0)_invert(1)_brightness(1.75)]'
-                                                                                }`}
-                                    />
-                                ) : (
-                                    <span className="text-brand-text-muted text-sm font-bold">{item.name}</span>
-                                )}
-                            </div>
-                        </span>
-                    );
-                })}
+              <RichText content={data.title} />
             </div>
-        </motion.section>
-    );
+          )}
+          {data.description && (
+            <div
+              className="prose prose-invert max-w-none text-brand-text-muted text-lg"
+              data-tina-field={tinaField(data, "description")}
+            >
+              <RichText content={data.description} />
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Marquee */}
+      <MarqueeTrack items={items} srcs={srcs} />
+    </section>
+  );
 };
 
 export default Technology;

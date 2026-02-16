@@ -6,9 +6,9 @@ import { RichText } from '@tina/richTextPresets';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import Image from 'next/image';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useLocale } from 'next-intl';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import Carousel3D from '@/components/ui/composites/Carousel3D';
 
 type FeatureItem = Record<string, unknown> & {
   icon?: string | null;
@@ -78,30 +78,15 @@ export default function Features({ data }: FeaturesProps) {
     prev: locale === 'pl' ? 'Poprzednia funkcja' : 'Previous feature',
     next: locale === 'pl' ? 'Następna funkcja' : 'Next feature',
   };
-  const [currentIndex, setCurrentIndex] = React.useState(0);
   const features = data.features || [];
 
-  const getIndex = (idx: number) => {
-    const len = features.length;
-    if (len === 0) return 0;
-    return ((idx % len) + len) % len;
-  };
-
-  const handleNext = () => {
-    setCurrentIndex((prev) => getIndex(prev + 1));
-  };
-
-  const handlePrev = () => {
-    setCurrentIndex((prev) => getIndex(prev - 1));
-  };
-
   return (
-    <section className="-mt-2.5 py-16 md:py-20 lg:py-24 bg-brand-bg relative z-10 text-brand-fg overflow-visible" data-tina-field={tinaField(data)}>
+    <section className="pt-0 pb-4 md:pt-0 md:pb-6 lg:pt-0 lg:pb-8 bg-brand-bg relative z-10 text-brand-fg overflow-visible" data-tina-field={tinaField(data)}>
        {/* Background gradient effects */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-200 h-100 bg-brand-accent/5 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <motion.div 
+        <motion.div
           key={`features-header-${locale}`}
           className="text-center max-w-3xl mx-auto mb-10 md:mb-14"
           initial={{ opacity: 0, y: 20 }}
@@ -123,15 +108,15 @@ export default function Features({ data }: FeaturesProps) {
                 </span>
               </div>
           )}
-          
-          <div 
-            data-tina-field={tinaField(data, 'title')} 
+
+          <div
+            data-tina-field={tinaField(data, 'title')}
             className="prose prose-invert max-w-none [&>h1]:text-4xl [&>h1]:md:text-5xl [&>h1]:font-bold [&>h1]:leading-tight [&>h2]:text-4xl [&>h2]:md:text-5xl [&>h2]:font-bold [&>h2]:leading-tight mb-6"
           >
              {data.title && <RichText content={data.title} />}
           </div>
 
-          <div 
+          <div
             data-tina-field={tinaField(data, 'subtitle')}
             className="prose prose-invert max-w-none text-brand-text-muted text-lg md:text-xl leading-relaxed"
           >
@@ -142,87 +127,32 @@ export default function Features({ data }: FeaturesProps) {
         {/* Desktop Grid Layout */}
         <div className="hidden md:grid md:grid-cols-3 gap-8 md:gap-8">
           {features.map((feature, index) => (
-            <motion.div 
-              key={`${locale}-${index}`} 
+            <motion.div
+              key={`${locale}-${index}`}
                 className="group relative flex flex-col p-6 rounded-2xl border border-blue-500/30 bg-blue-950/20 hover:bg-blue-950/40 hover:border-blue-500/50 transition-all duration-500 backdrop-blur-sm"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-            > 
+            >
                <FeatureCardContent feature={feature} />
             </motion.div>
           ))}
         </div>
 
-        {/* Mobile 3D Infinite Carousel */}
-        <div className="md:hidden relative h-125 flex items-center justify-center perspective-1000">
-           <AnimatePresence mode='popLayout'>
-            {[-1, 0, 1].map((offset) => {
-              const index = getIndex(currentIndex + offset);
-              const feature = features[index];
-              if (!feature) return null;
-
-              const isCenter = offset === 0;
-              // Adjusted parameters to match PortfolioHighlights exactly
-              const xOffset = offset * 320; 
-              const scale = isCenter ? 1.1 : 0.85;
-              const opacity = isCenter ? 1 : 0.5;
-              const zIndex = isCenter ? 10 : 0;
-              const rotateY = offset * -25;
-
-              const layoutKey = typeof feature.title === 'string' ? feature.title : `feature-${index}`;
-
-              return (
-                <motion.div
-                  key={`${layoutKey}-${index}`}
-                  layoutId={layoutKey}
-                  initial={{ x: xOffset, scale, opacity, zIndex, rotateY }}
-                  animate={{ 
-                    x: xOffset, 
-                    scale, 
-                    opacity, 
-                    zIndex,
-                    rotateY
-                  }}
-                  transition={{ 
-                    duration: 0.5, 
-                    ease: "circOut" 
-                  }}
-                  style={{
-                    position: 'absolute',
-                    width: '350px',
-                  }}
-                  className="rounded-2xl cursor-pointer"
-                  onClick={() => {
-                    if (offset !== 0) setCurrentIndex(index);
-                  }}
-                >
-                  <div className={`p-6 rounded-2xl border border-blue-500/30 bg-blue-950/20 backdrop-blur-sm flex flex-col h-full transition-all duration-300 ${isCenter ? 'border-blue-500/60 shadow-[0_0_30px_rgba(59,130,246,0.15)] bg-blue-950/40' : ''}`}>
-                    <FeatureCardContent feature={feature} />
-                  </div>
-                </motion.div>
-              );
-            })}
-           </AnimatePresence>
-
-           {/* Mobile Controls */}
-           <button 
-             onClick={handlePrev}
-            className="absolute left-4 z-20 p-3 rounded-full bg-black/30 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors"
-             aria-label={controlLabels.prev}
-           >
-             <span className="sr-only">{controlLabels.prev}</span>
-             <FaChevronLeft className="text-white text-xl" />
-           </button>
-           <button 
-             onClick={handleNext}
-             className="absolute right-4 z-20 p-3 rounded-full bg-black/30 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors"
-             aria-label={controlLabels.next}
-           >
-             <span className="sr-only">{controlLabels.next}</span>
-             <FaChevronRight className="text-white text-xl" />
-           </button>
+        {/* Mobile 3D Carousel */}
+        <div className="md:hidden">
+          <Carousel3D<FeatureItem>
+            items={features}
+            initialIndex={0}
+            getKey={(feature) => typeof feature.title === 'string' ? feature.title : 'feature'}
+            controlLabels={controlLabels}
+            renderItem={(feature, _index, isCenter) => (
+              <div className={`p-6 rounded-2xl border border-blue-500/30 bg-blue-950/20 backdrop-blur-sm flex flex-col h-full transition-all duration-300 ${isCenter ? 'border-blue-500/60 shadow-[0_0_30px_rgba(59,130,246,0.15)] bg-blue-950/40' : ''}`}>
+                <FeatureCardContent feature={feature} />
+              </div>
+            )}
+          />
         </div>
 
       </div>

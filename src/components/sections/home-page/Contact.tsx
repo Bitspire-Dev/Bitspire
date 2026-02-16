@@ -105,7 +105,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
   const labelClasses = "block text-brand-text-muted-2 text-sm font-medium mb-2 ml-1";
 
   return (
-    <section id="contact" className="w-full py-section mb-8 relative z-10 bg-brand-bg overflow-hidden">
+    <section id="contact" className="w-full pt-8 pb-16 md:pt-8 md:pb-20 lg:pt-8 lg:pb-24 relative z-10 bg-brand-bg overflow-hidden">
       
       {/* Subtle modern background elements */}
       <div className="absolute top-0 right-0 w-200 h-200 bg-brand-accent/5 rounded-full blur-[150px] pointer-events-none -translate-y-1/2 translate-x-1/3" />

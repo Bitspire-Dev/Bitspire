@@ -130,7 +130,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
        * - lg:justify-center: Centers content vertically in the viewport
        * - lg:pt-0: Resets mobile padding relying on flex centering
        */
-      className="relative min-h-[90dvh] w-full flex flex-col items-center text-white overflow-visible pt-28 pb-10 justify-start lg:justify-center lg:pt-0 lg:pb-0"
+      className="relative min-h-[90dvh] w-full flex flex-col items-center text-white overflow-visible pt-16 md:pt-24 pb-10 justify-start lg:justify-center lg:pt-0 lg:pb-0"
       data-tina-field={data ? tinaField(data) : undefined}
     >
       {/* Background Effects */}
@@ -148,7 +148,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
          * Mobile: Natural flow
          * Desktop: lg:-translate-y-36 (Increased from 24) Pulls content even higher towards header
          */
-        className="container mx-auto px-4 relative z-20 flex flex-col items-center justify-start lg:justify-center lg:grow lg:-translate-y-36"
+        className="container mx-auto px-4 relative z-20 flex flex-col items-center justify-start lg:justify-center lg:grow lg:pb-48"
         variants={containerVariants}
         initial="hidden"
         animate="visible"

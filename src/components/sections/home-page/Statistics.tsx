@@ -51,7 +51,7 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
   };
 
   return (
-    <section className="-mt-5 py-16 md:py-24 relative overflow-visible">
+    <section className="pt-0 pb-2 md:pt-0 md:pb-4 lg:pt-0 lg:pb-4 relative overflow-visible">
       
       {/* Background decoration */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-250 h-250 bg-blue-900/10 blur-[120px] rounded-full pointer-events-none -z-10" />
