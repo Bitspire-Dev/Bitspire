@@ -87,11 +87,10 @@ export default function Features({ data }: FeaturesProps) {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
-          key={`features-header-${locale}`}
           className="text-center max-w-3xl mx-auto mb-10 md:mb-14"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0, margin: "100px 0px" }}
           transition={{ duration: 0.6 }}
         >
           {data.label && (
@@ -128,11 +127,11 @@ export default function Features({ data }: FeaturesProps) {
         <div className="hidden md:grid md:grid-cols-3 gap-8 md:gap-8">
           {features.map((feature, index) => (
             <motion.div
-              key={`${locale}-${index}`}
+              key={index}
                 className="group relative flex flex-col p-6 rounded-2xl border border-blue-500/30 bg-blue-950/20 hover:bg-blue-950/40 hover:border-blue-500/50 transition-all duration-500 backdrop-blur-sm"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, amount: 0, margin: "100px 0px" }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
             >
                <FeatureCardContent feature={feature} />
@@ -141,7 +140,7 @@ export default function Features({ data }: FeaturesProps) {
         </div>
 
         {/* Mobile 3D Carousel */}
-        <div className="md:hidden">
+        <div className="md:hidden mt-7">
           <Carousel3D<FeatureItem>
             items={features}
             initialIndex={0}

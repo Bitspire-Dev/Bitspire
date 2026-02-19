@@ -3,7 +3,6 @@ import React from 'react';
 import { tinaField } from 'tinacms/dist/react';
 import { RichText } from '@tina/richTextPresets';
 import { motion } from 'framer-motion';
-import { useLocale } from 'next-intl';
 import { 
   Tile, 
   TileNumber, 
@@ -39,7 +38,6 @@ interface StatisticsData {
 
 export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
   if (!data) return null;
-  const locale = useLocale();
 
   const normalizePlacement = (col?: number | string | null, row?: number | string | null) => {
     const parsedCol = typeof col === 'string' ? Number(col) : col;
@@ -57,11 +55,10 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-250 h-250 bg-blue-900/10 blur-[120px] rounded-full pointer-events-none -z-10" />
 
       <div className="container mx-auto px-4 md:px-8 relative z-10">
-        <motion.div 
-          key={`statistics-header-${locale}`}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0, margin: "100px 0px" }}
           transition={{ duration: 0.6 }}
           className="mb-12 md:mb-16 max-w-4xl"
         >
@@ -164,12 +161,12 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
 
               return (
                 <motion.div
-                  key={`${locale}-${i}`}
+                  key={i}
                   style={gridStyle}
                   className={finalClassName}
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true, margin: "-50px" }}
+                  viewport={{ once: true, amount: 0, margin: "100px 0px" }}
                   transition={{ 
                     duration: 0.5, 
                     delay: i * 0.1,

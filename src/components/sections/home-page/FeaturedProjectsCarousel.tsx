@@ -119,10 +119,9 @@ export default function FeaturedProjectsCarousel({ data, projectsIndex }: Portfo
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
-          key={`portfolio-highlights-header-${locale}`}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0, margin: "100px 0px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-10 md:mb-12 max-w-2xl mx-auto"
         >
@@ -140,10 +139,9 @@ export default function FeaturedProjectsCarousel({ data, projectsIndex }: Portfo
 
         {/* Carousel */}
         <motion.div
-          key={`portfolio-highlights-carousel-${locale}`}
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0, margin: "100px 0px" }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <Carousel3D<PortfolioProject>

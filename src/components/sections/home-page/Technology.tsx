@@ -7,6 +7,7 @@ import { RichText } from "@tina/richTextPresets";
 import { safeImageSrc } from "@/lib/ui/helpers";
 import type { TinaMarkdownContent } from "tinacms/dist/rich-text";
 import { useLocale } from "next-intl";
+import { motion } from "framer-motion";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -164,7 +165,13 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-250 h-75 bg-brand-accent-2/5 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Header */}
-      <div className="container mx-auto px-4 relative z-10 mb-6 lg:mb-8">
+      <motion.div
+        className="container mx-auto px-4 relative z-10 mb-6 lg:mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0, margin: "100px 0px" }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="text-center max-w-3xl mx-auto">
           {data.title && (
             <div
@@ -183,10 +190,17 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* Marquee */}
-      <MarqueeTrack items={items} srcs={srcs} />
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0, margin: "100px 0px" }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+      >
+        <MarqueeTrack items={items} srcs={srcs} />
+      </motion.div>
     </section>
   );
 };

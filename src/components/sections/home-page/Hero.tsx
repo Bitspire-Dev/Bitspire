@@ -9,7 +9,7 @@ import { safeImageSrc } from '@/lib/ui/helpers';
 import { Link, resolvePathnameKey } from '@/i18n/routing';
 import NextLink from 'next/link';
 import { buildLocalePath } from '@/lib/seo/metadata';
-import { motion, type Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import type { Locale } from '@/i18n/locales';
@@ -80,81 +80,25 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
     );
   };
 
-  // Animation Variants
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: 'easeOut',
-      },
-    },
-  };
-
-  const imageVariants: Variants = {
-    hidden: { opacity: 0, y: 50, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 1.2,
-        ease: 'easeOut',
-        delay: 0.4,
-      },
-    },
-  };
-
   return (
     <section
-      /**
-       * MOBILE LAYOUT STRATEGY:
-       * - justify-start: Stacks content from top naturally
-       * - pt-28: Reduced from pt-36 to pull entire section (Content + Gryf) higher on mobile
-       * - min-h-[90dvh]: Ensures height on mobile
-       * 
-       * DESKTOP LAYOUT STRATEGY:
-       * - lg:justify-center: Centers content vertically in the viewport
-       * - lg:pt-0: Resets mobile padding relying on flex centering
-       */
       className="relative min-h-[90dvh] w-full flex flex-col items-center text-white overflow-visible pt-16 md:pt-24 pb-10 justify-start lg:justify-center lg:pt-0 lg:pb-0"
       data-tina-field={data ? tinaField(data) : undefined}
     >
       {/* Background Effects */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none z-0" />
-      <motion.div 
+      <motion.div
         animate={{ opacity: [0.5, 0.8, 0.5], scale: [1, 1.1, 1] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-125 h-75 bg-blue-500/20 blur-[120px] rounded-full pointer-events-none mix-blend-screen z-0" 
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-125 h-75 bg-blue-500/20 blur-[120px] rounded-full pointer-events-none mix-blend-screen z-0"
       />
 
-      <motion.div 
-        key={`hero-content-${locale}`}
-        /**
-         * CONTENT CONTAINER:
-         * Mobile: Natural flow
-         * Desktop: lg:-translate-y-36 (Increased from 24) Pulls content even higher towards header
-         */
+      {/* Content — CSS animation, no JS hydration needed */}
+      <div
         className="container mx-auto px-4 relative z-20 flex flex-col items-center justify-start lg:justify-center lg:grow lg:pb-48"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
       >
-        {/* Badge: mb-1 (Reduced from 2) to be closer to Title */}
-        <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1.5 mb-1 rounded-full border border-blue-500/30 bg-blue-950/30 backdrop-blur-md shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+        {/* Badge */}
+        <div className="hero-animate hero-animate-delay-1 inline-flex items-center gap-2 px-3 py-1.5 mb-1 mt-4 lg:mt-0 rounded-full border border-blue-500/30 bg-blue-950/30 backdrop-blur-md shadow-[0_0_15px_rgba(59,130,246,0.2)]">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
@@ -162,29 +106,26 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
           <span className="text-blue-200 text-xs font-bold tracking-widest uppercase drop-shadow-sm font-mono">
             System Online
           </span>
-        </motion.div>
+        </div>
 
-        <motion.div 
-          variants={itemVariants} 
-          data-tina-field={data ? tinaField(data, 'title') : undefined} 
-          className="max-w-4xl w-full"
+        <div
+          className="hero-animate hero-animate-delay-2 max-w-4xl w-full"
+          data-tina-field={data ? tinaField(data, 'title') : undefined}
         >
           {renderTitle()}
-        </motion.div>
+        </div>
 
-        <motion.div 
-          variants={itemVariants} 
-          data-tina-field={data ? tinaField(data, 'subtitle') : undefined} 
-          className="max-w-3xl w-full"
+        <div
+          className="hero-animate hero-animate-delay-3 max-w-3xl w-full"
+          data-tina-field={data ? tinaField(data, 'subtitle') : undefined}
         >
           {renderSubtitle()}
-        </motion.div>
+        </div>
 
         {/* Actions */}
         {actions.length > 0 && (
-          <motion.div 
-            variants={itemVariants}
-            className="flex flex-wrap gap-4 justify-center mt-2 relative z-30"
+          <div
+            className="hero-animate hero-animate-delay-4 flex flex-wrap gap-4 justify-center mt-2 relative z-30"
           >
             {actions.map((action, idx) => (
               <motion.div key={idx} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -245,26 +186,16 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
                 })()}
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         )}
-      </motion.div>
+      </div>
 
-      {/* Hero Image - Positioned absolutely at the bottom for stability */}
+      {/* Hero Image — CSS animation, no JS hydration needed */}
       {imageSrc && (
-        <motion.div
-          key={`hero-image-${locale}`}
-            variants={imageVariants}
-            initial={false}
-            animate="visible"
-            transition={{ duration: 0 }}
-            /**
-             * IMAGE WRAPP2 (Reduced from 6) Moves Gryf closer to buttons
-             * Desktop: lg:absolute lg:bottom-0 
-             */
-            className="relative w-full z-10 flex justify-center mt-2 lg:mt-0 lg:absolute lg:bottom-0 pointer-events-none"
+        <div
+            className="hero-animate-image relative w-full z-10 flex justify-center mt-2 lg:mt-0 lg:absolute lg:bottom-0 pointer-events-none"
         >
-             {/* Large screens: Absolute bottom. Desktop: translate-y-40% (was 55%) moves image UP closer to buttons */}
-                  <div className="w-[130vw] max-w-none lg:translate-y-[30%]">
+             <div className="w-[130vw] max-w-none lg:translate-y-[calc(30%+0.3rem)]">
                <div className="relative aspect-video lg:aspect-[1.8/1] w-full">
                    <Image
                     src={imageSrc}
@@ -280,17 +211,15 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
                     placeholder="blur"
                     blurDataURL={HERO_BLUR_DATA_URL}
                    />
-                   {/* Gradient fade at bottom to merge with next section */}
-                   {/* "Two-sided" gradient: 0-100-0. Ends fade into background. */}
-                  <div 
-                    className="absolute left-0 right-0 -bottom-25 h-50 z-20 pointer-events-none" 
+                  <div
+                    className="absolute left-0 right-0 -bottom-25 h-50 z-20 pointer-events-none"
                     style={{
                        background: 'linear-gradient(to bottom, transparent 0%, #020617 50%, transparent 100%)',
                     }}
                   />
                </div>
              </div>
-        </motion.div>
+        </div>
       )}
     </section>
   );

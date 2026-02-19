@@ -6,7 +6,6 @@ import { RichText } from '@tina/richTextPresets';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { useLocale } from 'next-intl';
 
 import { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 
@@ -25,20 +24,18 @@ interface AboutProps {
 
 export const About: React.FC<AboutProps> = ({ data }) => {
   const imageSrc = safeImageSrc(data.image);
-  const locale = useLocale();
 
   return (
-    <section className="w-full pt-16 pb-4 md:pt-20 md:pb-6 lg:pt-48 lg:pb-8 overflow-visible bg-brand-bg relative z-10">
+    <section className="w-full pt-0 -mt-2 pb-4 md:mt-0 md:pt-20 md:pb-6 lg:pt-48 lg:pb-8 overflow-visible bg-brand-bg relative z-10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Image Column */}
-          <motion.div 
-            key={`about-image-${locale}`}
+          <motion.div
             className="relative order-1 lg:order-1"
             data-tina-field={tinaField(data, 'image')}
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0, margin: "100px 0px" }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
             {imageSrc && (
@@ -57,12 +54,11 @@ export const About: React.FC<AboutProps> = ({ data }) => {
           </motion.div>
 
           {/* Content Column */}
-          <motion.div 
-            key={`about-content-${locale}`}
+          <motion.div
             className="flex flex-col gap-6 order-2 lg:order-2"
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0, margin: "100px 0px" }}
             transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
           >
             
@@ -72,7 +68,7 @@ export const About: React.FC<AboutProps> = ({ data }) => {
                 data-tina-field={tinaField(data, 'label')}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, amount: 0, margin: "100px 0px" }}
                 transition={{ duration: 0.4, delay: 0.3 }}
               >
                 <span className="relative flex h-2 w-2">
@@ -90,7 +86,7 @@ export const About: React.FC<AboutProps> = ({ data }) => {
               data-tina-field={tinaField(data, 'title')}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, amount: 0, margin: "100px 0px" }}
               transition={{ duration: 0.4, delay: 0.4 }}
             >
               <RichText content={data.title ?? []} />
@@ -101,7 +97,7 @@ export const About: React.FC<AboutProps> = ({ data }) => {
               data-tina-field={tinaField(data, 'description')}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, amount: 0, margin: "100px 0px" }}
               transition={{ duration: 0.4, delay: 0.5 }}
             >
               <RichText content={data.description ?? []} />

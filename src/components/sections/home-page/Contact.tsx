@@ -105,7 +105,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
   const labelClasses = "block text-brand-text-muted-2 text-sm font-medium mb-2 ml-1";
 
   return (
-    <section id="contact" className="w-full pt-8 pb-16 md:pt-8 md:pb-20 lg:pt-8 lg:pb-24 relative z-10 bg-brand-bg overflow-hidden">
+    <section id="contact" className="w-full pt-3 pb-16 md:pt-8 md:pb-20 lg:pt-8 lg:pb-24 relative z-10 bg-brand-bg overflow-hidden">
       
       {/* Subtle modern background elements */}
       <div className="absolute top-0 right-0 w-200 h-200 bg-brand-accent/5 rounded-full blur-[150px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
@@ -118,10 +118,9 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
           <div className="lg:w-5/12 pt-8">
             {data.label && (
               <motion.div
-                key={`contact-label-${locale}`}
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, amount: 0, margin: "100px 0px" }}
                 className="flex items-center gap-3 mb-8"
               >
                 <span className="flex h-2 w-2 relative">
@@ -135,12 +134,11 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
             )}
 
             <motion.div
-              key={`contact-title-${locale}`}
               className="mb-8"
               data-tina-field={tinaField(data, 'title')}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, amount: 0, margin: "100px 0px" }}
               transition={{ delay: 0.1 }}
             >
               <div className="prose prose-invert max-w-none [&>h1]:text-5xl [&>h1]:lg:text-6xl [&>h1]:font-bold [&>h1]:leading-[1.1] [&>h1]:tracking-tight [&>h1]:text-brand-fg [&>h2]:text-5xl [&>h2]:lg:text-6xl [&>h2]:font-bold [&>h2]:leading-[1.1] [&>h2]:tracking-tight [&>h2]:text-brand-fg">
@@ -149,12 +147,11 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
             </motion.div>
 
             <motion.div
-              key={`contact-description-${locale}`}
                className="prose prose-invert max-w-none text-brand-text-muted text-lg leading-relaxed mb-12"
                data-tina-field={tinaField(data, 'description')}
                initial={{ opacity: 0, y: 20 }}
                whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
+               viewport={{ once: true, amount: 0, margin: "100px 0px" }}
                transition={{ delay: 0.2 }}
             >
               <RichText content={data.description ?? []} />
@@ -163,7 +160,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
             <motion.div
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, amount: 0, margin: "100px 0px" }}
                 transition={{ delay: 0.4 }}
                 className="hidden lg:block text-brand-text-muted-2 text-sm"
             >
@@ -176,12 +173,11 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
 
           {/* Right Side: Clean Form */}
           <motion.div
-            key={`contact-form-${locale}`}
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0, margin: "100px 0px" }}
             transition={{ delay: 0.3 }}
-            className="lg:w-7/12 mt-4 lg:mt-0"
+            className="lg:w-7/12 -mt-9 md:mt-4 lg:mt-0"
           >
             <form onSubmit={handleSubmit} className="relative space-y-6 bg-[#0a1326] p-8 md:p-10 rounded-3xl border border-[#1a2740] shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">
               

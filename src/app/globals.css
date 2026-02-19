@@ -74,3 +74,51 @@ html, body, #__next {
     animation-play-state: paused;
   }
 }
+
+/* ─── Hero entrance: CSS-driven so it starts immediately without JS hydration ─── */
+
+@keyframes hero-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-image-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.hero-animate {
+  opacity: 0;
+  animation: hero-fade-in-up 0.8s ease-out forwards;
+}
+
+.hero-animate-delay-1 { animation-delay: 0.2s; }
+.hero-animate-delay-2 { animation-delay: 0.35s; }
+.hero-animate-delay-3 { animation-delay: 0.5s; }
+.hero-animate-delay-4 { animation-delay: 0.65s; }
+
+.hero-animate-image {
+  opacity: 0;
+  animation: hero-image-fade-in 1.2s ease-out 0.4s forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-animate,
+  .hero-animate-image {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
