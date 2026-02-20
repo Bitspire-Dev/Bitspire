@@ -195,7 +195,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
         <div
             className="hero-animate-image relative w-full z-10 flex justify-center mt-2 lg:mt-0 lg:absolute lg:bottom-0 pointer-events-none"
         >
-             <div className="w-[130vw] max-w-none lg:translate-y-[calc(30%+0.3rem)]">
+             <div className="w-[120vw] max-w-none shrink-0 translate-y-10 lg:translate-y-[calc(30%+5.3rem)]">
                <div className="relative aspect-video lg:aspect-[1.8/1] w-full">
                    <Image
                     src={imageSrc}

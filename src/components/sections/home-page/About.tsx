@@ -26,7 +26,7 @@ export const About: React.FC<AboutProps> = ({ data }) => {
   const imageSrc = safeImageSrc(data.image);
 
   return (
-    <section className="w-full pt-0 -mt-2 pb-4 md:mt-0 md:pt-20 md:pb-6 lg:pt-48 lg:pb-8 overflow-visible bg-brand-bg relative z-10">
+    <section className="w-full pt-0 mt-[22px] pb-4 md:mt-[30px] md:pt-20 md:pb-6 lg:mt-[4.375rem] lg:pt-48 lg:pb-8 overflow-visible bg-brand-bg relative z-10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Image Column */}
@@ -55,7 +55,7 @@ export const About: React.FC<AboutProps> = ({ data }) => {
 
           {/* Content Column */}
           <motion.div
-            className="flex flex-col gap-6 order-2 lg:order-2"
+            className="flex flex-col gap-6 order-2 lg:order-2 lg:translate-y-[2.5rem]"
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0, margin: "100px 0px" }}
