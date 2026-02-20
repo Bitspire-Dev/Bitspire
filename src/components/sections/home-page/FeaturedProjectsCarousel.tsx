@@ -114,8 +114,8 @@ export default function FeaturedProjectsCarousel({ data, projectsIndex }: Portfo
   return (
     <section className="pt-0 pb-12 md:pt-0 md:pb-16 lg:pt-0 lg:pb-16 bg-brand-bg text-brand-fg overflow-visible relative" data-tina-field={tinaField(data)}>
 
-      {/* Background decoration */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-brand-accent/5 rounded-full blur-[120px] pointer-events-none" />
+      {/* Background decoration — radial gradient instead of blur for mobile perf */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] pointer-events-none" style={{ background: 'radial-gradient(ellipse at center, rgba(59,130,246,0.05) 0%, transparent 70%)' }} />
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
@@ -138,12 +138,7 @@ export default function FeaturedProjectsCarousel({ data, projectsIndex }: Portfo
         </motion.div>
 
         {/* Carousel */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
+        <div>
           <Carousel3D<PortfolioProject>
             items={projects}
             getKey={(project) => project._sys?.filename || project.slug || 'project'}
@@ -152,7 +147,7 @@ export default function FeaturedProjectsCarousel({ data, projectsIndex }: Portfo
               const imageUrl = safeImageSrc(project.image) || '/blog/web-design-mistakes.avif';
               const slug = project.slug || project._sys?.filename;
               return (
-                <div className={`rounded-xl overflow-hidden flex flex-col h-full transition-all duration-300 bg-slate-900 ${
+                <div className={`rounded-xl overflow-hidden flex flex-col h-full transition-[border-color,box-shadow] duration-300 bg-slate-900 ${
                   isCenter
                     ? 'border border-white/15 shadow-lg shadow-black/30'
                     : 'border border-slate-700/30'
@@ -180,7 +175,7 @@ export default function FeaturedProjectsCarousel({ data, projectsIndex }: Portfo
                     {slug && (
                       <Link
                         href={buildLocalePath(locale, `/portfolio/${slug}`)}
-                        className={`block w-full py-2 text-center text-[11px] md:text-xs font-medium rounded-lg transition-all duration-300 ${
+                        className={`block w-full py-2 text-center text-[11px] md:text-xs font-medium rounded-lg transition-[background-color,color] duration-300 ${
                           isCenter
                             ? 'bg-blue-600/90 hover:bg-blue-500 text-white shadow-sm shadow-blue-600/20'
                             : 'bg-slate-800 text-slate-500'
@@ -194,7 +189,7 @@ export default function FeaturedProjectsCarousel({ data, projectsIndex }: Portfo
               );
             }}
           />
-        </motion.div>
+        </div>
       </div>
     </section>
   );
