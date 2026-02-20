@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { FaSearch, FaTimes } from 'react-icons/fa';
+import { FaSearch, FaTimes } from '@/components/ui/icons';
 import { useSearch } from '@/hooks/useSearch';
 import { Badge } from '@/components/ui/primitives/Badge';
 import { Input } from '@/components/ui/primitives/Input';

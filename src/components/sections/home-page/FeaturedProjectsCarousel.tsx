@@ -8,7 +8,7 @@ import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaArrowRight } from 'react-icons/fa';
+
 import { useLocale } from 'next-intl';
 import { buildLocalePath } from '@/lib/seo/metadata';
 import type { Locale } from '@/i18n/locales';
@@ -152,30 +152,43 @@ export default function FeaturedProjectsCarousel({ data, projectsIndex }: Portfo
               const imageUrl = safeImageSrc(project.image) || '/blog/web-design-mistakes.avif';
               const slug = project.slug || project._sys?.filename;
               return (
-                <div className="bg-brand-surface border border-white/10 rounded-2xl overflow-hidden shadow-2xl h-full flex flex-col">
-                  <div className="relative h-64 w-full overflow-hidden">
+                <div className={`rounded-xl overflow-hidden flex flex-col h-full transition-all duration-300 bg-slate-900 ${
+                  isCenter
+                    ? 'border border-white/15 shadow-lg shadow-black/30'
+                    : 'border border-slate-700/30'
+                }`}>
+                  {/* Image */}
+                  <div className="relative h-32 md:h-48 w-full overflow-hidden shrink-0">
                     <Image
                       src={imageUrl}
                       alt={project.title || 'Project'}
                       fill
                       className="object-cover"
+                      sizes="(max-width: 768px) 220px, 300px"
+                      quality={70}
                     />
                   </div>
-                  <div className="p-6 flex flex-col grow">
-                    <h2 className="text-xl font-bold mb-2 text-white">{project.title}</h2>
-                    <p className="text-white/60 text-sm line-clamp-3 mb-4 grow">
+
+                  {/* Content */}
+                  <div className="p-3 md:p-5 flex flex-col grow">
+                    <h3 className="text-sm md:text-lg font-bold text-white mb-1">
+                      {project.title}
+                    </h3>
+                    <p className="text-[11px] md:text-sm text-slate-400 mb-3 grow">
                       {project.excerpt || project.description || t.portfolio.viewDetails}
                     </p>
-                    <div className={`mt-auto transition-opacity duration-300 ${isCenter ? 'opacity-100' : 'opacity-0'}`}>
-                      {slug && (
-                        <Link
-                          href={buildLocalePath(locale, `/portfolio/${slug}`)}
-                          className="inline-flex items-center gap-2 text-brand-accent hover:text-brand-accent/80 font-medium text-sm transition-colors"
-                        >
-                          {t.portfolio.viewProject} <FaArrowRight />
-                        </Link>
-                      )}
-                    </div>
+                    {slug && (
+                      <Link
+                        href={buildLocalePath(locale, `/portfolio/${slug}`)}
+                        className={`block w-full py-2 text-center text-[11px] md:text-xs font-medium rounded-lg transition-all duration-300 ${
+                          isCenter
+                            ? 'bg-blue-600/90 hover:bg-blue-500 text-white shadow-sm shadow-blue-600/20'
+                            : 'bg-slate-800 text-slate-500'
+                        }`}
+                      >
+                        {t.portfolio.viewProject}
+                      </Link>
+                    )}
                   </div>
                 </div>
               );

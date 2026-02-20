@@ -203,7 +203,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
                     fill
                     className="object-contain object-bottom"
                     sizes="(max-width: 768px) 130vw, (max-width: 1280px) 130vw, 130vw"
-                    quality={90}
+                    quality={80}
                     data-tina-field={data ? tinaField(data, 'image') : undefined}
                     priority
                     fetchPriority="high"

@@ -12,7 +12,7 @@ import {
   FaEnvelope,
   FaPhone,
   FaMapMarkerAlt,
-} from 'react-icons/fa';
+} from '@/components/ui/icons';
 
 const COMPANY = {
   name: 'Bitspire',

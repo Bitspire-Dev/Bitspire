@@ -8,7 +8,7 @@ import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaArrowRight, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaArrowRight, FaChevronLeft, FaChevronRight } from '@/components/ui/icons';
 import { useLocale } from 'next-intl';
 import { buildLocalePath } from '@/lib/seo/metadata';
 import type { Locale } from '@/i18n/locales';

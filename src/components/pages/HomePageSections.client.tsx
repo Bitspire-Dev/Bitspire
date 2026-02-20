@@ -8,24 +8,20 @@ const SectionPlaceholder = ({ minHeight }: { minHeight: string }) => (
 );
 
 const Technology = dynamic(() => import("@/components/sections/home-page/Technology"), {
-  ssr: false,
   loading: () => <SectionPlaceholder minHeight="240px" />
 });
 
 const Features = dynamic(() => import("@/components/sections/home-page/Features"), {
-  ssr: false,
   loading: () => <SectionPlaceholder minHeight="520px" />
 });
 
 const FeaturedProjectsCarousel = dynamic(() => import("@/components/sections/home-page/FeaturedProjectsCarousel"), {
-  ssr: false,
   loading: () => <SectionPlaceholder minHeight="520px" />
 });
 
 const Statistics = dynamic(
   () => import("@/components/sections/home-page/Statistics").then((mod) => mod.Statistics),
   {
-    ssr: false,
     loading: () => <SectionPlaceholder minHeight="420px" />
   }
 );

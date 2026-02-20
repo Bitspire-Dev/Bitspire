@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
 import { LanguageSwitcher } from '../ui/buttons/LanguageSwitcher';
 import { buildLocalePath } from '@/lib/seo/metadata';
 import { buildAdminLink, type AdminLinkMode } from '@/lib/routing/adminLink';
@@ -72,20 +71,15 @@ export const Header: React.FC<{ locale: 'pl' | 'en'; linkMode?: AdminLinkMode }>
 
           {/* right: CTA + language switcher + mobile trigger */}
           <div className="flex items-center gap-3 md:gap-4">
-            
+
             {/* Mobile Menu Trigger */}
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700/60 bg-slate-800/40 text-slate-200 hover:bg-slate-800 hover:text-white transition-colors"
+            <button
+              className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700/60 bg-slate-800/40 text-slate-200 hover:bg-slate-800 hover:text-white active:scale-95 transition-all duration-200"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label={isMobileMenuOpen ? 'Zamknij menu' : 'Otwórz menu'}
               aria-expanded={isMobileMenuOpen}
             >
-              <motion.div
-                initial={false}
-                animate={{ rotate: isMobileMenuOpen ? 180 : 0 }}
-                transition={{ duration: 0.3 }}
-              >
+              <div className={`transition-transform duration-300 ${isMobileMenuOpen ? 'rotate-180' : ''}`}>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                    {isMobileMenuOpen ? (
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -93,8 +87,8 @@ export const Header: React.FC<{ locale: 'pl' | 'en'; linkMode?: AdminLinkMode }>
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                   )}
                 </svg>
-              </motion.div>
-            </motion.button>
+              </div>
+            </button>
 
             <div className="flex items-center">
               <LanguageSwitcher />
@@ -119,79 +113,74 @@ export const Header: React.FC<{ locale: 'pl' | 'en'; linkMode?: AdminLinkMode }>
           </div>
         </div>
 
-        {/* mobilne menu */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="md:hidden overflow-hidden border-t border-slate-700/50"
-            >
-              <div className="px-5 py-6 space-y-4">
-                <div className="space-y-3">
-                  {navigation.map((item, index) => (
-                    <Link
-                      key={index}
-                      href={getLink(item.href)}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="block group"
-                    >
-                      <motion.div 
-                        initial={{ x: -20, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="flex items-center gap-4 p-4 rounded-xl bg-slate-800/40 border border-slate-700/50 hover:bg-slate-800 hover:border-blue-500/30 transition-all duration-300"
-                      >
-                         <div className="shrink-0 w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
-                            {/* Proste ikony dla menu - można podmienić na konkretne svg */}
-                            <svg className="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                            </svg>
-                         </div>
-                         <div className="flex-1">
-                            <h3 className="text-base font-semibold text-white group-hover:text-blue-300 transition-colors">
-                              {item.label}
-                            </h3>
-                            <p className="text-xs text-slate-400 mt-0.5 group-hover:text-slate-300">
-                              {item.description}
-                            </p>
-                         </div>
-                         <div className="text-slate-500 group-hover:text-blue-400 group-hover:translate-x-1 transition-transform">
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                         </div>
-                      </motion.div>
-                    </Link>
-                  ))}
-                </div>
-                
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="pt-2"
-                >
+        {/* mobilne menu — CSS grid-rows transition */}
+        <div
+          className={`md:hidden grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
+            isMobileMenuOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+          }`}
+        >
+          <div className="overflow-hidden">
+            <div className={`border-t border-slate-700/50 px-5 py-6 space-y-4 ${isMobileMenuOpen ? '' : 'invisible'}`}>
+              <div className="space-y-3">
+                {navigation.map((item, index) => (
                   <Link
-                    href={getLink(ctaButton.href)}
+                    key={index}
+                    href={getLink(item.href)}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="relative flex items-center justify-center w-full p-4 overflow-hidden font-bold rounded-xl group bg-linear-to-br from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 transition-all duration-300 shadow-lg shadow-blue-900/20"
+                    className="block group"
                   >
-                    <span className="absolute inset-0 w-full h-full -mt-10 -ml-10 transition-all duration-1000 ease-out transform translate-x-0 translate-y-0 bg-blue-400 opacity-0 group-hover:opacity-20 group-hover:translate-x-10 group-hover:translate-y-10 rounded-full"></span>
-                    <span className="relative text-white flex items-center gap-2">
-                      {ctaButton.text}
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </span>
+                    <div
+                      className={`flex items-center gap-4 p-4 rounded-xl bg-slate-800/40 border border-slate-700/50 hover:bg-slate-800 hover:border-blue-500/30 transition-all duration-300 ${
+                        isMobileMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-5 opacity-0'
+                      }`}
+                      style={{ transitionDelay: isMobileMenuOpen ? `${index * 100}ms` : '0ms' }}
+                    >
+                       <div className="shrink-0 w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+                          <svg className="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                          </svg>
+                       </div>
+                       <div className="flex-1">
+                          <h3 className="text-base font-semibold text-white group-hover:text-blue-300 transition-colors">
+                            {item.label}
+                          </h3>
+                          <p className="text-xs text-slate-400 mt-0.5 group-hover:text-slate-300">
+                            {item.description}
+                          </p>
+                       </div>
+                       <div className="text-slate-500 group-hover:text-blue-400 group-hover:translate-x-1 transition-transform">
+                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                       </div>
+                    </div>
                   </Link>
-                </motion.div>
+                ))}
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+
+              <div
+                className={`pt-2 transition-all duration-300 ${
+                  isMobileMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'
+                }`}
+                style={{ transitionDelay: isMobileMenuOpen ? '200ms' : '0ms' }}
+              >
+                <Link
+                  href={getLink(ctaButton.href)}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="relative flex items-center justify-center w-full p-4 overflow-hidden font-bold rounded-xl group bg-linear-to-br from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 transition-all duration-300 shadow-lg shadow-blue-900/20"
+                >
+                  <span className="absolute inset-0 w-full h-full -mt-10 -ml-10 transition-all duration-1000 ease-out transform translate-x-0 translate-y-0 bg-blue-400 opacity-0 group-hover:opacity-20 group-hover:translate-x-10 group-hover:translate-y-10 rounded-full"></span>
+                  <span className="relative text-white flex items-center gap-2">
+                    {ctaButton.text}
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
   );

@@ -143,14 +143,57 @@ export default function Features({ data }: FeaturesProps) {
         <div className="md:hidden mt-7">
           <Carousel3D<FeatureItem>
             items={features}
-            initialIndex={0}
             getKey={(feature) => typeof feature.title === 'string' ? feature.title : 'feature'}
             controlLabels={controlLabels}
-            renderItem={(feature, _index, isCenter) => (
-              <div className={`p-6 rounded-2xl border border-blue-500/30 bg-blue-950/20 backdrop-blur-sm flex flex-col h-full transition-all duration-300 ${isCenter ? 'border-blue-500/60 shadow-[0_0_30px_rgba(59,130,246,0.15)] bg-blue-950/40' : ''}`}>
-                <FeatureCardContent feature={feature} />
-              </div>
-            )}
+            renderItem={(feature, _index, isCenter) => {
+              const iconSrc = safeImageSrc(feature.icon || undefined);
+              return (
+                <div className={`rounded-xl overflow-hidden flex flex-col h-full transition-all duration-300 bg-slate-900 ${
+                  isCenter
+                    ? 'border border-blue-500/40 shadow-lg shadow-blue-500/10'
+                    : 'border border-slate-700/30'
+                }`}>
+                  {/* Image */}
+                  <div
+                    className="relative h-28 w-full overflow-hidden shrink-0"
+                    data-tina-field={tinaField(feature, 'icon')}
+                  >
+                    {iconSrc ? (
+                      <Image
+                        src={iconSrc}
+                        alt={feature.title || 'Feature'}
+                        fill
+                        className="object-cover"
+                        sizes="220px"
+                        quality={70}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-slate-800 flex items-center justify-center text-slate-600">
+                        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-3 flex flex-col grow">
+                    <h3
+                      className="text-sm font-semibold text-white mb-1"
+                      data-tina-field={tinaField(feature, 'title')}
+                    >
+                      {feature.title}
+                    </h3>
+                    <p
+                      className="text-[11px] leading-relaxed text-slate-400"
+                      data-tina-field={tinaField(feature, 'description')}
+                    >
+                      {feature.description}
+                    </p>
+                  </div>
+                </div>
+              );
+            }}
           />
         </div>
 

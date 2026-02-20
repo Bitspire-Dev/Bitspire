@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import Image from "next/image";
 import { tinaField } from "tinacms/dist/react";
 import { RichText } from "@tina/richTextPresets";
@@ -8,6 +8,8 @@ import { safeImageSrc } from "@/lib/ui/helpers";
 import type { TinaMarkdownContent } from "tinacms/dist/rich-text";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
+import useEmblaCarousel from "embla-carousel-react";
+import AutoScroll from "embla-carousel-auto-scroll";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -29,23 +31,15 @@ interface TechnologyData {
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
 
-/** Seconds per logo — controls scroll speed. */
-const SECONDS_PER_ITEM = 3;
-
-/** Width of each logo slot in pixels (must match w-[140px] in LogoIcon). */
+/** Width of each logo slot in pixels. */
 const ITEM_WIDTH = 140;
-
-/**
- * Minimum width (px) one set of logos must span.
- * Must be >= the widest expected viewport (2560px covers 4K scaled).
- * This guarantees the set fills the screen at every animation frame
- * so the infinite loop has no gaps.
- */
-const MIN_SET_WIDTH = 2560;
 
 /** CSS mask that fades edges to transparent. */
 const EDGE_FADE =
   "linear-gradient(to right, transparent, black 8%, black 92%, transparent)";
+
+/** Minimum total slide width needed for seamless loop (covers 4K). */
+const MIN_TOTAL_WIDTH = 2560;
 
 /* ------------------------------------------------------------------ */
 /*  LogoIcon                                                           */
@@ -90,50 +84,76 @@ function LogoIcon({
 }
 
 /* ------------------------------------------------------------------ */
-/*  MarqueeTrack                                                       */
+/*  LogoCarousel                                                       */
 /* ------------------------------------------------------------------ */
 
-function MarqueeTrack({
+function LogoCarousel({
   items,
   srcs,
 }: {
   items: TechnologyItem[];
   srcs: (string | undefined)[];
 }) {
-  // How many times to repeat the item list so one set >= MIN_SET_WIDTH.
-  // e.g. 8 items × 140px = 1120px per round → ceil(2560/1120) = 3 rounds
-  // → one set = 3360px, always wider than the viewport.
-  const repeatCount = Math.max(1, Math.ceil(MIN_SET_WIDTH / (items.length * ITEM_WIDTH)));
+  // Duplicate items enough times to fill the viewport for seamless loop
+  const { slides, slideSrcs } = useMemo(() => {
+    const repeats = Math.max(1, Math.ceil(MIN_TOTAL_WIDTH / (items.length * ITEM_WIDTH)));
+    const s: TechnologyItem[] = [];
+    const ss: (string | undefined)[] = [];
+    for (let r = 0; r < repeats; r++) {
+      for (let i = 0; i < items.length; i++) {
+        s.push(items[i]);
+        ss.push(srcs[i]);
+      }
+    }
+    return { slides: s, slideSrcs: ss };
+  }, [items, srcs]);
 
-  // Duration scales with total items in one set to keep scroll speed constant.
-  const duration = repeatCount * items.length * SECONDS_PER_ITEM;
+  const autoScrollPlugin = useMemo(
+    () =>
+      AutoScroll({
+        speed: 1,
+        startDelay: 0,
+        stopOnInteraction: false,
+        stopOnFocusIn: false,
+      }),
+    [],
+  );
 
-  const renderSet = () =>
-    Array.from({ length: repeatCount }, (_, r) =>
-      items.map((item, i) => (
-        <LogoIcon key={`${r}-${i}`} item={item} src={srcs[i]} />
-      ))
-    );
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: true,
+      dragFree: true,
+      align: "start",
+      containScroll: false,
+    },
+    [autoScrollPlugin],
+  );
+
+  // Pause auto-scroll on hover, resume on leave
+  const onMouseEnter = useCallback(() => {
+    const plugin = emblaApi?.plugins()?.autoScroll;
+    if (plugin && 'stop' in plugin) (plugin as { stop: () => void }).stop();
+  }, [emblaApi]);
+
+  const onMouseLeave = useCallback(() => {
+    const plugin = emblaApi?.plugins()?.autoScroll;
+    if (plugin && 'play' in plugin) (plugin as { play: () => void }).play();
+  }, [emblaApi]);
 
   return (
     <div
-      className="relative w-full overflow-hidden group"
+      className="relative w-full overflow-hidden"
       style={{ WebkitMaskImage: EDGE_FADE, maskImage: EDGE_FADE }}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
-      {/*
-        Track: w-max prevents wrapping. Contains two identical sets.
-        CSS animates translate(-50%) = exactly one set width → seamless loop.
-        Each set repeats the items enough times to be wider than any viewport.
-      */}
-      <div
-        className="flex w-max animate-marquee group-hover:[animation-play-state:paused]"
-        style={
-          { "--marquee-duration": `${duration}s` } as React.CSSProperties
-        }
-      >
-        <div className="flex shrink-0">{renderSet()}</div>
-        <div className="flex shrink-0" aria-hidden="true">
-          {renderSet()}
+      <div ref={emblaRef} className="overflow-hidden cursor-grab active:cursor-grabbing">
+        <div className="flex">
+          {slides.map((item, slideIndex) => (
+            <div key={slideIndex} className="flex-[0_0_auto]">
+              <LogoIcon item={item} src={slideSrcs[slideIndex]} />
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -192,14 +212,14 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
         </div>
       </motion.div>
 
-      {/* Marquee */}
+      {/* Logo carousel */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, amount: 0, margin: "100px 0px" }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
-        <MarqueeTrack items={items} srcs={srcs} />
+        <LogoCarousel items={items} srcs={srcs} />
       </motion.div>
     </section>
   );
