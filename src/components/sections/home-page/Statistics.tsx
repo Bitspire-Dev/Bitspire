@@ -52,7 +52,7 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
     <section className="pt-0 pb-2 md:pt-0 md:pb-4 lg:pt-0 lg:pb-4 relative overflow-visible">
       
       {/* Background decoration */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-250 h-250 bg-blue-900/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute inset-0 pointer-events-none -z-10" style={{ background: 'radial-gradient(circle at 50% 50%, rgba(30,58,138,0.10) 0%, transparent 60%)' }} />
 
       <div className="container mx-auto px-4 md:px-8 relative z-10">
         <motion.div

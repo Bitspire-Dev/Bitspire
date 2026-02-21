@@ -182,7 +182,7 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
       data-tina-field={tinaField(data)}
     >
       {/* Background glow */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-250 h-75 bg-brand-accent-2/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 40% at 50% 100%, rgba(99,102,241,0.05) 0%, transparent 70%)' }} />
 
       {/* Header */}
       <motion.div

@@ -36,7 +36,7 @@ export const Header: React.FC<{ locale: 'pl' | 'en'; linkMode?: AdminLinkMode }>
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 py-2 md:py-4 px-4 sm:px-6 animate-slide-in-down">
-      <div className="bg-gray-900/80 backdrop-blur-md border border-gray-700/50 text-white max-w-screen-2xl mx-auto rounded-xl shadow-2xl overflow-hidden transition-all duration-300">
+      <div className="bg-gray-900/95 md:bg-gray-900/80 md:backdrop-blur-md border border-gray-700/50 text-white max-w-screen-2xl mx-auto rounded-xl shadow-2xl overflow-hidden transition-all duration-300">
         {/* górny pasek */}
         <div className="px-4 md:px-6 py-3 flex items-center justify-between gap-4">
           {/* left: logo + optional center nav */}

@@ -87,10 +87,11 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
     >
       {/* Background Effects */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none z-0" />
-      <motion.div
-        animate={{ opacity: [0.5, 0.8, 0.5], scale: [1, 1.1, 1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-125 h-75 bg-blue-500/20 blur-[120px] rounded-full pointer-events-none mix-blend-screen z-0"
+      <div
+        className="hero-glow absolute top-0 left-1/2 -translate-x-1/2 w-125 h-75 rounded-full pointer-events-none mix-blend-screen z-0"
+        style={{
+          background: 'radial-gradient(ellipse at center, rgba(59,130,246,0.25) 0%, rgba(59,130,246,0.08) 40%, transparent 70%)',
+        }}
       />
 
       {/* Content — CSS animation, no JS hydration needed */}

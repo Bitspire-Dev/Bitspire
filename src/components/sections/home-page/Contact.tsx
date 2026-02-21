@@ -108,8 +108,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
     <section id="contact" className="w-full pt-3 pb-16 md:pt-8 md:pb-20 lg:pt-8 lg:pb-24 relative z-10 bg-brand-bg overflow-hidden">
       
       {/* Subtle modern background elements */}
-      <div className="absolute top-0 right-0 w-200 h-200 bg-brand-accent/5 rounded-full blur-[150px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
-      <div className="absolute bottom-0 left-0 w-150 h-150 bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none translate-y-1/3 -translate-x-1/4" />
+      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 60% 60% at 85% 10%, rgba(59,130,246,0.05) 0%, transparent 70%), radial-gradient(ellipse 50% 50% at 15% 90%, rgba(79,70,229,0.05) 0%, transparent 70%)' }} />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">

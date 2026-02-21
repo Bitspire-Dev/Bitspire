@@ -83,7 +83,7 @@ export default function Features({ data }: FeaturesProps) {
   return (
     <section className="pt-0 pb-4 md:pt-0 md:pb-6 lg:pt-0 lg:pb-8 bg-brand-bg relative z-10 text-brand-fg overflow-visible" data-tina-field={tinaField(data)}>
        {/* Background gradient effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-200 h-100 bg-brand-accent/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(59,130,246,0.05) 0%, transparent 70%)' }} />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div

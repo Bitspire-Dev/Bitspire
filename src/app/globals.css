@@ -122,3 +122,37 @@ html, body, #__next {
     transform: none;
   }
 }
+
+/* Hero glow blob — CSS animation replaces framer-motion infinite + blur-[120px] */
+@keyframes hero-glow-pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateX(-50%) scale(1.1);
+  }
+}
+
+.hero-glow {
+  will-change: transform, opacity;
+  animation: hero-glow-pulse 8s ease-in-out infinite;
+}
+
+/* Disable glow animation on mobile to save GPU */
+@media (max-width: 767px) {
+  .hero-glow {
+    animation: none;
+    opacity: 0.6;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow {
+    animation: none;
+    opacity: 0.6;
+    transform: translateX(-50%) scale(1);
+  }
+}
