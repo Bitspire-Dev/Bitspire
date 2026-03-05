@@ -1,9 +1,19 @@
 import React from 'react';
 
-type IconProps = React.SVGAttributes<SVGElement>;
+type IconProps = React.SVGAttributes<SVGSVGElement>;
 
 const Icon = ({ viewBox, d, ...props }: IconProps & { viewBox: string; d: string }) => (
-  <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox={viewBox} aria-hidden="true" {...props}>
+  <svg
+    stroke="currentColor"
+    fill="currentColor"
+    strokeWidth="0"
+    viewBox={viewBox}
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    focusable="false"
+    {...props}
+  >
     <path d={d} />
   </svg>
 );

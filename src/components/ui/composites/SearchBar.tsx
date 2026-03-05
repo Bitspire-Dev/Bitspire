@@ -140,7 +140,7 @@ export function SearchBar({
       {/* Search Input */}
       <div className="relative max-w-2xl mx-auto">
         <div className="relative">
-          <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
+          <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg w-5 h-5 pointer-events-none" />
           <Input
             type="text"
             value={searchQuery}

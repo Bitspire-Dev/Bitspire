@@ -51,7 +51,9 @@ export default function middleware(request: NextRequest) {
 
 export const config = {
 	matcher: [
-		// Exclude static assets and Next internals; include admin and root
-		'/((?!_next|_vercel|api|favicon.ico|.*\.[^/]+$).*)',
+		// Run proxy on all app routes (including locale-prefixed paths) so
+		// next-intl can normalize/resolve localized pathnames consistently.
+		// Exclude internal assets, API routes and static files with extensions.
+		'/((?!_next|_vercel|api|favicon.ico|sitemap.xml|robots.txt|.*\\.[^/]+$).*)',
 	],
 };
