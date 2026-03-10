@@ -34,7 +34,7 @@ export default function ShareButtons({ title, buttons, tinaFields }: ShareButton
         return () => window.clearTimeout(timer);
     }, [copied]);
 
-    const handleShare = (platform: string) => {
+    const handleShare = async (platform: string) => {
         const url = typeof window !== 'undefined' ? window.location.href : '';
         const text = typeof window !== 'undefined' ? document.title : '';
 
@@ -49,7 +49,12 @@ export default function ShareButtons({ title, buttons, tinaFields }: ShareButton
 
         if (platform === 'copy') {
             if (navigator?.clipboard?.writeText) {
-                navigator.clipboard.writeText(url).then(() => setCopied(true)).catch(() => undefined);
+                try {
+                    await navigator.clipboard.writeText(url);
+                    setCopied(true);
+                } catch {
+                    return;
+                }
             }
             return;
         }
@@ -67,7 +72,7 @@ export default function ShareButtons({ title, buttons, tinaFields }: ShareButton
             </h3>
             <div className="flex flex-col gap-2">
                 <button
-                    onClick={() => handleShare('twitter')}
+                    onClick={() => void handleShare('twitter')}
                     className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 hover:text-white bg-slate-700/30 hover:bg-slate-700/50 rounded-lg transition-all group"
                 >
                     <svg className="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
@@ -76,7 +81,7 @@ export default function ShareButtons({ title, buttons, tinaFields }: ShareButton
                     <span data-tina-field={tinaFields?.twitter}>{labels.twitter}</span>
                 </button>
                 <button
-                    onClick={() => handleShare('linkedin')}
+                    onClick={() => void handleShare('linkedin')}
                     className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 hover:text-white bg-slate-700/30 hover:bg-slate-700/50 rounded-lg transition-all group"
                 >
                     <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
@@ -85,7 +90,7 @@ export default function ShareButtons({ title, buttons, tinaFields }: ShareButton
                     <span data-tina-field={tinaFields?.linkedin}>{labels.linkedin}</span>
                 </button>
                 <button
-                    onClick={() => handleShare('facebook')}
+                    onClick={() => void handleShare('facebook')}
                     className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 hover:text-white bg-slate-700/30 hover:bg-slate-700/50 rounded-lg transition-all group"
                 >
                     <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
@@ -94,7 +99,7 @@ export default function ShareButtons({ title, buttons, tinaFields }: ShareButton
                     <span data-tina-field={tinaFields?.facebook}>{labels.facebook}</span>
                 </button>
                 <button
-                    onClick={() => handleShare('copy')}
+                    onClick={() => void handleShare('copy')}
                     className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 hover:text-white bg-slate-700/30 hover:bg-slate-700/50 rounded-lg transition-all group"
                     aria-pressed={copied}
                 >
