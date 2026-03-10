@@ -21,7 +21,7 @@ export function useContactForm(options: UseContactFormOptions = {}) {
     email: "",
     message: "",
   });
-  
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -60,7 +60,7 @@ export function useContactForm(options: UseContactFormOptions = {}) {
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -84,11 +84,12 @@ export function useContactForm(options: UseContactFormOptions = {}) {
       }
 
       setSuccess(true);
-      resetForm();
+      setFormData({ name: "", email: "", message: "" });
+      setError("");
       if (onSuccess) onSuccess();
     } catch (err) {
-      const errorMessage = err instanceof Error 
-        ? err.message 
+      const errorMessage = err instanceof Error
+        ? err.message
         : "Wystąpił błąd podczas wysyłania formularza. Spróbuj ponownie.";
       setError(errorMessage);
       if (onError) onError(errorMessage);
