@@ -10,12 +10,9 @@ import { Link, resolvePathnameKey } from '@/i18n/routing';
 import NextLink from 'next/link';
 import { buildLocalePath } from '@/lib/seo/metadata';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
+import FeaturedImage from '@/components/ui/media/FeaturedImage';
 import { useLocale } from 'next-intl';
 import type { Locale } from '@/i18n/locales';
-
-const HERO_BLUR_DATA_URL =
-  'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=';
 
 interface HeroAction {
   label: string;
@@ -198,19 +195,13 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
         >
              <div className="w-[120vw] max-w-none shrink-0 translate-y-10 lg:translate-y-[calc(30%+5.25rem)]">
                <div className="relative aspect-video lg:aspect-[1.8/1] w-full">
-                   <Image
+                   <FeaturedImage
                     src={imageSrc}
                     alt="Hero illustration"
-                    fill
                     className="object-contain object-bottom"
                     sizes="(max-width: 768px) 130vw, (max-width: 1280px) 130vw, 130vw"
-                    quality={80}
-                    data-tina-field={data ? tinaField(data, 'image') : undefined}
+                    tinaField={data ? tinaField(data, 'image') : undefined}
                     priority
-                    fetchPriority="high"
-                    loading="eager"
-                    placeholder="blur"
-                    blurDataURL={HERO_BLUR_DATA_URL}
                    />
                   <div
                     className="absolute left-0 right-0 -bottom-25 h-50 z-20 pointer-events-none"

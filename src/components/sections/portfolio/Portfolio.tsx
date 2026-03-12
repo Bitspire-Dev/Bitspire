@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import FeaturedImage from '@/components/ui/media/FeaturedImage';
 import { tinaField } from 'tinacms/dist/react';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import { getTranslations } from '@/i18n/translations';
@@ -77,10 +77,9 @@ export default function Portfolio({ data, locale }: { data?: PortfolioData; loca
                       className="relative w-full aspect-video overflow-hidden rounded-t-2xl"
                       data-tina-field={tinaField(data, `projects.${idx}.image`)}
                     >
-                      <Image
+                      <FeaturedImage
                         src={safeImageSrc(project.image) as string}
                         alt={project.title}
-                        fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover"
                       />

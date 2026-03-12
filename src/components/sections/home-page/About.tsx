@@ -31,7 +31,7 @@ export const About: React.FC<AboutProps> = ({ data }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Image Column */}
           <motion.div
-            className="relative order-1 lg:order-1"
+            className="relative z-20 order-1 lg:order-1"
             data-tina-field={tinaField(data, 'image')}
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -39,15 +39,15 @@ export const About: React.FC<AboutProps> = ({ data }) => {
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
             {imageSrc && (
-              <div className="relative rounded-lg overflow-hidden shadow-2xl">
+              <div className="relative z-20 rounded-lg overflow-hidden shadow-2xl aspect-square">
                 <Image
                   src={imageSrc}
                   alt={data.imageAlt || "About section image"}
-                  width={800}
-                  height={600}
-                  className="w-full h-auto object-cover"
+                  fill
+                  className="w-full h-full object-contain"
                   sizes="(max-width: 768px) 90vw, (max-width: 1024px) 45vw, 800px"
-                  quality={78}
+                  quality={80}
+                  priority={false}
                 />
               </div>
             )}

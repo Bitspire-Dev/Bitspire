@@ -19,13 +19,36 @@ const nextConfig: NextConfig = {
     } : false,
   },
   
-  // Image optimization
+  // Image optimization - tuned for mobile performance
   images: {
     formats: ['image/avif', 'image/webp'],
-    qualities: [70, 75, 78, 80, 90],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 2304, 2560, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 86400,
+    // Quality settings: AVIF for modern browsers, WebP for fallback
+    qualities: [65, 70, 72, 75, 78, 80, 85],
+    // Device sizes: optimized for responsive images (breakpoints matching Tailwind)
+    // Mobile (320-480), Tablet (640-768), Desktop (1024-1920), Ultra-wide (2048+)
+    deviceSizes: [
+      320,  // Small mobile (iPhone SE)
+      375,  // Standard mobile
+      480,  // Mobile landscape
+      640,  // Mobile landscape / small tablet
+      768,  // Tablet (Tailwind md)
+      1024, // Tablet landscape / small desktop
+      1280, // Desktop
+      1536, // Large desktop
+      1920, // Full HD
+      2560, // 2K
+    ],
+    // Image sizes for specific component widths
+    imageSizes: [
+      16, 32, 48, 64, 96, 128, 
+      200,  // Feature icons
+      256, 384, 512, // Card sizes
+      640,  // Standard content width
+      768,
+      1024,
+    ],
+    // Cache optimized images for 7 days (604800 seconds)
+    minimumCacheTTL: 604800,
     dangerouslyAllowSVG: false,
     contentDispositionType: 'inline',
     remotePatterns: [

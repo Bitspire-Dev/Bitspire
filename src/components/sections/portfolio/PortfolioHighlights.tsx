@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import FeaturedImage from '@/components/ui/media/FeaturedImage';
 import Link from 'next/link';
 import { tinaField } from 'tinacms/dist/react';
 import { buildAdminLink, type AdminLinkMode } from '@/lib/routing/adminLink';
@@ -83,10 +83,9 @@ const PortfolioHighlights: React.FC<PortfolioHighlightsProps> = ({ data, locale 
               {/* Project Image */}
               <CardMedia className="bg-slate-900">
                 {project?.image ? (
-                  <Image
+                  <FeaturedImage
                     src={project.image}
                     alt={projectTitle}
-                    fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />

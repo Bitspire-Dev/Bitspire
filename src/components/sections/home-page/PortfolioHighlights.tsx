@@ -6,7 +6,7 @@ import { RichText } from '@tina/richTextPresets';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
+import FeaturedImage from '@/components/ui/media/FeaturedImage';
 import Link from 'next/link';
 import { FaArrowRight, FaChevronLeft, FaChevronRight } from '@/components/ui/icons';
 import { useLocale } from 'next-intl';
@@ -216,11 +216,11 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
                   <div className="bg-brand-surface border border-white/10 rounded-2xl overflow-hidden shadow-2xl h-full flex flex-col">
                      {/* Image */}
                      <div className="relative h-64 w-full overflow-hidden">
-                        <Image 
+                        <FeaturedImage 
                             src={imageUrl} 
                             alt={project.title || 'Project'} 
-                            fill
                             className="object-cover"
+                            sizes="350px"
                         />
                      </div>
                      {/* Content */}

@@ -39,6 +39,8 @@ export default function FeaturedImage({
     const resolvedPlaceholder = placeholder ?? (priority ? 'blur' : 'empty');
     const resolvedBlurDataURL =
         resolvedPlaceholder === 'blur' ? blurDataURL ?? DEFAULT_BLUR_DATA_URL : undefined;
+    const defaultSizes = useFill ? '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw' : undefined;
+    const resolvedQuality = quality ?? 78;
 
     return (
         <Image
@@ -47,10 +49,10 @@ export default function FeaturedImage({
             fill={useFill}
             width={useFill ? undefined : width}
             height={useFill ? undefined : height}
-            sizes={sizes ?? (useFill ? '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw' : undefined)}
+            sizes={sizes ?? defaultSizes}
             className={className}
             priority={priority}
-            quality={quality}
+            quality={resolvedQuality}
             placeholder={resolvedPlaceholder}
             blurDataURL={resolvedBlurDataURL}
             unoptimized={unoptimized}

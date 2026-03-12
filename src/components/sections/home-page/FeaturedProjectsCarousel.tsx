@@ -6,7 +6,7 @@ import { RichText } from '@tina/richTextPresets';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
+import FeaturedImage from '@/components/ui/media/FeaturedImage';
 import Link from 'next/link';
 
 import { useLocale } from 'next-intl';
@@ -154,13 +154,11 @@ export default function FeaturedProjectsCarousel({ data, projectsIndex }: Portfo
                 }`}>
                   {/* Image */}
                   <div className="relative h-32 md:h-48 w-full overflow-hidden shrink-0">
-                    <Image
+                    <FeaturedImage
                       src={imageUrl}
                       alt={project.title || 'Project'}
-                      fill
                       className="object-cover"
                       sizes="(max-width: 768px) 220px, 300px"
-                      quality={70}
                     />
                   </div>
 
