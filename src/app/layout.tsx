@@ -94,7 +94,7 @@ export default async function RootLayout({
 }) {
   // Pobierz locale z params (będzie ustawione przez middleware)
   const { locale } = await params;
-  const currentLocale = locale || 'pl';
+  const currentLocale = locale === 'en' ? 'en' : 'pl';
 
   // Opt-in for static rendering with next-intl
   setRequestLocale(currentLocale);

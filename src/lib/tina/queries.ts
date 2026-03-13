@@ -135,7 +135,11 @@ function collectBlogNodes(
   });
 }
 
-async function getRelatedBlogPosts(locale: string, current: BlogNode) {
+export async function getRelatedBlogPosts(locale: string, current: BlogNode | null | undefined) {
+  if (!current) {
+    return [];
+  }
+
   const currentSlug = getNodeSlug(current);
   const seen = new Set<string>();
   const related: BlogNode[] = [];
