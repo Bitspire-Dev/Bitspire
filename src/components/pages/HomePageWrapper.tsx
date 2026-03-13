@@ -5,6 +5,7 @@ import { Hero } from "@/components/sections/home-page/Hero";
 import About from "@/components/sections/home-page/About";
 import { Contact } from "@/components/sections/home-page/Contact";
 import {
+    HomePageSectionsWarmup,
     TechnologySectionClient,
     FeaturesSectionClient,
     PortfolioHighlightsSectionClient,
@@ -68,6 +69,7 @@ export default function HomePageWrapper({ data, portfolioHighlightsProjects }: H
 
     return (
         <>
+            <HomePageSectionsWarmup />
             <div data-tina-field={data ? tinaField(data, 'body') : undefined}>
                 <RichText
                     content={bodyContent ?? []}

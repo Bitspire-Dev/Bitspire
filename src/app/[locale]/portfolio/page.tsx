@@ -36,8 +36,10 @@ export default async function PortfolioIndexPage({ params, searchParams }: PageP
   const { locale } = await params;
   const { q = "", tags = "" } = (await searchParams) ?? {};
   const currentLocale = normalizeLocale(locale);
-  const page = await getPage(currentLocale, "portfolio");
-  const allProjects = await getPortfolioIndex(currentLocale);
+  const [page, allProjects] = await Promise.all([
+    getPage(currentLocale, "portfolio"),
+    getPortfolioIndex(currentLocale),
+  ]);
   const selectedTags = tags.split(",").map((tag) => tag.trim()).filter(Boolean);
   const filteredProjects = filterByQueryAndTags(allProjects, q, selectedTags);
   const allTags = extractTags(allProjects);

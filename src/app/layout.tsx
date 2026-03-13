@@ -3,6 +3,9 @@ import { setRequestLocale } from 'next-intl/server';
 import { Metadata, type Viewport } from 'next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Script from 'next/script';
+import { NavigationPrefetch } from '@/components/layout/NavigationPrefetch';
+import { buildLocalePath } from '@/lib/seo/metadata';
+import { MotionProvider } from '@/providers/MotionProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -97,6 +100,14 @@ export default async function RootLayout({
   setRequestLocale(currentLocale);
   // Messages are stored directly in MDX content; keep provider only for hooks like useLocale
   const messages = {};
+  const primaryRoutes = [
+    buildLocalePath(currentLocale, '/'),
+    buildLocalePath(currentLocale, '/portfolio'),
+    buildLocalePath(currentLocale, '/blog'),
+    buildLocalePath(currentLocale, '/polityka-prywatnosci'),
+    buildLocalePath(currentLocale, '/polityka-cookies'),
+    buildLocalePath(currentLocale, '/regulamin'),
+  ];
 
   return (
     <html lang={currentLocale} suppressHydrationWarning data-scroll-behavior="smooth">
@@ -135,7 +146,10 @@ gtag('config', 'G-1M0G821XEX');`}
       </head>
       <body className="antialiased bg-slate-950 text-slate-100 min-h-screen font-sans">
         <NextIntlClientProvider locale={currentLocale} messages={messages}>
-          {children}
+          <MotionProvider>
+            <NavigationPrefetch primaryRoutes={primaryRoutes} />
+            {children}
+          </MotionProvider>
         </NextIntlClientProvider>
         <SpeedInsights />
       </body>

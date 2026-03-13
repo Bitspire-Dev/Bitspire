@@ -36,8 +36,10 @@ export default async function BlogIndexPage({ params, searchParams }: PageProps)
   const { locale } = await params;
   const { q = "", tags = "" } = (await searchParams) ?? {};
   const currentLocale = normalizeLocale(locale);
-  const page = await getPage(currentLocale, "blog");
-  const allPosts = await getBlogIndex(currentLocale);
+  const [page, allPosts] = await Promise.all([
+    getPage(currentLocale, "blog"),
+    getBlogIndex(currentLocale),
+  ]);
   const selectedTags = tags.split(",").map((tag) => tag.trim()).filter(Boolean);
   const filteredPosts = filterByQueryAndTags(allPosts, q, selectedTags);
   const allTags = extractTags(allPosts);

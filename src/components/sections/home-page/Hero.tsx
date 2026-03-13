@@ -9,7 +9,6 @@ import { safeImageSrc } from '@/lib/ui/helpers';
 import { Link, resolvePathnameKey } from '@/i18n/routing';
 import NextLink from 'next/link';
 import { buildLocalePath } from '@/lib/seo/metadata';
-import { motion } from 'framer-motion';
 import FeaturedImage from '@/components/ui/media/FeaturedImage';
 import { useLocale } from 'next-intl';
 import type { Locale } from '@/i18n/locales';
@@ -126,7 +125,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
             className="hero-animate hero-animate-delay-4 flex flex-wrap gap-4 justify-center mt-2 relative z-30"
           >
             {actions.map((action, idx) => (
-              <motion.div key={idx} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <div key={idx} className="transition-transform duration-200 hover:scale-105 active:scale-95">
                 {(() => {
                   const resolvedPathname = resolvePathnameKey(action.url, locale);
                   const isExternal = /^(https?:)?\/\//.test(action.url) || action.url.startsWith('mailto:') || action.url.startsWith('tel:');
@@ -182,7 +181,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
                     </Button>
                   );
                 })()}
-              </motion.div>
+              </div>
             ))}
           </div>
         )}

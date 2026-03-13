@@ -536,13 +536,26 @@ var pagesCollection = {
 };
 
 // tina/config.ts
-var branch = process.env.NEXT_PUBLIC_TINA_BRANCH ?? process.env.TINA_BRANCH ?? process.env.VERCEL_GIT_COMMIT_REF ?? "redesign";
+var getEnvValue = (...values) => {
+  for (const value of values) {
+    const trimmedValue = value?.trim();
+    if (trimmedValue) {
+      return trimmedValue;
+    }
+  }
+  return void 0;
+};
+var branch = getEnvValue(
+  process.env.NEXT_PUBLIC_TINA_BRANCH,
+  process.env.TINA_BRANCH,
+  process.env.VERCEL_GIT_COMMIT_REF
+) ?? "redesign";
 var config_default = defineConfig({
   branch,
   // Get this from tina.io
-  clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID ?? "local",
+  clientId: getEnvValue(process.env.NEXT_PUBLIC_TINA_CLIENT_ID, process.env.TINA_CLIENT_ID) ?? "local",
   // Get this from tina.io
-  token: process.env.TINA_TOKEN ?? "local",
+  token: getEnvValue(process.env.TINA_TOKEN) ?? "local",
   build: {
     outputFolder: "admin",
     publicFolder: "public"

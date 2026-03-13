@@ -5,7 +5,13 @@ import { tinaField } from 'tinacms/dist/react';
 import { RichText } from '@tina/richTextPresets';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import {
+  FADE_UP_VARIANTS,
+  MOTION_VIEWPORT,
+  SECTION_STAGGER_VARIANTS,
+  motion,
+  useReducedMotion,
+} from '@/lib/ui/motion';
 
 import { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 
@@ -24,19 +30,32 @@ interface AboutProps {
 
 export const About: React.FC<AboutProps> = ({ data }) => {
   const imageSrc = safeImageSrc(data.image);
+  const reduceMotion = useReducedMotion();
+  const splitVariants = {
+    hidden: { opacity: 0, x: 42 },
+    visible: { opacity: 1, x: 0 },
+  };
+  const leftVariants = {
+    hidden: { opacity: 0, x: -42 },
+    visible: { opacity: 1, x: 0 },
+  };
 
   return (
     <section className="w-full pt-0 mt-5 pb-4 md:mt-8 md:pt-20 md:pb-6 lg:mt-18 lg:pt-48 lg:pb-8 overflow-visible bg-brand-bg relative z-10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center"
+          variants={SECTION_STAGGER_VARIANTS}
+          initial={reduceMotion ? false : 'hidden'}
+          whileInView={reduceMotion ? undefined : 'visible'}
+          viewport={reduceMotion ? undefined : MOTION_VIEWPORT}
+        >
           {/* Image Column */}
           <motion.div
             className="relative z-20 order-1 lg:order-1"
             data-tina-field={tinaField(data, 'image')}
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            variants={leftVariants}
+            transition={{ duration: reduceMotion ? 0 : 0.5 }}
           >
             {imageSrc && (
               <div className="relative z-20 rounded-lg overflow-hidden shadow-2xl aspect-square">
@@ -56,20 +75,17 @@ export const About: React.FC<AboutProps> = ({ data }) => {
           {/* Content Column */}
           <motion.div
             className="flex flex-col gap-6 order-2 lg:order-2 lg:translate-y-10"
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+            variants={splitVariants}
+            transition={{ duration: reduceMotion ? 0 : 0.5 }}
           >
+            <motion.div variants={SECTION_STAGGER_VARIANTS}>
             
             {data.label && (
               <motion.div
                 className="inline-flex w-fit items-center gap-2 px-3 py-1.5 mb-1 mt-7 rounded-full border border-blue-500/30 bg-blue-950/30 backdrop-blur-md shadow-[0_0_15px_rgba(59,130,246,0.2)]"
                 data-tina-field={tinaField(data, 'label')}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-                transition={{ duration: 0.4, delay: 0.3 }}
+                variants={FADE_UP_VARIANTS}
+                transition={{ duration: reduceMotion ? 0 : 0.35 }}
               >
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
@@ -84,10 +100,8 @@ export const About: React.FC<AboutProps> = ({ data }) => {
             <motion.div  
               className="prose prose-invert max-w-none [&>h1]:text-3xl [&>h1]:md:text-4xl [&>h1]:font-bold [&>h1]:text-brand-fg [&>h1]:leading-tight [&>h2]:text-3xl [&>h2]:md:text-4xl [&>h2]:font-bold [&>h2]:text-brand-fg [&>h2]:leading-tight"
               data-tina-field={tinaField(data, 'title')}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-              transition={{ duration: 0.4, delay: 0.4 }}
+              variants={FADE_UP_VARIANTS}
+              transition={{ duration: reduceMotion ? 0 : 0.35 }}
             >
               <RichText content={data.title ?? []} />
             </motion.div>
@@ -95,16 +109,16 @@ export const About: React.FC<AboutProps> = ({ data }) => {
             <motion.div 
               className="prose prose-invert max-w-none text-brand-text-muted text-base md:text-lg leading-relaxed"
               data-tina-field={tinaField(data, 'description')}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-              transition={{ duration: 0.4, delay: 0.5 }}
+              variants={FADE_UP_VARIANTS}
+              transition={{ duration: reduceMotion ? 0 : 0.35 }}
             >
               <RichText content={data.description ?? []} />
             </motion.div>
 
+            </motion.div>
+
           </motion.div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

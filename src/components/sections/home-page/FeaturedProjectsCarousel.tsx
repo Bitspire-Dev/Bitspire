@@ -5,7 +5,6 @@ import { tinaField } from 'tinacms/dist/react';
 import { RichText } from '@tina/richTextPresets';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
-import { motion } from 'framer-motion';
 import FeaturedImage from '@/components/ui/media/FeaturedImage';
 import Link from 'next/link';
 
@@ -14,6 +13,7 @@ import { buildLocalePath } from '@/lib/seo/metadata';
 import type { Locale } from '@/i18n/locales';
 import { getTranslations } from '@/i18n/translations';
 import Carousel3D from '@/components/ui/composites/Carousel3D';
+import { FADE_UP_VARIANTS, MOTION_VIEWPORT, motion, useReducedMotion } from '@/lib/ui/motion';
 
 interface PortfolioProject {
   title?: string;
@@ -69,6 +69,7 @@ function normalizeIndexProject(item: Record<string, unknown>): PortfolioProject 
 
 export default function FeaturedProjectsCarousel({ data, projectsIndex }: PortfolioHighlightsProps) {
   const locale = useLocale() as Locale;
+  const reduceMotion = useReducedMotion();
   const t = getTranslations(locale);
   const controlLabels = {
     prev: t.carousel.prev,
@@ -119,10 +120,11 @@ export default function FeaturedProjectsCarousel({ data, projectsIndex }: Portfo
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-          transition={{ duration: 0.6 }}
+          variants={FADE_UP_VARIANTS}
+          initial={reduceMotion ? false : 'hidden'}
+          whileInView={reduceMotion ? undefined : 'visible'}
+          viewport={reduceMotion ? undefined : MOTION_VIEWPORT}
+          transition={{ duration: reduceMotion ? 0 : 0.55 }}
           className="text-center mb-10 md:mb-12 max-w-2xl mx-auto"
         >
           {data.title && (

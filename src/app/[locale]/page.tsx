@@ -2,6 +2,8 @@ import HomePageWrapper from "@/components/pages/HomePageWrapper";
 import { buildLocalePath, buildMetadata, normalizeLocale } from "@/lib/seo/metadata";
 import { getHomePage, getPortfolioIndex } from "@/lib/tina/queries";
 
+export const revalidate = 3600;
+
 interface PageProps {
   params: Promise<{ locale: string }>;
 }

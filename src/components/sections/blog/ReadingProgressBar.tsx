@@ -3,10 +3,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 export default function ReadingProgressBar() {
-    const [progress, setProgress] = useState(0);
     const [enabled, setEnabled] = useState(true);
     const articleRef = useRef<HTMLElement | null>(null);
+    const barRef = useRef<HTMLDivElement | null>(null);
     const rafRef = useRef<number | null>(null);
+    const metricsRef = useRef({ start: 0, range: 1 });
     const lastProgressRef = useRef<number>(-1);
 
     useEffect(() => {
@@ -21,42 +22,64 @@ export default function ReadingProgressBar() {
         if (!enabled) return;
 
         articleRef.current = document.querySelector('article');
+        const article = articleRef.current;
+        if (!article) return;
 
-        const calculateProgress = () => {
+        const updateProgress = () => {
             rafRef.current = null;
-            const article = articleRef.current;
-            if (!article) return;
-
-            const articleTop = article.offsetTop;
-            const articleHeight = article.offsetHeight;
-            const windowHeight = window.innerHeight;
             const scrollTop = window.scrollY;
+            const { start, range } = metricsRef.current;
+            const currentProgress = (scrollTop - start) / range;
+            const clampedProgress = Math.min(Math.max(currentProgress, 0), 1);
 
+            if (Math.abs(clampedProgress - lastProgressRef.current) >= 0.005) {
+                lastProgressRef.current = clampedProgress;
+                if (barRef.current) {
+                    barRef.current.style.transform = `scaleX(${clampedProgress})`;
+                }
+            }
+        };
+
+        const measureArticle = () => {
+            const currentArticle = articleRef.current;
+            if (!currentArticle) return;
+
+            const rect = currentArticle.getBoundingClientRect();
+            const articleTop = rect.top + window.scrollY;
+            const articleHeight = rect.height;
+            const windowHeight = window.innerHeight;
             const articleStart = articleTop - windowHeight / 2;
             const articleEnd = articleTop + articleHeight - windowHeight / 2;
-            const scrollRange = articleEnd - articleStart || 1;
 
-            const currentProgress = ((scrollTop - articleStart) / scrollRange) * 100;
-            const clampedProgress = Math.min(Math.max(currentProgress, 0), 100);
+            metricsRef.current = {
+                start: articleStart,
+                range: Math.max(articleEnd - articleStart, 1),
+            };
 
-            if (Math.abs(clampedProgress - lastProgressRef.current) >= 0.5) {
-                lastProgressRef.current = clampedProgress;
-                setProgress(clampedProgress);
-            }
+            updateProgress();
         };
 
         const onScroll = () => {
             if (rafRef.current != null) return;
-            rafRef.current = window.requestAnimationFrame(calculateProgress);
+            rafRef.current = window.requestAnimationFrame(updateProgress);
         };
 
+        const resizeObserver = typeof ResizeObserver === 'undefined'
+            ? null
+            : new ResizeObserver(() => {
+                measureArticle();
+            });
+
+        resizeObserver?.observe(article);
+
         window.addEventListener('scroll', onScroll, { passive: true });
-        window.addEventListener('resize', onScroll, { passive: true });
-        onScroll();
+        window.addEventListener('resize', measureArticle, { passive: true });
+        measureArticle();
 
         return () => {
             window.removeEventListener('scroll', onScroll);
-            window.removeEventListener('resize', onScroll);
+            window.removeEventListener('resize', measureArticle);
+            resizeObserver?.disconnect();
             if (rafRef.current != null) {
                 window.cancelAnimationFrame(rafRef.current);
             }
@@ -68,8 +91,9 @@ export default function ReadingProgressBar() {
     return (
         <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-slate-800/50">
             <div
-                className="h-full bg-linear-to-r from-blue-500 to-cyan-500 transition-[width] duration-150 ease-out"
-                style={{ width: `${progress}%` }}
+                ref={barRef}
+                className="h-full bg-linear-to-r from-blue-500 to-cyan-500 origin-left will-change-transform transition-transform duration-150 ease-out"
+                style={{ transform: 'scaleX(0)' }}
             />
         </div>
     );

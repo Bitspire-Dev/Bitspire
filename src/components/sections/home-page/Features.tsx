@@ -6,9 +6,15 @@ import { RichText } from '@tina/richTextPresets';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import Image from 'next/image';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
-import { motion } from 'framer-motion';
 import { useLocale } from 'next-intl';
 import Carousel3D from '@/components/ui/composites/Carousel3D';
+import {
+  FADE_UP_VARIANTS,
+  MOTION_VIEWPORT,
+  SECTION_STAGGER_VARIANTS,
+  motion,
+  useReducedMotion,
+} from '@/lib/ui/motion';
 
 type FeatureItem = Record<string, unknown> & {
   icon?: string | null;
@@ -75,6 +81,7 @@ const FeatureCardContent = ({ feature }: { feature: FeatureItem }) => {
 export default function Features({ data }: FeaturesProps) {
   if (!data) return null;
   const locale = useLocale();
+  const reduceMotion = useReducedMotion();
   const controlLabels = {
     prev: locale === 'pl' ? 'Poprzednia funkcja' : 'Previous feature',
     next: locale === 'pl' ? 'Następna funkcja' : 'Next feature',
@@ -88,57 +95,63 @@ export default function Features({ data }: FeaturesProps) {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
-          className="text-center max-w-3xl mx-auto mb-10 md:mb-14"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-          transition={{ duration: 0.6 }}
+          variants={SECTION_STAGGER_VARIANTS}
+          initial={reduceMotion ? false : 'hidden'}
+          whileInView={reduceMotion ? undefined : 'visible'}
+          viewport={reduceMotion ? undefined : MOTION_VIEWPORT}
         >
-          {data.label && (
-             <div
-                className="inline-flex items-center gap-2 px-3 py-1.5 mb-6 rounded-full border border-blue-500/30 bg-blue-950/30 backdrop-blur-md shadow-[0_0_15px_rgba(59,130,246,0.2)]"
-                data-tina-field={tinaField(data, 'label')}
-              >
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-                </span>
-                <span className="text-blue-200 text-xs font-bold tracking-widest uppercase drop-shadow-sm font-mono">
-                  {data.label}
-                </span>
-              </div>
-          )}
-
-          <div
-            data-tina-field={tinaField(data, 'title')}
-            className="prose prose-invert max-w-none [&>h1]:text-4xl [&>h1]:md:text-5xl [&>h1]:font-bold [&>h1]:leading-tight [&>h2]:text-4xl [&>h2]:md:text-5xl [&>h2]:font-bold [&>h2]:leading-tight mb-6"
-          >
-             {data.title && <RichText content={data.title} />}
-          </div>
-
-          <div
-            data-tina-field={tinaField(data, 'subtitle')}
-            className="prose prose-invert max-w-none text-brand-text-muted text-lg md:text-xl leading-relaxed"
-          >
-              {data.subtitle && <RichText content={data.subtitle} />}
-          </div>
-        </motion.div>
-
-        {/* Desktop Grid Layout */}
-        <div className="hidden md:grid md:grid-cols-3 gap-8 md:gap-8">
-          {features.map((feature, index) => (
             <motion.div
-              key={index}
-                className="group relative flex flex-col p-6 rounded-2xl border border-blue-500/30 bg-blue-950/20 hover:bg-blue-950/40 hover:border-blue-500/50 transition-all duration-500 backdrop-blur-sm"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="text-center max-w-3xl mx-auto mb-10 md:mb-14"
+              variants={FADE_UP_VARIANTS}
+              transition={{ duration: reduceMotion ? 0 : 0.55 }}
             >
-               <FeatureCardContent feature={feature} />
+              {data.label && (
+                 <div
+                    className="inline-flex items-center gap-2 px-3 py-1.5 mb-6 rounded-full border border-blue-500/30 bg-blue-950/30 backdrop-blur-md shadow-[0_0_15px_rgba(59,130,246,0.2)]"
+                    data-tina-field={tinaField(data, 'label')}
+                  >
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                    </span>
+                    <span className="text-blue-200 text-xs font-bold tracking-widest uppercase drop-shadow-sm font-mono">
+                      {data.label}
+                    </span>
+                  </div>
+              )}
+
+              <div
+                data-tina-field={tinaField(data, 'title')}
+                className="prose prose-invert max-w-none [&>h1]:text-4xl [&>h1]:md:text-5xl [&>h1]:font-bold [&>h1]:leading-tight [&>h2]:text-4xl [&>h2]:md:text-5xl [&>h2]:font-bold [&>h2]:leading-tight mb-6"
+              >
+                 {data.title && <RichText content={data.title} />}
+              </div>
+
+              <div
+                data-tina-field={tinaField(data, 'subtitle')}
+                className="prose prose-invert max-w-none text-brand-text-muted text-lg md:text-xl leading-relaxed"
+              >
+                  {data.subtitle && <RichText content={data.subtitle} />}
+              </div>
             </motion.div>
-          ))}
-        </div>
+
+            {/* Desktop Grid Layout */}
+            <motion.div
+              className="hidden md:grid md:grid-cols-3 gap-8 md:gap-8"
+              variants={SECTION_STAGGER_VARIANTS}
+            >
+              {features.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  className="group relative flex flex-col p-6 rounded-2xl border border-blue-500/30 bg-blue-950/20 hover:bg-blue-950/40 hover:border-blue-500/50 transition-all duration-500 backdrop-blur-sm"
+                  variants={FADE_UP_VARIANTS}
+                  transition={{ duration: reduceMotion ? 0 : 0.45 }}
+                >
+                  <FeatureCardContent feature={feature} />
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
 
         {/* Mobile 3D Carousel */}
         <div className="md:hidden mt-7">

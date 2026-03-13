@@ -3,9 +3,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { tinaField } from 'tinacms/dist/react';
 import { RichText } from '@tina/richTextPresets';
-import { motion, AnimatePresence } from 'framer-motion';
 import { TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { useLocale } from 'next-intl';
+import {
+  AnimatePresence,
+  FADE_UP_VARIANTS,
+  MOTION_VIEWPORT,
+  SECTION_STAGGER_VARIANTS,
+  motion,
+  useReducedMotion,
+} from '@/lib/ui/motion';
 
 interface ContactData {
   label?: string | null;
@@ -30,6 +37,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
   const [selectedSubject, setSelectedSubject] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const locale = useLocale();
+  const reduceMotion = useReducedMotion();
   const isPl = locale === 'pl';
 
   const subjects = isPl
@@ -111,15 +119,20 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
       <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 60% 60% at 85% 10%, rgba(59,130,246,0.05) 0%, transparent 70%), radial-gradient(ellipse 50% 50% at 15% 90%, rgba(79,70,229,0.05) 0%, transparent 70%)' }} />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
+        <motion.div
+          className="flex flex-col lg:flex-row gap-16 lg:gap-24"
+          variants={SECTION_STAGGER_VARIANTS}
+          initial={reduceMotion ? false : 'hidden'}
+          whileInView={reduceMotion ? undefined : 'visible'}
+          viewport={reduceMotion ? undefined : MOTION_VIEWPORT}
+        >
           
           {/* Left Side: Text Content */}
           <div className="lg:w-5/12 pt-8">
             {data.label && (
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0, margin: "100px 0px" }}
+                variants={FADE_UP_VARIANTS}
+                transition={{ duration: reduceMotion ? 0 : 0.35 }}
                 className="flex items-center gap-3 mb-8"
               >
                 <span className="flex h-2 w-2 relative">
@@ -135,10 +148,8 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
             <motion.div
               className="mb-8"
               data-tina-field={tinaField(data, 'title')}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-              transition={{ delay: 0.1 }}
+              variants={FADE_UP_VARIANTS}
+              transition={{ duration: reduceMotion ? 0 : 0.4 }}
             >
               <div className="prose prose-invert max-w-none [&>h1]:text-5xl [&>h1]:lg:text-6xl [&>h1]:font-bold [&>h1]:leading-[1.1] [&>h1]:tracking-tight [&>h1]:text-brand-fg [&>h2]:text-5xl [&>h2]:lg:text-6xl [&>h2]:font-bold [&>h2]:leading-[1.1] [&>h2]:tracking-tight [&>h2]:text-brand-fg">
                 <RichText content={data.title ?? []} />
@@ -148,19 +159,15 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
             <motion.div
                className="prose prose-invert max-w-none text-brand-text-muted text-lg leading-relaxed mb-12"
                data-tina-field={tinaField(data, 'description')}
-               initial={{ opacity: 0, y: 20 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-               transition={{ delay: 0.2 }}
+               variants={FADE_UP_VARIANTS}
+               transition={{ duration: reduceMotion ? 0 : 0.4 }}
             >
               <RichText content={data.description ?? []} />
             </motion.div>
             
             <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-                transition={{ delay: 0.4 }}
+                variants={FADE_UP_VARIANTS}
+                transition={{ duration: reduceMotion ? 0 : 0.35 }}
                 className="hidden lg:block text-brand-text-muted-2 text-sm"
             >
                 <div className="flex items-center gap-2 mb-2">
@@ -172,10 +179,8 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
 
           {/* Right Side: Clean Form */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-            transition={{ delay: 0.3 }}
+            variants={FADE_UP_VARIANTS}
+            transition={{ duration: reduceMotion ? 0 : 0.45 }}
             className="lg:w-7/12 -mt-9 md:mt-4 lg:mt-0"
           >
             <form onSubmit={handleSubmit} className="relative space-y-6 bg-[#0a1326] p-8 md:p-10 rounded-3xl border border-[#1a2740] shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">
@@ -227,13 +232,13 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
                     </svg>
                   </div>
 
-                  <AnimatePresence>
+                    <AnimatePresence initial={false}>
                     {subjectOpen && (
                         <motion.div
-                            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                            transition={{ duration: 0.2 }}
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: reduceMotion ? 0 : 0.16 }}
                             className="absolute left-0 right-0 mt-2 bg-[#0b1223] border border-[#1e2a44] rounded-xl shadow-2xl z-50 overflow-hidden"
                         >
                             {subjects.map((subject) => (
@@ -283,8 +288,9 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
 
               {formState.message && (
                 <motion.div 
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.2 }}
                   className={`mt-4 text-sm font-medium ${
                     formState.status === 'success' 
                       ? 'text-green-400' 
@@ -303,7 +309,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
               )}
             </form>
           </motion.div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

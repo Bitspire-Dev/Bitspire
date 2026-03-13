@@ -26,15 +26,10 @@ export default function Carousel3D<T>({
   });
 
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const tweenFrameRef = useRef<number | null>(null);
+  const equalizeFrameRef = useRef<number | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  // ---------------------------------------------------------------
-  // Pure pixel-based tween — no scrollProgress / snapList / loopPoints.
-  // We read each slideNode's actual getBoundingClientRect position,
-  // compute how far it is from viewport center (in slide-widths),
-  // and derive ALL visual effects from that single number.
-  // If the slide is physically centered → posNorm = 0 → opacity 1, blur 0.
-  // ---------------------------------------------------------------
   const tweenCards = useCallback(() => {
     if (!emblaApi) return;
 
@@ -48,27 +43,25 @@ export default function Carousel3D<T>({
     const N = slideNodes.length;
     if (N === 0) return;
 
+    const updates: Array<{
+      card: HTMLDivElement;
+      slideNode: HTMLElement;
+      transform: string;
+      filter: string;
+      zIndex: string;
+    }> = [];
+
+    // Read phase: collect geometry and compute next styles.
     slideNodes.forEach((slideNode, slideIndex) => {
       const card = cardRefs.current[slideIndex];
       if (!card) return;
 
-      // Actual pixel center of this slide (includes embla scroll + loop repositioning)
       const slideRect = slideNode.getBoundingClientRect();
       const slideCenter = slideRect.left + slideRect.width / 2;
-
-      // How many slide-widths away from viewport center
       const posNorm = (slideCenter - rootCenter) / rootWidth;
-
-      // Map to angle on the circle: N items = N equally-spaced points
       const angle = posNorm * (2 * Math.PI / N);
-
-      // Desired circular X position (relative to viewport center)
       const circularX = Math.sin(angle) * radius;
-
-      // Translate from where embla placed the slide to our circular position
       const totalX = circularX - (slideCenter - rootCenter);
-
-      // Depth: cos=1 → front, cos=-1 → back, normalised to 0..1
       const cosVal = Math.cos(angle);
       const t = (cosVal + 1) / 2;
 
@@ -76,61 +69,116 @@ export default function Carousel3D<T>({
       const blur = (1 - t) * 3;
       const zIdx = Math.round(t * 20);
 
-      card.style.transform = `translateX(${totalX}px) scale(${scale})`;
-      card.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
+      updates.push({
+        card,
+        slideNode,
+        transform: `translateX(${totalX}px) scale(${scale})`,
+        filter: blur > 0.5 ? `blur(${blur}px)` : 'none',
+        zIndex: `${zIdx}`,
+      });
+    });
 
-      // zIndex must live on the slide node, not the card.
-      // Embla applies translate3d to slide nodes for loop repositioning,
-      // which creates isolated stacking contexts — a card's zIndex inside
-      // one slide node cannot compete with cards in other slide nodes.
-      // Setting zIndex on the slide node itself solves this.
-      slideNode.style.zIndex = `${zIdx}`;
+    // Write phase: apply styles after reads to avoid layout thrash.
+    updates.forEach(({ card, slideNode, transform, filter, zIndex }) => {
+      card.style.transform = transform;
+      card.style.filter = filter;
+      slideNode.style.zIndex = zIndex;
     });
   }, [emblaApi]);
 
-  // Equal height equalization — all cards match the tallest one
+  const equalizeCardHeights = useCallback(() => {
+    const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
+    if (cards.length === 0) return;
+
+    cards.forEach((card) => {
+      card.style.height = 'auto';
+    });
+
+    let maxH = 0;
+    cards.forEach((card) => {
+      const height = card.getBoundingClientRect().height;
+      if (height > maxH) maxH = height;
+    });
+
+    if (maxH > 0) {
+      cards.forEach((card) => {
+        card.style.height = `${maxH}px`;
+      });
+    }
+  }, []);
+
+  const scheduleTween = useCallback(() => {
+    if (tweenFrameRef.current != null) return;
+    tweenFrameRef.current = window.requestAnimationFrame(() => {
+      tweenFrameRef.current = null;
+      tweenCards();
+    });
+  }, [tweenCards]);
+
+  const scheduleEqualize = useCallback(() => {
+    if (equalizeFrameRef.current != null) return;
+    equalizeFrameRef.current = window.requestAnimationFrame(() => {
+      equalizeFrameRef.current = null;
+      equalizeCardHeights();
+    });
+  }, [equalizeCardHeights]);
+
   useEffect(() => {
-    const equalize = () => {
-      const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
-      if (cards.length === 0) return;
+    if (!emblaApi || typeof ResizeObserver === 'undefined') {
+      return;
+    }
 
-      cards.forEach(c => { c.style.height = 'auto'; });
-
-      let maxH = 0;
-      cards.forEach(c => { maxH = Math.max(maxH, c.offsetHeight); });
-
-      if (maxH > 0) {
-        cards.forEach(c => { c.style.height = `${maxH}px`; });
-      }
+    const rootNode = emblaApi.rootNode();
+    const onResize = () => {
+      scheduleEqualize();
+      scheduleTween();
     };
 
-    equalize();
+    onResize();
 
-    window.addEventListener('resize', equalize);
-    return () => window.removeEventListener('resize', equalize);
-  }, [items]);
+    const resizeObserver = new ResizeObserver(onResize);
+    resizeObserver.observe(rootNode);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [emblaApi, scheduleEqualize, scheduleTween]);
 
   useEffect(() => {
     if (!emblaApi) return;
 
-    tweenCards();
+    scheduleEqualize();
+    scheduleTween();
 
     const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
+    const onResize = () => {
+      scheduleEqualize();
+      scheduleTween();
+    };
 
-    emblaApi.on('scroll', tweenCards);
-    emblaApi.on('reInit', tweenCards);
+    emblaApi.on('scroll', scheduleTween);
+    emblaApi.on('reInit', scheduleTween);
     emblaApi.on('select', onSelect);
-    emblaApi.on('resize', tweenCards);
+    emblaApi.on('resize', onResize);
 
     onSelect();
 
     return () => {
-      emblaApi.off('scroll', tweenCards);
-      emblaApi.off('reInit', tweenCards);
+      emblaApi.off('scroll', scheduleTween);
+      emblaApi.off('reInit', scheduleTween);
       emblaApi.off('select', onSelect);
-      emblaApi.off('resize', tweenCards);
+      emblaApi.off('resize', onResize);
+
+      if (tweenFrameRef.current != null) {
+        window.cancelAnimationFrame(tweenFrameRef.current);
+        tweenFrameRef.current = null;
+      }
+      if (equalizeFrameRef.current != null) {
+        window.cancelAnimationFrame(equalizeFrameRef.current);
+        equalizeFrameRef.current = null;
+      }
     };
-  }, [emblaApi, tweenCards]);
+  }, [emblaApi, scheduleEqualize, scheduleTween]);
 
   if (items.length === 0) return null;
 

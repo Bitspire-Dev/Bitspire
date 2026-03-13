@@ -5,7 +5,6 @@ import { tinaField } from 'tinacms/dist/react';
 import { RichText } from '@tina/richTextPresets';
 import { safeImageSrc } from '@/lib/ui/helpers';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
-import { motion, AnimatePresence } from 'framer-motion';
 import FeaturedImage from '@/components/ui/media/FeaturedImage';
 import Link from 'next/link';
 import { FaArrowRight, FaChevronLeft, FaChevronRight } from '@/components/ui/icons';
@@ -13,6 +12,7 @@ import { useLocale } from 'next-intl';
 import { buildLocalePath } from '@/lib/seo/metadata';
 import type { Locale } from '@/i18n/locales';
 import { getTranslations } from '@/i18n/translations';
+import { AnimatePresence, FADE_UP_VARIANTS, MOTION_VIEWPORT, motion, useReducedMotion } from '@/lib/ui/motion';
 
 interface PortfolioProject {
   title?: string;
@@ -69,6 +69,7 @@ function normalizeIndexProject(item: Record<string, unknown>): PortfolioProject 
 export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHighlightsProps) {
   const [currentIndex, setCurrentIndex] = useState(1);
   const locale = useLocale() as Locale;
+  const reduceMotion = useReducedMotion();
   const t = getTranslations(locale);
   const controlLabels = {
     prev: t.carousel.prev,
@@ -139,10 +140,11 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
       <div className="container mx-auto px-4 relative z-10">
         <motion.div 
           key={`portfolio-highlights-header-${locale}`}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          variants={FADE_UP_VARIANTS}
+          initial={reduceMotion ? false : 'hidden'}
+          whileInView={reduceMotion ? undefined : 'visible'}
+          viewport={reduceMotion ? undefined : MOTION_VIEWPORT}
+          transition={{ duration: reduceMotion ? 0 : 0.5 }}
           className="text-center mb-10 md:mb-12 max-w-2xl mx-auto"
         >
           {data.title && (
@@ -160,13 +162,13 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
         {/* Carousel */}
         <motion.div 
           key={`portfolio-highlights-carousel-${locale}`}
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+          whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+          viewport={reduceMotion ? undefined : MOTION_VIEWPORT}
+          transition={{ duration: reduceMotion ? 0 : 0.45 }}
           className="relative h-125 flex items-center justify-center perspective-1000"
         >
-          <AnimatePresence mode='popLayout'>
+          <AnimatePresence initial={false} mode='sync'>
             {[-1, 0, 1].map((offset) => {
               const index = getIndex(currentIndex + offset);
               const project = projects[index];
@@ -190,7 +192,6 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
               return (
                 <motion.div
                   key={`${project._sys?.filename}-${index}`}
-                  layoutId={project._sys?.filename}
                   initial={{ x: xOffset, scale, opacity, zIndex, rotateY }}
                   animate={{ 
                     x: xOffset, 
@@ -200,7 +201,7 @@ export default function PortfolioHighlights({ data, projectsIndex }: PortfolioHi
                     rotateY
                   }}
                   transition={{ 
-                    duration: 0.5, 
+                    duration: reduceMotion ? 0 : 0.35,
                     ease: "circOut" 
                   }}
                   style={{

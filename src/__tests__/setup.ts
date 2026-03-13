@@ -83,6 +83,10 @@ vi.mock("framer-motion", async () => {
     return {
         ...actual,
         motion,
+        m: motion,
         AnimatePresence: ({ children }: { children: unknown }) => children,
+        LazyMotion: ({ children }: { children: unknown }) => children,
+        MotionConfig: ({ children }: { children: unknown }) => children,
+        domAnimation: {},
     };
 });

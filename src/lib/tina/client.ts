@@ -7,26 +7,36 @@ if (typeof window === "undefined") {
   loadEnvConfig(process.cwd());
 }
 
-const branch =
-  process.env.NEXT_PUBLIC_TINA_BRANCH ??
-  process.env.TINA_BRANCH ??
-  process.env.VERCEL_GIT_COMMIT_REF ??
-  "redesign";
+const getEnvValue = (...values: Array<string | undefined>) => {
+  for (const value of values) {
+    const trimmedValue = value?.trim();
+    if (trimmedValue) {
+      return trimmedValue;
+    }
+  }
 
-const clientId = process.env.NEXT_PUBLIC_TINA_CLIENT_ID ?? process.env.TINA_CLIENT_ID;
-const token = process.env.TINA_TOKEN ?? process.env.NEXT_PUBLIC_TINA_TOKEN;
+  return undefined;
+};
+
+const branch = getEnvValue(
+  process.env.NEXT_PUBLIC_TINA_BRANCH,
+  process.env.TINA_BRANCH,
+  process.env.VERCEL_GIT_COMMIT_REF,
+ ) ?? "redesign";
+
+const clientId = getEnvValue(process.env.NEXT_PUBLIC_TINA_CLIENT_ID, process.env.TINA_CLIENT_ID);
+const token = getEnvValue(process.env.TINA_TOKEN, process.env.NEXT_PUBLIC_TINA_TOKEN);
 
 const contentApiUrl =
-  process.env.NEXT_PUBLIC_TINA_CONTENT_API_URL ??
-  process.env.TINA_CONTENT_API_URL ??
+  getEnvValue(process.env.NEXT_PUBLIC_TINA_CONTENT_API_URL, process.env.TINA_CONTENT_API_URL) ??
   (clientId ? `https://content.tinajs.io/content/${clientId}/github/${branch}` : undefined);
 
-const localApiUrl = process.env.TINA_LOCAL_API_URL ?? "http://localhost:4001/graphql";
+const localApiUrl = getEnvValue(process.env.TINA_LOCAL_API_URL) ?? "http://localhost:4001/graphql";
 
 const isProduction = process.env.NODE_ENV === "production";
 const allowPublicContentApi = process.env.TINA_ALLOW_PUBLIC_CONTENT_API === "true";
 
-const resolveApiUrl = () => {
+const resolveApiUrl = (): string => {
   if (isProduction) {
     if (!contentApiUrl) {
       throw new Error(

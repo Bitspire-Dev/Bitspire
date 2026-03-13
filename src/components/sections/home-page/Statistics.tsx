@@ -2,7 +2,6 @@
 import React from 'react';
 import { tinaField } from 'tinacms/dist/react';
 import { RichText } from '@tina/richTextPresets';
-import { motion } from 'framer-motion';
 import { 
   Tile, 
   TileNumber, 
@@ -13,6 +12,13 @@ import {
   type TileSize
 } from '@/components/ui/primitives/Tile';
 import type { TinaMarkdownContent } from 'tinacms/dist/rich-text';
+import {
+  FADE_UP_VARIANTS,
+  MOTION_VIEWPORT,
+  SECTION_STAGGER_VARIANTS,
+  motion,
+  useReducedMotion,
+} from '@/lib/ui/motion';
 
 type StatisticsTile = {
   number?: string | null;
@@ -38,6 +44,7 @@ interface StatisticsData {
 
 export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
   if (!data) return null;
+  const reduceMotion = useReducedMotion();
 
   const normalizePlacement = (col?: number | string | null, row?: number | string | null) => {
     const parsedCol = typeof col === 'string' ? Number(col) : col;
@@ -56,10 +63,14 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
 
       <div className="container mx-auto px-4 md:px-8 relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-          transition={{ duration: 0.6 }}
+          variants={SECTION_STAGGER_VARIANTS}
+          initial={reduceMotion ? false : 'hidden'}
+          whileInView={reduceMotion ? undefined : 'visible'}
+          viewport={reduceMotion ? undefined : MOTION_VIEWPORT}
+        >
+        <motion.div
+          variants={FADE_UP_VARIANTS}
+          transition={{ duration: reduceMotion ? 0 : 0.55 }}
           className="mb-12 md:mb-16 max-w-4xl"
         >
             {data.title && (
@@ -80,7 +91,8 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
         </motion.div>
 
         {/* Modular Grid System */}
-        <div 
+        <motion.div
+          variants={SECTION_STAGGER_VARIANTS}
           className="grid gap-3 sm:gap-4 lg:gap-6 [--stat-cols:6] [--stat-rows:10] sm:[--stat-cols:8] sm:[--stat-rows:8] md:[--stat-cols:12] md:[--stat-rows:6]" 
           style={{
             gridTemplateColumns: 'repeat(var(--stat-cols), minmax(0, 1fr))',
@@ -164,14 +176,8 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
                   key={i}
                   style={gridStyle}
                   className={finalClassName}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-                  transition={{ 
-                    duration: 0.5, 
-                    delay: i * 0.1,
-                    ease: "easeOut"
-                  }}
+                  variants={FADE_UP_VARIANTS}
+                  transition={{ duration: reduceMotion ? 0 : 0.4 }}
                 >
             <Tile 
               variant={variant}
@@ -209,7 +215,8 @@ export const Statistics: React.FC<{ data: StatisticsData }> = ({ data }) => {
               );
             })()
           ))}
-        </div>
+        </motion.div>
+        </motion.div>
       </div>
     </section>
   );

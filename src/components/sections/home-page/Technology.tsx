@@ -7,9 +7,15 @@ import { RichText } from "@tina/richTextPresets";
 import { safeImageSrc } from "@/lib/ui/helpers";
 import type { TinaMarkdownContent } from "tinacms/dist/rich-text";
 import { useLocale } from "next-intl";
-import { motion } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import AutoScroll from "embla-carousel-auto-scroll";
+import {
+  FADE_UP_VARIANTS,
+  MOTION_VIEWPORT,
+  SECTION_STAGGER_VARIANTS,
+  motion,
+  useReducedMotion,
+} from '@/lib/ui/motion';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -167,10 +173,10 @@ function LogoCarousel({
 const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
   const items = data?.items ?? [];
   const locale = useLocale();
+  const reduceMotion = useReducedMotion();
 
   const srcs = useMemo(
     () => items.map((it) => safeImageSrc(it?.icon ?? undefined)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [items.length, locale],
   );
 
@@ -184,42 +190,43 @@ const Technology: React.FC<{ data?: TechnologyData }> = ({ data }) => {
       {/* Background glow */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 40% at 50% 100%, rgba(99,102,241,0.05) 0%, transparent 70%)' }} />
 
-      {/* Header */}
       <motion.div
-        className="container mx-auto px-4 relative z-10 mb-6 lg:mb-8"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-        transition={{ duration: 0.6 }}
+        className="relative z-10"
+        variants={SECTION_STAGGER_VARIANTS}
+        initial={reduceMotion ? false : 'hidden'}
+        whileInView={reduceMotion ? undefined : 'visible'}
+        viewport={reduceMotion ? undefined : MOTION_VIEWPORT}
       >
-        <div className="text-center max-w-3xl mx-auto">
-          {data.title && (
-            <div
-              className="prose prose-invert max-w-none [&>h1]:text-3xl [&>h1]:md:text-4xl [&>h1]:font-bold [&>h2]:text-3xl [&>h2]:md:text-4xl [&>h2]:font-bold mb-4"
-              data-tina-field={tinaField(data, "title")}
-            >
-              <RichText content={data.title} />
-            </div>
-          )}
-          {data.description && (
-            <div
-              className="prose prose-invert max-w-none text-brand-text-muted text-lg"
-              data-tina-field={tinaField(data, "description")}
-            >
-              <RichText content={data.description} />
-            </div>
-          )}
-        </div>
-      </motion.div>
+        {/* Header */}
+        <motion.div
+          className="container mx-auto px-4 mb-6 lg:mb-8"
+          variants={FADE_UP_VARIANTS}
+          transition={{ duration: reduceMotion ? 0 : 0.55 }}
+        >
+          <div className="text-center max-w-3xl mx-auto">
+            {data.title && (
+              <div
+                className="prose prose-invert max-w-none [&>h1]:text-3xl [&>h1]:md:text-4xl [&>h1]:font-bold [&>h2]:text-3xl [&>h2]:md:text-4xl [&>h2]:font-bold mb-4"
+                data-tina-field={tinaField(data, "title")}
+              >
+                <RichText content={data.title} />
+              </div>
+            )}
+            {data.description && (
+              <div
+                className="prose prose-invert max-w-none text-brand-text-muted text-lg"
+                data-tina-field={tinaField(data, "description")}
+              >
+                <RichText content={data.description} />
+              </div>
+            )}
+          </div>
+        </motion.div>
 
-      {/* Logo carousel */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, amount: 0, margin: "100px 0px" }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-      >
-        <LogoCarousel items={items} srcs={srcs} />
+        {/* Logo carousel */}
+        <motion.div variants={FADE_UP_VARIANTS} transition={{ duration: reduceMotion ? 0 : 0.6 }}>
+          <LogoCarousel items={items} srcs={srcs} />
+        </motion.div>
       </motion.div>
     </section>
   );
