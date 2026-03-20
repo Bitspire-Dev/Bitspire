@@ -34,7 +34,6 @@ Repo uzywa pliku `.env` w katalogu glownym. W repo jest tez [`./.env.example`](.
 
 - TinaCMS: `NEXT_PUBLIC_TINA_CLIENT_ID` albo `TINA_CLIENT_ID`, oraz `TINA_TOKEN`
 - Formularz kontaktowy: `RESEND_API_KEY`, `CONTACT_FROM`, `CONTACT_EMAIL`
-- Rate limit: `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`
 
 ### Pelna lista zmiennych
 
@@ -48,7 +47,5 @@ Repo uzywa pliku `.env` w katalogu glownym. W repo jest tez [`./.env.example`](.
 - `RESEND_API_KEY` - klucz API Resend do wysylki formularza kontaktowego
 - `CONTACT_FROM` - adres nadawcy dla maili wysylanych przez Resend
 - `CONTACT_EMAIL` - adres odbiorcy wiadomosci z formularza
-- `UPSTASH_REDIS_REST_URL` - URL bazy Redis w Upstash do rate limitu
-- `UPSTASH_REDIS_REST_TOKEN` - token REST do Upstash
 
 `NODE_ENV` i `VERCEL_GIT_COMMIT_REF` sa ustawiane automatycznie przez Next.js / platforme deployowa i nie musisz wpisywac ich recznie do `.env`.

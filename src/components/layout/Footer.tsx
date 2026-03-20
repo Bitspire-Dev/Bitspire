@@ -26,7 +26,7 @@ const DESCRIPTION = {
 
 const CONTACT = {
   email: 'kontakt@bitspire.pl',
-  phone: '+48 123 456 789',
+  phone: '+48 780 926 993',
   location: 'Polska'
 };
 

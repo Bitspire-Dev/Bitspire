@@ -1,24 +1,39 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { Resend } from "resend";
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+import { domainToASCII } from "node:url";
+
+function normalizeEmail(value: string) {
+  const trimmed = value.trim();
+  const atIndex = trimmed.lastIndexOf("@");
+
+  if (atIndex <= 0 || atIndex >= trimmed.length - 1) {
+    return trimmed;
+  }
+
+  const localPart = trimmed.slice(0, atIndex);
+  const domainPart = trimmed.slice(atIndex + 1);
+  const asciiDomain = domainToASCII(domainPart);
+
+  if (!asciiDomain) {
+    return trimmed;
+  }
+
+  return `${localPart}@${asciiDomain}`;
+}
 
 const contactSchema = z.object({
   name: z.string().trim().min(1),
-  email: z.string().trim().email(),
+  email: z.string().transform(normalizeEmail).pipe(z.string().email()),
   message: z.string().trim().min(1),
-  subject: z.string().optional().default("General Inquiry"),
+  subject: z.string().transform(s => s.trim() || "General Inquiry"),
   formName: z.string().optional(),
   company: z.string().optional(), // honeypot
 });
 
-const RATE_LIMIT_MAX = 5;
-const RATE_LIMIT_WINDOW = "10 m";
 const isProduction = process.env.NODE_ENV === "production";
 
 let cachedResend: Resend | null = null;
-let cachedRatelimit: Ratelimit | null = null;
 
 function getResendClient() {
   const apiKey = process.env.RESEND_API_KEY;
@@ -49,66 +64,9 @@ function getResendRecipients() {
   };
 }
 
-function getRatelimit() {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-  if (!url || !token) {
-    if (isProduction) {
-      throw new Error(
-        "Missing UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN in production."
-      );
-    }
-
-    return null;
-  }
-
-  if (!cachedRatelimit) {
-    const redis = new Redis({ url, token });
-    cachedRatelimit = new Ratelimit({
-      redis,
-      limiter: Ratelimit.slidingWindow(RATE_LIMIT_MAX, RATE_LIMIT_WINDOW),
-      analytics: true,
-      prefix: "bitspire:contact",
-    });
-  }
-
-  return cachedRatelimit;
-}
-
-function getClientIp(request: Request) {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]?.trim() || "unknown";
-  return request.headers.get("x-real-ip") || "unknown";
-}
 
 export async function POST(request: Request) {
-  const ip = getClientIp(request);
-  try {
-    const ratelimit = getRatelimit();
-
-    if (!ratelimit) {
-      return NextResponse.json(
-        { ok: false, error: "Rate limit not configured" },
-        { status: 500 }
-      );
-    }
-
-    const { success, reset } = await ratelimit.limit(ip);
-    if (!success) {
-      return NextResponse.json(
-        { ok: false, error: "Rate limit exceeded", resetAt: reset },
-        { status: 429 }
-      );
-    }
-  } catch (error) {
-    console.error("Rate limit error:", error);
-    return NextResponse.json(
-      { ok: false, error: "Rate limit not configured" },
-      { status: 500 }
-    );
-  }
-
   let body: unknown;
   try {
     body = await request.json();
@@ -121,6 +79,8 @@ export async function POST(request: Request) {
 
   const parsed = contactSchema.safeParse(body);
   if (!parsed.success) {
+    console.error("Validation error:", parsed.error.issues);
+    console.error("Received body:", body);
     return NextResponse.json(
       { ok: false, error: "Invalid form data" },
       { status: 400 }
