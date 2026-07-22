@@ -25,6 +25,7 @@ const eslintConfig = defineConfig([
     'next-env.d.ts',
     'node_modules/**',
     'coverage/**',
+    'tina/__generated__/**',
   ]),
 ]);
 
