@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { useTheme } from 'next-themes';
 import { Link } from '@/i18n/navigation';
 import { Menu, X } from 'lucide-react';
 import { LocaleSwitcher } from '@/components/ui/composites/locale-switcher';
 import { ThemeSwitcher } from '@/components/ui/composites/theme-switcher';
+import { useMounted } from '@/lib/use-mounted';
 import { cn } from '@/lib/utils';
 
 interface NavLink {
@@ -25,7 +27,11 @@ const DEFAULT_LINKS: NavLink[] = [
 ];
 
 export function Header({ locale, links }: HeaderProps) {
+  const { resolvedTheme } = useTheme();
+  const mounted = useMounted();
   const navLinks = links.length > 0 ? links : DEFAULT_LINKS;
+  const isDark = mounted && resolvedTheme === 'dark';
+  const logoSrc = isDark ? '/favicon-dark-mode.svg' : '/favicon-light-mode.svg';
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur">
@@ -36,10 +42,10 @@ export function Header({ locale, links }: HeaderProps) {
 
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/layout/logo-bitspire.svg"
+              src={logoSrc}
               alt="Bitspire"
-              width={120}
-              height={32}
+              width={1024}
+              height={804}
               className="h-8 w-auto"
               unoptimized
             />

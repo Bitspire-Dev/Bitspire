@@ -8,9 +8,11 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { inter, nippo, ibmPlexMono } from '@/lib/fonts';
 import { ThemeProvider } from '@/components/providers/theme-provider';
+import { siteMetadata } from '@/lib/site';
 import '../globals.css';
 
 export const metadata: Metadata = {
+  ...siteMetadata,
   title: 'Bitspire',
   description: 'Bitspire website',
 };
