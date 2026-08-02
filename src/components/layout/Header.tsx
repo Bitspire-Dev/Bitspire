@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { Menu, X } from 'lucide-react';
 import { LocaleSwitcher } from '@/components/ui/composites/locale-switcher';
+import { ThemeSwitcher } from '@/components/ui/composites/theme-switcher';
 import { cn } from '@/lib/utils';
 
 interface NavLink {
@@ -31,6 +32,7 @@ export function Header({ locale, links }: HeaderProps) {
       <div className="container mx-auto flex h-14 max-w-360 items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-4">
           <MobileMenu locale={locale} links={navLinks} />
+          <ThemeSwitcher className="md:hidden" />
 
           <Link href="/" className="flex items-center gap-2">
             <Image
@@ -49,7 +51,8 @@ export function Header({ locale, links }: HeaderProps) {
 
         <DesktopNav links={navLinks} />
 
-        <div className="hidden md:block">
+        <div className="hidden items-center gap-2 md:flex">
+          <ThemeSwitcher />
           <LocaleSwitcher locale={locale} />
         </div>
       </div>

@@ -51,13 +51,52 @@
 }
 
 :root {
+  /* Light mode */
+  --background: #ffffff;
+  --foreground: #0a0a0b;
+  --card: #ffffff;
+  --card-foreground: #0a0a0b;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0b;
+  --brand: #0037ff;
+  --brand-foreground: #ffffff;
+  --primary: #0037ff;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0a0a0b;
+  --muted: #f8fafc;
+  --muted-foreground: #737688;
+  --accent: #eceef0;
+  --accent-foreground: #0a0a0b;
+  --destructive: #ba1a1a;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #0037ff;
+  --chart-1: #0037ff;
+  --chart-2: #5f5e5f;
+  --chart-3: #4a5057;
+  --chart-4: #ba1a1a;
+  --chart-5: #737688;
+  --radius: 0.25rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0a0a0b;
+  --sidebar-primary: #0037ff;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #0a0a0b;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #0037ff;
+}
+
+.dark {
   --background: #131313;
   --foreground: #e2e2e2;
   --card: #1f1f1f;
   --card-foreground: #e2e2e2;
   --popover: #1f1f1f;
   --popover-foreground: #e2e2e2;
-  --brand: #009bff;
+  --brand: #0099ff;
   --brand-foreground: #000000;
   --primary: #b8c3ff;
   --primary-foreground: #002388;
@@ -86,6 +125,18 @@
   --sidebar-accent-foreground: #e2e2e2;
   --sidebar-border: #434656;
   --sidebar-ring: #b8c3ff;
+}
+
+html.theme-transition,
+html.theme-transition * {
+  transition:
+    background-color 300ms ease,
+    color 300ms ease,
+    border-color 300ms ease,
+    text-decoration-color 300ms ease,
+    fill 300ms ease,
+    stroke 300ms ease,
+    outline-color 300ms ease !important;
 }
 
 @layer base {

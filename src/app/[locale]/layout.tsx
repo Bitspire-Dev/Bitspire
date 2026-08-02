@@ -7,6 +7,7 @@ import client from '@tina/__generated__/client';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { inter, nippo, ibmPlexMono } from '@/lib/fonts';
+import { ThemeProvider } from '@/components/providers/theme-provider';
 import '../globals.css';
 
 export const metadata: Metadata = {
@@ -46,13 +47,15 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${nippo.variable} ${ibmPlexMono.variable} dark flex min-h-screen flex-col bg-background text-foreground antialiased`}
+        className={`${inter.variable} ${nippo.variable} ${ibmPlexMono.variable} flex min-h-screen flex-col bg-background text-foreground antialiased`}
       >
-        <NextIntlClientProvider messages={messages} locale={locale}>
-          <Header locale={locale} links={links} />
-          <main className="flex-1">{children}</main>
-          <Footer locale={locale} />
-        </NextIntlClientProvider>
+        <ThemeProvider>
+          <NextIntlClientProvider messages={messages} locale={locale}>
+            <Header locale={locale} links={links} />
+            <main className="flex-1">{children}</main>
+            <Footer locale={locale} />
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
