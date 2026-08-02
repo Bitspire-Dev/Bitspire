@@ -1,11 +1,8 @@
-import { setRequestLocale } from 'next-intl/server';
 import client from '@tina/__generated__/client';
 import { HomePage } from '@/components/pages/HomePage';
 
-export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+export default async function PreviewPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-
-  setRequestLocale(locale);
 
   const tina = await client.queries.page({
     relativePath: `${locale}/home.md`,

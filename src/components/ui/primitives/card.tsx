@@ -67,7 +67,7 @@ function CardContent({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="card-content"
-      className={cn('font-sans px-(--card-spacing)', className)}
+      className={cn('px-(--card-spacing) font-sans', className)}
       {...props}
     />
   );

@@ -94,6 +94,12 @@ export default defineConfig({
         name: 'page',
         label: 'Pages',
         path: 'content/pages',
+        ui: {
+          router: ({ document }) => {
+            const [locale] = document._sys.relativePath.split('/');
+            return `/_preview/${locale}`;
+          },
+        },
         fields: [
           {
             type: 'string',
@@ -112,6 +118,44 @@ export default defineConfig({
             name: 'body',
             label: 'Body',
             isBody: true,
+          },
+          {
+            type: 'object',
+            name: 'services',
+            label: 'Services',
+            fields: [
+              {
+                type: 'string',
+                name: 'title',
+                label: 'Section Title',
+              },
+              {
+                type: 'object',
+                name: 'items',
+                label: 'Service Items',
+                list: true,
+                fields: [
+                  {
+                    type: 'string',
+                    name: 'title',
+                    label: 'Title',
+                    required: true,
+                  },
+                  {
+                    type: 'string',
+                    name: 'tagline',
+                    label: 'Tagline',
+                    required: true,
+                  },
+                  {
+                    type: 'string',
+                    name: 'description',
+                    label: 'Description',
+                    required: true,
+                  },
+                ],
+              },
+            ],
           },
         ],
       },

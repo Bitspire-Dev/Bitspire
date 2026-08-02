@@ -7,18 +7,21 @@ import client from '@tina/__generated__/client';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { inter, nippo, ibmPlexMono } from '@/lib/fonts';
-import '../globals.css';
+import '../../globals.css';
 
 export const metadata: Metadata = {
-  title: 'Bitspire',
-  description: 'Bitspire website',
+  title: 'Bitspire Preview',
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export function generateStaticParams() {
   return routing.locales.map(locale => ({ locale }));
 }
 
-export default async function LocaleLayout({
+export default async function PreviewLayout({
   children,
   params,
 }: Readonly<{

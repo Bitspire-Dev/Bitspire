@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
+import { Link } from '@/i18n/navigation';
 import { Menu, X } from 'lucide-react';
 import { LocaleSwitcher } from '@/components/ui/composites/locale-switcher';
 import { cn } from '@/lib/utils';
@@ -28,11 +28,11 @@ export function Header({ locale, links }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur">
-      <div className="container mx-auto flex h-14 max-w-[1440px] items-center justify-between px-4 md:px-6">
+      <div className="container mx-auto flex h-14 max-w-360 items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-4">
           <MobileMenu locale={locale} links={navLinks} />
 
-          <Link href={`/${locale}`} className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <Image
               src="/layout/logo-bitspire.svg"
               alt="Bitspire"
@@ -41,13 +41,13 @@ export function Header({ locale, links }: HeaderProps) {
               className="h-8 w-auto"
               unoptimized
             />
-            <span className="font-heading text-lg font-bold tracking-[0.2em] text-[#0052FF] md:text-xl">
+            <span className="font-heading text-lg font-bold tracking-[0.2em] text-brand md:text-xl">
               BITSPIRE
             </span>
           </Link>
         </div>
 
-        <DesktopNav locale={locale} links={navLinks} />
+        <DesktopNav links={navLinks} />
 
         <div className="hidden md:block">
           <LocaleSwitcher locale={locale} />
@@ -57,14 +57,14 @@ export function Header({ locale, links }: HeaderProps) {
   );
 }
 
-function DesktopNav({ locale, links }: { locale: string; links: NavLink[] }) {
+function DesktopNav({ links }: { links: NavLink[] }) {
   return (
     <nav className="hidden md:block">
       <ul className="flex items-center gap-1">
         {links.map(link => (
           <li key={link.href}>
             <Link
-              href={`/${locale}${link.href === '/' ? '' : link.href}`}
+              href={link.href}
               className="rounded-lg px-3 py-2 font-sans text-sm text-foreground/70 transition-colors hover:bg-muted hover:text-foreground"
             >
               {link.label}
@@ -86,15 +86,15 @@ function MobileMenu({ locale, links }: { locale: string; links: NavLink[] }) {
         onClick={() => setOpen(s => !s)}
         aria-label={open ? 'Close menu' : 'Open menu'}
         aria-expanded={open}
-        className="flex h-9 w-9 items-center justify-center rounded-lg text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
+        className="flex size-9 items-center justify-center rounded-lg text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
       >
-        {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        {open ? <X className="size-5" /> : <Menu className="size-5" />}
       </button>
 
       <div
         className={cn(
           'fixed inset-x-0 top-14 z-40 border-b border-border/40 bg-background/95 px-4 py-6 backdrop-blur transition-all duration-200 md:hidden',
-          open ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0 pointer-events-none'
+          open ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-2 opacity-0'
         )}
       >
         <nav className="w-full">
@@ -102,7 +102,7 @@ function MobileMenu({ locale, links }: { locale: string; links: NavLink[] }) {
             {links.map(link => (
               <li key={link.href} className="w-full">
                 <Link
-                  href={`/${locale}${link.href === '/' ? '' : link.href}`}
+                  href={link.href}
                   onClick={() => setOpen(false)}
                   className="block w-full rounded-lg py-2 font-sans text-sm text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
                 >

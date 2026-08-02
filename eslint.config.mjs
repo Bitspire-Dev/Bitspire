@@ -3,6 +3,7 @@ import nextVitals from 'eslint-config-next/core-web-vitals';
 import nextTs from 'eslint-config-next/typescript';
 import prettier from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
+import tailwind from 'eslint-plugin-tailwindcss';
 
 const eslintConfig = defineConfig([
   ...nextVitals,
@@ -16,6 +17,14 @@ const eslintConfig = defineConfig([
       'prettier/prettier': 'error',
     },
   },
+  {
+    extends: [tailwind.configs.recommended],
+    settings: {
+      tailwindcss: {
+        cssConfigPath: './src/app/globals.css',
+      },
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
@@ -26,6 +35,7 @@ const eslintConfig = defineConfig([
     'node_modules/**',
     'coverage/**',
     'tina/__generated__/**',
+    'public/**',
   ]),
 ]);
 
