@@ -26,8 +26,8 @@ const LOGOS = [
   'vite',
 ];
 
-const ITEM_WIDTH = 80;
-const GAP = 16;
+const ITEM_WIDTH = 64;
+const GAP = 8;
 const OFFSET = Math.round(ITEM_WIDTH * 0.75);
 const MIN_TOTAL_WIDTH = 2560;
 
@@ -50,6 +50,15 @@ function repeatLogos(logos: string[]) {
   return result;
 }
 
+function shuffle<T>(array: T[]): T[] {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
 /* ------------------------------------------------------------------ */
 /*  LogoIcon                                                           */
 /* ------------------------------------------------------------------ */
@@ -62,13 +71,13 @@ function LogoIcon({ name }: LogoIconProps) {
   const needsInvert = ['next-js', 'stripe', 'vercel'].includes(name);
 
   return (
-    <div className="flex size-20 shrink-0 items-center justify-center p-3">
+    <div className="flex size-16 shrink-0 items-center justify-center p-2">
       <div className="relative size-full overflow-hidden rounded opacity-50 grayscale transition-all duration-300 hover:scale-110 hover:opacity-100 hover:grayscale-0">
         <Image
           src={`/logo-carousel/${name}.svg`}
           alt={name}
           fill
-          sizes="56px"
+          sizes="48px"
           loading="eager"
           className={`object-contain ${
             needsInvert
@@ -90,7 +99,7 @@ interface LogoRowProps {
 }
 
 function LogoRow({ offset = false }: LogoRowProps) {
-  const repeatedLogos = useMemo(() => repeatLogos(LOGOS), []);
+  const repeatedLogos = useMemo(() => repeatLogos(shuffle([...LOGOS])), []);
 
   const [emblaRef] = useEmblaCarousel(
     {
@@ -116,7 +125,7 @@ function LogoRow({ offset = false }: LogoRowProps) {
       style={{ WebkitMaskImage: EDGE_FADE, maskImage: EDGE_FADE }}
     >
       <div ref={emblaRef} className="overflow-hidden">
-        <div className="flex gap-4" style={{ marginLeft: offset ? `${-OFFSET}px` : undefined }}>
+        <div className="flex gap-2" style={{ marginLeft: offset ? `${-OFFSET}px` : undefined }}>
           {repeatedLogos.map((name, index) => (
             <LogoIcon key={`${name}-${index}`} name={name} />
           ))}
@@ -139,7 +148,7 @@ export function TechnologyCarousel() {
       viewport={{ once: true, amount: 0, margin: '100px 0px' }}
       transition={{ duration: 0.8, delay: 0.2 }}
     >
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
         <LogoRow />
         <LogoRow offset />
       </div>
