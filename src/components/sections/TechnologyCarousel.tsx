@@ -1,10 +1,8 @@
 'use client';
 
-import { memo, useMemo } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'motion/react';
-import useEmblaCarousel from 'embla-carousel-react';
-import AutoScroll from 'embla-carousel-auto-scroll';
 
 import { cn } from '@/lib/utils';
 
@@ -35,6 +33,9 @@ const GAP = 8;
 const OFFSET = Math.round(ITEM_WIDTH * 0.75);
 const MIN_TOTAL_WIDTH = 2560;
 
+const SET_WIDTH = LOGOS.length * ITEM_WIDTH + (LOGOS.length - 1) * GAP;
+const BASE_REPEATS = Math.max(2, Math.ceil(MIN_TOTAL_WIDTH / SET_WIDTH) * 2);
+
 const EDGE_FADE = 'linear-gradient(to right, black 0%, black 92%, transparent)';
 
 /* ------------------------------------------------------------------ */
@@ -59,12 +60,9 @@ function shuffle<T>(array: T[], seed: number): T[] {
   return result;
 }
 
-function buildSlides(logos: string[], seed: number) {
+function buildSlides(logos: string[], seed: number, repeats: number) {
   const shuffled = shuffle([...logos], seed);
-  const setWidth = shuffled.length * ITEM_WIDTH + (shuffled.length - 1) * GAP;
-  const repeats = Math.max(1, Math.ceil(MIN_TOTAL_WIDTH / setWidth));
   const total = shuffled.length * repeats;
-
   const result = new Array<string>(total);
   for (let r = 0; r < repeats; r++) {
     for (let i = 0; i < shuffled.length; i++) {
@@ -105,53 +103,55 @@ const LogoIcon = memo(function LogoIcon({ name }: LogoIconProps) {
 });
 
 /* ------------------------------------------------------------------ */
-/*  LogoRow                                                            */
+/*  MarqueeRow                                                         */
 /* ------------------------------------------------------------------ */
 
-interface LogoRowProps {
+interface MarqueeRowProps {
   offset?: boolean;
 }
 
-function LogoRow({ offset = false }: LogoRowProps) {
+function MarqueeRow({ offset = false }: MarqueeRowProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [repeats, setRepeats] = useState(BASE_REPEATS);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const update = () => {
+      const width = el.clientWidth;
+      const needed = Math.max(1, Math.ceil(width / SET_WIDTH));
+      setRepeats(Math.max(BASE_REPEATS, needed * 2));
+    };
+
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const seed = offset ? 0x9e3779b9 : 0x6d2b79f5;
-  const repeatedLogos = useMemo(() => buildSlides(LOGOS, seed), [seed]);
+  const repeatedLogos = useMemo(() => buildSlides(LOGOS, seed, repeats), [repeats, seed]);
 
-  const emblaOptions = useMemo(
-    () =>
-      ({
-        loop: true,
-        align: 'start' as const,
-        containScroll: false,
-        watchDrag: false,
-      }) as const,
-    []
-  );
-
-  const autoScrollPlugin = useMemo(
-    () =>
-      AutoScroll({
-        speed: 1,
-        startDelay: 0,
-        stopOnInteraction: false,
-        stopOnFocusIn: false,
-        stopOnMouseEnter: false,
-      }),
-    []
-  );
-
-  const [emblaRef] = useEmblaCarousel(emblaOptions, [autoScrollPlugin]);
+  const totalWidth = repeats * SET_WIDTH + (repeats - 1) * GAP;
+  const duration = totalWidth / 2 / 60;
 
   return (
     <div
+      ref={containerRef}
       className="relative w-full overflow-hidden"
       style={{ WebkitMaskImage: EDGE_FADE, maskImage: EDGE_FADE }}
     >
-      <div ref={emblaRef} className="overflow-hidden">
-        <div className="flex gap-2" style={{ marginLeft: offset ? `${-OFFSET}px` : undefined }}>
-          {repeatedLogos.map((name, index) => (
-            <LogoIcon key={`${name}-${index}`} name={name} />
-          ))}
-        </div>
+      <div
+        className="flex w-max gap-2"
+        style={{
+          marginLeft: offset ? `${-OFFSET}px` : undefined,
+          animation: `marquee ${duration}s linear infinite`,
+        }}
+      >
+        {repeatedLogos.map((name, index) => (
+          <LogoIcon key={`${name}-${index}`} name={name} />
+        ))}
       </div>
     </div>
   );
@@ -174,8 +174,8 @@ export function TechnologyCarousel() {
       transition={{ duration: 0.8, delay: 0.2 }}
     >
       <div className="flex flex-col gap-2">
-        <LogoRow />
-        <LogoRow offset />
+        <MarqueeRow />
+        <MarqueeRow offset />
       </div>
     </motion.section>
   );
