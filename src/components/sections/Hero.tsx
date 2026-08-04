@@ -10,9 +10,7 @@ interface HeroProps {
 export function Hero({ page }: HeroProps) {
   return (
     <section className="relative flex min-h-[calc(100vh-4rem)] w-full items-center justify-center overflow-hidden bg-background">
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
-
-      <div className="relative container mx-auto flex max-w-360 flex-col items-center px-6 py-24 text-center">
+      <div className="relative z-10 container mx-auto flex max-w-360 flex-col items-center px-6 py-24 text-center">
         <h1 className="max-w-4xl font-heading text-5xl leading-tight font-semibold tracking-tight text-foreground md:text-7xl">
           {page.title ?? 'Bitspire'}
         </h1>

@@ -4,6 +4,7 @@ import { useTina } from 'tinacms/dist/react';
 import type { PageQuery } from '@tina/__generated__/types';
 import { Hero } from '@/components/sections/Hero';
 import { Services } from '@/components/sections/Services';
+import { TechnologyCarousel } from '@/components/sections/TechnologyCarousel';
 
 interface HomePageProps {
   query: string;
@@ -21,6 +22,7 @@ export function HomePage({ query, variables, data }: HomePageProps) {
   return (
     <>
       <Hero page={tinaData.page} />
+      <TechnologyCarousel />
       <Services page={tinaData.page} />
     </>
   );
