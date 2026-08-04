@@ -1,10 +1,12 @@
 'use client';
 
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import Image from 'next/image';
 import { motion } from 'motion/react';
 import useEmblaCarousel from 'embla-carousel-react';
 import AutoScroll from 'embla-carousel-auto-scroll';
+
+import { cn } from '@/lib/utils';
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -26,6 +28,8 @@ const LOGOS = [
   'vite',
 ];
 
+const INVERTED_LOGOS = new Set(['next-js', 'stripe', 'vercel']);
+
 const ITEM_WIDTH = 64;
 const GAP = 8;
 const OFFSET = Math.round(ITEM_WIDTH * 0.75);
@@ -37,24 +41,35 @@ const EDGE_FADE = 'linear-gradient(to right, black 0%, black 92%, transparent)';
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
 
-function repeatLogos(logos: string[]) {
-  const setWidth = logos.length * ITEM_WIDTH + (logos.length - 1) * GAP;
-  const repeats = Math.max(1, Math.ceil(MIN_TOTAL_WIDTH / setWidth));
+function seededRandom(seed: number) {
+  let state = seed >>> 0;
+  return function random() {
+    state = (state * 1664525 + 1013904223) >>> 0;
+    return state / 4294967296;
+  };
+}
 
-  const result: string[] = [];
-  for (let r = 0; r < repeats; r++) {
-    for (let i = 0; i < logos.length; i++) {
-      result.push(logos[i]);
-    }
+function shuffle<T>(array: T[], seed: number): T[] {
+  const result = [...array];
+  const random = seededRandom(seed);
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
   }
   return result;
 }
 
-function shuffle<T>(array: T[]): T[] {
-  const result = [...array];
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
+function buildSlides(logos: string[], seed: number) {
+  const shuffled = shuffle([...logos], seed);
+  const setWidth = shuffled.length * ITEM_WIDTH + (shuffled.length - 1) * GAP;
+  const repeats = Math.max(1, Math.ceil(MIN_TOTAL_WIDTH / setWidth));
+  const total = shuffled.length * repeats;
+
+  const result = new Array<string>(total);
+  for (let r = 0; r < repeats; r++) {
+    for (let i = 0; i < shuffled.length; i++) {
+      result[r * shuffled.length + i] = shuffled[i];
+    }
   }
   return result;
 }
@@ -67,9 +82,7 @@ interface LogoIconProps {
   name: string;
 }
 
-function LogoIcon({ name }: LogoIconProps) {
-  const needsInvert = ['next-js', 'stripe', 'vercel'].includes(name);
-
+const LogoIcon = memo(function LogoIcon({ name }: LogoIconProps) {
   return (
     <div className="flex size-16 shrink-0 items-center justify-center p-2">
       <div className="relative size-full overflow-hidden rounded opacity-50 grayscale transition-all duration-300 hover:scale-110 hover:opacity-100 hover:grayscale-0">
@@ -79,16 +92,17 @@ function LogoIcon({ name }: LogoIconProps) {
           fill
           sizes="48px"
           loading="eager"
-          className={`object-contain ${
-            needsInvert
+          className={cn(
+            'object-contain',
+            INVERTED_LOGOS.has(name)
               ? 'filter-[brightness(0)_invert(1)_brightness(1.75)]'
               : 'filter-[brightness(1.75)]'
-          }`}
+          )}
         />
       </div>
     </div>
   );
-}
+});
 
 /* ------------------------------------------------------------------ */
 /*  LogoRow                                                            */
@@ -99,16 +113,22 @@ interface LogoRowProps {
 }
 
 function LogoRow({ offset = false }: LogoRowProps) {
-  const repeatedLogos = useMemo(() => repeatLogos(shuffle([...LOGOS])), []);
+  const seed = offset ? 0x9e3779b9 : 0x6d2b79f5;
+  const repeatedLogos = useMemo(() => buildSlides(LOGOS, seed), [seed]);
 
-  const [emblaRef] = useEmblaCarousel(
-    {
-      loop: true,
-      align: 'start',
-      containScroll: false,
-      watchDrag: false,
-    },
-    [
+  const emblaOptions = useMemo(
+    () =>
+      ({
+        loop: true,
+        align: 'start' as const,
+        containScroll: false,
+        watchDrag: false,
+      }) as const,
+    []
+  );
+
+  const autoScrollPlugin = useMemo(
+    () =>
       AutoScroll({
         speed: 1,
         startDelay: 0,
@@ -116,8 +136,10 @@ function LogoRow({ offset = false }: LogoRowProps) {
         stopOnFocusIn: false,
         stopOnMouseEnter: false,
       }),
-    ]
+    []
   );
+
+  const [emblaRef] = useEmblaCarousel(emblaOptions, [autoScrollPlugin]);
 
   return (
     <div
@@ -142,6 +164,9 @@ function LogoRow({ offset = false }: LogoRowProps) {
 export function TechnologyCarousel() {
   return (
     <motion.section
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Technology carousel"
       className="relative w-full overflow-hidden bg-background py-16"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
