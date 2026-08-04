@@ -31,10 +31,14 @@ const INVERTED_LOGOS = new Set(['next-js', 'stripe', 'vercel']);
 const ITEM_WIDTH = 64;
 const GAP = 8;
 const OFFSET = Math.round(ITEM_WIDTH * 0.75);
-const MIN_TOTAL_WIDTH = 2560;
+const MIN_VIEWPORT_WIDTH = 2560;
+const MARQUEE_SPEED = 60;
+
+const SEED_ROW_1 = 0x6d2b79f5;
+const SEED_ROW_2 = 0x9e3779b9;
 
 const SET_WIDTH = LOGOS.length * ITEM_WIDTH + (LOGOS.length - 1) * GAP;
-const BASE_REPEATS = Math.max(2, Math.ceil(MIN_TOTAL_WIDTH / SET_WIDTH) * 2);
+const BASE_REPEATS = Math.max(2, Math.ceil(MIN_VIEWPORT_WIDTH / SET_WIDTH) * 2);
 
 const EDGE_FADE = 'linear-gradient(to right, black 0%, black 92%, transparent)';
 
@@ -70,6 +74,38 @@ function buildSlides(logos: string[], seed: number, repeats: number) {
     }
   }
   return result;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Hooks                                                              */
+/* ------------------------------------------------------------------ */
+
+function useMarqueeLogos(seed: number) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [repeats, setRepeats] = useState(BASE_REPEATS);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const update = () => {
+      const width = el.clientWidth;
+      const needed = Math.max(1, Math.ceil(width / SET_WIDTH));
+      setRepeats(Math.max(BASE_REPEATS, needed * 2));
+    };
+
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const repeatedLogos = useMemo(() => buildSlides(LOGOS, seed, repeats), [repeats, seed]);
+
+  const totalWidth = repeats * SET_WIDTH + (repeats - 1) * GAP;
+  const duration = totalWidth / 2 / MARQUEE_SPEED;
+
+  return { containerRef, repeatedLogos, duration };
 }
 
 /* ------------------------------------------------------------------ */
@@ -110,31 +146,9 @@ interface MarqueeRowProps {
   offset?: boolean;
 }
 
-function MarqueeRow({ offset = false }: MarqueeRowProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [repeats, setRepeats] = useState(BASE_REPEATS);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const update = () => {
-      const width = el.clientWidth;
-      const needed = Math.max(1, Math.ceil(width / SET_WIDTH));
-      setRepeats(Math.max(BASE_REPEATS, needed * 2));
-    };
-
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  const seed = offset ? 0x9e3779b9 : 0x6d2b79f5;
-  const repeatedLogos = useMemo(() => buildSlides(LOGOS, seed, repeats), [repeats, seed]);
-
-  const totalWidth = repeats * SET_WIDTH + (repeats - 1) * GAP;
-  const duration = totalWidth / 2 / 60;
+const MarqueeRow = memo(function MarqueeRow({ offset = false }: MarqueeRowProps) {
+  const seed = offset ? SEED_ROW_2 : SEED_ROW_1;
+  const { containerRef, repeatedLogos, duration } = useMarqueeLogos(seed);
 
   return (
     <div
@@ -143,9 +157,10 @@ function MarqueeRow({ offset = false }: MarqueeRowProps) {
       style={{ WebkitMaskImage: EDGE_FADE, maskImage: EDGE_FADE }}
     >
       <div
-        className="flex w-max gap-2"
+        className="marquee-track flex w-max gap-2" // eslint-disable-line tailwindcss/no-custom-classname
         style={{
           marginLeft: offset ? `${-OFFSET}px` : undefined,
+          willChange: 'transform',
           animation: `marquee ${duration}s linear infinite`,
         }}
       >
@@ -155,7 +170,7 @@ function MarqueeRow({ offset = false }: MarqueeRowProps) {
       </div>
     </div>
   );
-}
+});
 
 /* ------------------------------------------------------------------ */
 /*  TechnologyCarousel – section                                       */

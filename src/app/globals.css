@@ -148,6 +148,12 @@ html.theme-transition * {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
