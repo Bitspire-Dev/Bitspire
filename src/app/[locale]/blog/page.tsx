@@ -1,0 +1,15 @@
+import { setRequestLocale } from 'next-intl/server';
+import client from '@tina/__generated__/client';
+import { BlogPage } from '@/components/pages/BlogPage';
+
+export default async function Blog({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+
+  setRequestLocale(locale);
+
+  const tina = await client.queries.postConnection();
+
+  return (
+    <BlogPage query={tina.query} variables={tina.variables} data={tina.data} locale={locale} />
+  );
+}

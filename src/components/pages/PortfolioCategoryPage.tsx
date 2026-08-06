@@ -3,12 +3,14 @@
 import { useMemo, useState } from 'react';
 import { useTina } from 'tinacms/dist/react';
 import type { ProjectConnectionQuery } from '@tina/__generated__/types';
+import { Link } from '@/i18n/navigation';
+import { ExternalLinkIcon } from 'lucide-react';
+import { Button } from '@/components/ui/primitives/button';
 import { Separator } from '@/components/ui/primitives/separator';
-import { PortfolioSearch } from '@/components/ui/composites/portfolio-search';
-import { PortfolioList } from '@/components/ui/composites/portfolio-list';
-import type { PortfolioProject } from '@/components/ui/composites/portfolio-card';
-
-type ProjectNode = NonNullable<PortfolioProject>;
+import { ContentSearch } from '@/components/ui/composites/content-search';
+import { CardGrid } from '@/components/ui/composites/card-grid';
+import type { ContentCardItem } from '@/components/ui/composites/content-card';
+import type { ReactNode } from 'react';
 
 const CATEGORY_LABELS: Record<string, Record<string, string>> = {
   'strony-internetowe': { pl: 'Strony internetowe', en: 'Websites' },
@@ -26,7 +28,6 @@ const CATEGORY_TO_CANONICAL: Record<string, string> = {
 
 const UI: Record<string, Record<string, string>> = {
   pl: {
-    title: 'Zobacz nasze realizacje',
     description: 'Przeglądaj nasze realizacje i znajdź coś dla siebie.',
     searchPlaceholder: 'Szukaj po tytule, opisie lub technologii...',
     empty: 'Brak realizacji.',
@@ -34,7 +35,6 @@ const UI: Record<string, Record<string, string>> = {
     visit: 'Odwiedź',
   },
   en: {
-    title: 'See our work',
     description: 'Browse our work and find something for you.',
     searchPlaceholder: 'Search by title, description or technology...',
     empty: 'No projects found.',
@@ -63,7 +63,7 @@ export function PortfolioCategoryPage({
   const canonicalCategory = CATEGORY_TO_CANONICAL[category] ?? category;
   const ui = UI[locale] ?? UI.pl;
 
-  const projects = useMemo(() => {
+  const projects = useMemo<ContentCardItem[]>(() => {
     const edges = tinaData?.projectConnection?.edges ?? [];
     return edges
       .filter((edge): edge is NonNullable<typeof edge> => !!edge && !!edge.node)
@@ -78,9 +78,50 @@ export function PortfolioCategoryPage({
           !term || title.includes(term) || description.includes(term) || technologies.includes(term)
         );
       })
-      .map(edge => edge.node!)
-      .filter((p): p is ProjectNode => !!p);
+      .map(edge => {
+        const project = edge.node!;
+        const slug = project._sys.basename.replace(/\.md$/, '');
+        return {
+          id: project.id,
+          title: project.title,
+          description: project.description,
+          image: project.screenshot,
+          imageAlt: project.title,
+          tags: project.technologies,
+          meta: {
+            primaryHref: `/portfolio/${canonicalCategory}/${slug}`,
+            websiteUrl: project.websiteUrl,
+          },
+        };
+      });
   }, [tinaData, locale, canonicalCategory, search]);
+
+  const renderFooter = (item: ContentCardItem): ReactNode => {
+    const primaryHref = item.meta?.primaryHref;
+    const websiteUrl = item.meta?.websiteUrl;
+    return (
+      <>
+        {primaryHref ? (
+          <Button asChild variant="default">
+            <Link
+              href={primaryHref as '/portfolio/websites' | '/portfolio/software'}
+              locale={locale}
+            >
+              {ui.readMore}
+            </Link>
+          </Button>
+        ) : null}
+        {websiteUrl ? (
+          <Button asChild variant="outline">
+            <a href={websiteUrl} target="_blank" rel="noopener noreferrer">
+              <ExternalLinkIcon className="mr-1 size-3" />
+              {ui.visit}
+            </a>
+          </Button>
+        ) : null}
+      </>
+    );
+  };
 
   return (
     <section className="container mx-auto max-w-360 px-4 py-16 md:px-6 md:py-24">
@@ -89,17 +130,11 @@ export function PortfolioCategoryPage({
       </h1>
       <p className="mt-4 max-w-2xl font-sans text-base text-muted-foreground">{ui.description}</p>
 
-      <PortfolioSearch value={search} onChange={setSearch} placeholder={ui.searchPlaceholder} />
+      <ContentSearch value={search} onChange={setSearch} placeholder={ui.searchPlaceholder} />
 
       <Separator className="my-12" />
 
-      <PortfolioList
-        projects={projects}
-        locale={locale}
-        emptyMessage={ui.empty}
-        readMoreLabel={ui.readMore}
-        visitLabel={ui.visit}
-      />
+      <CardGrid items={projects} emptyMessage={ui.empty} renderFooter={renderFooter} />
     </section>
   );
 }

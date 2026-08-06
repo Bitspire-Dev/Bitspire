@@ -2,13 +2,13 @@
 
 import { Input } from '@/components/ui/primitives/input';
 
-interface PortfolioSearchProps {
+interface ContentSearchProps {
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
 }
 
-export function PortfolioSearch({ value, onChange, placeholder }: PortfolioSearchProps) {
+export function ContentSearch({ value, onChange, placeholder }: ContentSearchProps) {
   return (
     <div className="mt-8 max-w-md">
       <Input

@@ -163,6 +163,13 @@ export default defineConfig({
         name: 'post',
         label: 'Posts',
         path: 'content/posts',
+        format: 'md',
+        ui: {
+          router: ({ document }) => {
+            const [locale, slug] = document._sys.relativePath.split('/');
+            return `/_preview/${locale}/blog/${slug}`;
+          },
+        },
         fields: [
           {
             type: 'string',
@@ -170,6 +177,27 @@ export default defineConfig({
             label: 'Title',
             isTitle: true,
             required: true,
+          },
+          {
+            type: 'string',
+            name: 'description',
+            label: 'Description',
+          },
+          {
+            type: 'image',
+            name: 'cover',
+            label: 'Cover',
+          },
+          {
+            type: 'string',
+            name: 'tags',
+            label: 'Tags',
+            list: true,
+          },
+          {
+            type: 'string',
+            name: 'date',
+            label: 'Date',
           },
           {
             type: 'rich-text',
