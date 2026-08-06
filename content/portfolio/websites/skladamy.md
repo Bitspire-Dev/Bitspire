@@ -7,7 +7,7 @@ technologies:
   - Node.js
   - Stripe
 websiteUrl: https://skladamy.example.com
-screenshot: /logo-carousel/react.svg
+screenshot: /portfolio/websites/skladamy.png
 ---
 
 Składamy is an e-commerce platform that helps users pick compatible computer components. The biggest challenge was building a smart configurator and integrating with the Stripe payment gateway.

@@ -7,7 +7,7 @@ technologies:
   - TypeScript
   - Node.js
 websiteUrl: https://keybrix.example.com
-screenshot: /logo-carousel/electron.svg
+screenshot: /portfolio/software/KeyBrix.svg
 ---
 
 Keybrix to narzędzie dla entuzjastów klawiatur mechanicznych. Pozwala konfigurować warstwy klawiszy, makra i oświetlenie. Kluczowym wyzwaniem była komunikacja z firmware klawiatur poprzez USB HID.

@@ -7,7 +7,7 @@ technologies:
   - Node.js
   - Stripe
 websiteUrl: https://skladamy.example.com
-screenshot: /logo-carousel/react.svg
+screenshot: /portfolio/websites/skladamy.png
 ---
 
 Składamy to platforma e-commerce, która pomaga użytkownikom dobierać kompatybilne komponenty komputerowe. Największym wyzwaniem było stworzenie inteligentnego konfiguratora oraz integracja z bramką płatności Stripe.
