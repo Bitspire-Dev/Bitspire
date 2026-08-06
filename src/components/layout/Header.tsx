@@ -9,6 +9,13 @@ import { LocaleSwitcher } from '@/components/ui/composites/locale-switcher';
 import { ThemeSwitcher } from '@/components/ui/composites/theme-switcher';
 import { useMounted } from '@/lib/use-mounted';
 import { cn } from '@/lib/utils';
+import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
+import { Button } from '@/components/ui/primitives/button';
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
+} from '@/components/ui/primitives/navigation-menu';
 
 interface NavLink {
   label: string;
@@ -41,14 +48,9 @@ export function Header({ locale, links }: HeaderProps) {
           <ThemeSwitcher className="md:hidden" />
 
           <Link href="/" className="flex items-center gap-2">
-            <Image
-              src={logoSrc}
-              alt="Bitspire"
-              width={1024}
-              height={804}
-              className="h-8 w-auto"
-              unoptimized
-            />
+            <AspectRatio ratio={1024 / 804} className="h-8 w-auto">
+              <Image src={logoSrc} alt="Bitspire" fill className="object-contain" unoptimized />
+            </AspectRatio>
             <span className="font-heading text-lg font-bold tracking-[0.2em] text-brand md:text-xl">
               BITSPIRE
             </span>
@@ -68,20 +70,21 @@ export function Header({ locale, links }: HeaderProps) {
 
 function DesktopNav({ links }: { links: NavLink[] }) {
   return (
-    <nav className="hidden md:block">
-      <ul className="flex items-center gap-1">
+    <NavigationMenu className="hidden md:flex">
+      <NavigationMenuList>
         {links.map(link => (
-          <li key={link.href}>
-            <Link
-              href={link.href}
-              className="rounded-lg px-3 py-2 font-sans text-sm text-foreground/70 transition-colors hover:bg-muted hover:text-foreground"
+          <NavigationMenuItem key={link.href}>
+            <Button
+              asChild
+              variant="ghost"
+              className="text-foreground/70 hover:bg-muted hover:text-foreground"
             >
-              {link.label}
-            </Link>
-          </li>
+              <Link href={link.href}>{link.label}</Link>
+            </Button>
+          </NavigationMenuItem>
         ))}
-      </ul>
-    </nav>
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 }
 
@@ -90,15 +93,17 @@ function MobileMenu({ locale, links }: { locale: string; links: NavLink[] }) {
 
   return (
     <div className="md:hidden">
-      <button
+      <Button
         type="button"
+        variant="ghost"
+        size="icon"
         onClick={() => setOpen(s => !s)}
         aria-label={open ? 'Close menu' : 'Open menu'}
         aria-expanded={open}
-        className="flex size-9 items-center justify-center rounded-lg text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
+        className="text-foreground/80"
       >
         {open ? <X className="size-5" /> : <Menu className="size-5" />}
-      </button>
+      </Button>
 
       <div
         className={cn(

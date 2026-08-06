@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion } from 'motion/react';
 
 import { cn } from '@/lib/utils';
+import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -13,20 +14,21 @@ import { cn } from '@/lib/utils';
 const LOGOS = [
   'docker',
   'electron',
+  'git',
   'graph-ql',
-  'next-js',
+  'nextjs',
   'node-js',
+  'pnpm',
   'react',
   'strapi',
   'stripe',
-  'tailwind-css',
+  'tailwind',
   'tina-cms',
   'typescript',
   'vercel',
   'vite',
+  'vitest',
 ];
-
-const INVERTED_LOGOS = new Set(['next-js', 'stripe', 'vercel']);
 
 const ITEM_WIDTH = 64;
 const GAP = 8;
@@ -39,8 +41,6 @@ const SEED_ROW_2 = 0x9e3779b9;
 
 const SET_WIDTH = LOGOS.length * ITEM_WIDTH + (LOGOS.length - 1) * GAP;
 const BASE_REPEATS = Math.max(2, Math.ceil(MIN_VIEWPORT_WIDTH / SET_WIDTH) * 2);
-
-const EDGE_FADE = 'linear-gradient(to right, black 0%, black 92%, transparent)';
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -119,7 +119,7 @@ interface LogoIconProps {
 const LogoIcon = memo(function LogoIcon({ name }: LogoIconProps) {
   return (
     <div className="flex size-16 shrink-0 items-center justify-center p-2">
-      <div className="relative size-full overflow-hidden rounded opacity-50 grayscale transition-all duration-300 hover:scale-110 hover:opacity-100 hover:grayscale-0">
+      <AspectRatio ratio={1 / 1} className="w-full rounded">
         <Image
           src={`/logo-carousel/${name}.svg`}
           alt={name}
@@ -127,13 +127,10 @@ const LogoIcon = memo(function LogoIcon({ name }: LogoIconProps) {
           sizes="48px"
           loading="eager"
           className={cn(
-            'object-contain',
-            INVERTED_LOGOS.has(name)
-              ? 'filter-[brightness(0)_invert(1)_brightness(1.75)]'
-              : 'filter-[brightness(1.75)]'
+            'object-contain opacity-50 grayscale transition-all duration-300 hover:scale-110 hover:opacity-100 hover:grayscale-0 dark:invert'
           )}
         />
-      </div>
+      </AspectRatio>
     </div>
   );
 });
@@ -151,11 +148,7 @@ const MarqueeRow = memo(function MarqueeRow({ offset = false }: MarqueeRowProps)
   const { containerRef, repeatedLogos, duration } = useMarqueeLogos(seed);
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full overflow-hidden"
-      style={{ WebkitMaskImage: EDGE_FADE, maskImage: EDGE_FADE }}
-    >
+    <div ref={containerRef} className="relative w-full overflow-hidden">
       <div
         className="marquee-track flex w-max gap-2" // eslint-disable-line tailwindcss/no-custom-classname
         style={{

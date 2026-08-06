@@ -6,6 +6,7 @@ import { ChevronDownIcon } from 'lucide-react';
 
 import type { PagePartsFragment } from '@tina/__generated__/types';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/primitives/badge';
 import {
   Accordion,
   AccordionContent,
@@ -85,9 +86,9 @@ export function Services({ page }: ServicesProps) {
                       <span className="font-heading text-lg font-medium text-foreground md:text-xl">
                         {item.title}
                       </span>
-                      <span className="font-sans text-sm font-medium text-brand md:text-base">
+                      <Badge variant="outline" className="border-brand/30 text-brand md:text-base">
                         {item.tagline}
-                      </span>
+                      </Badge>
                     </span>
 
                     <motion.span

@@ -6,6 +6,8 @@ import { Moon, Sun } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/primitives/button';
+import { Skeleton } from '@/components/ui/primitives/skeleton';
 
 const THEME_TRANSITION_DURATION = 350;
 const ICON_ANIMATION_DURATION = 0.25;
@@ -95,32 +97,21 @@ export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
   };
 
   if (!mounted) {
-    return (
-      <span
-        className={cn(
-          'inline-flex size-9 items-center justify-center text-foreground/80',
-          className
-        )}
-        aria-hidden="true"
-      >
-        <span className="size-5" />
-      </span>
-    );
+    return <Skeleton className={cn('size-9 rounded-lg', className)} aria-hidden="true" />;
   }
 
   const isDark = resolvedTheme === 'dark';
   const label = isDark ? 'Switch to light mode' : 'Switch to dark mode';
 
   return (
-    <button
+    <Button
       type="button"
+      variant="ghost"
+      size="icon"
       onClick={toggle}
       aria-label={label}
       aria-pressed={isDark}
-      className={cn(
-        'inline-flex size-9 items-center justify-center rounded-lg text-foreground/80 transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/30',
-        className
-      )}
+      className={cn('text-foreground/80', className)}
     >
       {reducedMotion ? (
         isDark ? (
@@ -142,6 +133,6 @@ export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
           </motion.span>
         </AnimatePresence>
       )}
-    </button>
+    </Button>
   );
 }
