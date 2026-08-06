@@ -186,10 +186,7 @@ export default defineConfig({
         format: 'md',
         ui: {
           router: ({ document }) => {
-            const [category] = document._sys.relativePath.split('/');
-            const locale = ['strony-internetowe', 'oprogramowanie'].includes(category)
-              ? 'pl'
-              : 'en';
+            const [locale, category] = document._sys.relativePath.split('/');
             return `/_preview/${locale}/portfolio/${category}`;
           },
         },

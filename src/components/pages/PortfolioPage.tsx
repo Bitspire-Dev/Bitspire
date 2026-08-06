@@ -22,25 +22,40 @@ const CATEGORIES: {
   slug: 'websites' | 'software';
   href: CategoryHref;
   label: Record<string, string>;
+  description: Record<string, string>;
   image: string;
 }[] = [
   {
     slug: 'websites',
     href: '/portfolio/websites',
     label: { pl: 'Strony internetowe', en: 'Websites' },
+    description: {
+      pl: 'Nowoczesne strony internetowe i aplikacje webowe',
+      en: 'Modern websites and web applications',
+    },
     image: '/logo-carousel/nextjs.svg',
   },
   {
     slug: 'software',
     href: '/portfolio/software',
     label: { pl: 'Oprogramowanie', en: 'Software' },
+    description: {
+      pl: 'Dedykowane oprogramowanie i aplikacje desktopowe',
+      en: 'Custom software and desktop applications',
+    },
     image: '/logo-carousel/react.svg',
   },
 ];
 
+const UI: Record<string, Record<string, string>> = {
+  pl: { browse: 'Przeglądaj' },
+  en: { browse: 'Browse' },
+};
+
 export function PortfolioPage({ query, variables, data, locale }: PortfolioPageProps) {
   const { data: tinaData } = useTina({ query, variables, data });
   const page = tinaData?.page;
+  const ui = UI[locale] ?? UI.pl;
 
   return (
     <section className="container mx-auto max-w-360 px-4 py-16 md:px-6 md:py-24">
@@ -74,12 +89,12 @@ export function PortfolioPage({ query, variables, data, locale }: PortfolioPageP
                 {category.label[locale] ?? category.label.en}
               </CardTitle>
               <CardDescription className="font-sans text-sm text-muted-foreground">
-                {category.label[locale] ? category.label.en : category.label.pl}
+                {category.description[locale] ?? category.description.en}
               </CardDescription>
             </CardHeader>
             <div className="px-(--card-spacing) pb-(--card-spacing)">
               <Button asChild>
-                <Link href={category.href}>Przeglądaj</Link>
+                <Link href={category.href}>{ui.browse}</Link>
               </Button>
             </div>
           </Card>

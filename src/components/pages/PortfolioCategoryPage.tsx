@@ -32,6 +32,32 @@ const CATEGORY_LABELS: Record<string, Record<string, string>> = {
   software: { pl: 'Oprogramowanie', en: 'Software' },
 };
 
+const CATEGORY_TO_CANONICAL: Record<string, string> = {
+  'strony-internetowe': 'websites',
+  oprogramowanie: 'software',
+  websites: 'websites',
+  software: 'software',
+};
+
+const UI: Record<string, Record<string, string>> = {
+  pl: {
+    title: 'Zobacz nasze realizacje',
+    description: 'Przeglądaj nasze realizacje i znajdź coś dla siebie.',
+    searchPlaceholder: 'Szukaj po tytule, opisie lub technologii...',
+    empty: 'Brak realizacji.',
+    readMore: 'Czytaj więcej',
+    visit: 'Odwiedź',
+  },
+  en: {
+    title: 'See our work',
+    description: 'Browse our work and find something for you.',
+    searchPlaceholder: 'Search by title, description or technology...',
+    empty: 'No projects found.',
+    readMore: 'Read more',
+    visit: 'Visit',
+  },
+};
+
 interface PortfolioCategoryPageProps {
   query: string;
   variables: Record<string, unknown>;
@@ -49,12 +75,14 @@ export function PortfolioCategoryPage({
 }: PortfolioCategoryPageProps) {
   const { data: tinaData } = useTina({ query, variables, data });
   const [search, setSearch] = useState('');
+  const canonicalCategory = CATEGORY_TO_CANONICAL[category] ?? category;
+  const ui = UI[locale] ?? UI.pl;
 
   const projects = useMemo(() => {
     const edges = tinaData?.projectConnection?.edges ?? [];
     return edges
       .filter((edge): edge is NonNullable<typeof edge> => !!edge && !!edge.node)
-      .filter(edge => edge.node?._sys?.relativePath?.startsWith(`${category}/`))
+      .filter(edge => edge.node?._sys?.relativePath?.startsWith(`${locale}/${canonicalCategory}/`))
       .filter(edge => {
         const project = edge.node!;
         const term = search.toLowerCase();
@@ -67,21 +95,19 @@ export function PortfolioCategoryPage({
       })
       .map(edge => edge.node!)
       .filter(p => !!p);
-  }, [tinaData, category, search]);
+  }, [tinaData, locale, canonicalCategory, search]);
 
   return (
     <section className="container mx-auto max-w-360 px-4 py-16 md:px-6 md:py-24">
       <h1 className="font-heading text-3xl font-bold text-foreground md:text-5xl">
         {CATEGORY_LABELS[category]?.[locale] ?? category}
       </h1>
-      <p className="mt-4 max-w-2xl font-sans text-base text-muted-foreground">
-        Przeglądaj nasze realizacje i znajdź coś dla siebie.
-      </p>
+      <p className="mt-4 max-w-2xl font-sans text-base text-muted-foreground">{ui.description}</p>
 
       <div className="mt-8 max-w-md">
         <Input
           type="search"
-          placeholder="Szukaj po tytule, opisie lub technologii..."
+          placeholder={ui.searchPlaceholder}
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
@@ -90,7 +116,7 @@ export function PortfolioCategoryPage({
       <Separator className="my-12" />
 
       {projects.length === 0 ? (
-        <p className="font-sans text-sm text-muted-foreground">Brak realizacji.</p>
+        <p className="font-sans text-sm text-muted-foreground">{ui.empty}</p>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map(project => (
@@ -103,9 +129,11 @@ export function PortfolioCategoryPage({
 }
 
 function ProjectCard({ project, locale }: { project: NonNullable<ProjectNode>; locale: string }) {
-  const category = project._sys?.relativePath?.split('/')[0];
+  const ui = UI[locale] ?? UI.pl;
+  const segments = project._sys?.relativePath?.split('/');
+  const canonicalCategory = segments?.[1];
   const slug = project._sys?.basename?.replace(/\.md$/, '');
-  const articleHref = category && slug ? `/portfolio/${category}/${slug}` : '#';
+  const articleHref = canonicalCategory && slug ? `/portfolio/${canonicalCategory}/${slug}` : '#';
 
   return (
     <Card className="flex flex-col overflow-hidden">
@@ -146,15 +174,15 @@ function ProjectCard({ project, locale }: { project: NonNullable<ProjectNode>; l
       </CardContent>
       <CardFooter className="flex gap-2">
         <Button asChild variant="default">
-          <Link href={articleHref as '/portfolio/websites'} locale={locale}>
-            Czytaj więcej
+          <Link href={articleHref as '/portfolio/websites' | '/portfolio/software'} locale={locale}>
+            {ui.readMore}
           </Link>
         </Button>
         {project.websiteUrl ? (
           <Button asChild variant="outline">
             <a href={project.websiteUrl} target="_blank" rel="noopener noreferrer">
               <ExternalLinkIcon className="mr-1 size-3" />
-              Odwiedź
+              {ui.visit}
             </a>
           </Button>
         ) : null}
