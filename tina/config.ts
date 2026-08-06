@@ -179,6 +179,62 @@ export default defineConfig({
           },
         ],
       },
+      {
+        name: 'project',
+        label: 'Projects',
+        path: 'content/portfolio',
+        format: 'md',
+        ui: {
+          router: ({ document }) => {
+            const [category] = document._sys.relativePath.split('/');
+            const locale = ['strony-internetowe', 'oprogramowanie'].includes(category)
+              ? 'pl'
+              : 'en';
+            return `/_preview/${locale}/portfolio/${category}`;
+          },
+        },
+        fields: [
+          {
+            type: 'string',
+            name: 'title',
+            label: 'Title',
+            isTitle: true,
+            required: true,
+          },
+          {
+            type: 'string',
+            name: 'tagline',
+            label: 'Tagline',
+          },
+          {
+            type: 'string',
+            name: 'description',
+            label: 'Description',
+          },
+          {
+            type: 'string',
+            name: 'technologies',
+            label: 'Technologies',
+            list: true,
+          },
+          {
+            type: 'string',
+            name: 'websiteUrl',
+            label: 'Website URL',
+          },
+          {
+            type: 'image',
+            name: 'screenshot',
+            label: 'Screenshot',
+          },
+          {
+            type: 'rich-text',
+            name: 'body',
+            label: 'Body',
+            isBody: true,
+          },
+        ],
+      },
     ],
   },
 });

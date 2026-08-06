@@ -13,8 +13,10 @@ import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 import { Button } from '@/components/ui/primitives/button';
 import {
   NavigationMenu,
+  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuList,
+  NavigationMenuTrigger,
 } from '@/components/ui/primitives/navigation-menu';
 
 interface NavLink {
@@ -57,7 +59,7 @@ export function Header({ locale, links }: HeaderProps) {
           </Link>
         </div>
 
-        <DesktopNav links={navLinks} />
+        <DesktopNav links={navLinks} locale={locale} />
 
         <div className="hidden items-center gap-2 md:flex">
           <ThemeSwitcher />
@@ -68,23 +70,51 @@ export function Header({ locale, links }: HeaderProps) {
   );
 }
 
-function DesktopNav({ links }: { links: NavLink[] }) {
+function DesktopNav({ links, locale }: { links: NavLink[]; locale: string }) {
   return (
     <NavigationMenu className="hidden md:flex">
       <NavigationMenuList>
-        {links.map(link => (
-          <NavigationMenuItem key={link.href}>
-            <Button
-              asChild
-              variant="ghost"
-              className="text-foreground/70 hover:bg-muted hover:text-foreground"
-            >
-              <Link href={link.href}>{link.label}</Link>
-            </Button>
-          </NavigationMenuItem>
-        ))}
+        {links.map(link =>
+          link.href === '/portfolio' ? (
+            <PortfolioMenuItem key={link.href} label={link.label} locale={locale} />
+          ) : (
+            <NavigationMenuItem key={link.href}>
+              <Button
+                asChild
+                variant="ghost"
+                className="text-foreground/70 hover:bg-muted hover:text-foreground"
+              >
+                <Link href={link.href as '/'}>{link.label}</Link>
+              </Button>
+            </NavigationMenuItem>
+          )
+        )}
       </NavigationMenuList>
     </NavigationMenu>
+  );
+}
+
+function PortfolioMenuItem({ label, locale }: { label: string; locale: string }) {
+  return (
+    <NavigationMenuItem>
+      <NavigationMenuTrigger className="text-foreground/70 hover:bg-muted hover:text-foreground">
+        {label}
+      </NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <div className="flex flex-col gap-1 p-2">
+          <Button asChild variant="ghost" className="justify-start">
+            <Link href="/portfolio/websites" locale={locale}>
+              {locale === 'pl' ? 'Strony internetowe' : 'Websites'}
+            </Link>
+          </Button>
+          <Button asChild variant="ghost" className="justify-start">
+            <Link href="/portfolio/software" locale={locale}>
+              {locale === 'pl' ? 'Oprogramowanie' : 'Software'}
+            </Link>
+          </Button>
+        </div>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
   );
 }
 
@@ -116,7 +146,7 @@ function MobileMenu({ locale, links }: { locale: string; links: NavLink[] }) {
             {links.map(link => (
               <li key={link.href} className="w-full">
                 <Link
-                  href={link.href}
+                  href={link.href as '/'}
                   onClick={() => setOpen(false)}
                   className="block w-full rounded-lg py-2 font-sans text-sm text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
                 >
