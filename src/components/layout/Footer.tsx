@@ -25,7 +25,7 @@ export async function Footer({ locale }: FooterProps) {
           {navLinks.map(link => (
             <Link
               key={link.href}
-              href={link.href}
+              href={link.href as '/'}
               className="font-mono text-xs text-muted-foreground transition-colors hover:text-foreground"
             >
               {link.label}

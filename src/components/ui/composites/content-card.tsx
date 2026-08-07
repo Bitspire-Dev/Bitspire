@@ -1,6 +1,8 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import {
   Card,
   CardContent,
@@ -12,6 +14,7 @@ import {
 import { Badge } from '@/components/ui/primitives/badge';
 import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 import { Skeleton } from '@/components/ui/primitives/skeleton';
+import { Button } from '@/components/ui/primitives/button';
 import type { ReactNode } from 'react';
 
 export interface ContentCardItem {
@@ -32,8 +35,12 @@ interface ContentCardProps {
 }
 
 export function ContentCard({ item, imageRatio = 4 / 3, unoptimized, footer }: ContentCardProps) {
+  const params = useParams();
+  const locale = typeof params?.locale === 'string' ? params.locale : 'pl';
   const image = item.image ?? null;
   const imageAlt = item.imageAlt ?? item.title ?? '';
+  const primaryHref = item.meta?.primaryHref;
+  const ctaLabel = item.meta?.ctaLabel ?? (locale === 'pl' ? 'Czytaj więcej' : 'Read more');
 
   return (
     <Card className="flex flex-col overflow-hidden">
@@ -73,6 +80,13 @@ export function ContentCard({ item, imageRatio = 4 / 3, unoptimized, footer }: C
         </CardContent>
       ) : null}
       {footer ? <CardFooter className="flex gap-2">{footer}</CardFooter> : null}
+      {!footer && primaryHref ? (
+        <CardFooter className="flex gap-2">
+          <Button asChild variant="default">
+            <Link href={`/${locale}${primaryHref}`}>{ctaLabel}</Link>
+          </Button>
+        </CardFooter>
+      ) : null}
     </Card>
   );
 }

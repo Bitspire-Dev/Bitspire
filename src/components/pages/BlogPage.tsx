@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useTina } from 'tinacms/dist/react';
-import type { PostConnectionQuery } from '@tina/__generated__/types';
+import type { BlogConnectionQuery } from '@tina/__generated__/types';
 import { Separator } from '@/components/ui/primitives/separator';
 import { ContentSearch } from '@/components/ui/composites/content-search';
 import { CardGrid } from '@/components/ui/composites/card-grid';
@@ -14,19 +14,21 @@ const UI: Record<string, Record<string, string>> = {
     description: 'Przeglądaj nasze artykuły i znajdź coś dla siebie.',
     searchPlaceholder: 'Szukaj po tytule, opisie lub tagu...',
     empty: 'Brak artykułów.',
+    readMore: 'Czytaj więcej',
   },
   en: {
     title: 'Blog',
     description: 'Browse our articles and find something for you.',
     searchPlaceholder: 'Search by title, description or tag...',
     empty: 'No articles found.',
+    readMore: 'Read more',
   },
 };
 
 interface BlogPageProps {
   query: string;
   variables: Record<string, unknown>;
-  data: PostConnectionQuery;
+  data: BlogConnectionQuery;
   locale: string;
 }
 
@@ -36,7 +38,7 @@ export function BlogPage({ query, variables, data, locale }: BlogPageProps) {
   const ui = UI[locale] ?? UI.pl;
 
   const posts = useMemo<ContentCardItem[]>(() => {
-    const edges = tinaData?.postConnection?.edges ?? [];
+    const edges = tinaData?.blogConnection?.edges ?? [];
     return edges
       .filter((edge): edge is NonNullable<typeof edge> => !!edge && !!edge.node)
       .filter(edge => edge.node?._sys?.relativePath?.startsWith(`${locale}/`))
@@ -50,6 +52,7 @@ export function BlogPage({ query, variables, data, locale }: BlogPageProps) {
       })
       .map(edge => {
         const post = edge.node!;
+        const slug = post._sys.basename.replace(/\.md$/, '');
         return {
           id: post.id,
           title: post.title,
@@ -57,9 +60,10 @@ export function BlogPage({ query, variables, data, locale }: BlogPageProps) {
           image: post.cover,
           imageAlt: post.title,
           tags: post.tags,
+          meta: { primaryHref: `/blog/${slug}`, ctaLabel: ui.readMore },
         };
       });
-  }, [tinaData, locale, search]);
+  }, [tinaData, locale, search, ui]);
 
   return (
     <section className="container mx-auto max-w-360 px-4 py-16 md:px-6 md:py-24">

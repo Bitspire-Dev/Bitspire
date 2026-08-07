@@ -97,7 +97,7 @@ export default defineConfig({
         ui: {
           router: ({ document }) => {
             const [locale] = document._sys.relativePath.split('/');
-            return `/_preview/${locale}`;
+            return `/${locale}`;
           },
         },
         fields: [
@@ -160,14 +160,14 @@ export default defineConfig({
         ],
       },
       {
-        name: 'post',
-        label: 'Posts',
-        path: 'content/posts',
+        name: 'blog',
+        label: 'Blog',
+        path: 'content/blog',
         format: 'md',
         ui: {
           router: ({ document }) => {
             const [locale, slug] = document._sys.relativePath.split('/');
-            return `/_preview/${locale}/blog/${slug}`;
+            return `/${locale}/blog/${slug}`;
           },
         },
         fields: [
@@ -215,7 +215,7 @@ export default defineConfig({
         ui: {
           router: ({ document }) => {
             const [locale, category] = document._sys.relativePath.split('/');
-            return `/_preview/${locale}/portfolio/${category}`;
+            return `/${locale}/portfolio/${category}`;
           },
         },
         fields: [

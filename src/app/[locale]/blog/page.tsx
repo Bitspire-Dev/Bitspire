@@ -7,7 +7,7 @@ export default async function Blog({ params }: { params: Promise<{ locale: strin
 
   setRequestLocale(locale);
 
-  const tina = await client.queries.postConnection();
+  const tina = await client.queries.blogConnection();
 
   return (
     <BlogPage query={tina.query} variables={tina.variables} data={tina.data} locale={locale} />
