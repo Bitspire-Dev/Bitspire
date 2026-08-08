@@ -2,29 +2,40 @@
 
 import { TinaMarkdown } from 'tinacms/dist/rich-text';
 import { cn } from '@/lib/utils';
-import type { BlogQuery } from '@tina/__generated__/types';
+import { TocProvider, Heading2, Heading3, Heading } from '@/lib/toc';
+import type { TocItem } from '@/lib/toc';
 
 interface BlogArticleBodyProps {
-  body: NonNullable<BlogQuery['blog']>['body'];
+  body: any;
   tinaFieldBody: string;
+  toc: TocItem[];
   className?: string;
 }
 
-export function BlogArticleBody({ body, tinaFieldBody, className }: BlogArticleBodyProps) {
+export function BlogArticleBody({ body, tinaFieldBody, toc, className }: BlogArticleBodyProps) {
   if (!body) {
     return null;
   }
 
   return (
     <section
-      className={cn('container mx-auto max-w-360 px-4 pt-0 md:px-6', className)}
+      className={cn('w-full px-0 pt-0', className)}
     >
-      <div
-        data-tina-field={tinaFieldBody}
-        className="prose max-w-none font-sans prose-invert"
-      >
-        <TinaMarkdown content={body} />
-      </div>
+      <TocProvider toc={toc}>
+        <div
+          data-tina-field={tinaFieldBody}
+          className="prose max-w-none font-sans prose-invert"
+        >
+          <TinaMarkdown
+            content={body}
+            components={{
+              h2: Heading2 as any,
+              h3: Heading3 as any,
+              heading: Heading as any,
+            }}
+          />
+        </div>
+      </TocProvider>
     </section>
   );
 }

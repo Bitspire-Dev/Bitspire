@@ -1,10 +1,13 @@
 import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import { readFile } from 'fs/promises';
+import path from 'path';
 import client from '@tina/__generated__/client';
 import type { BlogConnectionQuery } from '@tina/__generated__/types';
 import { BlogArticle } from '@/components/pages/BlogArticlePage';
 import type { ContentCardItem } from '@/components/ui/composites/content-card';
+import { extractTocFromMarkdown } from '@/lib/toc-parser';
 
 interface BlogPageParams {
   locale: string;
@@ -94,9 +97,13 @@ export default async function BlogArticlePage({ params }: { params: Promise<Blog
 
   setRequestLocale(locale);
 
-  const [tina, all] = await Promise.all([
+  const [tina, all, rawMarkdown] = await Promise.all([
     client.queries.blog({ relativePath: `${locale}/${slug}.md` }),
     client.queries.blogConnection(),
+    readFile(
+      path.join(process.cwd(), 'content', 'blog', locale, `${slug}.md`),
+      'utf-8'
+    ).catch(() => ''),
   ]);
 
   if (!tina.data.blog) {
@@ -104,6 +111,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<Blog
   }
 
   const related = toRelatedItems(slug, locale, all.data);
+  const toc = extractTocFromMarkdown(rawMarkdown);
 
   return (
     <BlogArticle
@@ -112,6 +120,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<Blog
       data={tina.data}
       related={related}
       locale={locale}
+      toc={toc}
     />
   );
 }

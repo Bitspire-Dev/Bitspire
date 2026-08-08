@@ -7,6 +7,11 @@ tags:
   - Architecture
   - Performance
 date: '2024-01-15'
+author:
+  name: Bitspire Team
+  role: Author
+  bio: Article prepared by Bitspire. We build fast and modern websites and web applications.
+  link: /about
 ---
 
 ## Introduction

@@ -7,6 +7,11 @@ tags:
   - JavaScript
   - Frontend
 date: '2024-03-10'
+author:
+  name: Bitspire Team
+  role: Author
+  bio: Article prepared by Bitspire. We build fast and modern websites and web applications.
+  link: /about
 ---
 
 ## Introduction

@@ -16,7 +16,7 @@ export function BlogArticleRelated({ items, title, emptyMessage }: BlogArticleRe
   }
 
   return (
-    <section className="container mx-auto max-w-360 px-4 pt-0 pb-8 md:px-6 md:pb-12">
+    <section className="w-full pt-0 pb-8 md:pb-12">
       <Separator className="my-12" />
       <h2 className="font-heading text-2xl font-bold text-foreground md:text-3xl">
         {title}

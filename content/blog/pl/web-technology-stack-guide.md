@@ -7,6 +7,11 @@ tags:
   - Technologie
   - Poradnik
 date: '2024-05-12'
+author:
+  name: Bitspire Team
+  role: Autor
+  bio: Artykuł przygotowany przez Bitspire. Tworzymy szybkie i nowoczesne strony oraz aplikacje webowe.
+  link: /o-nas
 ---
 
 ## Wprowadzenie

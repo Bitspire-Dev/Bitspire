@@ -18,7 +18,7 @@ export function BlogArticleHeader({ blog, locale, backLabel }: BlogArticleHeader
   const cover = blog.cover ?? null;
 
   return (
-    <>
+    <div className="mt-4">
       {cover ? (
         <AspectRatio
           data-tina-field={tinaField(blog, 'cover')}
@@ -36,7 +36,7 @@ export function BlogArticleHeader({ blog, locale, backLabel }: BlogArticleHeader
         </AspectRatio>
       ) : null}
 
-      <section className="container mx-auto max-w-360 px-4 pt-8 pb-0 md:px-6 md:pt-12">
+      <div className="w-full pt-8 md:pt-12">
         <BackLink href="/blog" label={backLabel} locale={locale} className="mb-6" />
 
         <header>
@@ -67,7 +67,7 @@ export function BlogArticleHeader({ blog, locale, backLabel }: BlogArticleHeader
         </header>
 
         <Separator className="my-12" />
-      </section>
-    </>
+      </div>
+    </div>
   );
 }

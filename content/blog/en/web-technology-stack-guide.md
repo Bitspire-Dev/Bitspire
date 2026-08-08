@@ -7,6 +7,11 @@ tags:
   - Technologies
   - Guide
 date: '2024-05-12'
+author:
+  name: Bitspire Team
+  role: Author
+  bio: Article prepared by Bitspire. We build fast and modern websites and web applications.
+  link: /about
 ---
 
 ## Introduction

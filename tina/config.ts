@@ -200,6 +200,39 @@ export default defineConfig({
             label: 'Date',
           },
           {
+            type: 'object',
+            name: 'author',
+            label: 'Author',
+            fields: [
+              {
+                type: 'string',
+                name: 'name',
+                label: 'Name',
+                required: true,
+              },
+              {
+                type: 'string',
+                name: 'role',
+                label: 'Role',
+              },
+              {
+                type: 'image',
+                name: 'avatar',
+                label: 'Avatar',
+              },
+              {
+                type: 'string',
+                name: 'bio',
+                label: 'Bio',
+              },
+              {
+                type: 'string',
+                name: 'link',
+                label: 'Link',
+              },
+            ],
+          },
+          {
             type: 'rich-text',
             name: 'body',
             label: 'Body',

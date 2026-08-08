@@ -7,6 +7,11 @@ tags:
   - Design
   - Webdesign
 date: '2024-04-05'
+author:
+  name: Bitspire Team
+  role: Author
+  bio: Article prepared by Bitspire. We build fast and modern websites and web applications.
+  link: /about
 ---
 
 ## Introduction
