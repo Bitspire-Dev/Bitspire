@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
-import { useTina } from 'tinacms/dist/react';
+import { useTina, tinaField } from 'tinacms/dist/react';
 import { TinaMarkdown } from 'tinacms/dist/rich-text';
 import type { BlogQuery } from '@tina/__generated__/types';
 import { Badge } from '@/components/ui/primitives/badge';
@@ -61,7 +61,11 @@ export function BlogArticle({ query, variables, data, related, locale }: BlogArt
   return (
     <article>
       {cover ? (
-        <AspectRatio ratio={16 / 9} className="w-full bg-muted">
+        <AspectRatio
+          data-tina-field={tinaField(blog, 'cover')}
+          ratio={16 / 9}
+          className="w-full bg-muted"
+        >
           <Image
             src={cover}
             alt={blog.title}
@@ -82,11 +86,17 @@ export function BlogArticle({ query, variables, data, related, locale }: BlogArt
         </Button>
 
         <header>
-          <h1 className="font-heading text-3xl font-bold text-foreground md:text-5xl">
+          <h1
+            data-tina-field={tinaField(blog, 'title')}
+            className="font-heading text-3xl font-bold text-foreground md:text-5xl"
+          >
             {blog.title}
           </h1>
           {blog.description ? (
-            <p className="mt-4 max-w-2xl font-sans text-lg text-muted-foreground">
+            <p
+              data-tina-field={tinaField(blog, 'description')}
+              className="mt-4 max-w-2xl font-sans text-lg text-muted-foreground"
+            >
               {blog.description}
             </p>
           ) : null}
@@ -94,26 +104,31 @@ export function BlogArticle({ query, variables, data, related, locale }: BlogArt
           <div className="mt-4 flex flex-wrap items-center gap-3">
             {formattedDate ? (
               <time
+                data-tina-field={tinaField(blog, 'date')}
                 className="font-sans text-sm text-muted-foreground"
                 dateTime={blog.date ?? undefined}
               >
                 {formattedDate}
               </time>
             ) : null}
-            {blog.tags
-              ?.filter((tag): tag is string => !!tag)
-              .map(tag => (
-                <Badge key={tag} variant="secondary">
-                  {tag}
-                </Badge>
-              ))}
+            {blog.tags && blog.tags.length > 0 ? (
+              <div data-tina-field={tinaField(blog, 'tags')} className="flex flex-wrap gap-2">
+                {blog.tags
+                  .filter((tag): tag is string => !!tag)
+                  .map(tag => (
+                    <Badge key={tag} variant="secondary">
+                      {tag}
+                    </Badge>
+                  ))}
+              </div>
+            ) : null}
           </div>
         </header>
 
         <Separator className="my-12" />
 
         {blog.body ? (
-          <div className="prose max-w-none font-sans prose-invert">
+          <div data-tina-field={tinaField(blog, 'body')} className="prose max-w-none font-sans prose-invert">
             <TinaMarkdown content={blog.body} />
           </div>
         ) : null}

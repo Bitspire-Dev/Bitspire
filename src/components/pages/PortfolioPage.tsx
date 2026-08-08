@@ -1,6 +1,6 @@
 'use client';
 
-import { useTina } from 'tinacms/dist/react';
+import { useTina, tinaField } from 'tinacms/dist/react';
 import type { PageQuery } from '@tina/__generated__/types';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
@@ -61,11 +61,19 @@ export function PortfolioPage({ query, variables, data, locale }: PortfolioPageP
     <section className="container mx-auto max-w-360 px-4 py-16 md:px-6 md:py-24">
       {page?.title ? (
         <div className="mb-8 max-w-2xl">
-          <h1 className="font-heading text-3xl font-bold text-foreground md:text-5xl">
+          <h1
+            data-tina-field={tinaField(page, 'title')}
+            className="font-heading text-3xl font-bold text-foreground md:text-5xl"
+          >
             {page.title}
           </h1>
           {page.description ? (
-            <p className="mt-4 font-sans text-base text-muted-foreground">{page.description}</p>
+            <p
+              data-tina-field={tinaField(page, 'description')}
+              className="mt-4 font-sans text-base text-muted-foreground"
+            >
+              {page.description}
+            </p>
           ) : null}
         </div>
       ) : null}

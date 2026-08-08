@@ -44,7 +44,11 @@ export function ContentCard({ item, imageRatio = 4 / 3, unoptimized, footer }: C
 
   return (
     <Card className="flex flex-col overflow-hidden">
-      <AspectRatio ratio={imageRatio} className="bg-muted">
+      <AspectRatio
+        data-tina-field={item.meta?.tinaField_image ?? undefined}
+        ratio={imageRatio}
+        className="bg-muted"
+      >
         {image ? (
           <Image
             src={image}
@@ -61,13 +65,24 @@ export function ContentCard({ item, imageRatio = 4 / 3, unoptimized, footer }: C
         )}
       </AspectRatio>
       <CardHeader className="items-start gap-2">
-        <CardTitle className="font-heading text-lg">{item.title}</CardTitle>
-        <CardDescription className="font-sans text-sm text-muted-foreground">
+        <CardTitle
+          data-tina-field={item.meta?.tinaField_title ?? undefined}
+          className="font-heading text-lg"
+        >
+          {item.title}
+        </CardTitle>
+        <CardDescription
+          data-tina-field={item.meta?.tinaField_description ?? undefined}
+          className="font-sans text-sm text-muted-foreground"
+        >
           {item.description}
         </CardDescription>
       </CardHeader>
       {item.tags && item.tags.length > 0 ? (
-        <CardContent className="flex-1">
+        <CardContent
+          data-tina-field={item.meta?.tinaField_tags ?? undefined}
+          className="flex-1"
+        >
           <div className="flex flex-wrap gap-2">
             {item.tags
               ?.filter((tag): tag is string => tag !== null)

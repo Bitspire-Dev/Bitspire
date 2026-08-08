@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { useTina } from 'tinacms/dist/react';
+import { useTina, tinaField } from 'tinacms/dist/react';
 import type { ProjectConnectionQuery } from '@tina/__generated__/types';
 import { Link } from '@/i18n/navigation';
 import { ExternalLinkIcon } from 'lucide-react';
@@ -91,6 +91,11 @@ export function PortfolioCategoryPage({
           meta: {
             primaryHref: `/portfolio/${canonicalCategory}/${slug}`,
             websiteUrl: project.websiteUrl,
+            tinaField_title: tinaField(project, 'title'),
+            tinaField_description: tinaField(project, 'description'),
+            tinaField_image: tinaField(project, 'screenshot'),
+            tinaField_tags: tinaField(project, 'technologies'),
+            tinaField_websiteUrl: tinaField(project, 'websiteUrl'),
           },
         };
       });
@@ -112,7 +117,11 @@ export function PortfolioCategoryPage({
           </Button>
         ) : null}
         {websiteUrl ? (
-          <Button asChild variant="outline">
+          <Button
+            asChild
+            variant="outline"
+            data-tina-field={item.meta?.tinaField_websiteUrl ?? undefined}
+          >
             <a href={websiteUrl} target="_blank" rel="noopener noreferrer">
               <ExternalLinkIcon className="mr-1 size-3" />
               {ui.visit}

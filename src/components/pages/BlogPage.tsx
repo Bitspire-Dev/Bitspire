@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { useTina } from 'tinacms/dist/react';
+import { useTina, tinaField } from 'tinacms/dist/react';
 import type { BlogConnectionQuery } from '@tina/__generated__/types';
 import { Separator } from '@/components/ui/primitives/separator';
 import { ContentSearch } from '@/components/ui/composites/content-search';
@@ -60,7 +60,14 @@ export function BlogPage({ query, variables, data, locale }: BlogPageProps) {
           image: post.cover,
           imageAlt: post.title,
           tags: post.tags,
-          meta: { primaryHref: `/blog/${slug}`, ctaLabel: ui.readMore },
+          meta: {
+            primaryHref: `/blog/${slug}`,
+            ctaLabel: ui.readMore,
+            tinaField_title: tinaField(post, 'title'),
+            tinaField_description: tinaField(post, 'description'),
+            tinaField_image: tinaField(post, 'cover'),
+            tinaField_tags: tinaField(post, 'tags'),
+          },
         };
       });
   }, [tinaData, locale, search, ui]);

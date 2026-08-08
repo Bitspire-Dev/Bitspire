@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { ChevronDownIcon } from 'lucide-react';
 
+import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/primitives/badge';
@@ -39,14 +40,13 @@ export function Services({ page }: ServicesProps) {
     return null;
   }
 
-  const items: Service[] = services.items.flatMap(item =>
-    item ? [{ title: item.title, tagline: item.tagline, description: item.description }] : []
-  );
+  const items = services.items.filter((item): item is NonNullable<typeof item> => !!item);
 
   return (
     <section className="relative w-full bg-background">
       <div className="container mx-auto flex max-w-360 flex-col px-6 py-24">
         <motion.h2
+          data-tina-field={tinaField(services, 'title')}
           className="max-w-4xl font-heading text-4xl font-semibold tracking-tight text-foreground md:text-5xl"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -83,10 +83,17 @@ export function Services({ page }: ServicesProps) {
                     )}
                   >
                     <span className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-4">
-                      <span className="font-heading text-lg font-medium text-foreground md:text-xl">
+                      <span
+                        data-tina-field={tinaField(item, 'title')}
+                        className="font-heading text-lg font-medium text-foreground md:text-xl"
+                      >
                         {item.title}
                       </span>
-                      <Badge variant="outline" className="border-brand/30 text-brand md:text-base">
+                      <Badge
+                        data-tina-field={tinaField(item, 'tagline')}
+                        variant="outline"
+                        className="border-brand/30 text-brand md:text-base"
+                      >
                         {item.tagline}
                       </Badge>
                     </span>
@@ -101,7 +108,7 @@ export function Services({ page }: ServicesProps) {
                   </AccordionTrigger>
 
                   <AccordionContent className="pb-6 text-sm leading-relaxed md:text-base">
-                    {item.description}
+                    <div data-tina-field={tinaField(item, 'description')}>{item.description}</div>
                   </AccordionContent>
                 </AccordionItem>
               </motion.div>
