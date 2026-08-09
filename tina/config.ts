@@ -247,8 +247,9 @@ export default defineConfig({
         format: 'md',
         ui: {
           router: ({ document }) => {
-            const [locale, category] = document._sys.relativePath.split('/');
-            return `/${locale}/portfolio/${category}`;
+            const [locale, category, filename] = document._sys.relativePath.split('/');
+            const slug = filename?.replace(/\.md$/, '');
+            return `/${locale}/portfolio/${category}/${slug}`;
           },
         },
         fields: [

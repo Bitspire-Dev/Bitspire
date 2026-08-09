@@ -15,5 +15,6 @@ export const routing = defineRouting({
       pl: '/portfolio/oprogramowanie',
       en: '/portfolio/software',
     },
+    '/contact': '/contact',
   },
 });
