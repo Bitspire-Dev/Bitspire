@@ -9,7 +9,6 @@ import { LocaleSwitcher } from '@/components/ui/composites/locale-switcher';
 import { ThemeSwitcher } from '@/components/ui/composites/theme-switcher';
 import { useMounted } from '@/lib/use-mounted';
 import { cn } from '@/lib/utils';
-import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 import { Button } from '@/components/ui/primitives/button';
 import {
   NavigationMenu,
@@ -56,9 +55,14 @@ export function Header({ locale, links, blogMap }: HeaderProps) {
           <ThemeSwitcher className="md:hidden" />
 
           <Link href="/" className="flex items-center gap-2">
-            <AspectRatio ratio={1024 / 804} className="h-8 w-auto">
-              <Image src={logoSrc} alt="Bitspire" fill className="object-contain" unoptimized />
-            </AspectRatio>
+            <Image
+              src={logoSrc}
+              alt="Bitspire"
+              width={24}
+              height={19}
+              className="h-5 w-auto"
+              unoptimized
+            />
             <span className="font-heading text-lg font-bold tracking-[0.2em] text-brand md:text-xl">
               BITSPIRE
             </span>
