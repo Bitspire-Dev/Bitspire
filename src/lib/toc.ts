@@ -9,7 +9,7 @@ export interface TocItem {
 export function extractTocFromMarkdown(content: string): TocItem[] {
   const parts = content.split(/^---$/m);
   const body = parts.length >= 3 ? parts.slice(2).join('---') : content;
-  const headingRegex = /^(#{2,3})\s+(.+)$/gm;
+  const headingRegex = /^(#{2})\s+(.+)$/gm;
   const items: TocItem[] = [];
   const seen = new Set<string>();
 

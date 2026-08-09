@@ -168,7 +168,6 @@ export function TocList({ toc, activeId, onItemClick, className }: TocListProps)
               className={cn(
                 'block rounded-md px-2 py-1.5 font-sans text-sm transition-colors',
                 'text-muted-foreground hover:bg-muted hover:text-foreground',
-                item.level === 3 && 'pl-5',
                 item.id === activeId && 'bg-muted font-medium text-foreground'
               )}
             >
