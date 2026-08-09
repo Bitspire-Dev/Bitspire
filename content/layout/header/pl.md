@@ -7,4 +7,6 @@ navLinks:
     href: /portfolio
   - label: Blog
     href: /blog
+  - label: Kontakt
+    href: /contact
 ---

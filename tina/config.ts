@@ -96,8 +96,9 @@ export default defineConfig({
         path: 'content/pages',
         ui: {
           router: ({ document }) => {
-            const [locale] = document._sys.relativePath.split('/');
-            return `/${locale}`;
+            const [locale, filename] = document._sys.relativePath.split('/');
+            const slug = filename?.replace(/\.md$/, '') ?? '';
+            return slug === 'home' ? `/${locale}` : `/${locale}/${slug}`;
           },
         },
         fields: [
@@ -151,6 +152,53 @@ export default defineConfig({
                     type: 'string',
                     name: 'description',
                     label: 'Description',
+                    required: true,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'object',
+            name: 'contact',
+            label: 'Contact',
+            fields: [
+              {
+                type: 'string',
+                name: 'email',
+                label: 'Email',
+              },
+              {
+                type: 'string',
+                name: 'phone',
+                label: 'Phone',
+              },
+              {
+                type: 'string',
+                name: 'address',
+                label: 'Address',
+              },
+              {
+                type: 'string',
+                name: 'hours',
+                label: 'Working hours',
+              },
+              {
+                type: 'object',
+                name: 'socials',
+                label: 'Social links',
+                list: true,
+                fields: [
+                  {
+                    type: 'string',
+                    name: 'platform',
+                    label: 'Platform',
+                    required: true,
+                  },
+                  {
+                    type: 'string',
+                    name: 'url',
+                    label: 'URL',
                     required: true,
                   },
                 ],

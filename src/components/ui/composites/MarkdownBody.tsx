@@ -18,7 +18,7 @@ export function MarkdownBody({ content, tinaField, components, className }: Mark
 
   return (
     <section className={cn('w-full', className)}>
-      <div data-tina-field={tinaField} className="prose max-w-none font-sans prose-invert">
+      <div data-tina-field={tinaField} className="prose max-w-none font-sans dark:prose-invert">
         <TinaMarkdown
           content={content as TinaMarkdownContent | TinaMarkdownContent[]}
           components={components as Components<Record<string, object>>}

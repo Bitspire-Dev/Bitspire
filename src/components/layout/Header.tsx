@@ -38,6 +38,7 @@ const DEFAULT_LINKS: NavLink[] = [
   { label: 'Home', href: '/' },
   { label: 'Portfolio', href: '/portfolio' },
   { label: 'Blog', href: '/blog' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 export function Header({ locale, links, blogMap }: HeaderProps) {

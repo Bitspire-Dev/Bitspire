@@ -1,4 +1,4 @@
-export default {
+const svgoConfig = {
   multipass: true,
   plugins: [
     'removeDoctype',
@@ -39,3 +39,5 @@ export default {
     },
   ],
 };
+
+export default svgoConfig;
