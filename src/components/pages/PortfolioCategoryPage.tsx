@@ -4,27 +4,12 @@ import { useMemo, useState } from 'react';
 import { useTina, tinaField } from 'tinacms/dist/react';
 import type { ProjectConnectionQuery } from '@tina/__generated__/types';
 import { Link } from '@/i18n/navigation';
-import { ExternalLinkIcon } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/primitives/button';
-import { Separator } from '@/components/ui/primitives/separator';
-import { ContentSearch } from '@/components/ui/composites/content-search';
-import { CardGrid } from '@/components/ui/composites/card-grid';
+import { ContentListView } from '@/components/sections/ContentListView';
 import type { ContentCardItem } from '@/components/ui/composites/content-card';
+import { getCategoryBySlug, getProjectHref } from '@/lib/portfolio/categories';
 import type { ReactNode } from 'react';
-
-const CATEGORY_LABELS: Record<string, Record<string, string>> = {
-  'strony-internetowe': { pl: 'Strony internetowe', en: 'Websites' },
-  oprogramowanie: { pl: 'Oprogramowanie', en: 'Software' },
-  websites: { pl: 'Strony internetowe', en: 'Websites' },
-  software: { pl: 'Oprogramowanie', en: 'Software' },
-};
-
-const CATEGORY_TO_CANONICAL: Record<string, string> = {
-  'strony-internetowe': 'websites',
-  oprogramowanie: 'software',
-  websites: 'websites',
-  software: 'software',
-};
 
 const UI: Record<string, Record<string, string>> = {
   pl: {
@@ -60,7 +45,8 @@ export function PortfolioCategoryPage({
 }: PortfolioCategoryPageProps) {
   const { data: tinaData } = useTina({ query, variables, data });
   const [search, setSearch] = useState('');
-  const canonicalCategory = CATEGORY_TO_CANONICAL[category] ?? category;
+  const categoryData = getCategoryBySlug(category, locale);
+  const canonicalCategory = categoryData?.id ?? category;
   const ui = UI[locale] ?? UI.pl;
 
   const projects = useMemo<ContentCardItem[]>(() => {
@@ -89,7 +75,7 @@ export function PortfolioCategoryPage({
           imageAlt: project.title,
           tags: project.technologies,
           meta: {
-            primaryHref: `/portfolio/${canonicalCategory}/${slug}`,
+            primaryHref: getProjectHref(locale, canonicalCategory as 'websites' | 'software', slug),
             websiteUrl: project.websiteUrl,
             tinaField_title: tinaField(project, 'title'),
             tinaField_description: tinaField(project, 'description'),
@@ -108,10 +94,7 @@ export function PortfolioCategoryPage({
       <>
         {primaryHref ? (
           <Button asChild variant="default">
-            <Link
-              href={primaryHref as '/portfolio/websites' | '/portfolio/software'}
-              locale={locale}
-            >
+            <Link href={primaryHref} locale={locale}>
               {ui.readMore}
             </Link>
           </Button>
@@ -120,10 +103,10 @@ export function PortfolioCategoryPage({
           <Button
             asChild
             variant="outline"
-            data-tina-field={item.meta?.tinaField_websiteUrl ?? undefined}
+            data-tina-field={item.meta?.tinaField_websiteUrl as string | undefined}
           >
             <a href={websiteUrl} target="_blank" rel="noopener noreferrer">
-              <ExternalLinkIcon className="mr-1 size-3" />
+              <ExternalLink className="mr-1 size-3" />
               {ui.visit}
             </a>
           </Button>
@@ -133,17 +116,16 @@ export function PortfolioCategoryPage({
   };
 
   return (
-    <section className="container mx-auto max-w-360 px-4 py-16 md:px-6 md:py-24">
-      <h1 className="font-heading text-3xl font-bold text-foreground md:text-5xl">
-        {CATEGORY_LABELS[category]?.[locale] ?? category}
-      </h1>
-      <p className="mt-4 max-w-2xl font-sans text-base text-muted-foreground">{ui.description}</p>
-
-      <ContentSearch value={search} onChange={setSearch} placeholder={ui.searchPlaceholder} />
-
-      <Separator className="my-12" />
-
-      <CardGrid items={projects} emptyMessage={ui.empty} renderFooter={renderFooter} />
-    </section>
+    <ContentListView
+      title={categoryData?.label[locale] ?? category}
+      description={ui.description}
+      searchValue={search}
+      onSearchChange={setSearch}
+      searchPlaceholder={ui.searchPlaceholder}
+      emptyMessage={ui.empty}
+      items={projects}
+      imageRatio={16 / 9}
+      renderFooter={renderFooter}
+    />
   );
 }

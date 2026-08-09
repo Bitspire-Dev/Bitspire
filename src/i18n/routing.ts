@@ -6,15 +6,10 @@ export const routing = defineRouting({
   pathnames: {
     '/': '/',
     '/blog': '/blog',
+    '/blog/[slug]': '/blog/[slug]',
     '/portfolio': '/portfolio',
-    '/portfolio/websites': {
-      pl: '/portfolio/strony-internetowe',
-      en: '/portfolio/websites',
-    },
-    '/portfolio/software': {
-      pl: '/portfolio/oprogramowanie',
-      en: '/portfolio/software',
-    },
+    '/portfolio/[category]': '/portfolio/[category]',
+    '/portfolio/[category]/[slug]': '/portfolio/[category]/[slug]',
     '/contact': '/contact',
   },
 });

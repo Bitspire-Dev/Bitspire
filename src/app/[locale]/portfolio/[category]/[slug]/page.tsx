@@ -2,8 +2,8 @@ import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import client from '@tina/__generated__/client';
-import type { ProjectQuery } from '@tina/__generated__/types';
 import { PortfolioProjectPage } from '@/components/pages/PortfolioProjectPage';
+import { getCategoryBySlug, PORTFOLIO_CATEGORIES } from '@/lib/portfolio/categories';
 
 interface ProjectPageParams {
   locale: string;
@@ -11,23 +11,34 @@ interface ProjectPageParams {
   slug: string;
 }
 
-export async function generateStaticParams() {
+export async function generateStaticParams({ params }: { params: { locale: string } }) {
+  const { locale } = params;
   const tina = await client.queries.projectConnection();
   const edges = tina.data.projectConnection?.edges ?? [];
-  const params: ProjectPageParams[] = [];
+  const routeParams: { category: string; slug: string }[] = [];
 
   for (const edge of edges) {
     const node = edge?.node;
     if (!node) continue;
     const relativePath = node._sys.relativePath;
     if (!relativePath.endsWith('.md')) continue;
-    const [locale, category, filename] = relativePath.split('/');
-    if (!locale || !category || !filename) continue;
+    const [contentLocale, canonicalCategory, filename] = relativePath.split('/');
+    if (!contentLocale || !canonicalCategory || !filename) continue;
+    if (contentLocale !== locale) continue;
+    const categoryData = PORTFOLIO_CATEGORIES.find(category => category.id === canonicalCategory);
+    if (!categoryData) continue;
     const slug = filename.replace(/\.md$/, '');
-    params.push({ locale, category, slug });
+    routeParams.push({
+      category: categoryData.slug[locale] ?? categoryData.slug.pl,
+      slug,
+    });
   }
 
-  return params;
+  return routeParams;
+}
+
+function getCanonicalCategory(locale: string, categorySlug: string): string | undefined {
+  return getCategoryBySlug(categorySlug, locale)?.id;
 }
 
 export async function generateMetadata({
@@ -36,8 +47,13 @@ export async function generateMetadata({
   params: Promise<ProjectPageParams>;
 }): Promise<Metadata> {
   const { locale, category, slug } = await params;
+  const canonicalCategory = getCanonicalCategory(locale, category);
+  if (!canonicalCategory) {
+    return {};
+  }
+
   const tina = await client.queries.project({
-    relativePath: `${locale}/${category}/${slug}.md`,
+    relativePath: `${locale}/${canonicalCategory}/${slug}.md`,
   });
 
   return {
@@ -55,8 +71,13 @@ export default async function ProjectArticlePage({
 
   setRequestLocale(locale);
 
+  const canonicalCategory = getCanonicalCategory(locale, category);
+  if (!canonicalCategory) {
+    notFound();
+  }
+
   const tina = await client.queries.project({
-    relativePath: `${locale}/${category}/${slug}.md`,
+    relativePath: `${locale}/${canonicalCategory}/${slug}.md`,
   });
 
   if (!tina.data.project) {
@@ -67,9 +88,9 @@ export default async function ProjectArticlePage({
     <PortfolioProjectPage
       query={tina.query}
       variables={tina.variables}
-      data={tina.data as ProjectQuery}
+      data={tina.data}
       locale={locale}
-      category={category}
+      category={canonicalCategory}
     />
   );
 }

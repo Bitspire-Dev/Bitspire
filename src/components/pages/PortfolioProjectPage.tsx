@@ -4,7 +4,8 @@ import { useTina, tinaField } from 'tinacms/dist/react';
 import type { ProjectQuery } from '@tina/__generated__/types';
 import { PortfolioProjectHeader } from '@/components/sections/PortfolioProjectHeader';
 import { PortfolioProjectBody } from '@/components/sections/PortfolioProjectBody';
-import { PortfolioProjectCta } from '@/components/sections/PortfolioProjectCta';
+import { ContactCta } from '@/components/ui/composites/ContactCta';
+import { getCategoryHref, isPortfolioCategoryId } from '@/lib/portfolio/categories';
 
 const UI: Record<string, Record<string, string>> = {
   pl: {
@@ -40,20 +41,21 @@ export function PortfolioProjectPage({
     return null;
   }
 
+  const backHref = isPortfolioCategoryId(category)
+    ? getCategoryHref(locale, category)
+    : '/portfolio';
+
   return (
     <article className="container mx-auto max-w-360 px-4 pb-24 md:px-6 lg:pb-12">
       <PortfolioProjectHeader
         project={project}
         backLabel={ui.back}
-        backHref={`/portfolio/${category}`}
+        backHref={backHref}
         visitLabel={ui.visit}
         locale={locale}
       />
-      <PortfolioProjectBody
-        body={project.body}
-        tinaFieldBody={tinaField(project, 'body')}
-      />
-      <PortfolioProjectCta locale={locale} />
+      <PortfolioProjectBody body={project.body} tinaFieldBody={tinaField(project, 'body')} />
+      <ContactCta locale={locale} />
     </article>
   );
 }

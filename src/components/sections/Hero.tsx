@@ -31,7 +31,7 @@ export function Hero({ page }: HeroProps) {
         {page.body && (
           <div
             data-tina-field={tinaField(page, 'body')}
-            className="prose prose-invert mt-8 max-w-2xl font-sans text-muted-foreground"
+            className="prose mt-8 max-w-2xl font-sans text-muted-foreground prose-invert"
           >
             <TinaMarkdown content={page.body} />
           </div>

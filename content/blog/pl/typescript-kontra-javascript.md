@@ -1,5 +1,6 @@
 ---
 title: TypeScript kontra JavaScript
+canonical: typescript-vs-javascript
 description: Porównanie TypeScript i JavaScript — kiedy warto sięgnąć po typowanie?
 cover: /blog/typescript-vs-javascript.png
 tags:

@@ -33,15 +33,10 @@ export function AuthorCard({ author, tinaField, className }: AuthorCardProps) {
     .toUpperCase();
 
   return (
-    <Card
-      data-tina-field={tinaField}
-      className={cn('gap-3', className)}
-    >
+    <Card data-tina-field={tinaField} className={cn('gap-3', className)}>
       <CardContent className="flex items-start gap-3 pt-4">
         <Avatar size="lg" className="rounded-md">
-          {author.avatar ? (
-            <AvatarImage src={author.avatar} alt={author.name} />
-          ) : null}
+          {author.avatar ? <AvatarImage src={author.avatar} alt={author.name} /> : null}
           <AvatarFallback className="rounded-md bg-primary text-primary-foreground">
             {initials}
           </AvatarFallback>
@@ -54,13 +49,16 @@ export function AuthorCard({ author, tinaField, className }: AuthorCardProps) {
         </div>
       </CardContent>
       {author.bio ? (
-        <CardContent className="pt-0 text-sm text-muted-foreground">
-          {author.bio}
-        </CardContent>
+        <CardContent className="pt-0 text-sm text-muted-foreground">{author.bio}</CardContent>
       ) : null}
       {author.link ? (
         <CardContent className="pt-0">
-          <Button asChild variant="ghost" size="sm" className="h-auto p-0 font-sans text-sm text-foreground hover:text-primary">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="h-auto p-0 font-sans text-sm text-foreground hover:text-primary"
+          >
             <a
               href={author.link}
               target="_blank"

@@ -6,10 +6,11 @@ import { routing } from '@/i18n/routing';
 import client from '@tina/__generated__/client';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { buildBlogArticleMap } from '@/lib/blog';
 import { inter, nippo, ibmPlexMono } from '@/lib/fonts';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { siteMetadata } from '@/lib/site';
-import '../globals.css';
+import '@/app/globals.css';
 
 export const metadata: Metadata = {
   ...siteMetadata,
@@ -37,14 +38,19 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
   const messages = await getMessages();
 
-  const { data: headerData } = await client.queries.header({
-    relativePath: `${locale}.md`,
-  });
+  const [{ data: headerData }, { data: blogData }] = await Promise.all([
+    client.queries.header({
+      relativePath: `${locale}.md`,
+    }),
+    client.queries.blogConnection(),
+  ]);
 
   const links =
     headerData.header?.navLinks?.flatMap(link =>
       link ? [{ label: link.label, href: link.href }] : []
     ) ?? [];
+
+  const blogMap = buildBlogArticleMap(blogData);
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -53,7 +59,7 @@ export default async function LocaleLayout({
       >
         <ThemeProvider>
           <NextIntlClientProvider messages={messages} locale={locale}>
-            <Header locale={locale} links={links} />
+            <Header locale={locale} links={links} blogMap={blogMap} />
             <main className="flex-1">{children}</main>
             <Footer locale={locale} />
           </NextIntlClientProvider>

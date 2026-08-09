@@ -1,15 +1,13 @@
 import { setRequestLocale } from 'next-intl/server';
 import client from '@tina/__generated__/client';
 import { PortfolioCategoryPage } from '@/components/pages/PortfolioCategoryPage';
-
-const CATEGORIES_BY_LOCALE: Record<string, string[]> = {
-  pl: ['strony-internetowe', 'oprogramowanie'],
-  en: ['websites', 'software'],
-};
+import { PORTFOLIO_CATEGORIES } from '@/lib/portfolio/categories';
 
 export function generateStaticParams({ params }: { params: { locale: string } }) {
-  const categories = CATEGORIES_BY_LOCALE[params.locale] ?? CATEGORIES_BY_LOCALE.pl;
-  return categories.map(category => ({ category }));
+  const { locale } = params;
+  return PORTFOLIO_CATEGORIES.map(category => ({
+    category: category.slug[locale] ?? category.slug.pl,
+  }));
 }
 
 export default async function PortfolioCategory({

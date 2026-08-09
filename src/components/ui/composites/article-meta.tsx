@@ -10,7 +10,13 @@ interface ArticleMetaProps {
   tinaFieldTags?: string;
 }
 
-export function ArticleMeta({ date, tags, locale, tinaFieldDate, tinaFieldTags }: ArticleMetaProps) {
+export function ArticleMeta({
+  date,
+  tags,
+  locale,
+  tinaFieldDate,
+  tinaFieldTags,
+}: ArticleMetaProps) {
   const formattedDate = (() => {
     if (!date) return null;
     try {

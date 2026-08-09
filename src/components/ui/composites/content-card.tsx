@@ -1,8 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import type { ComponentProps, ReactNode } from 'react';
+import { useLocale } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import {
   Card,
   CardContent,
@@ -15,7 +16,19 @@ import { Badge } from '@/components/ui/primitives/badge';
 import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 import { Skeleton } from '@/components/ui/primitives/skeleton';
 import { Button } from '@/components/ui/primitives/button';
-import type { ReactNode } from 'react';
+
+type Href = ComponentProps<typeof Link>['href'];
+
+export interface ContentCardMeta {
+  primaryHref?: Href;
+  ctaLabel?: string;
+  websiteUrl?: string | null;
+  tinaField_title?: string | null;
+  tinaField_description?: string | null;
+  tinaField_image?: string | null;
+  tinaField_tags?: string | null;
+  tinaField_websiteUrl?: string | null;
+}
 
 export interface ContentCardItem {
   id: string;
@@ -24,7 +37,7 @@ export interface ContentCardItem {
   image?: string | null;
   imageAlt?: string | null;
   tags?: (string | null)[] | null;
-  meta?: Record<string, string | null | undefined>;
+  meta?: ContentCardMeta;
 }
 
 interface ContentCardProps {
@@ -35,17 +48,18 @@ interface ContentCardProps {
 }
 
 export function ContentCard({ item, imageRatio = 4 / 3, unoptimized, footer }: ContentCardProps) {
-  const params = useParams();
-  const locale = typeof params?.locale === 'string' ? params.locale : 'pl';
+  const locale = useLocale();
   const image = item.image ?? null;
   const imageAlt = item.imageAlt ?? item.title ?? '';
-  const primaryHref = item.meta?.primaryHref;
-  const ctaLabel = item.meta?.ctaLabel ?? (locale === 'pl' ? 'Czytaj więcej' : 'Read more');
+  const primaryHref = item.meta?.primaryHref as Href | undefined;
+  const ctaLabel =
+    (item.meta?.ctaLabel as string | undefined) ??
+    (locale === 'pl' ? 'Czytaj więcej' : 'Read more');
 
   return (
     <Card className="flex flex-col overflow-hidden">
       <AspectRatio
-        data-tina-field={item.meta?.tinaField_image ?? undefined}
+        data-tina-field={item.meta?.tinaField_image as string | undefined}
         ratio={imageRatio}
         className="bg-muted"
       >
@@ -66,13 +80,13 @@ export function ContentCard({ item, imageRatio = 4 / 3, unoptimized, footer }: C
       </AspectRatio>
       <CardHeader className="items-start gap-2">
         <CardTitle
-          data-tina-field={item.meta?.tinaField_title ?? undefined}
+          data-tina-field={item.meta?.tinaField_title as string | undefined}
           className="font-heading text-lg"
         >
           {item.title}
         </CardTitle>
         <CardDescription
-          data-tina-field={item.meta?.tinaField_description ?? undefined}
+          data-tina-field={item.meta?.tinaField_description as string | undefined}
           className="font-sans text-sm text-muted-foreground"
         >
           {item.description}
@@ -80,7 +94,7 @@ export function ContentCard({ item, imageRatio = 4 / 3, unoptimized, footer }: C
       </CardHeader>
       {item.tags && item.tags.length > 0 ? (
         <CardContent
-          data-tina-field={item.meta?.tinaField_tags ?? undefined}
+          data-tina-field={item.meta?.tinaField_tags as string | undefined}
           className="flex-1"
         >
           <div className="flex flex-wrap gap-2">
@@ -98,7 +112,7 @@ export function ContentCard({ item, imageRatio = 4 / 3, unoptimized, footer }: C
       {!footer && primaryHref ? (
         <CardFooter className="flex gap-2">
           <Button asChild variant="default">
-            <Link href={`/${locale}${primaryHref}`}>{ctaLabel}</Link>
+            <Link href={primaryHref}>{ctaLabel}</Link>
           </Button>
         </CardFooter>
       ) : null}

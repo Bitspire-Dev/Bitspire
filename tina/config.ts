@@ -180,6 +180,12 @@ export default defineConfig({
           },
           {
             type: 'string',
+            name: 'canonical',
+            label: 'Canonical',
+            description: 'Unique identifier shared across all language versions of this article.',
+          },
+          {
+            type: 'string',
             name: 'description',
             label: 'Description',
           },

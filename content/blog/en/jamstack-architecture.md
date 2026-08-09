@@ -1,5 +1,6 @@
 ---
 title: Jamstack Architecture
+canonical: jamstack-architecture
 description: An introduction to Jamstack architecture and its benefits for modern websites.
 cover: /blog/jamstack-architecture.png
 tags:

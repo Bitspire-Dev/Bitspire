@@ -7,6 +7,7 @@ import { ChevronDownIcon } from 'lucide-react';
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
 import { cn } from '@/lib/utils';
+import { slugify } from '@/lib/string';
 import { Badge } from '@/components/ui/primitives/badge';
 import {
   Accordion,
@@ -23,13 +24,6 @@ export interface Service {
   title: string;
   tagline: string;
   description: string;
-}
-
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
 }
 
 export function Services({ page }: ServicesProps) {

@@ -1,7 +1,5 @@
 'use client';
 
-import { usePathname, useRouter } from '@/i18n/navigation';
-import { routing } from '@/i18n/routing';
 import {
   Select,
   SelectContent,
@@ -9,22 +7,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/primitives/select';
+import { useLocaleSwitcher } from '@/hooks/use-locale-switcher';
+import type { BlogArticleMap } from '@/lib/blog';
+import { routing } from '@/i18n/routing';
 
 interface LocaleSwitcherProps {
   locale: string;
+  blogMap: BlogArticleMap;
 }
 
-export function LocaleSwitcher({ locale }: LocaleSwitcherProps) {
-  const pathname = usePathname();
-  const router = useRouter();
+export function LocaleSwitcher({ locale, blogMap }: LocaleSwitcherProps) {
+  const switchLocale = useLocaleSwitcher({ locale, blogMap });
 
   return (
-    <Select
-      value={locale}
-      onValueChange={value => {
-        router.replace(pathname, { locale: value });
-      }}
-    >
+    <Select value={locale} onValueChange={switchLocale}>
       <SelectTrigger aria-label="Change language" className="w-20 font-sans uppercase">
         <SelectValue placeholder={locale.toUpperCase()} />
       </SelectTrigger>

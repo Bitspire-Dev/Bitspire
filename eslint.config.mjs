@@ -1,13 +1,16 @@
 import { defineConfig, globalIgnores } from 'eslint/config';
-import nextVitals from 'eslint-config-next/core-web-vitals';
-import nextTs from 'eslint-config-next/typescript';
+import { FlatCompat } from '@eslint/eslintrc';
+import nextVitals from 'eslint-config-next/core-web-vitals.js';
+import nextTs from 'eslint-config-next/typescript.js';
 import prettier from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
 import tailwind from 'eslint-plugin-tailwindcss';
 
+const compat = new FlatCompat({ baseDirectory: import.meta.dirname });
+
 const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
+  ...compat.config(nextVitals),
+  ...compat.config(nextTs),
   prettierConfig,
   {
     plugins: {

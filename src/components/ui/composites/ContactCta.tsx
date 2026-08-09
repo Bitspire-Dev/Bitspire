@@ -1,8 +1,15 @@
 'use client';
 
 import { Link } from '@/i18n/navigation';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/primitives/button';
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/primitives/card';
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/primitives/card';
 
 const UI: Record<string, Record<string, string>> = {
   pl: {
@@ -17,26 +24,25 @@ const UI: Record<string, Record<string, string>> = {
   },
 };
 
-interface PortfolioProjectCtaProps {
+interface ContactCtaProps {
   locale: string;
+  className?: string;
 }
 
-export function PortfolioProjectCta({ locale }: PortfolioProjectCtaProps) {
+export function ContactCta({ locale, className }: ContactCtaProps) {
   const ui = UI[locale] ?? UI.pl;
 
   return (
-    <Card className="mt-12 w-full">
+    <Card className={cn('mt-12 w-full', className)}>
       <CardHeader>
-        <CardTitle className="font-heading text-xl md:text-2xl">
-          {ui.title}
-        </CardTitle>
+        <CardTitle className="font-heading text-xl md:text-2xl">{ui.title}</CardTitle>
         <CardDescription className="font-sans text-base text-muted-foreground">
           {ui.description}
         </CardDescription>
       </CardHeader>
       <CardFooter>
         <Button asChild>
-          <Link href={"/contact" as any} locale={locale}>
+          <Link href="/contact" locale={locale}>
             {ui.button}
           </Link>
         </Button>

@@ -1,27 +1,17 @@
 'use client';
 
-import { TinaMarkdown } from 'tinacms/dist/rich-text';
-import { cn } from '@/lib/utils';
+import { MarkdownBody } from '@/components/ui/composites/MarkdownBody';
 
 interface PortfolioProjectBodyProps {
-  body: any;
+  body: React.ComponentProps<typeof MarkdownBody>['content'];
   tinaFieldBody: string;
   className?: string;
 }
 
-export function PortfolioProjectBody({ body, tinaFieldBody, className }: PortfolioProjectBodyProps) {
-  if (!body) {
-    return null;
-  }
-
-  return (
-    <section className={cn('w-full', className)}>
-      <div
-        data-tina-field={tinaFieldBody}
-        className="prose max-w-none font-sans prose-invert"
-      >
-        <TinaMarkdown content={body} />
-      </div>
-    </section>
-  );
+export function PortfolioProjectBody({
+  body,
+  tinaFieldBody,
+  className,
+}: PortfolioProjectBodyProps) {
+  return <MarkdownBody content={body} tinaField={tinaFieldBody} className={className} />;
 }

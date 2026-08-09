@@ -8,6 +8,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/pr
 import { Button } from '@/components/ui/primitives/button';
 import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 import { Separator } from '@/components/ui/primitives/separator';
+import { PORTFOLIO_CATEGORIES, getCategoryHref } from '@/lib/portfolio/categories';
 
 interface PortfolioPageProps {
   query: string;
@@ -15,37 +16,6 @@ interface PortfolioPageProps {
   data: PageQuery;
   locale: string;
 }
-
-type CategoryHref = '/portfolio/websites' | '/portfolio/software';
-
-const CATEGORIES: {
-  slug: 'websites' | 'software';
-  href: CategoryHref;
-  label: Record<string, string>;
-  description: Record<string, string>;
-  image: string;
-}[] = [
-  {
-    slug: 'websites',
-    href: '/portfolio/websites',
-    label: { pl: 'Strony internetowe', en: 'Websites' },
-    description: {
-      pl: 'Nowoczesne strony internetowe i aplikacje webowe',
-      en: 'Modern websites and web applications',
-    },
-    image: '/logo-carousel/nextjs.svg',
-  },
-  {
-    slug: 'software',
-    href: '/portfolio/software',
-    label: { pl: 'Oprogramowanie', en: 'Software' },
-    description: {
-      pl: 'Dedykowane oprogramowanie i aplikacje desktopowe',
-      en: 'Custom software and desktop applications',
-    },
-    image: '/logo-carousel/react.svg',
-  },
-];
 
 const UI: Record<string, Record<string, string>> = {
   pl: { browse: 'Przeglądaj' },
@@ -81,8 +51,8 @@ export function PortfolioPage({ query, variables, data, locale }: PortfolioPageP
       <Separator className="mb-12" />
 
       <div className="grid gap-6 md:grid-cols-2">
-        {CATEGORIES.map(category => (
-          <Card key={category.slug} className="group overflow-hidden">
+        {PORTFOLIO_CATEGORIES.map(category => (
+          <Card key={category.id} className="group overflow-hidden">
             <AspectRatio ratio={4 / 3} className="bg-muted">
               <Image
                 src={category.image}
@@ -102,7 +72,7 @@ export function PortfolioPage({ query, variables, data, locale }: PortfolioPageP
             </CardHeader>
             <div className="px-(--card-spacing) pb-(--card-spacing)">
               <Button asChild>
-                <Link href={category.href}>{ui.browse}</Link>
+                <Link href={getCategoryHref(locale, category.id)}>{ui.browse}</Link>
               </Button>
             </div>
           </Card>

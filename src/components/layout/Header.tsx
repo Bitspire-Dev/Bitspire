@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ComponentProps } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import { Link } from '@/i18n/navigation';
@@ -18,6 +18,10 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/components/ui/primitives/navigation-menu';
+import { getCategoryHref } from '@/lib/portfolio/categories';
+import type { BlogArticleMap } from '@/lib/blog';
+
+type Href = ComponentProps<typeof Link>['href'];
 
 interface NavLink {
   label: string;
@@ -27,6 +31,7 @@ interface NavLink {
 interface HeaderProps {
   locale: string;
   links: NavLink[];
+  blogMap: BlogArticleMap;
 }
 
 const DEFAULT_LINKS: NavLink[] = [
@@ -35,7 +40,7 @@ const DEFAULT_LINKS: NavLink[] = [
   { label: 'Blog', href: '/blog' },
 ];
 
-export function Header({ locale, links }: HeaderProps) {
+export function Header({ locale, links, blogMap }: HeaderProps) {
   const { resolvedTheme } = useTheme();
   const mounted = useMounted();
   const navLinks = links.length > 0 ? links : DEFAULT_LINKS;
@@ -46,7 +51,7 @@ export function Header({ locale, links }: HeaderProps) {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur">
       <div className="container mx-auto flex h-14 max-w-360 items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-4">
-          <MobileMenu locale={locale} links={navLinks} />
+          <MobileMenu locale={locale} links={navLinks} blogMap={blogMap} />
           <ThemeSwitcher className="md:hidden" />
 
           <Link href="/" className="flex items-center gap-2">
@@ -63,7 +68,7 @@ export function Header({ locale, links }: HeaderProps) {
 
         <div className="hidden items-center gap-2 md:flex">
           <ThemeSwitcher />
-          <LocaleSwitcher locale={locale} />
+          <LocaleSwitcher locale={locale} blogMap={blogMap} />
         </div>
       </div>
     </header>
@@ -84,7 +89,7 @@ function DesktopNav({ links, locale }: { links: NavLink[]; locale: string }) {
                 variant="ghost"
                 className="text-foreground/70 hover:bg-muted hover:text-foreground"
               >
-                <Link href={link.href as '/'}>{link.label}</Link>
+                <Link href={link.href as Href}>{link.label}</Link>
               </Button>
             </NavigationMenuItem>
           )
@@ -103,12 +108,12 @@ function PortfolioMenuItem({ label, locale }: { label: string; locale: string })
       <NavigationMenuContent>
         <div className="flex flex-col gap-1 p-2">
           <Button asChild variant="ghost" className="justify-start">
-            <Link href="/portfolio/websites" locale={locale}>
+            <Link href={getCategoryHref(locale, 'websites')}>
               {locale === 'pl' ? 'Strony internetowe' : 'Websites'}
             </Link>
           </Button>
           <Button asChild variant="ghost" className="justify-start">
-            <Link href="/portfolio/software" locale={locale}>
+            <Link href={getCategoryHref(locale, 'software')}>
               {locale === 'pl' ? 'Oprogramowanie' : 'Software'}
             </Link>
           </Button>
@@ -118,7 +123,15 @@ function PortfolioMenuItem({ label, locale }: { label: string; locale: string })
   );
 }
 
-function MobileMenu({ locale, links }: { locale: string; links: NavLink[] }) {
+function MobileMenu({
+  locale,
+  links,
+  blogMap,
+}: {
+  locale: string;
+  links: NavLink[];
+  blogMap: BlogArticleMap;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -146,7 +159,7 @@ function MobileMenu({ locale, links }: { locale: string; links: NavLink[] }) {
             {links.map(link => (
               <li key={link.href} className="w-full">
                 <Link
-                  href={link.href as '/'}
+                  href={link.href as Href}
                   onClick={() => setOpen(false)}
                   className="block w-full rounded-lg py-2 font-sans text-sm text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
                 >
@@ -158,7 +171,7 @@ function MobileMenu({ locale, links }: { locale: string; links: NavLink[] }) {
         </nav>
 
         <div className="mt-4 border-t border-border/40 pt-4">
-          <LocaleSwitcher locale={locale} />
+          <LocaleSwitcher locale={locale} blogMap={blogMap} />
         </div>
       </div>
     </div>

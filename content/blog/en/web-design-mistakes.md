@@ -1,5 +1,6 @@
 ---
 title: Web Design Mistakes
+canonical: web-design-mistakes
 description: The most common web design mistakes and how to avoid them.
 cover: /blog/web-design-mistakes.png
 tags:

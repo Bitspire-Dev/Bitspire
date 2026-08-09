@@ -7,8 +7,7 @@ import { BlogArticleBody } from '@/components/sections/BlogArticleBody';
 import { BlogArticleRelated } from '@/components/sections/BlogArticleRelated';
 import { AuthorCard } from '@/components/ui/composites/AuthorCard';
 import { ShareCard } from '@/components/ui/composites/ShareCard';
-import { TableOfContents } from '@/components/ui/composites/TableOfContents';
-import { MobileTocBar } from '@/components/ui/composites/MobileTocBar';
+import { TableOfContents, MobileTocBar } from '@/components/ui/composites/table-of-contents';
 import type { ContentCardItem } from '@/components/ui/composites/content-card';
 import type { TocItem } from '@/lib/toc';
 

@@ -1,5 +1,6 @@
 ---
 title: TypeScript vs JavaScript
+canonical: typescript-vs-javascript
 description: Comparing TypeScript and JavaScript — when is typing worth it?
 cover: /blog/typescript-vs-javascript.png
 tags:

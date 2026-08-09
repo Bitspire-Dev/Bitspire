@@ -4,10 +4,10 @@ import type { Metadata } from 'next';
 import { readFile } from 'fs/promises';
 import path from 'path';
 import client from '@tina/__generated__/client';
-import type { BlogConnectionQuery } from '@tina/__generated__/types';
+import { routing } from '@/i18n/routing';
 import { BlogArticle } from '@/components/pages/BlogArticlePage';
-import type { ContentCardItem } from '@/components/ui/composites/content-card';
-import { extractTocFromMarkdown } from '@/lib/toc-parser';
+import { toRelatedItems } from '@/lib/blog';
+import { extractTocFromMarkdown } from '@/lib/toc';
 
 interface BlogPageParams {
   locale: string;
@@ -16,7 +16,7 @@ interface BlogPageParams {
 
 export async function generateStaticParams() {
   const tina = await client.queries.blogConnection();
-  const locales = ['pl', 'en'];
+  const locales = routing.locales;
   const params: { locale: string; slug: string }[] = [];
 
   for (const locale of locales) {
@@ -48,50 +48,6 @@ export async function generateMetadata({
   };
 }
 
-function toRelatedItems(
-  currentSlug: string,
-  locale: string,
-  data: BlogConnectionQuery
-): ContentCardItem[] {
-  const currentTags = new Set<string>();
-  const edges = data?.blogConnection?.edges ?? [];
-  const current = edges
-    .filter((edge): edge is NonNullable<typeof edge> => !!edge && !!edge.node)
-    .find(edge => {
-      const node = edge.node!;
-      const slug = node._sys.basename.replace(/\.md$/, '');
-      return node._sys.relativePath.startsWith(`${locale}/`) && slug === currentSlug;
-    });
-
-  if (current?.node?.tags) {
-    current.node.tags.filter((tag): tag is string => !!tag).forEach(tag => currentTags.add(tag));
-  }
-
-  const scored = edges
-    .filter((edge): edge is NonNullable<typeof edge> => !!edge && !!edge.node)
-    .filter(edge => edge.node!._sys.relativePath.startsWith(`${locale}/`))
-    .map(edge => {
-      const node = edge.node!;
-      const slug = node._sys.basename.replace(/\.md$/, '');
-      const tags = (node.tags ?? []).filter((tag): tag is string => !!tag);
-      const shared = tags.filter(tag => currentTags.has(tag)).length;
-      return { node, slug, shared };
-    })
-    .filter(item => item.slug !== currentSlug)
-    .sort((a, b) => b.shared - a.shared)
-    .slice(0, 3);
-
-  return scored.map(({ node, slug }) => ({
-    id: node.id,
-    title: node.title,
-    description: node.description,
-    image: node.cover,
-    imageAlt: node.title,
-    tags: node.tags,
-    meta: { primaryHref: `/blog/${slug}` },
-  }));
-}
-
 export default async function BlogArticlePage({ params }: { params: Promise<BlogPageParams> }) {
   const { locale, slug } = await params;
 
@@ -100,10 +56,9 @@ export default async function BlogArticlePage({ params }: { params: Promise<Blog
   const [tina, all, rawMarkdown] = await Promise.all([
     client.queries.blog({ relativePath: `${locale}/${slug}.md` }),
     client.queries.blogConnection(),
-    readFile(
-      path.join(process.cwd(), 'content', 'blog', locale, `${slug}.md`),
-      'utf-8'
-    ).catch(() => ''),
+    readFile(path.join(process.cwd(), 'content', 'blog', locale, `${slug}.md`), 'utf-8').catch(
+      () => ''
+    ),
   ]);
 
   if (!tina.data.blog) {
