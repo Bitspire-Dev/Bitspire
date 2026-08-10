@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/primitives/button';
 import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/primitives/field';
 import { Input } from '@/components/ui/primitives/input';
 import { Textarea } from '@/components/ui/primitives/textarea';
+import { FadeIn } from '@/components/ui/composites/fade-in';
 import { cn } from '@/lib/utils';
 import type { PageQuery } from '@tina/__generated__/types';
 
@@ -74,74 +75,84 @@ export function ContactForm({ contact, locale, className }: ContactFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className={cn('flex flex-col gap-6', className)}>
-      <Field>
-        <FieldLabel htmlFor="contact-name">{ui.name}</FieldLabel>
-        <FieldContent>
-          <Input
-            id="contact-name"
-            value={name}
-            onChange={e => {
-              setName(e.target.value);
-              setErrors(prev => ({ ...prev, name: '' }));
-            }}
-            aria-invalid={!!errors.name}
-          />
-          {errors.name ? <FieldError>{errors.name}</FieldError> : null}
-        </FieldContent>
-      </Field>
+      <FadeIn delay={0}>
+        <Field>
+          <FieldLabel htmlFor="contact-name">{ui.name}</FieldLabel>
+          <FieldContent>
+            <Input
+              id="contact-name"
+              value={name}
+              onChange={e => {
+                setName(e.target.value);
+                setErrors(prev => ({ ...prev, name: '' }));
+              }}
+              aria-invalid={!!errors.name}
+            />
+            {errors.name ? <FieldError>{errors.name}</FieldError> : null}
+          </FieldContent>
+        </Field>
+      </FadeIn>
 
-      <Field>
-        <FieldLabel htmlFor="contact-email">{ui.email}</FieldLabel>
-        <FieldContent>
-          <Input
-            id="contact-email"
-            type="email"
-            value={email}
-            onChange={e => {
-              setEmail(e.target.value);
-              setErrors(prev => ({ ...prev, email: '' }));
-            }}
-            aria-invalid={!!errors.email}
-          />
-          {errors.email ? <FieldError>{errors.email}</FieldError> : null}
-        </FieldContent>
-      </Field>
+      <FadeIn delay={0.05}>
+        <Field>
+          <FieldLabel htmlFor="contact-email">{ui.email}</FieldLabel>
+          <FieldContent>
+            <Input
+              id="contact-email"
+              type="email"
+              value={email}
+              onChange={e => {
+                setEmail(e.target.value);
+                setErrors(prev => ({ ...prev, email: '' }));
+              }}
+              aria-invalid={!!errors.email}
+            />
+            {errors.email ? <FieldError>{errors.email}</FieldError> : null}
+          </FieldContent>
+        </Field>
+      </FadeIn>
 
-      <Field>
-        <FieldLabel htmlFor="contact-subject">{ui.subject}</FieldLabel>
-        <FieldContent>
-          <Input
-            id="contact-subject"
-            value={subject}
-            onChange={e => {
-              setSubject(e.target.value);
-              setErrors(prev => ({ ...prev, subject: '' }));
-            }}
-            aria-invalid={!!errors.subject}
-          />
-          {errors.subject ? <FieldError>{errors.subject}</FieldError> : null}
-        </FieldContent>
-      </Field>
+      <FadeIn delay={0.1}>
+        <Field>
+          <FieldLabel htmlFor="contact-subject">{ui.subject}</FieldLabel>
+          <FieldContent>
+            <Input
+              id="contact-subject"
+              value={subject}
+              onChange={e => {
+                setSubject(e.target.value);
+                setErrors(prev => ({ ...prev, subject: '' }));
+              }}
+              aria-invalid={!!errors.subject}
+            />
+            {errors.subject ? <FieldError>{errors.subject}</FieldError> : null}
+          </FieldContent>
+        </Field>
+      </FadeIn>
 
-      <Field>
-        <FieldLabel htmlFor="contact-message">{ui.message}</FieldLabel>
-        <FieldContent>
-          <Textarea
-            id="contact-message"
-            value={message}
-            onChange={e => {
-              setMessage(e.target.value);
-              setErrors(prev => ({ ...prev, message: '' }));
-            }}
-            aria-invalid={!!errors.message}
-          />
-          {errors.message ? <FieldError>{errors.message}</FieldError> : null}
-        </FieldContent>
-      </Field>
+      <FadeIn delay={0.15}>
+        <Field>
+          <FieldLabel htmlFor="contact-message">{ui.message}</FieldLabel>
+          <FieldContent>
+            <Textarea
+              id="contact-message"
+              value={message}
+              onChange={e => {
+                setMessage(e.target.value);
+                setErrors(prev => ({ ...prev, message: '' }));
+              }}
+              aria-invalid={!!errors.message}
+            />
+            {errors.message ? <FieldError>{errors.message}</FieldError> : null}
+          </FieldContent>
+        </Field>
+      </FadeIn>
 
-      <Button type="submit" className="w-full sm:w-fit">
-        {ui.send}
-      </Button>
+      <FadeIn delay={0.2}>
+        <Button type="submit" className="w-full sm:w-fit">
+          {ui.send}
+        </Button>
+      </FadeIn>
     </form>
   );
 }

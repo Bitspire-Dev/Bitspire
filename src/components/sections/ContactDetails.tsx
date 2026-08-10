@@ -3,6 +3,7 @@
 import { Clock, Link2, Mail, MapPin, Phone } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/primitives/card';
 import { Separator } from '@/components/ui/primitives/separator';
+import { FadeIn } from '@/components/ui/composites/fade-in';
 import { cn } from '@/lib/utils';
 import type { PageQuery } from '@tina/__generated__/types';
 
@@ -63,56 +64,62 @@ export function ContactDetails({ contact, locale, className }: ContactDetailsPro
   const hasSocials = contact?.socials && contact.socials.length > 0;
 
   return (
-    <Card className={cn('h-full', className)}>
-      <CardHeader>
-        <CardTitle className="font-heading text-xl md:text-2xl">{ui.title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ul className="flex flex-col gap-4">
-          {items.map(item => (
-            <li key={item.key} className="flex items-start gap-3">
-              <item.icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-              <div>
-                <p className="font-sans text-xs text-muted-foreground">{item.label}</p>
-                {item.href ? (
-                  <a
-                    href={item.href}
-                    className="font-sans text-sm text-foreground transition-colors hover:text-primary"
-                  >
-                    {item.value}
-                  </a>
-                ) : (
-                  <p className="font-sans text-sm text-foreground">{item.value}</p>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
+    <FadeIn>
+      <Card className={cn('h-full', className)}>
+        <CardHeader>
+          <CardTitle className="font-heading text-xl md:text-2xl">{ui.title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ul className="flex flex-col gap-4">
+            {items.map((item, index) => (
+              <li key={item.key}>
+                <FadeIn delay={0.05 + index * 0.05} className="flex items-start gap-3">
+                  <item.icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+                  <div>
+                    <p className="font-sans text-xs text-muted-foreground">{item.label}</p>
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        className="font-sans text-sm text-foreground transition-colors hover:text-primary"
+                      >
+                        {item.value}
+                      </a>
+                    ) : (
+                      <p className="font-sans text-sm text-foreground">{item.value}</p>
+                    )}
+                  </div>
+                </FadeIn>
+              </li>
+            ))}
+          </ul>
 
-        {hasSocials ? (
-          <>
-            <Separator className="my-4" />
-            <p className="font-sans text-xs text-muted-foreground">{ui.socials}</p>
-            <ul className="mt-2 flex flex-wrap gap-3">
-              {contact.socials?.map((social, index) =>
-                social?.url ? (
-                  <li key={index}>
-                    <a
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-sans text-xs text-foreground transition-colors hover:bg-muted"
-                    >
-                      <Link2 className="size-3" />
-                      {social.platform || 'Link'}
-                    </a>
-                  </li>
-                ) : null
-              )}
-            </ul>
-          </>
-        ) : null}
-      </CardContent>
-    </Card>
+          {hasSocials ? (
+            <>
+              <Separator className="my-4" />
+              <p className="font-sans text-xs text-muted-foreground">{ui.socials}</p>
+              <ul className="mt-2 flex flex-wrap gap-3">
+                {contact.socials?.map((social, index) =>
+                  social?.url ? (
+                    <li key={index}>
+                      <FadeIn delay={0.05 + index * 0.05}>
+                        <a
+                          href={social.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-sans text-xs text-foreground transition-colors hover:bg-muted"
+                        >
+                          <Link2 className="size-3" />
+                          {social.platform || 'Link'}
+                        </a>
+                      </FadeIn>
+                    </li>
+                  ) : null
+                )}
+              </ul>
+            </>
+          ) : null}
+        </CardContent>
+      </Card>
+    </FadeIn>
   );
 }

@@ -3,6 +3,7 @@
 import type { ContentCardItem } from '@/components/ui/composites/content-card';
 import { Separator } from '@/components/ui/primitives/separator';
 import { CardGrid } from '@/components/ui/composites/card-grid';
+import { FadeIn } from '@/components/ui/composites/fade-in';
 
 interface BlogArticleRelatedProps {
   items: ContentCardItem[];
@@ -18,7 +19,9 @@ export function BlogArticleRelated({ items, title, emptyMessage }: BlogArticleRe
   return (
     <section className="w-full pt-0 pb-8 md:pb-12">
       <Separator className="my-12" />
-      <h2 className="font-heading text-2xl font-bold text-foreground md:text-3xl">{title}</h2>
+      <FadeIn>
+        <h2 className="font-heading text-2xl font-bold text-foreground md:text-3xl">{title}</h2>
+      </FadeIn>
       <div className="mt-8">
         <CardGrid items={items} emptyMessage={emptyMessage} imageRatio={16 / 9} />
       </div>

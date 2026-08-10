@@ -29,21 +29,28 @@ interface NavLink {
 
 interface HeaderProps {
   locale: string;
-  links: NavLink[];
   blogMap: BlogArticleMap;
 }
 
-const DEFAULT_LINKS: NavLink[] = [
-  { label: 'Home', href: '/' },
-  { label: 'Portfolio', href: '/portfolio' },
-  { label: 'Blog', href: '/blog' },
-  { label: 'Contact', href: '/contact' },
-];
+const NAV_LINKS: Record<'pl' | 'en', NavLink[]> = {
+  pl: [
+    { label: 'Strona główna', href: '/' },
+    { label: 'Portfolio', href: '/portfolio' },
+    { label: 'Blog', href: '/blog' },
+    { label: 'Kontakt', href: '/contact' },
+  ],
+  en: [
+    { label: 'Home', href: '/' },
+    { label: 'Portfolio', href: '/portfolio' },
+    { label: 'Blog', href: '/blog' },
+    { label: 'Contact', href: '/contact' },
+  ],
+};
 
-export function Header({ locale, links, blogMap }: HeaderProps) {
+export function Header({ locale, blogMap }: HeaderProps) {
   const { resolvedTheme } = useTheme();
   const mounted = useMounted();
-  const navLinks = links.length > 0 ? links : DEFAULT_LINKS;
+  const navLinks = NAV_LINKS[locale as 'pl' | 'en'] ?? NAV_LINKS.pl;
   const isDark = mounted && resolvedTheme === 'dark';
   const logoSrc = isDark ? '/favicon-dark-mode.svg' : '/favicon-light-mode.svg';
 

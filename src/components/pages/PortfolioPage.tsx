@@ -8,6 +8,8 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/pr
 import { Button } from '@/components/ui/primitives/button';
 import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 import { Separator } from '@/components/ui/primitives/separator';
+import { FadeIn } from '@/components/ui/composites/fade-in';
+import { StaggerContainer, StaggerItem } from '@/components/ui/composites/stagger';
 import { PORTFOLIO_CATEGORIES, getCategoryHref } from '@/lib/portfolio/categories';
 
 interface PortfolioPageProps {
@@ -31,53 +33,59 @@ export function PortfolioPage({ query, variables, data, locale }: PortfolioPageP
     <section className="container mx-auto max-w-360 px-4 py-16 md:px-6 md:py-24">
       {page?.title ? (
         <div className="mb-8 max-w-2xl">
-          <h1
-            data-tina-field={tinaField(page, 'title')}
-            className="font-heading text-3xl font-bold text-foreground md:text-5xl"
-          >
-            {page.title}
-          </h1>
-          {page.description ? (
-            <p
-              data-tina-field={tinaField(page, 'description')}
-              className="mt-4 font-sans text-base text-muted-foreground"
+          <FadeIn>
+            <h1
+              data-tina-field={tinaField(page, 'title')}
+              className="font-heading text-3xl font-bold text-foreground md:text-5xl"
             >
-              {page.description}
-            </p>
+              {page.title}
+            </h1>
+          </FadeIn>
+          {page.description ? (
+            <FadeIn delay={0.05}>
+              <p
+                data-tina-field={tinaField(page, 'description')}
+                className="mt-4 font-sans text-base text-muted-foreground"
+              >
+                {page.description}
+              </p>
+            </FadeIn>
           ) : null}
         </div>
       ) : null}
 
       <Separator className="mb-12" />
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <StaggerContainer className="grid gap-6 md:grid-cols-2">
         {PORTFOLIO_CATEGORIES.map(category => (
-          <Card key={category.id} className="group overflow-hidden">
-            <AspectRatio ratio={4 / 3} className="bg-muted">
-              <Image
-                src={category.image}
-                alt={category.label[locale] ?? category.label.en}
-                fill
-                unoptimized
-                className="object-contain p-8 opacity-50 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0"
-              />
-            </AspectRatio>
-            <CardHeader className="items-start gap-2">
-              <CardTitle className="font-heading text-lg md:text-xl">
-                {category.label[locale] ?? category.label.en}
-              </CardTitle>
-              <CardDescription className="font-sans text-sm text-muted-foreground">
-                {category.description[locale] ?? category.description.en}
-              </CardDescription>
-            </CardHeader>
-            <div className="px-(--card-spacing) pb-(--card-spacing)">
-              <Button asChild>
-                <Link href={getCategoryHref(locale, category.id)}>{ui.browse}</Link>
-              </Button>
-            </div>
-          </Card>
+          <StaggerItem key={category.id}>
+            <Card className="group/card overflow-hidden">
+              <AspectRatio ratio={4 / 3} className="bg-muted">
+                <Image
+                  src={category.image}
+                  alt={category.label[locale] ?? category.label.en}
+                  fill
+                  unoptimized
+                  className="object-contain p-8 opacity-50 grayscale transition-all duration-300 group-hover/card:scale-105 group-hover/card:opacity-100 group-hover/card:grayscale-0"
+                />
+              </AspectRatio>
+              <CardHeader className="items-start gap-2">
+                <CardTitle className="font-heading text-lg md:text-xl">
+                  {category.label[locale] ?? category.label.en}
+                </CardTitle>
+                <CardDescription className="font-sans text-sm text-muted-foreground">
+                  {category.description[locale] ?? category.description.en}
+                </CardDescription>
+              </CardHeader>
+              <div className="px-(--card-spacing) pb-(--card-spacing)">
+                <Button asChild>
+                  <Link href={getCategoryHref(locale, category.id)}>{ui.browse}</Link>
+                </Button>
+              </div>
+            </Card>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerContainer>
     </section>
   );
 }

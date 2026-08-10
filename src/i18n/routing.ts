@@ -11,5 +11,6 @@ export const routing = defineRouting({
     '/portfolio/[category]': '/portfolio/[category]',
     '/portfolio/[category]/[slug]': '/portfolio/[category]/[slug]',
     '/contact': '/contact',
+    '/privacy': '/privacy',
   },
 });

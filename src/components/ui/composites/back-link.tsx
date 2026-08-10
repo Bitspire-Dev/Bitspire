@@ -17,7 +17,7 @@ export function BackLink({ href, label, locale, className }: BackLinkProps) {
   return (
     <Button asChild variant="ghost" className={cn('h-auto p-0 font-sans', className)}>
       <Link href={href} locale={locale}>
-        <ArrowLeft className="mr-2 size-4" />
+        <ArrowLeft className="mr-2 size-4 transition-transform duration-150 group-hover/button:-translate-x-0.5" />
         {label}
       </Link>
     </Button>

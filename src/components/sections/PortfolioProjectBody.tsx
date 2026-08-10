@@ -1,6 +1,7 @@
 'use client';
 
 import { MarkdownBody } from '@/components/ui/composites/MarkdownBody';
+import { FadeIn } from '@/components/ui/composites/fade-in';
 
 interface PortfolioProjectBodyProps {
   body: React.ComponentProps<typeof MarkdownBody>['content'];
@@ -13,5 +14,9 @@ export function PortfolioProjectBody({
   tinaFieldBody,
   className,
 }: PortfolioProjectBodyProps) {
-  return <MarkdownBody content={body} tinaField={tinaFieldBody} className={className} />;
+  return (
+    <FadeIn>
+      <MarkdownBody content={body} tinaField={tinaFieldBody} className={className} />
+    </FadeIn>
+  );
 }

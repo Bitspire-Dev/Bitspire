@@ -2,6 +2,8 @@
 
 import { ContentCard, type ContentCardItem } from './content-card';
 import type { ReactNode } from 'react';
+import { StaggerContainer, StaggerItem } from '@/components/ui/composites/stagger';
+import { FadeIn } from '@/components/ui/composites/fade-in';
 
 interface CardGridProps {
   items: ContentCardItem[];
@@ -12,19 +14,24 @@ interface CardGridProps {
 
 export function CardGrid({ items, emptyMessage, imageRatio = 4 / 3, renderFooter }: CardGridProps) {
   if (items.length === 0) {
-    return <p className="font-sans text-sm text-muted-foreground">{emptyMessage}</p>;
+    return (
+      <FadeIn>
+        <p className="font-sans text-sm text-muted-foreground">{emptyMessage}</p>
+      </FadeIn>
+    );
   }
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <StaggerContainer className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {items.map(item => (
-        <ContentCard
-          key={item.id}
-          item={item}
-          imageRatio={imageRatio}
-          footer={renderFooter ? renderFooter(item) : undefined}
-        />
+        <StaggerItem key={item.id}>
+          <ContentCard
+            item={item}
+            imageRatio={imageRatio}
+            footer={renderFooter ? renderFooter(item) : undefined}
+          />
+        </StaggerItem>
       ))}
-    </div>
+    </StaggerContainer>
   );
 }

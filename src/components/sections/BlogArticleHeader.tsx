@@ -4,6 +4,7 @@ import { tinaField } from 'tinacms/dist/react';
 import type { BlogQuery } from '@tina/__generated__/types';
 import { ArticleHeader } from '@/components/ui/composites/ArticleHeader';
 import { ArticleMeta } from '@/components/ui/composites/article-meta';
+import { FadeIn } from '@/components/ui/composites/fade-in';
 
 interface BlogArticleHeaderProps {
   blog: NonNullable<BlogQuery['blog']>;
@@ -26,13 +27,15 @@ export function BlogArticleHeader({ blog, locale, backLabel }: BlogArticleHeader
       tinaFieldDescription={tinaField(blog, 'description')}
     >
       <div className="mt-4">
-        <ArticleMeta
-          date={blog.date}
-          tags={blog.tags}
-          locale={locale}
-          tinaFieldDate={tinaField(blog, 'date')}
-          tinaFieldTags={tinaField(blog, 'tags')}
-        />
+        <FadeIn delay={0.3}>
+          <ArticleMeta
+            date={blog.date}
+            tags={blog.tags}
+            locale={locale}
+            tinaFieldDate={tinaField(blog, 'date')}
+            tinaFieldTags={tinaField(blog, 'tags')}
+          />
+        </FadeIn>
       </div>
     </ArticleHeader>
   );

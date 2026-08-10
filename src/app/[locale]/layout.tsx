@@ -38,17 +38,7 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
   const messages = await getMessages();
 
-  const [{ data: headerData }, { data: blogData }] = await Promise.all([
-    client.queries.header({
-      relativePath: `${locale}.md`,
-    }),
-    client.queries.blogConnection(),
-  ]);
-
-  const links =
-    headerData.header?.navLinks?.flatMap(link =>
-      link ? [{ label: link.label, href: link.href }] : []
-    ) ?? [];
+  const { data: blogData } = await client.queries.blogConnection();
 
   const blogMap = buildBlogArticleMap(blogData);
 
@@ -59,7 +49,7 @@ export default async function LocaleLayout({
       >
         <ThemeProvider>
           <NextIntlClientProvider messages={messages} locale={locale}>
-            <Header locale={locale} links={links} blogMap={blogMap} />
+            <Header locale={locale} blogMap={blogMap} />
             <main className="flex-1">{children}</main>
             <Footer locale={locale} />
           </NextIntlClientProvider>

@@ -6,6 +6,7 @@ import { Link } from '@/i18n/navigation';
 import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 import { Separator } from '@/components/ui/primitives/separator';
 import { BackLink } from '@/components/ui/composites/back-link';
+import { FadeIn } from '@/components/ui/composites/fade-in';
 
 type Href = ComponentProps<typeof Link>['href'];
 
@@ -39,36 +40,44 @@ export function ArticleHeader({
   return (
     <div className="mt-4 w-full">
       {cover ? (
-        <AspectRatio data-tina-field={tinaFieldCover} ratio={16 / 9} className="w-full bg-muted">
-          <Image
-            src={cover}
-            alt={coverAlt ?? title}
-            fill
-            priority
-            className="object-cover"
-            sizes="100vw"
-          />
-        </AspectRatio>
+        <FadeIn>
+          <AspectRatio data-tina-field={tinaFieldCover} ratio={16 / 9} className="w-full bg-muted">
+            <Image
+              src={cover}
+              alt={coverAlt ?? title}
+              fill
+              priority
+              className="object-cover"
+              sizes="100vw"
+            />
+          </AspectRatio>
+        </FadeIn>
       ) : null}
 
       <div className="w-full pt-8 md:pt-12">
-        <BackLink href={backHref} label={backLabel} locale={locale} className="mb-6" />
+        <FadeIn delay={0.05}>
+          <BackLink href={backHref} label={backLabel} locale={locale} className="mb-6" />
+        </FadeIn>
 
         <header>
-          <h1
-            data-tina-field={tinaFieldTitle}
-            className="font-heading text-3xl font-bold text-foreground md:text-5xl"
-          >
-            {title}
-          </h1>
+          <FadeIn delay={0.1}>
+            <h1
+              data-tina-field={tinaFieldTitle}
+              className="font-heading text-3xl font-bold text-foreground md:text-5xl"
+            >
+              {title}
+            </h1>
+          </FadeIn>
 
           {description ? (
-            <p
-              data-tina-field={tinaFieldDescription}
-              className="mt-4 max-w-2xl font-sans text-lg text-muted-foreground"
-            >
-              {description}
-            </p>
+            <FadeIn delay={0.15}>
+              <p
+                data-tina-field={tinaFieldDescription}
+                className="mt-4 max-w-2xl font-sans text-lg text-muted-foreground"
+              >
+                {description}
+              </p>
+            </FadeIn>
           ) : null}
 
           {children}

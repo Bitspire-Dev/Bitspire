@@ -7,6 +7,8 @@ import { Link } from '@/i18n/navigation';
 import { Badge } from '@/components/ui/primitives/badge';
 import { Button } from '@/components/ui/primitives/button';
 import { ArticleHeader } from '@/components/ui/composites/ArticleHeader';
+import { FadeIn } from '@/components/ui/composites/fade-in';
+import { StaggerContainer, StaggerItem } from '@/components/ui/composites/stagger';
 import { ExternalLink } from 'lucide-react';
 
 type Href = ComponentProps<typeof Link>['href'];
@@ -42,41 +44,42 @@ export function PortfolioProjectHeader({
       tinaFieldDescription={tinaField(project, 'description')}
     >
       {project.tagline ? (
-        <p
-          data-tina-field={tinaField(project, 'tagline')}
-          className="mt-4 max-w-2xl font-sans text-xl text-foreground"
-        >
-          {project.tagline}
-        </p>
+        <FadeIn delay={0.3}>
+          <p
+            data-tina-field={tinaField(project, 'tagline')}
+            className="mt-4 max-w-2xl font-sans text-xl text-foreground"
+          >
+            {project.tagline}
+          </p>
+        </FadeIn>
       ) : null}
 
       {technologies.length > 0 ? (
-        <div
-          data-tina-field={tinaField(project, 'technologies')}
-          className="mt-6 flex flex-wrap gap-2"
-        >
+        <StaggerContainer className="mt-6 flex flex-wrap gap-2">
           {technologies.map(tech => (
-            <Badge key={tech} variant="secondary">
-              {tech}
-            </Badge>
+            <StaggerItem key={tech}>
+              <Badge variant="secondary">{tech}</Badge>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       ) : null}
 
       {project.websiteUrl ? (
-        <div className="mt-6">
-          <Button asChild variant="outline" data-tina-field={tinaField(project, 'websiteUrl')}>
-            <a
-              href={project.websiteUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2"
-            >
-              <ExternalLink className="size-4" />
-              {visitLabel}
-            </a>
-          </Button>
-        </div>
+        <FadeIn delay={0.4}>
+          <div className="mt-6">
+            <Button asChild variant="outline" data-tina-field={tinaField(project, 'websiteUrl')}>
+              <a
+                href={project.websiteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2"
+              >
+                <ExternalLink className="size-4" />
+                {visitLabel}
+              </a>
+            </Button>
+          </div>
+        </FadeIn>
       ) : null}
     </ArticleHeader>
   );

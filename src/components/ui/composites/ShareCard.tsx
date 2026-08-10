@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardTitle } from '@/components/ui/primitives/card';
+import { FadeIn } from '@/components/ui/composites/fade-in';
 import { Button } from '@/components/ui/primitives/button';
 import { ExternalLink, Link2, Check } from 'lucide-react';
 
@@ -62,35 +63,37 @@ export function ShareCard({ title, locale, className }: ShareCardProps) {
   ];
 
   return (
-    <Card className={cn('gap-3', className)}>
-      <CardContent className="flex flex-col gap-3 pt-4">
-        <CardTitle className="text-sm">{ui.share}</CardTitle>
-        <div className="flex flex-col gap-2">
-          {links.map(link => (
+    <FadeIn>
+      <Card className={cn('gap-3', className)}>
+        <CardContent className="flex flex-col gap-3 pt-4">
+          <CardTitle className="text-sm">{ui.share}</CardTitle>
+          <div className="flex flex-col gap-2">
+            {links.map(link => (
+              <Button
+                key={link.label}
+                asChild
+                variant="outline"
+                size="sm"
+                className="w-full justify-start gap-2"
+              >
+                <a href={link.href} target="_blank" rel="noopener noreferrer">
+                  <link.icon className="size-4" />
+                  <span className="font-sans text-sm">{link.label}</span>
+                </a>
+              </Button>
+            ))}
             <Button
-              key={link.label}
-              asChild
               variant="outline"
               size="sm"
               className="w-full justify-start gap-2"
+              onClick={handleCopy}
             >
-              <a href={link.href} target="_blank" rel="noopener noreferrer">
-                <link.icon className="size-4" />
-                <span className="font-sans text-sm">{link.label}</span>
-              </a>
+              {copied ? <Check className="size-4" /> : <Link2 className="size-4" />}
+              <span className="font-sans text-sm">{copied ? ui.copied : ui.copy}</span>
             </Button>
-          ))}
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full justify-start gap-2"
-            onClick={handleCopy}
-          >
-            {copied ? <Check className="size-4" /> : <Link2 className="size-4" />}
-            <span className="font-sans text-sm">{copied ? ui.copied : ui.copy}</span>
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+          </div>
+        </CardContent>
+      </Card>
+    </FadeIn>
   );
 }

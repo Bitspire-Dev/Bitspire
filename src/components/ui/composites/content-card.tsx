@@ -68,7 +68,7 @@ export function ContentCard({ item, imageRatio = 4 / 3, unoptimized, footer }: C
             src={image}
             alt={imageAlt}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-500 group-hover/card:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             unoptimized={unoptimized ?? image.endsWith('.svg')}
           />

@@ -7,6 +7,7 @@ import {
   Heading,
 } from '@/components/ui/composites/table-of-contents';
 import { MarkdownBody } from '@/components/ui/composites/MarkdownBody';
+import { FadeIn } from '@/components/ui/composites/fade-in';
 import type { TocItem } from '@/lib/toc';
 
 interface BlogArticleBodyProps {
@@ -18,17 +19,19 @@ interface BlogArticleBodyProps {
 
 export function BlogArticleBody({ body, tinaFieldBody, toc, className }: BlogArticleBodyProps) {
   return (
-    <TocProvider toc={toc}>
-      <MarkdownBody
-        content={body}
-        tinaField={tinaFieldBody}
-        components={{
-          h2: Heading2,
-          h3: Heading3,
-          heading: Heading,
-        }}
-        className={className}
-      />
-    </TocProvider>
+    <FadeIn>
+      <TocProvider toc={toc}>
+        <MarkdownBody
+          content={body}
+          tinaField={tinaFieldBody}
+          components={{
+            h2: Heading2,
+            h3: Heading3,
+            heading: Heading,
+          }}
+          className={className}
+        />
+      </TocProvider>
+    </FadeIn>
   );
 }

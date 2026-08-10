@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import type { TocItem } from '@/lib/toc';
 import { Button } from '@/components/ui/primitives/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/primitives/card';
+import { FadeIn } from '@/components/ui/composites/fade-in';
 
 export type { TocItem };
 
@@ -166,7 +167,7 @@ export function TocList({ toc, activeId, onItemClick, className }: TocListProps)
               onClick={handleClick(item.id)}
               data-active={item.id === activeId}
               className={cn(
-                'block rounded-md px-2 py-1.5 font-sans text-sm transition-colors',
+                'block rounded-md px-2 py-1.5 font-sans text-sm transition duration-200',
                 'text-muted-foreground hover:bg-muted hover:text-foreground',
                 item.id === activeId && 'bg-muted font-medium text-foreground'
               )}
@@ -198,14 +199,16 @@ export function TableOfContents({ toc, title, className }: TableOfContentsProps)
   }
 
   return (
-    <Card className={cn('sticky top-24 w-full self-start', className)}>
-      <CardHeader>
-        <CardTitle className="text-sm">{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <TocList toc={toc} activeId={activeId} />
-      </CardContent>
-    </Card>
+    <FadeIn>
+      <Card className={cn('sticky top-24 w-full self-start', className)}>
+        <CardHeader>
+          <CardTitle className="text-sm">{title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <TocList toc={toc} activeId={activeId} />
+        </CardContent>
+      </Card>
+    </FadeIn>
   );
 }
 
