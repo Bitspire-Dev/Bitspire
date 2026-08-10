@@ -51,20 +51,32 @@ export function StaggerContainer({
 interface StaggerItemProps {
   children: ReactNode;
   className?: string;
-  y?: number;
+  x?: number | string;
+  y?: number | string;
   duration?: number;
 }
 
 const itemVariants = {
-  hidden: (custom: { y: number }) => ({ opacity: 0, y: custom.y }),
+  hidden: (custom: { x: number | string; y: number | string }) => ({
+    opacity: 0,
+    x: custom.x,
+    y: custom.y,
+  }),
   visible: (custom: { duration: number }) => ({
     opacity: 1,
+    x: 0,
     y: 0,
     transition: { duration: custom.duration, ease: EASE_OUT_EXPO },
   }),
 };
 
-export function StaggerItem({ children, className, y = 16, duration = 0.5 }: StaggerItemProps) {
+export function StaggerItem({
+  children,
+  className,
+  x = 0,
+  y = 16,
+  duration = 0.5,
+}: StaggerItemProps) {
   const shouldReduceMotion = useReducedMotion();
 
   if (shouldReduceMotion) {
@@ -72,7 +84,7 @@ export function StaggerItem({ children, className, y = 16, duration = 0.5 }: Sta
   }
 
   return (
-    <motion.div className={className} variants={itemVariants} custom={{ y, duration }}>
+    <motion.div className={className} variants={itemVariants} custom={{ x, y, duration }}>
       {children}
     </motion.div>
   );
