@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
 import { TinaMarkdown } from 'tinacms/dist/rich-text';
 import { FadeIn } from '@/components/ui/composites/fade-in';
+import { UnicornScene } from '@/components/ui/composites/UnicornScene';
 import { useTheme } from '@/components/providers/theme-provider';
 import { cn } from '@/lib/utils';
 
@@ -13,22 +14,61 @@ interface HeroProps {
   page: PagePartsFragment;
 }
 
-const DARK_VIDEO = '/flow_gradient_remix_scene.webm';
-const LIGHT_VIDEO = '/flow_gradient_remix_scene(1).webm';
+const DARK_PROJECT_ID = 'h1BqwqCs5IMUMFF6knG3';
+const LIGHT_PROJECT_ID = 'akxkqMoymrONQdz6EGnI';
+
+const FADE_MS = 700;
+
+type SceneTheme = 'dark' | 'light';
+
+const PROJECT_IDS: Record<SceneTheme, string> = {
+  dark: DARK_PROJECT_ID,
+  light: LIGHT_PROJECT_ID,
+};
 
 export function Hero({ page }: HeroProps) {
   const { theme } = useTheme();
-  const isDark = theme === 'dark';
 
-  // Prevent any video from rendering during hydration to avoid a flash of
-  // the wrong theme's video. The inline script in layout.tsx already set the
-  // correct <html> class, so the background color is correct immediately —
-  // only the video needs to wait for mount.
+  // Single-active-scene pattern: only one scene runs at rest. On theme
+  // change, the new scene mounts (hidden), waits for ready, cross-fades,
+  // then the old scene is destroyed — so two canvases overlap only briefly.
   const [mounted, setMounted] = useState(false);
-  const [ready, setReady] = useState(false);
+  const [activeScene, setActiveScene] = useState<SceneTheme>(theme === 'light' ? 'light' : 'dark');
+  const [pendingScene, setPendingScene] = useState<SceneTheme | null>(null);
+  const [pendingReady, setPendingReady] = useState(false);
+  const [fading, setFading] = useState(false);
+  const fadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const next: SceneTheme = theme === 'light' ? 'light' : 'dark';
+    if (next === activeScene || pendingScene) return;
+
+    setPendingScene(next);
+    setPendingReady(false);
+  }, [theme, activeScene, pendingScene]);
+
+  const handlePendingReady = useCallback(() => {
+    setPendingReady(true);
+    setFading(true);
+
+    if (fadeTimer.current) clearTimeout(fadeTimer.current);
+    fadeTimer.current = setTimeout(() => {
+      setActiveScene(pendingScene!);
+      setPendingScene(null);
+      setPendingReady(false);
+      setFading(false);
+      fadeTimer.current = null;
+    }, FADE_MS);
+  }, [pendingScene]);
+
+  useEffect(() => {
+    return () => {
+      if (fadeTimer.current) clearTimeout(fadeTimer.current);
+    };
   }, []);
 
   const sectionRef = useRef<HTMLElement>(null);
@@ -49,21 +89,29 @@ export function Hero({ page }: HeroProps) {
     >
       <div className="absolute inset-0 z-0 bg-background" aria-hidden="true">
         {mounted && (
-          <video
-            key={isDark ? 'dark' : 'light'}
-            src={isDark ? DARK_VIDEO : LIGHT_VIDEO}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            onCanPlay={() => setReady(true)}
-            aria-hidden="true"
-            className={cn(
-              'hero-scene absolute inset-0 size-full object-cover transition-opacity duration-700 ease-out',
-              ready ? 'opacity-100' : 'opacity-0'
+          <>
+            {/* Active scene — always running */}
+            <UnicornScene
+              projectId={PROJECT_IDS[activeScene]}
+              className={cn(
+                'absolute inset-0 size-full pointer-events-none transition-opacity ease-out hero-scene',
+                fading ? 'opacity-0' : 'opacity-100'
+              )}
+              style={{ transitionDuration: `${FADE_MS}ms` }}
+            />
+            {/* Pending scene — mounts only during theme switch, destroyed after fade */}
+            {pendingScene && (
+              <UnicornScene
+                projectId={PROJECT_IDS[pendingScene]}
+                onReady={handlePendingReady}
+                className={cn(
+                  'absolute inset-0 size-full pointer-events-none transition-opacity ease-out hero-scene',
+                  pendingReady ? 'opacity-100' : 'opacity-0'
+                )}
+                style={{ transitionDuration: `${FADE_MS}ms` }}
+              />
             )}
-          />
+          </>
         )}
       </div>
 
