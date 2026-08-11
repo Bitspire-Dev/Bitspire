@@ -1,7 +1,10 @@
 'use client';
 
-import { useEffect, useRef, type CSSProperties } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
+import OfficialUnicornScene from 'unicornstudio-react';
 import { cn } from '@/lib/utils';
+
+type ValidFPS = 15 | 24 | 30 | 60 | 120;
 
 interface UnicornSceneProps {
   projectId: string;
@@ -10,55 +13,9 @@ interface UnicornSceneProps {
   onReady?: () => void;
   scale?: number;
   dpi?: number;
-  fps?: number;
+  fps?: ValidFPS;
   lazyLoad?: boolean;
   production?: boolean;
-  disableMobile?: boolean;
-}
-
-const SDK_VERSION = '2.2.8';
-const SDK_URL = `https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v${SDK_VERSION}/dist/unicornStudio.umd.js`;
-
-let sdkPromise: Promise<void> | null = null;
-
-function loadSdk(): Promise<void> {
-  if (sdkPromise) return sdkPromise;
-
-  sdkPromise = new Promise<void>((resolve, reject) => {
-    if (typeof window === 'undefined') return;
-
-    const w = window as Window & { UnicornStudio?: unknown };
-    if (w.UnicornStudio) {
-      resolve();
-      return;
-    }
-
-    const existing = document.querySelector<HTMLScriptElement>(
-      `script[src^="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js"]`
-    );
-    if (existing) {
-      existing.addEventListener('load', () => resolve());
-      existing.addEventListener('error', () => reject(new Error('UnicornStudio SDK load failed')));
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = SDK_URL;
-    script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error('UnicornStudio SDK load failed'));
-    document.body.appendChild(script);
-  });
-
-  return sdkPromise;
-}
-
-interface UnicornSceneHandle {
-  destroy: () => void;
-}
-
-interface UnicornStudioSDK {
-  addScene: (config: Record<string, unknown>) => Promise<UnicornSceneHandle>;
 }
 
 export function UnicornScene({
@@ -69,73 +26,31 @@ export function UnicornScene({
   scale = 1,
   dpi = 1,
   fps = 60,
-  lazyLoad = false,
+  lazyLoad = true,
   production = true,
-  disableMobile = true,
 }: UnicornSceneProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<UnicornSceneHandle | null>(null);
-  const onReadyRef = useRef(onReady);
-
-  useEffect(() => {
-    onReadyRef.current = onReady;
-  }, [onReady]);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+    setReducedMotion(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+  }, []);
 
-    let cancelled = false;
-
-    loadSdk()
-      .then(async () => {
-        if (cancelled || !containerRef.current) return;
-
-        const w = window as Window & { UnicornStudio?: UnicornStudioSDK };
-        const UnicornStudio = w.UnicornStudio;
-        if (!UnicornStudio?.addScene) return;
-
-        const scene = await UnicornStudio.addScene({
-          element: containerRef.current,
-          projectId,
-          scale,
-          dpi,
-          fps,
-          lazyLoad,
-          production,
-          interactivity: {
-            mouse: {
-              disableMobile,
-              disabled: false,
-            },
-          },
-        });
-
-        if (cancelled) {
-          scene?.destroy?.();
-          return;
-        }
-
-        sceneRef.current = scene;
-        onReadyRef.current?.();
-      })
-      .catch(err => {
-        if (!cancelled) console.error('UnicornScene error:', err);
-      });
-
-    return () => {
-      cancelled = true;
-      sceneRef.current?.destroy?.();
-      sceneRef.current = null;
-    };
-  }, [projectId, scale, dpi, fps, lazyLoad, production, disableMobile]);
+  if (reducedMotion) return null;
 
   return (
-    <div
-      ref={containerRef}
-      className={cn('relative size-full', className)}
-      style={style}
-      aria-hidden="true"
-    />
+    <div className={cn('relative size-full', className)} style={style} aria-hidden="true">
+      <OfficialUnicornScene
+        projectId={projectId}
+        width="100%"
+        height="100%"
+        scale={scale}
+        dpi={dpi}
+        fps={fps}
+        lazyLoad={lazyLoad}
+        production={production}
+        onLoad={onReady}
+      />
+    </div>
   );
 }

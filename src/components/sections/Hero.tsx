@@ -29,14 +29,15 @@ const PROJECT_IDS: Record<SceneTheme, string> = {
 export function Hero({ page }: HeroProps) {
   const { theme } = useTheme();
 
-  // Single-active-scene pattern: only one scene runs at rest. On theme
-  // change, the new scene mounts (hidden), waits for ready, cross-fades,
-  // then the old scene is destroyed — so two canvases overlap only briefly.
+  // Stable-key scene pattern: each mounted scene has a fixed projectId and
+  // key, so no scene ever re-initializes. On theme change, the new scene
+  // mounts hidden, waits for onLoad, cross-fades by switching visibleScene,
+  // then the old scene unmounts after the fade — no blank canvas flash.
   const [mounted, setMounted] = useState(false);
-  const [activeScene, setActiveScene] = useState<SceneTheme>(theme === 'light' ? 'light' : 'dark');
-  const [pendingScene, setPendingScene] = useState<SceneTheme | null>(null);
-  const [pendingReady, setPendingReady] = useState(false);
-  const [fading, setFading] = useState(false);
+  const initialTheme: SceneTheme = theme === 'light' ? 'light' : 'dark';
+  const [mountedScenes, setMountedScenes] = useState<SceneTheme[]>([initialTheme]);
+  const [visibleScene, setVisibleScene] = useState<SceneTheme>(initialTheme);
+  const [pendingTheme, setPendingTheme] = useState<SceneTheme | null>(null);
   const fadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -45,25 +46,24 @@ export function Hero({ page }: HeroProps) {
 
   useEffect(() => {
     const next: SceneTheme = theme === 'light' ? 'light' : 'dark';
-    if (next === activeScene || pendingScene) return;
+    if (next === visibleScene || pendingTheme) return;
 
-    setPendingScene(next);
-    setPendingReady(false);
-  }, [theme, activeScene, pendingScene]);
+    setPendingTheme(next);
+    setMountedScenes(prev => [...prev, next]);
+  }, [theme, visibleScene, pendingTheme]);
 
   const handlePendingReady = useCallback(() => {
-    setPendingReady(true);
-    setFading(true);
+    if (!pendingTheme) return;
+
+    setVisibleScene(pendingTheme);
 
     if (fadeTimer.current) clearTimeout(fadeTimer.current);
     fadeTimer.current = setTimeout(() => {
-      setActiveScene(pendingScene!);
-      setPendingScene(null);
-      setPendingReady(false);
-      setFading(false);
+      setMountedScenes([pendingTheme]);
+      setPendingTheme(null);
       fadeTimer.current = null;
     }, FADE_MS);
-  }, [pendingScene]);
+  }, [pendingTheme]);
 
   useEffect(() => {
     return () => {
@@ -88,31 +88,19 @@ export function Hero({ page }: HeroProps) {
       className="relative z-0 flex min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-background"
     >
       <div className="absolute inset-0 z-0 bg-background" aria-hidden="true">
-        {mounted && (
-          <>
-            {/* Active scene — always running */}
+        {mounted &&
+          mountedScenes.map(sceneTheme => (
             <UnicornScene
-              projectId={PROJECT_IDS[activeScene]}
+              key={sceneTheme}
+              projectId={PROJECT_IDS[sceneTheme]}
+              onReady={sceneTheme === pendingTheme ? handlePendingReady : undefined}
               className={cn(
                 'absolute inset-0 size-full pointer-events-none transition-opacity ease-out hero-scene',
-                fading ? 'opacity-0' : 'opacity-100'
+                visibleScene === sceneTheme ? 'opacity-100' : 'opacity-0'
               )}
               style={{ transitionDuration: `${FADE_MS}ms` }}
             />
-            {/* Pending scene — mounts only during theme switch, destroyed after fade */}
-            {pendingScene && (
-              <UnicornScene
-                projectId={PROJECT_IDS[pendingScene]}
-                onReady={handlePendingReady}
-                className={cn(
-                  'absolute inset-0 size-full pointer-events-none transition-opacity ease-out hero-scene',
-                  pendingReady ? 'opacity-100' : 'opacity-0'
-                )}
-                style={{ transitionDuration: `${FADE_MS}ms` }}
-              />
-            )}
-          </>
-        )}
+          ))}
       </div>
 
       {/* Gradient fade for smooth transition to next section.
