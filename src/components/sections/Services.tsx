@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
-import { motion } from 'motion/react';
+import { motion, useInView } from 'motion/react';
 import { ChevronDownIcon } from 'lucide-react';
 
 import { tinaField } from 'tinacms/dist/react';
@@ -34,6 +34,16 @@ export function Services({ page }: ServicesProps) {
   const services = page.services;
   const [openValue, setOpenValue] = useState<string>('');
   const locale = useLocale();
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const headingInView = useInView(headingRef, { once: true });
+  const [headingFallback, setHeadingFallback] = useState(false);
+
+  useEffect(() => {
+    if (!headingInView) {
+      const timer = setTimeout(() => setHeadingFallback(true), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [headingInView]);
 
   if (!services?.items?.length) {
     return null;
@@ -50,7 +60,7 @@ export function Services({ page }: ServicesProps) {
             delay={0.2}
           >
             <Image
-              src="/layout/gryf.png"
+              src="/layout/gryf.webp"
               alt={locale === 'pl' ? 'Gryf' : 'Griffin'}
               fill
               className="object-contain p-2"
@@ -59,11 +69,11 @@ export function Services({ page }: ServicesProps) {
           </FadeIn>
 
           <motion.h2
+            ref={headingRef}
             data-tina-field={tinaField(services, 'title')}
             className="max-w-4xl font-heading text-4xl font-semibold tracking-tight text-foreground md:text-5xl lg:col-span-2 lg:col-start-1 lg:row-start-1"
             initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={headingInView || headingFallback ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
             {services.title ?? 'Services'}

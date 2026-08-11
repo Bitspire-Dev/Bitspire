@@ -2,7 +2,7 @@
 title: Web Design Mistakes
 canonical: web-design-mistakes
 description: The most common web design mistakes and how to avoid them.
-cover: /blog/web-design-mistakes.png
+cover: /blog/web-design-mistakes.webp
 tags:
   - UX
   - Design

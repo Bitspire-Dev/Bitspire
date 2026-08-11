@@ -37,7 +37,7 @@ export function BlogPage({ query, variables, data, locale }: BlogPageProps) {
   const ui = UI[locale] ?? UI.pl;
 
   const posts = useMemo<ContentCardItem[]>(() => {
-    const edges = tinaData?.blogConnection?.edges ?? [];
+    const edges = tinaData?.blogConnection?.edges ?? data?.blogConnection?.edges ?? [];
     return edges
       .filter((edge): edge is NonNullable<typeof edge> => !!edge && !!edge.node)
       .filter(edge => edge.node?._sys?.relativePath?.startsWith(`${locale}/`))

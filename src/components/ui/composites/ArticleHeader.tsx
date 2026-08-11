@@ -47,6 +47,7 @@ export function ArticleHeader({
               alt={coverAlt ?? title}
               fill
               priority
+              unoptimized={cover?.endsWith('.svg') ?? false}
               className="object-cover"
               sizes="100vw"
             />

@@ -14,16 +14,17 @@ interface HomePageProps {
 
 export function HomePage({ query, variables, data }: HomePageProps) {
   const { data: tinaData } = useTina({ query, variables, data });
+  const page = tinaData?.page ?? data?.page;
 
-  if (!tinaData?.page) {
+  if (!page) {
     return null;
   }
 
   return (
     <>
-      <Hero page={tinaData.page} />
+      <Hero page={page} />
       <TechnologyCarousel />
-      <Services page={tinaData.page} />
+      <Services page={page} />
     </>
   );
 }

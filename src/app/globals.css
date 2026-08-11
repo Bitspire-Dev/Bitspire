@@ -137,13 +137,13 @@
 html.theme-transition,
 html.theme-transition * {
   transition:
-    background-color 300ms ease,
-    color 300ms ease,
-    border-color 300ms ease,
-    text-decoration-color 300ms ease,
-    fill 300ms ease,
-    stroke 300ms ease,
-    outline-color 300ms ease !important;
+    background-color 400ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 400ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 400ms cubic-bezier(0.4, 0, 0.2, 1),
+    text-decoration-color 400ms cubic-bezier(0.4, 0, 0.2, 1),
+    fill 400ms cubic-bezier(0.4, 0, 0.2, 1),
+    stroke 400ms cubic-bezier(0.4, 0, 0.2, 1),
+    outline-color 400ms cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 @keyframes marquee {
@@ -188,5 +188,23 @@ html.theme-transition * {
   kbd,
   samp {
     @apply font-mono;
+  }
+}
+
+/* Hero scene — video & canvas always fill the container to avoid letterbox bars. */
+.hero-scene {
+  will-change: opacity;
+  backface-visibility: hidden;
+}
+
+.hero-scene canvas {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scene {
+    transition: none !important;
   }
 }

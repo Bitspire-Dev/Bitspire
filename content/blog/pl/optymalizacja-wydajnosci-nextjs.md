@@ -2,7 +2,7 @@
 title: Optymalizacja wydajności Next.js
 canonical: nextjs-performance-optimization
 description: Sprawdzone techniki przyspieszania aplikacji opartych na Next.js.
-cover: /blog/nextjs-performance-optimization.png
+cover: /blog/nextjs-performance-optimization.webp
 tags:
   - Next.js
   - Wydajność

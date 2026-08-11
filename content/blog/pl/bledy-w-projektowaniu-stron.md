@@ -2,7 +2,7 @@
 title: Błędy w projektowaniu stron
 canonical: web-design-mistakes
 description: Najczęstsze błędy w projektowaniu stron internetowych i jak ich unikać.
-cover: /blog/web-design-mistakes.png
+cover: /blog/web-design-mistakes.webp
 tags:
   - UX
   - Design

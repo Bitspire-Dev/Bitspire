@@ -20,7 +20,3 @@ services:
       tagline: 'MAKE. STABILIZE. SECURE.'
       description: 'Zarządzamy infrastrukturą tak, jak zarządza się krytycznym systemem: monitorujemy, optymalizujemy, automatyzujemy. DevOps i wsparcie to warstwa, która utrzymuje Twój produkt w ciągłej gotowości operacyjnej. CI/CD, serwery, bezpieczeństwo, doradztwo techniczne — wszystko działa jak jeden organizm, który reaguje szybciej, niż pojawiają się problemy.'
 ---
-
-## Witaj w Bitspire
-
-Tworzymy nowoczesne strony internetowe, które wyróżniają się na tle konkurencji.

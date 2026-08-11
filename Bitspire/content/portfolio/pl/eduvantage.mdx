@@ -1,0 +1,118 @@
+---
+title: 'EduVantage '
+slug: eduvantage
+description: Responsywna strona dla firmy zajmującej się udzielaniem korepetycji.
+excerpt: 'Kompleksowa platforma edukacyjna z systemem kursów online, panelem administracyjnym i integracją z CMS.'
+date: '2025-02-10'
+category: Edukacja
+tags:
+  - Next.js
+  - TypeScript
+  - ISR
+image: /portfolio/Eduvantage.webp
+imageAlt: Zrzut ekranu platformy eduvantage.pl
+link: 'https://eduvantage.pl'
+client: EduVantage
+year: '2025'
+---
+
+## O projekcie
+
+EduVantage to zaawansowana platforma edukacyjna umożliwiająca tworzenie, zarządzanie i dystrybucję kursów online. Projekt wymagał stworzenia skalowalnej architektury, która obsłuży rosnącą liczbę użytkowników przy zachowaniu wysokiej wydajności.
+
+## Wyzwania
+
+* Skalowalna architektura dla rosnącej liczby użytkowników
+* Dynamiczne generowanie treści kursów z headless CMS
+* Panel administracyjny dla instruktorów
+* Optymalizacja wydajności przy dużej ilości treści multimedialnych
+* Responsywność i dostępność (WCAG 2.1)
+
+## Rozwiązanie
+
+### Architektura techniczna
+
+Platforma została zbudowana na **Next.js 14** z wykorzystaniem:
+
+* **Incremental Static Regeneration (ISR)** – automatyczna aktualizacja treści bez pełnego rebuildu
+* **Edge Functions** – szybkie przetwarzanie żądań na brzegu sieci
+* **Headless CMS** – elastyczne zarządzanie treścią
+
+### System kursów
+
+* **Modułowa struktura** – kursy podzielone na moduły i lekcje
+* **Śledzenie postępów** – system zapisywania postępów użytkownika
+* **Interaktywne quizy** – sprawdzanie wiedzy po każdym module
+* **Certyfikaty** – automatyczne generowanie po ukończeniu kursu
+
+### Panel administracyjny
+
+Zaawansowany panel dla instruktorów:
+
+* Intuitive course builder
+* Media upload and management
+* Student progress analytics
+* Real-time preview
+
+### CMS Integration
+
+Integracja z **Tina CMS** zapewnia:
+
+* Live editing capability
+* Visual content editing
+* Version control
+* Multi-language support
+
+## Wyniki
+
+* ✅ **10,000+ aktywnych użytkowników** miesięcznie
+* ✅ **Page Speed Score**: 95+ na wszystkich urządzeniach
+* ✅ **ISR**: treści aktualizowane co 60s bez rebuild
+* ✅ **Edge Response Time**: \< 50ms globalnie
+* ✅ **Dostępność**: zgodność z WCAG 2.1 AA
+* ✅ **Satysfakcja użytkowników**: 4.8/5
+
+## Technologie
+
+* Next.js 14 (App Router)
+* TypeScript
+* Tina CMS (Headless CMS)
+* Tailwind CSS
+* PostgreSQL (via Prisma)
+* NextAuth.js (authentication)
+* Vercel (hosting & edge functions)
+* AWS S3 (media storage)
+
+## Funkcjonalności
+
+### Dla uczniów
+
+* Przeglądanie i zapisywanie się na kursy
+* Śledzenie postępów nauki
+* Interaktywne materiały i quizy
+* System certyfikatów
+* Responsywny interfejs (desktop, tablet, mobile)
+
+### Dla instruktorów
+
+* Tworzenie i edycja kursów
+* Zarządzanie materiałami
+* Analityka postępów uczniów
+* Live preview przed publikacją
+* Zarządzanie dostępem do kursów
+
+## Optymalizacja wydajności
+
+* **Video Streaming**: adaptacyjne streamowanie wideo (HLS)
+* **Image Optimization**: WebP, AVIF z automatycznym fallback
+* **Code Splitting**: optymalne ładowanie tylko potrzebnego kodu
+* **Edge Caching**: globalna dystrybucja treści
+* **Database Pooling**: efektywne zarządzanie połączeniami
+
+## Opinie klienta
+
+> "Bitspire stworzył dla nas platformę, która nie tylko spełnia wszystkie nasze wymagania, ale także przewyższa oczekiwania pod względem wydajności. Nasi użytkownicy uwielbiają intuicyjny interfejs."**— Założyciel EduVantage**
+
+## Zobacz demo
+
+Odwiedź [eduvantage.pl](https://eduvantage.pl) i przetestuj platformę samodzielnie.

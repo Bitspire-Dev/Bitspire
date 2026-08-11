@@ -7,7 +7,7 @@ technologies:
   - Next.js
   - Tailwind CSS
 websiteUrl: https://bezawaryjni.example.com
-screenshot: /portfolio/websites/bezawaryjni.png
+screenshot: /portfolio/websites/bezawaryjni.webp
 ---
 
 Bezawaryjni is a website project for a repair service. The main goal was to build a trustworthy brand image and make it easy for customers to get in touch.

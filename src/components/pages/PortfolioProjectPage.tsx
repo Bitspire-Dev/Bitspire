@@ -34,7 +34,7 @@ export function PortfolioProjectPage({
   category,
 }: PortfolioProjectPageProps) {
   const { data: tinaData } = useTina({ query, variables, data });
-  const project = tinaData?.project;
+  const project = tinaData?.project ?? data?.project;
   const ui = UI[locale] ?? UI.pl;
 
   if (!project) {

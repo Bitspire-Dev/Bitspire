@@ -7,7 +7,7 @@ technologies:
   - Next.js
   - Tailwind CSS
 websiteUrl: https://bezawaryjni.example.com
-screenshot: /portfolio/websites/bezawaryjni.png
+screenshot: /portfolio/websites/bezawaryjni.webp
 ---
 
 Bezawaryjni to projekt strony internetowej dla serwisu naprawczego. Głównym celem było zbudowanie wizerunku solidności i łatwy kontakt z klientami.

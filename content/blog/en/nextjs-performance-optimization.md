@@ -2,7 +2,7 @@
 title: Next.js Performance Optimization
 canonical: nextjs-performance-optimization
 description: Proven techniques for speeding up Next.js applications.
-cover: /blog/nextjs-performance-optimization.png
+cover: /blog/nextjs-performance-optimization.webp
 tags:
   - Next.js
   - Performance

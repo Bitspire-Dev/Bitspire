@@ -2,7 +2,7 @@
 title: Przewodnik po stosie technologicznym
 canonical: web-technology-stack-guide
 description: Jak dobrać odpowiedni stos technologiczny do nowego projektu internetowego?
-cover: /blog/web-technology-stack-guide.png
+cover: /blog/web-technology-stack-guide.webp
 tags:
   - Stack
   - Technologie

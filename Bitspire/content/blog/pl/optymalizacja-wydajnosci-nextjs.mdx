@@ -1,0 +1,328 @@
+---
+title: 'Optymalizacja wydajności Next.js - 10 sprawdzonych technik'
+slug: 'optymalizacja-wydajnosci-nextjs'
+description: 'Praktyczny przewodnik po optymalizacji aplikacji Next.js. Dowiedz się, jak poprawić Core Web Vitals i przyspieszyć swoją stronę.'
+excerpt: 'Aplikacja Next.js może być błyskawiczna, jeśli wiesz, jak ją zoptymalizować. Odkryj 10 technik, które natychmiast poprawią wydajność.'
+date: '2025-11-15T14:30:00.000Z'
+author: 'Bitspire Team'
+category: 'Performance'
+tags:
+  - Next.js
+  - Performance
+  - Optimization
+  - Core Web Vitals
+  - SEO
+image: '/blog/nextjs-performance-optimization.avif'
+imageAlt: 'Dashboard z metrykami wydajności Next.js'
+readTime: 12
+---
+
+## Dlaczego wydajność ma znaczenie?
+
+W 2025 roku szybkość strony to nie tylko nice-to-have - to **must-have**. Google priorytetyzuje szybkie strony w wynikach wyszukiwania, a użytkownicy opuszczają wolne witryny w ciągu sekund.
+
+### Fakty o wydajności:
+
+- **53%** użytkowników mobile opuszcza stronę, która ładuje się dłużej niż 3 sekundy
+- Każda sekunda opóźnienia może zmniejszyć konwersję o **7%**
+- Strony w top 10% pod względem wydajności mają **2x wyższy** współczynnik konwersji
+
+## 1. Wykorzystaj Server Components
+
+Next.js 15 wprowadza **Server Components** jako domyślne. To rewolucyjna zmiana!
+
+### Przed (Client Component):
+```tsx
+'use client';
+
+import { useState, useEffect } from 'react';
+
+export default function Posts() {
+  const [posts, setPosts] = useState([]);
+  
+  useEffect(() => {
+    fetch('/api/posts')
+      .then(res => res.json())
+      .then(setPosts);
+  }, []);
+  
+  return <div>{/* render posts */}</div>;
+}
+```
+
+```tsx
+// app/blog/page.tsx
+export default async function BlogPage() {
+  const posts = await fetch('https://api.example.com/posts').then(r => r.json());
+  
+  return (
+    <div>
+      {posts.map(post => (
+        <article key={post.id}>{post.title}</article>
+      ))}
+    </div>
+  );
+}
+```
+
+**Korzyści:**
+- ✅ Dane pobierane na serwerze (szybciej)
+- ✅ Lepsze SEO
+
+## 2. Optymalizuj obrazy z next/image
+
+Next.js ma wbudowany komponent `Image`, który automatycznie:
+- Generuje responsywne rozmiary
+- Lazy loaduje obrazy
+- Konwertuje do WebP/AVIF
+- Zapobiega Cumulative Layout Shift (CLS)
+
+```tsx
+import Image from 'next/image';
+
+export function Hero() {
+  return (
+    <Image
+      width={1200}
+      height={600}
+      blurDataURL="data:image/jpeg;base64,..."
+    />
+```
+
+## 3. Implementuj Static Generation (SSG)
+
+
+```tsx
+  const posts = await getPosts();
+  
+    slug: post.slug,
+  }));
+
+export default async function BlogPost({ params }: { params: { slug: string } }) {
+  const post = await getPost(params.slug);
+  
+  return <article>{/* render post */}</article>;
+}
+```
+
+**Kiedy używać SSG:**
+
+## 4. Używaj dynamicznych importów
+
+Ładuj komponenty tylko wtedy, gdy są potrzebne:
+
+```tsx
+import dynamic from 'next/dynamic';
+
+const HeavyChart = dynamic(() => import('@/components/HeavyChart'), {
+  loading: () => <p>Ładowanie wykresu...</p>,
+  ssr: false, // nie renderuj na serwerze
+});
+
+export default function Dashboard() {
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <HeavyChart />
+    </div>
+  );
+}
+```
+
+**Oszczędzasz:** Nawet 200-300KB JavaScript bundle!
+
+## 5. Optymalizuj fonty
+
+Next.js 15 ma wbudowaną optymalizację fontów:
+
+```tsx
+// app/layout.tsx
+import { Inter, Poppins } from 'next/font/google';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '600', '700'],
+  display: 'swap',
+  variable: '--font-poppins',
+});
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="pl" className={`${inter.variable} ${poppins.variable}`}>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+**Korzyści:**
+- ✅ Self-hosted fonts (privacy!)
+- ✅ Zero layout shift
+- ✅ Automatyczna optymalizacja
+
+## 6. Konfiguruj caching mądrze
+
+```tsx
+// app/blog/page.tsx
+export const revalidate = 3600; // revalidate co godzinę
+
+export default async function BlogPage() {
+  const posts = await fetch('https://api.example.com/posts', {
+    next: { revalidate: 3600 }
+  }).then(r => r.json());
+  
+  return <div>{/* posts */}</div>;
+}
+```
+
+**Strategie:**
+- Static data → `revalidate: false`
+- Często aktualizowana → `revalidate: 60`
+- Real-time → `revalidate: 0` lub Client Component
+
+## 7. Używaj React Server Actions
+
+Zamiast API routes, użyj Server Actions:
+
+```tsx
+// app/contact/page.tsx
+async function submitForm(formData: FormData) {
+  'use server';
+  
+  const email = formData.get('email');
+  // Process form server-side
+  await saveToDatabase(email);
+}
+
+export default function ContactPage() {
+  return (
+    <form action={submitForm}>
+      <input name="email" type="email" />
+      <button type="submit">Wyślij</button>
+    </form>
+  );
+}
+```
+
+**Zalety:**
+- ✅ Mniej boilerplate
+- ✅ Automatyczna walidacja
+- ✅ Better UX
+
+## 8. Monitoring z Vercel Analytics
+
+```tsx
+// app/layout.tsx
+import { Analytics } from '@vercel/analytics/react';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html>
+      <body>
+        {children}
+        <Analytics />
+      </body>
+    </html>
+  );
+}
+```
+
+Śledź:
+- Core Web Vitals (LCP, FID, CLS)
+- Real User Monitoring
+- Geographic performance
+
+## 9. Prefetch Links
+
+Next.js automatycznie prefetchuje linki w viewport:
+
+```tsx
+import Link from 'next/link';
+
+export function Navigation() {
+  return (
+    <nav>
+      <Link href="/about" prefetch={true}>
+        O nas
+      </Link>
+      <Link href="/blog" prefetch={false}>
+        Blog {/* nie prefetchuj */}
+      </Link>
+    </nav>
+  );
+}
+```
+
+## 10. Bundle Analyzer
+
+Zidentyfikuj, co spowalnia Twoją aplikację:
+
+```bash
+npm install @next/bundle-analyzer
+```
+
+```js
+// next.config.js
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
+module.exports = withBundleAnalyzer({
+  // ... config
+});
+```
+
+Uruchom:
+```bash
+ANALYZE=true npm run build
+```
+
+## Checklist optymalizacji
+
+Przed deploy upewnij się, że:
+
+- [ ] Używasz Server Components gdzie to możliwe
+- [ ] Wszystkie obrazy przez `next/image`
+- [ ] Fonty zoptymalizowane przez `next/font`
+- [ ] Heavy components lazy-loaded
+- [ ] Odpowiednie revalidate dla cached data
+- [ ] Lighthouse score > 90
+- [ ] Core Web Vitals w zielonym zakresie
+
+## Narzędzia do testowania
+
+1. **Lighthouse** - wbudowany w Chrome DevTools
+2. **PageSpeed Insights** - Google's tool
+3. **WebPageTest** - szczegółowa analiza
+4. **Vercel Analytics** - real user monitoring
+
+## Realne rezultaty
+
+Po zastosowaniu tych technik w projektach naszych klientów:
+
+- 📈 **LCP** poprawiony z 4.2s → **1.1s**
+- 📈 **FID** poprawiony z 180ms → **45ms**
+- 📈 **Bundle size** zmniejszony o **60%**
+- 📈 **Conversion rate** wzrósł o **34%**
+
+## Podsumowanie
+
+Optymalizacja Next.js to proces ciągły, nie jednorazowa akcja. Kluczowe zasady:
+
+1. **Measure first** - nie optymalizuj na ślepo
+2. **Server > Client** - wykorzystuj Server Components
+3. **Lazy load everything** - ładuj tylko to, co potrzebne
+4. **Cache aggressively** - ale mądrze
+5. **Monitor constantly** - śledź metryki
+
+---
+
+**Potrzebujesz pomocy z optymalizacją?**
+
+W Bitspire specjalizujemy się w budowaniu ultra-szybkich aplikacji Next.js. Skontaktuj się z nami, aby dowiedzieć się, jak możemy poprawić wydajność Twojej strony.

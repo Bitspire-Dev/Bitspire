@@ -32,5 +32,5 @@
     "**/*.mts",
     "tina/__generated__/**/*.ts"
   ],
-  "exclude": ["node_modules", "Technology.tsx"]
+  "exclude": ["node_modules", "Technology.tsx", "Bitspire"]
 }

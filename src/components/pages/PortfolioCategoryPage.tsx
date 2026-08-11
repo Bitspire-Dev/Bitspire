@@ -50,7 +50,7 @@ export function PortfolioCategoryPage({
   const ui = UI[locale] ?? UI.pl;
 
   const projects = useMemo<ContentCardItem[]>(() => {
-    const edges = tinaData?.projectConnection?.edges ?? [];
+    const edges = tinaData?.projectConnection?.edges ?? data?.projectConnection?.edges ?? [];
     return edges
       .filter((edge): edge is NonNullable<typeof edge> => !!edge && !!edge.node)
       .filter(edge => edge.node?._sys?.relativePath?.startsWith(`${locale}/${canonicalCategory}/`))

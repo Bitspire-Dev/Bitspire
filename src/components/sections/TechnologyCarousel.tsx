@@ -2,7 +2,7 @@
 
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
-import { motion } from 'motion/react';
+import { motion, useInView } from 'motion/react';
 
 import { cn } from '@/lib/utils';
 import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
@@ -125,7 +125,8 @@ const LogoIcon = memo(function LogoIcon({ name }: LogoIconProps) {
           alt={name}
           fill
           sizes="48px"
-          loading="eager"
+          loading="lazy"
+          unoptimized
           className={cn(
             'object-contain opacity-50 grayscale transition-all duration-300 hover:scale-110 hover:opacity-100 hover:grayscale-0 dark:invert'
           )}
@@ -170,16 +171,27 @@ const MarqueeRow = memo(function MarqueeRow({ offset = false }: MarqueeRowProps)
 /* ------------------------------------------------------------------ */
 
 export function TechnologyCarousel() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0, margin: '100px 0px' });
+  const [fallback, setFallback] = useState(false);
+
+  useEffect(() => {
+    if (!isInView) {
+      const timer = setTimeout(() => setFallback(true), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isInView]);
+
   return (
     <motion.section
+      ref={sectionRef}
       role="region"
       aria-roledescription="carousel"
       aria-label="Technology carousel"
       className="relative w-full overflow-hidden bg-background py-16"
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true, amount: 0, margin: '100px 0px' }}
-      transition={{ duration: 0.8, delay: 0.2 }}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView || fallback ? { opacity: 1, y: 0 } : undefined}
+      transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
     >
       <div className="flex flex-col gap-2">
         <MarqueeRow />

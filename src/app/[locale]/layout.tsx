@@ -3,10 +3,9 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
-import client from '@tina/__generated__/client';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { buildBlogArticleMap } from '@/lib/blog';
+import { buildBlogArticleMapFromFs } from '@/lib/blog-fs';
 import { inter, nippo, ibmPlexMono } from '@/lib/fonts';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { siteMetadata } from '@/lib/site';
@@ -38,12 +37,27 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
   const messages = await getMessages();
 
-  const { data: blogData } = await client.queries.blogConnection();
+  const blogMap = await buildBlogArticleMapFromFs();
 
-  const blogMap = buildBlogArticleMap(blogData);
+  const setInitialTheme = `
+    (function() {
+      try {
+        var theme = localStorage.getItem('bitspire-theme');
+        if (theme !== 'light') theme = 'dark';
+        document.documentElement.classList.add(theme);
+        document.documentElement.style.colorScheme = theme;
+      } catch (e) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.style.colorScheme = 'dark';
+      }
+    })();
+  `;
 
   return (
     <html lang={locale} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: setInitialTheme }} />
+      </head>
       <body
         className={`${inter.variable} ${nippo.variable} ${ibmPlexMono.variable} flex min-h-screen flex-col bg-background text-foreground antialiased`}
       >

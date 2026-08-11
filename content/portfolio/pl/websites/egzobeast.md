@@ -7,7 +7,7 @@ technologies:
   - React
   - Tailwind CSS
 websiteUrl: https://egzobeast.example.com
-screenshot: /portfolio/websites/egzobeast.png
+screenshot: /portfolio/websites/egzobeast.webp
 ---
 
 Egzobeast to projekt strony internetowej dla sklepu zoologicznego. Kluczowym elementem była przejrzysta prezentacja oferty, intuicyjna nawigacja oraz szybki proces zakupowy.

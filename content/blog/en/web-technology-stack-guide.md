@@ -2,7 +2,7 @@
 title: Web Technology Stack Guide
 canonical: web-technology-stack-guide
 description: How to choose the right technology stack for your new web project.
-cover: /blog/web-technology-stack-guide.png
+cover: /blog/web-technology-stack-guide.webp
 tags:
   - Stack
   - Technologies

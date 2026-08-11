@@ -26,7 +26,7 @@ const UI: Record<string, Record<string, string>> = {
 
 export function PortfolioPage({ query, variables, data, locale }: PortfolioPageProps) {
   const { data: tinaData } = useTina({ query, variables, data });
-  const page = tinaData?.page;
+  const page = tinaData?.page ?? data?.page;
   const ui = UI[locale] ?? UI.pl;
 
   return (
@@ -65,6 +65,7 @@ export function PortfolioPage({ query, variables, data, locale }: PortfolioPageP
                   src={category.image}
                   alt={category.label[locale] ?? category.label.en}
                   fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   unoptimized
                   className="object-contain p-8 opacity-50 grayscale transition-all duration-300 group-hover/card:scale-105 group-hover/card:opacity-100 group-hover/card:grayscale-0"
                 />

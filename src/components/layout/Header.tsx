@@ -1,13 +1,11 @@
 'use client';
 
-import { useState, type ComponentProps } from 'react';
+import { useEffect, useState, type ComponentProps } from 'react';
 import Image from 'next/image';
-import { useTheme } from 'next-themes';
-import { Link } from '@/i18n/navigation';
-import { Menu, X } from 'lucide-react';
+import { Link, usePathname } from '@/i18n/navigation';
+import { Menu, X, Sun, Moon } from 'lucide-react';
 import { LocaleSwitcher } from '@/components/ui/composites/locale-switcher';
-import { ThemeSwitcher } from '@/components/ui/composites/theme-switcher';
-import { useMounted } from '@/lib/use-mounted';
+import { useTheme } from '@/components/providers/theme-provider';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/primitives/button';
 import {
@@ -48,28 +46,16 @@ const NAV_LINKS: Record<'pl' | 'en', NavLink[]> = {
 };
 
 export function Header({ locale, blogMap }: HeaderProps) {
-  const { resolvedTheme } = useTheme();
-  const mounted = useMounted();
   const navLinks = NAV_LINKS[locale as 'pl' | 'en'] ?? NAV_LINKS.pl;
-  const isDark = mounted && resolvedTheme === 'dark';
-  const logoSrc = isDark ? '/favicon-dark-mode.svg' : '/favicon-light-mode.svg';
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur">
-      <div className="container mx-auto flex h-14 max-w-360 items-center justify-between px-4 md:px-6">
-        <div className="flex items-center gap-4">
+      <div className="mx-auto flex h-14 w-full max-w-[90rem] items-center px-4 md:px-6">
+        <div className="flex flex-1 items-center gap-4">
           <MobileMenu locale={locale} links={navLinks} blogMap={blogMap} />
-          <ThemeSwitcher className="md:hidden" />
 
           <Link href="/" className="flex items-center gap-2">
-            <Image
-              src={logoSrc}
-              alt="Bitspire"
-              width={24}
-              height={19}
-              className="h-5 w-auto"
-              unoptimized
-            />
+            <ThemeLogo />
             <span className="font-heading text-lg font-bold tracking-[0.2em] text-brand md:text-xl">
               BITSPIRE
             </span>
@@ -78,9 +64,11 @@ export function Header({ locale, blogMap }: HeaderProps) {
 
         <DesktopNav links={navLinks} locale={locale} />
 
-        <div className="hidden items-center gap-2 md:flex">
-          <ThemeSwitcher />
-          <LocaleSwitcher locale={locale} blogMap={blogMap} />
+        <div className="flex flex-1 items-center justify-end gap-2">
+          <ThemeToggle />
+          <div className="hidden md:flex">
+            <LocaleSwitcher locale={locale} blogMap={blogMap} />
+          </div>
         </div>
       </div>
     </header>
@@ -88,12 +76,24 @@ export function Header({ locale, blogMap }: HeaderProps) {
 }
 
 function DesktopNav({ links, locale }: { links: NavLink[]; locale: string }) {
+  const [value, setValue] = useState('');
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setValue('');
+  }, [pathname]);
+
   return (
-    <NavigationMenu className="hidden md:flex">
+    <NavigationMenu className="hidden md:flex" value={value} onValueChange={setValue}>
       <NavigationMenuList>
         {links.map(link =>
           link.href === '/portfolio' ? (
-            <PortfolioMenuItem key={link.href} label={link.label} locale={locale} />
+            <PortfolioMenuItem
+              key={link.href}
+              label={link.label}
+              locale={locale}
+              onClose={() => setValue('')}
+            />
           ) : (
             <NavigationMenuItem key={link.href}>
               <Button
@@ -111,20 +111,35 @@ function DesktopNav({ links, locale }: { links: NavLink[]; locale: string }) {
   );
 }
 
-function PortfolioMenuItem({ label, locale }: { label: string; locale: string }) {
+function PortfolioMenuItem({
+  label,
+  locale,
+  onClose,
+}: {
+  label: string;
+  locale: string;
+  onClose: () => void;
+}) {
+  const preventHover = (event: React.PointerEvent) => event.preventDefault();
+
   return (
-    <NavigationMenuItem>
-      <NavigationMenuTrigger className="text-foreground/70 hover:bg-muted hover:text-foreground">
+    <NavigationMenuItem value="portfolio">
+      <NavigationMenuTrigger
+        className="text-foreground/70 hover:bg-muted hover:text-foreground"
+        onPointerEnter={preventHover}
+        onPointerMove={preventHover}
+        onPointerLeave={preventHover}
+      >
         {label}
       </NavigationMenuTrigger>
-      <NavigationMenuContent>
+      <NavigationMenuContent onPointerEnter={preventHover} onPointerLeave={preventHover}>
         <div className="flex flex-col gap-1 p-2">
-          <Button asChild variant="ghost" className="justify-start">
+          <Button asChild variant="ghost" className="justify-start" onClick={onClose}>
             <Link href={getCategoryHref(locale, 'websites')}>
               {locale === 'pl' ? 'Strony internetowe' : 'Websites'}
             </Link>
           </Button>
-          <Button asChild variant="ghost" className="justify-start">
+          <Button asChild variant="ghost" className="justify-start" onClick={onClose}>
             <Link href={getCategoryHref(locale, 'software')}>
               {locale === 'pl' ? 'Oprogramowanie' : 'Software'}
             </Link>
@@ -132,6 +147,43 @@ function PortfolioMenuItem({ label, locale }: { label: string; locale: string })
         </div>
       </NavigationMenuContent>
     </NavigationMenuItem>
+  );
+}
+
+function ThemeLogo() {
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  return (
+    <Image
+      src={!mounted || theme === 'dark' ? '/favicon-dark-mode.svg' : '/favicon-light-mode.svg'}
+      alt="Bitspire"
+      width={24}
+      height={19}
+      priority
+      className="h-5 w-auto"
+      unoptimized
+    />
+  );
+}
+
+function ThemeToggle() {
+  const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const isDark = !mounted || theme === 'dark';
+
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      onClick={toggleTheme}
+      aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+      className="text-foreground/80"
+    >
+      {isDark ? <Sun className="size-5" /> : <Moon className="size-5" />}
+    </Button>
   );
 }
 
@@ -182,7 +234,8 @@ function MobileMenu({
           </ul>
         </nav>
 
-        <div className="mt-4 border-t border-border/40 pt-4">
+        <div className="mt-4 flex items-center gap-2 border-t border-border/40 pt-4">
+          <ThemeToggle />
           <LocaleSwitcher locale={locale} blogMap={blogMap} />
         </div>
       </div>
