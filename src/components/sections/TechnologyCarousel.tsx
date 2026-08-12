@@ -189,6 +189,7 @@ export function TechnologyCarousel() {
       aria-roledescription="carousel"
       aria-label="Technology carousel"
       className="relative w-full overflow-hidden bg-background py-16"
+      style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 300px' }}
       initial={{ opacity: 0, y: 40 }}
       animate={isInView || fallback ? { opacity: 1, y: 0 } : undefined}
       transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}

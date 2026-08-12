@@ -1,74 +1,30 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
 import { TinaMarkdown } from 'tinacms/dist/rich-text';
 import { FadeIn } from '@/components/ui/composites/fade-in';
-import { UnicornScene } from '@/components/ui/composites/UnicornScene';
-import { useTheme } from '@/components/providers/theme-provider';
-import { cn } from '@/lib/utils';
+
+const PixiScene = dynamic(() => import('@/components/ui/composites/PixiScene').then(m => m.PixiScene), {
+  ssr: false,
+});
 
 interface HeroProps {
   page: PagePartsFragment;
 }
 
-const DARK_PROJECT_ID = 'h1BqwqCs5IMUMFF6knG3';
-const LIGHT_PROJECT_ID = 'akxkqMoymrONQdz6EGnI';
-
-const FADE_MS = 700;
-
-type SceneTheme = 'dark' | 'light';
-
-const PROJECT_IDS: Record<SceneTheme, string> = {
-  dark: DARK_PROJECT_ID,
-  light: LIGHT_PROJECT_ID,
-};
-
 export function Hero({ page }: HeroProps) {
-  const { theme } = useTheme();
-
-  // Stable-key scene pattern: each mounted scene has a fixed projectId and
-  // key, so no scene ever re-initializes. On theme change, the new scene
-  // mounts hidden, waits for onLoad, cross-fades by switching visibleScene,
-  // then the old scene unmounts after the fade — no blank canvas flash.
+  // The cosmos backdrop is a single universal scene that never changes on
+  // theme switch — so light/dark transitions stay perfectly smooth (nothing
+  // re-initialises or cross-fades). We only gate the mount on the client to
+  // avoid an SSR/canvas mismatch.
   const [mounted, setMounted] = useState(false);
-  const initialTheme: SceneTheme = theme === 'light' ? 'light' : 'dark';
-  const [mountedScenes, setMountedScenes] = useState<SceneTheme[]>([initialTheme]);
-  const [visibleScene, setVisibleScene] = useState<SceneTheme>(initialTheme);
-  const [pendingTheme, setPendingTheme] = useState<SceneTheme | null>(null);
-  const fadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    const next: SceneTheme = theme === 'light' ? 'light' : 'dark';
-    if (next === visibleScene || pendingTheme) return;
-
-    setPendingTheme(next);
-    setMountedScenes(prev => [...prev, next]);
-  }, [theme, visibleScene, pendingTheme]);
-
-  const handlePendingReady = useCallback(() => {
-    if (!pendingTheme) return;
-
-    setVisibleScene(pendingTheme);
-
-    if (fadeTimer.current) clearTimeout(fadeTimer.current);
-    fadeTimer.current = setTimeout(() => {
-      setMountedScenes([pendingTheme]);
-      setPendingTheme(null);
-      fadeTimer.current = null;
-    }, FADE_MS);
-  }, [pendingTheme]);
-
-  useEffect(() => {
-    return () => {
-      if (fadeTimer.current) clearTimeout(fadeTimer.current);
-    };
   }, []);
 
   const sectionRef = useRef<HTMLElement>(null);
@@ -88,26 +44,22 @@ export function Hero({ page }: HeroProps) {
       className="relative z-0 flex min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-background"
     >
       <div className="absolute inset-0 z-0 bg-background" aria-hidden="true">
-        {mounted &&
-          mountedScenes.map(sceneTheme => (
-            <UnicornScene
-              key={sceneTheme}
-              projectId={PROJECT_IDS[sceneTheme]}
-              onReady={sceneTheme === pendingTheme ? handlePendingReady : undefined}
-              className={cn(
-                'absolute inset-0 size-full pointer-events-none transition-opacity ease-out hero-scene',
-                visibleScene === sceneTheme ? 'opacity-100' : 'opacity-0'
-              )}
-              style={{ transitionDuration: `${FADE_MS}ms` }}
-            />
-          ))}
+        {mounted && (
+          <PixiScene className="absolute inset-0 size-full pointer-events-none hero-scene" />
+        )}
       </div>
 
-      {/* Gradient fade for smooth transition to next section.
-          Taller + multi-stop so the blend into the page background reads as
-          a natural fade instead of a hard band (especially in light mode). */}
+      {/* Gradient fade into the next section — dark theme only. In light mode
+          the bright page background already blends cleanly with the cosmos, so
+          the fade is hidden to avoid a muddy wash at the bottom. A soft,
+          multi-stop easing (rather than a single hard band) keeps the blend
+          from the dark cosmos to the page background clean. */}
       <div
-        className="pointer-events-none absolute bottom-0 left-0 z-10 h-64 w-full bg-gradient-to-t from-background via-background/75 to-transparent"
+        className="pointer-events-none absolute bottom-0 left-0 z-10 hidden h-72 w-full dark:block"
+        style={{
+          background:
+            'linear-gradient(to top, var(--background) 0%, color-mix(in oklab, var(--background) 88%, transparent) 20%, color-mix(in oklab, var(--background) 60%, transparent) 42%, color-mix(in oklab, var(--background) 28%, transparent) 66%, transparent 100%)',
+        }}
         aria-hidden="true"
       />
 
@@ -118,7 +70,7 @@ export function Hero({ page }: HeroProps) {
         <FadeIn>
           <h1
             data-tina-field={tinaField(page, 'title')}
-            className="max-w-4xl font-heading text-5xl leading-tight font-semibold tracking-tight text-foreground md:text-7xl"
+            className="max-w-4xl font-heading text-5xl leading-tight font-semibold tracking-tight text-white md:text-7xl"
           >
             {page.title ?? 'Bitspire'}
           </h1>
@@ -128,7 +80,7 @@ export function Hero({ page }: HeroProps) {
           <FadeIn delay={0.1}>
             <p
               data-tina-field={tinaField(page, 'description')}
-              className="mt-6 max-w-2xl font-sans text-lg leading-relaxed text-muted-foreground md:text-xl"
+              className="mt-6 max-w-2xl font-sans text-lg leading-relaxed text-white/75 md:text-xl"
             >
               {page.description}
             </p>
@@ -139,7 +91,7 @@ export function Hero({ page }: HeroProps) {
           <FadeIn delay={0.2}>
             <div
               data-tina-field={tinaField(page, 'body')}
-              className="prose mt-8 max-w-2xl font-sans text-muted-foreground prose-invert"
+              className="prose mt-8 max-w-2xl font-sans text-white/75 prose-invert"
             >
               <TinaMarkdown content={page.body} />
             </div>

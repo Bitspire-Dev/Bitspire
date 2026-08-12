@@ -4,12 +4,16 @@ export const inter = localFont({
   src: '../../public/fonts/Inter/InterVariable.woff2',
   variable: '--font-sans',
   display: 'swap',
+  preload: true,
+  adjustFontFallback: 'Arial',
 });
 
 export const nippo = localFont({
   src: '../../public/fonts/Nippo/Nippo-Variable.woff2',
   variable: '--font-heading',
   display: 'swap',
+  preload: true,
+  adjustFontFallback: 'Arial',
 });
 
 export const ibmPlexMono = localFont({

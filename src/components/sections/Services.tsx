@@ -52,7 +52,7 @@ export function Services({ page }: ServicesProps) {
   const items = services.items.filter((item): item is NonNullable<typeof item> => !!item);
 
   return (
-    <section className="relative w-full bg-background">
+    <section className="relative w-full bg-background" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 800px' }}>
       <div className="container mx-auto max-w-360 px-6 py-24">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
           <FadeIn
