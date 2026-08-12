@@ -13,7 +13,7 @@ technologies:
   - Zod
   - Tailwind CSS
 websiteUrl: https://github.com/Jakub-Pujanek/Keybrix
-screenshot: /portfolio/software/keybrix/cover.png
+screenshot: /portfolio/software/KeyBrix.svg
 ---
 
 # Keybrix — automate repetitive tasks without writing code

@@ -3,6 +3,8 @@
 import { useTina } from 'tinacms/dist/react';
 import type { PageQuery } from '@tina/__generated__/types';
 import { Hero } from '@/components/sections/Hero';
+import { CallToAction } from '@/components/sections/CallToAction';
+import { PortfolioHighlights } from '@/components/sections/PortfolioHighlights';
 import { Services } from '@/components/sections/Services';
 import { TechnologyCarousel } from '@/components/sections/TechnologyCarousel';
 
@@ -24,6 +26,8 @@ export function HomePage({ query, variables, data }: HomePageProps) {
       <Hero page={tinaData.page} />
       <TechnologyCarousel />
       <Services page={tinaData.page} />
+      <PortfolioHighlights page={tinaData.page} />
+      <CallToAction page={tinaData.page} />
     </>
   );
 }

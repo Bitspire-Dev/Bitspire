@@ -19,6 +19,21 @@ services:
     - title: 'DevOps & Support'
       tagline: 'MAKE. STABILIZE. SECURE.'
       description: 'We manage infrastructure like a critical system: monitoring, optimizing, automating. DevOps and support is the layer that keeps your product in continuous operational readiness. CI/CD, servers, security, technical consulting — everything works as one organism that reacts faster than problems appear.'
+portfolioHighlights:
+  title: Featured case studies
+  description: Explore our best work — from websites to custom software.
+  items:
+    - project: content/portfolio/en/websites/eduvantage.md
+    - project: content/portfolio/en/websites/bezawaryjni.md
+    - project: content/portfolio/en/software/keybrix.md
+callToAction:
+  title: Let's build together
+  description: Have an idea for a product, website, or custom software? Let's talk — we'll help you turn it into a working system.
+  primaryLabel: Get in touch
+  primaryHref: /contact
+  secondaryLabel: See our work
+  secondaryHref: /portfolio
+  showImage: true
 ---
 
 ## Welcome to Bitspire

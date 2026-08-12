@@ -11,7 +11,7 @@ technologies:
   - Framer Motion
   - Vercel
 websiteUrl: https://eduvantage.pl
-screenshot: /portfolio/websites/eduvantage/cover.png
+screenshot: /portfolio/websites/eduvantage.png
 ---
 
 # EduVantage — a website that attracts students and parents

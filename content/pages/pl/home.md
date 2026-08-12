@@ -19,6 +19,21 @@ services:
     - title: 'DevOps & Wsparcie'
       tagline: 'MAKE. STABILIZE. SECURE.'
       description: 'Zarządzamy infrastrukturą tak, jak zarządza się krytycznym systemem: monitorujemy, optymalizujemy, automatyzujemy. DevOps i wsparcie to warstwa, która utrzymuje Twój produkt w ciągłej gotowości operacyjnej. CI/CD, serwery, bezpieczeństwo, doradztwo techniczne — wszystko działa jak jeden organizm, który reaguje szybciej, niż pojawiają się problemy.'
+portfolioHighlights:
+  title: Wybrane case studies
+  description: Zobacz nasze najlepsze realizacje — od stron internetowych po dedykowane oprogramowanie.
+  items:
+    - project: content/portfolio/pl/websites/eduvantage.md
+    - project: content/portfolio/pl/websites/bezawaryjni.md
+    - project: content/portfolio/pl/software/keybrix.md
+callToAction:
+  title: Zacznijmy współpracę
+  description: Masz pomysł na produkt, stronę lub oprogramowanie? Porozmawiajmy — pomożemy Ci go przekuć w działający system.
+  primaryLabel: Skontaktuj się
+  primaryHref: /contact
+  secondaryLabel: Zobacz portfolio
+  secondaryHref: /portfolio
+  showImage: true
 ---
 
 ## Witaj w Bitspire

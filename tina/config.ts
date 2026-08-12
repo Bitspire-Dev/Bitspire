@@ -92,6 +92,82 @@ export default defineConfig({
           },
           {
             type: 'object',
+            name: 'portfolioHighlights',
+            label: 'Portfolio Highlights',
+            fields: [
+              {
+                type: 'string',
+                name: 'title',
+                label: 'Section Title',
+              },
+              {
+                type: 'string',
+                name: 'description',
+                label: 'Section Description',
+              },
+              {
+                type: 'object',
+                name: 'items',
+                label: 'Projects',
+                list: true,
+                ui: {
+                  max: 3,
+                },
+                fields: [
+                  {
+                    type: 'reference',
+                    name: 'project',
+                    label: 'Project',
+                    collections: ['project'],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'object',
+            name: 'callToAction',
+            label: 'Call to Action',
+            fields: [
+              {
+                type: 'string',
+                name: 'title',
+                label: 'Title',
+              },
+              {
+                type: 'string',
+                name: 'description',
+                label: 'Description',
+              },
+              {
+                type: 'string',
+                name: 'primaryLabel',
+                label: 'Primary Button Label',
+              },
+              {
+                type: 'string',
+                name: 'primaryHref',
+                label: 'Primary Button Link',
+              },
+              {
+                type: 'string',
+                name: 'secondaryLabel',
+                label: 'Secondary Button Label',
+              },
+              {
+                type: 'string',
+                name: 'secondaryHref',
+                label: 'Secondary Button Link',
+              },
+              {
+                type: 'boolean',
+                name: 'showImage',
+                label: 'Show image',
+              },
+            ],
+          },
+          {
+            type: 'object',
             name: 'contact',
             label: 'Contact',
             fields: [

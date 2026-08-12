@@ -10,7 +10,6 @@ import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
 import { cn } from '@/lib/utils';
 import { slugify } from '@/lib/string';
-import { Badge } from '@/components/ui/primitives/badge';
 import {
   Accordion,
   AccordionContent,
@@ -28,6 +27,41 @@ export interface Service {
   title: string;
   tagline: string;
   description: string;
+}
+
+function splitSentences(text: string): string[] {
+  return text
+    .trim()
+    .split(/(?<=[.!?])\s+/)
+    .map(s => s.trim())
+    .filter(Boolean);
+}
+
+function toParagraphs(text: string): string[] {
+  const sentences = splitSentences(text);
+  const paragraphs: string[] = [];
+
+  for (let i = 0; i < sentences.length; i += 2) {
+    const chunk = sentences.slice(i, i + 2).join(' ');
+    paragraphs.push(chunk);
+  }
+
+  return paragraphs;
+}
+
+function LeadWord({ text }: { text: string }) {
+  const [first, ...rest] = text.split(' ');
+
+  if (!first) {
+    return <>{text}</>;
+  }
+
+  return (
+    <>
+      <span className="font-semibold text-foreground">{first}</span>
+      {rest.length > 0 ? ` ${rest.join(' ')}` : null}
+    </>
+  );
 }
 
 export function Services({ page }: ServicesProps) {
@@ -50,7 +84,7 @@ export function Services({ page }: ServicesProps) {
             delay={0.2}
           >
             <Image
-              src="/layout/gryf.png"
+              src="/layout/gryf-2.png"
               alt={locale === 'pl' ? 'Gryf' : 'Griffin'}
               fill
               className="object-contain p-2"
@@ -98,20 +132,11 @@ export function Services({ page }: ServicesProps) {
                           'py-4 text-left md:py-6'
                         )}
                       >
-                        <span className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-4">
-                          <span
-                            data-tina-field={tinaField(item, 'title')}
-                            className="font-heading text-lg font-medium text-foreground md:text-xl"
-                          >
-                            {item.title}
-                          </span>
-                          <Badge
-                            data-tina-field={tinaField(item, 'tagline')}
-                            variant="outline"
-                            className="border-brand/30 text-brand md:text-base"
-                          >
-                            {item.tagline}
-                          </Badge>
+                        <span
+                          data-tina-field={tinaField(item, 'title')}
+                          className="font-heading text-lg font-medium text-foreground md:text-xl"
+                        >
+                          {item.title}
                         </span>
 
                         <motion.span
@@ -124,8 +149,16 @@ export function Services({ page }: ServicesProps) {
                       </AccordionTrigger>
 
                       <AccordionContent className="pb-6 text-sm leading-relaxed md:text-base">
-                        <div data-tina-field={tinaField(item, 'description')}>
-                          {item.description}
+                        <div
+                          data-tina-field={tinaField(item, 'description')}
+                          className="text-justify text-pretty hyphens-auto"
+                          lang={locale}
+                        >
+                          {toParagraphs(item.description).map((paragraph, index) => (
+                            <p key={index} className="mb-3 leading-relaxed last:mb-0 md:mb-4">
+                              <LeadWord text={paragraph} />
+                            </p>
+                          ))}
                         </div>
                       </AccordionContent>
                     </AccordionItem>
