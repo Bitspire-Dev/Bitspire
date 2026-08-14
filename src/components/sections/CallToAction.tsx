@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import { tinaField } from 'tinacms/dist/react';
@@ -7,12 +8,7 @@ import type { ComponentProps } from 'react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/primitives/button';
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/primitives/card';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/primitives/card';
 import { FadeIn } from '@/components/ui/composites/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/ui/composites/stagger';
 
@@ -22,7 +18,7 @@ interface CallToActionProps {
   page: PagePartsFragment;
 }
 
-export function CallToAction({ page }: CallToActionProps) {
+function CallToActionContent({ page }: CallToActionProps) {
   const locale = useLocale();
   const cta = page.callToAction;
 
@@ -92,7 +88,7 @@ export function CallToAction({ page }: CallToActionProps) {
               {cta.showImage !== false ? (
                 <FadeIn
                   delay={0.2}
-                    className="relative hidden aspect-square w-full max-w-sm justify-self-end lg:flex"
+                  className="relative hidden aspect-square w-full max-w-sm justify-self-end lg:flex"
                 >
                   <Image
                     src="/layout/gryf-2.png"
@@ -110,3 +106,5 @@ export function CallToAction({ page }: CallToActionProps) {
     </section>
   );
 }
+
+export const CallToAction = memo(CallToActionContent);

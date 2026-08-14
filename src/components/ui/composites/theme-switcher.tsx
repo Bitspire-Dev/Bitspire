@@ -1,46 +1,20 @@
 'use client';
 
 import { useRef, useSyncExternalStore } from 'react';
+import { flushSync } from 'react-dom';
 import { useTheme } from 'next-themes';
 import { Moon, Sun } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
+import { useMounted } from '@/lib/use-mounted';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/primitives/button';
 import { Skeleton } from '@/components/ui/primitives/skeleton';
 
-const THEME_TRANSITION_DURATION = 350;
 const ICON_ANIMATION_DURATION = 0.25;
 
 interface ThemeSwitcherProps {
   className?: string;
-}
-
-let mounted = false;
-const mountedSubscribers = new Set<() => void>();
-
-function useMounted() {
-  return useSyncExternalStore(
-    callback => {
-      mountedSubscribers.add(callback);
-
-      if (!mounted) {
-        const id = setTimeout(() => {
-          mounted = true;
-          mountedSubscribers.forEach(cb => cb());
-        }, 0);
-
-        return () => {
-          clearTimeout(id);
-          mountedSubscribers.delete(callback);
-        };
-      }
-
-      return () => mountedSubscribers.delete(callback);
-    },
-    () => mounted,
-    () => false
-  );
 }
 
 let reducedMotion = false;
@@ -75,25 +49,56 @@ function useReducedMotion() {
   );
 }
 
+function suppressTransitions(): HTMLStyleElement {
+  const style = document.createElement('style');
+  style.textContent = '*, *::before, *::after { transition: none !important; }';
+  document.head.appendChild(style);
+  return style;
+}
+
 export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
   const { resolvedTheme, setTheme } = useTheme();
   const mounted = useMounted();
   const reducedMotion = useReducedMotion();
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const suppressStyleRef = useRef<HTMLStyleElement | null>(null);
+
+  const clearSuppressStyle = () => {
+    if (suppressStyleRef.current) {
+      suppressStyleRef.current.remove();
+      suppressStyleRef.current = null;
+    }
+  };
 
   const toggle = () => {
-    const root = document.documentElement;
-    root.classList.add('theme-transition');
+    if (!resolvedTheme) return;
 
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
+    const next = resolvedTheme === 'dark' ? 'light' : 'dark';
+
+    if (reducedMotion || typeof document === 'undefined' || !document.startViewTransition) {
+      setTheme(next);
+      return;
     }
 
-    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+    clearSuppressStyle();
 
-    timeoutRef.current = setTimeout(() => {
-      root.classList.remove('theme-transition');
-    }, THEME_TRANSITION_DURATION);
+    const root = document.documentElement;
+    const transition = document.startViewTransition(() => {
+      // Temporarily disable every CSS transition so the live DOM is already in
+      // its final state when the snapshot for the cross-fade is taken. Without
+      // this the new snapshot could capture a mid-transition colour.
+      suppressStyleRef.current = suppressTransitions();
+
+      if (next === 'dark') {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
+      root.style.colorScheme = next;
+
+      flushSync(() => setTheme(next));
+    });
+
+    transition.finished.then(clearSuppressStyle).catch(clearSuppressStyle);
   };
 
   if (!mounted) {

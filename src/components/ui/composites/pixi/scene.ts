@@ -2,13 +2,7 @@
 // shader (a twinkling star field with soft blue clouds drifting over deep
 // space). Handles resize, mouse parallax, visibility pausing and cleanup.
 
-import {
-  Application,
-  Geometry,
-  GlProgram,
-  Mesh,
-  Shader,
-} from 'pixi.js';
+import { Application, Geometry, GlProgram, Mesh, Shader } from 'pixi.js';
 import { atmosphereVertex } from './shaders/atmosphere.vert';
 import { atmosphereFragment } from './shaders/atmosphere.frag';
 import { MouseController } from './mouse';
@@ -71,7 +65,7 @@ export class PixiSceneEngine {
 
   constructor(
     private container: HTMLElement,
-    private theme: SceneTheme,
+    private theme: SceneTheme
   ) {
     this.quality = getQualityConfig();
     this.app = new Application();
@@ -123,7 +117,7 @@ export class PixiSceneEngine {
     this.startTime = performance.now();
 
     // Ticker — single callback, minimal allocations
-    this.tickerFn = (ticker) => this.tick(ticker.deltaTime);
+    this.tickerFn = ticker => this.tick(ticker.deltaTime);
     this.app.ticker.add(this.tickerFn);
     this.app.ticker.maxFPS = this.quality.maxFps;
 
@@ -141,7 +135,10 @@ export class PixiSceneEngine {
       resources: {
         uTimeUniforms: {
           uTime: { value: 0, type: 'f32' },
-          uResolution: { value: [this.app.screen.width, this.app.screen.height], type: 'vec2<f32>' },
+          uResolution: {
+            value: [this.app.screen.width, this.app.screen.height],
+            type: 'vec2<f32>',
+          },
           uMouse: { value: [0, 0], type: 'vec2<f32>' },
           uIntensity: { value: this.quality.shaderIntensity, type: 'f32' },
           uColorDeep: { value: colors.deep, type: 'vec3<f32>' },

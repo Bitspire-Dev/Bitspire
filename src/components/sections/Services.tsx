@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import { motion } from 'motion/react';
@@ -64,7 +64,7 @@ function LeadWord({ text }: { text: string }) {
   );
 }
 
-export function Services({ page }: ServicesProps) {
+function ServicesContent({ page }: ServicesProps) {
   const services = page.services;
   const [openValue, setOpenValue] = useState<string>('');
   const locale = useLocale();
@@ -172,3 +172,5 @@ export function Services({ page }: ServicesProps) {
     </section>
   );
 }
+
+export const Services = memo(ServicesContent);

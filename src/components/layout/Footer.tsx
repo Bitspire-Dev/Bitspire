@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { ComponentProps } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Globe, Mail, Phone, MapPin, Clock } from 'lucide-react';
@@ -119,7 +120,7 @@ function FooterColumn({ title, children }: { title: string; children: React.Reac
   );
 }
 
-export function Footer({ locale }: FooterProps) {
+function FooterContent({ locale }: FooterProps) {
   const content = FOOTER_CONTENT[(locale === 'pl' ? 'pl' : 'en') as 'pl' | 'en'];
 
   return (
@@ -240,3 +241,5 @@ export function Footer({ locale }: FooterProps) {
     </footer>
   );
 }
+
+export const Footer = memo(FooterContent);

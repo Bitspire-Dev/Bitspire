@@ -1,5 +1,6 @@
 'use client';
 
+import { memo, useMemo } from 'react';
 import { useTina } from 'tinacms/dist/react';
 import type { PageQuery } from '@tina/__generated__/types';
 import { Hero } from '@/components/sections/Hero';
@@ -14,20 +15,23 @@ interface HomePageProps {
   data: PageQuery;
 }
 
-export function HomePage({ query, variables, data }: HomePageProps) {
+function HomePageContent({ query, variables, data }: HomePageProps) {
   const { data: tinaData } = useTina({ query, variables, data });
+  const page = useMemo(() => tinaData?.page ?? null, [tinaData?.page]);
 
-  if (!tinaData?.page) {
+  if (!page) {
     return null;
   }
 
   return (
     <>
-      <Hero page={tinaData.page} />
+      <Hero page={page} />
       <TechnologyCarousel />
-      <Services page={tinaData.page} />
-      <PortfolioHighlights page={tinaData.page} />
-      <CallToAction page={tinaData.page} />
+      <Services page={page} />
+      <PortfolioHighlights page={page} />
+      <CallToAction page={page} />
     </>
   );
 }
+
+export const HomePage = memo(HomePageContent);

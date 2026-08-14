@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
@@ -97,7 +98,7 @@ function getTweenStyles(offset: number, cardWidth: number) {
   };
 }
 
-function ProjectCard({
+const ProjectCard = memo(function ProjectCard({
   item,
   isCenter,
   locale,
@@ -123,7 +124,7 @@ function ProjectCard({
       >
         <div
           className={cn(
-            'relative w-full flex-1 min-h-0 rounded-t-lg bg-muted',
+            'relative min-h-0 w-full flex-1 rounded-t-lg bg-muted',
             isSvg && 'bg-muted/50'
           )}
         >
@@ -199,9 +200,9 @@ function ProjectCard({
       </Card>
     </AspectRatio>
   );
-}
+});
 
-export function PortfolioHighlights({ page }: PortfolioHighlightsProps) {
+function PortfolioHighlightsContent({ page }: PortfolioHighlightsProps) {
   const locale = useLocale();
   const highlights = page.portfolioHighlights;
   const ui = UI[locale] ?? UI.pl;
@@ -320,7 +321,7 @@ export function PortfolioHighlights({ page }: PortfolioHighlightsProps) {
                 return (
                   <div
                     key={`desktop-${item.project.id}`}
-                    className="absolute top-1/2 w-1/2 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                    className="absolute top-1/2 w-1/2 transition-[transform,opacity,filter,left] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
                     style={{
                       left,
                       transform: `translateY(-50%) translateX(${t.translateX}%) rotateY(${t.rotateY}deg) translateZ(${t.translateZ}px) scale(${t.scale})`,
@@ -364,3 +365,5 @@ export function PortfolioHighlights({ page }: PortfolioHighlightsProps) {
     </section>
   );
 }
+
+export const PortfolioHighlights = memo(PortfolioHighlightsContent);

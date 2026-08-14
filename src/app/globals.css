@@ -134,16 +134,24 @@
   --sidebar-ring: #3d8bff;
 }
 
-html.theme-transition,
-html.theme-transition * {
-  transition:
-    background-color 300ms ease,
-    color 300ms ease,
-    border-color 300ms ease,
-    text-decoration-color 300ms ease,
-    fill 300ms ease,
-    stroke 300ms ease,
-    outline-color 300ms ease !important;
+/* View Transitions API styling for buttery-smooth theme cross-fades.
+ * The transition is applied to the root snapshot, not to every DOM node,
+ * so the browser only cross-fades a single capture instead of recalculating
+ * thousands of individual transitions.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 350ms;
+    animation-timing-function: ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms;
+  }
 }
 
 @keyframes marquee {
@@ -189,4 +197,14 @@ html.theme-transition * {
   samp {
     @apply font-mono;
   }
+}
+
+/* Hero scene — canvas always fills the container to avoid letterbox bars. */
+[data-hero-scene] {
+  backface-visibility: hidden;
+}
+
+[data-hero-scene] canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
