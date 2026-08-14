@@ -38,10 +38,17 @@ export class MouseController {
     this.targetY = 0;
   };
 
-  /** Eases current toward target. Call every frame. */
-  update(smoothing = 0.06) {
-    this.currentX += (this.targetX - this.currentX) * smoothing;
-    this.currentY += (this.targetY - this.currentY) * smoothing;
+  /** Eases current toward target. Call every frame.
+   *  `dt` is in 60fps-frame units (PixiJS ticker.deltaTime); `smoothing` is
+   *  the per-60fps-frame approach factor, made framerate-independent here. */
+  update(dt: number, smoothing = 0.06) {
+    const k = 1 - Math.pow(1 - smoothing, dt);
+    this.currentX += (this.targetX - this.currentX) * k;
+    this.currentY += (this.targetY - this.currentY) * k;
+    // Snap to target once close enough — stops the asymptotic creep so the
+    // caller can skip uploading an unchanged mouse uniform when at rest.
+    if (Math.abs(this.targetX - this.currentX) < 1e-4) this.currentX = this.targetX;
+    if (Math.abs(this.targetY - this.currentY) < 1e-4) this.currentY = this.targetY;
   }
 
   get x() {

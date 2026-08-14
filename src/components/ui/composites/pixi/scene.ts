@@ -161,35 +161,57 @@ export class PixiSceneEngine {
 
     const time = performance.now() - this.startTime;
 
-    // Smooth mouse
-    this.mouse.update(0.06);
+    // Smooth mouse — framerate-independent easing toward the cursor.
+    this.mouse.update(dt, 0.06);
 
     // Update background shader uniforms — reuse pre-allocated buffers to avoid
     // creating new arrays every frame (GC pressure on hot path).
     const uniforms = this.bgShader.resources.uTimeUniforms;
     uniforms.uniforms.uTime = time / 1000;
 
-    this._mouseBuf[0] = this.mouse.x;
-    this._mouseBuf[1] = this.mouse.y;
-    uniforms.uniforms.uMouse = this._mouseBuf;
+    // Mouse uniform — only upload when the smoothed value actually moved, so
+    // a resting cursor costs nothing on the hot path.
+    if (this._mouseBuf[0] !== this.mouse.x || this._mouseBuf[1] !== this.mouse.y) {
+      this._mouseBuf[0] = this.mouse.x;
+      this._mouseBuf[1] = this.mouse.y;
+      uniforms.uniforms.uMouse = this._mouseBuf;
+    }
 
+    // Resolution only changes on resize — skip the upload when the cached
+    // size still matches to avoid a per-frame GPU uniform write.
     const screen = this.app.screen;
-    this._resBuf[0] = screen.width;
-    this._resBuf[1] = screen.height;
-    uniforms.uniforms.uResolution = this._resBuf;
+    if (screen.width !== this._resBuf[0] || screen.height !== this._resBuf[1]) {
+      this._resBuf[0] = screen.width;
+      this._resBuf[1] = screen.height;
+      uniforms.uniforms.uResolution = this._resBuf;
+    }
 
     // Smoothly chase the theme's cloud tint. Exponential approach, framerate-
     // independent (dt is in 60fps frames): ~95% in ~0.4s. This is the only
     // thing that changes on a theme switch, so the cross-fade is clean — no
-    // flash, no re-init, no animation overload.
+    // flash, no re-init, no animation overload. Once settled we snap to the
+    // target and stop uploading uColorCloud, so idle frames write nothing.
     const k = 1 - Math.pow(0.88, dt);
-    this.cloudCurrent[0] += (this.cloudTarget[0] - this.cloudCurrent[0]) * k;
-    this.cloudCurrent[1] += (this.cloudTarget[1] - this.cloudCurrent[1]) * k;
-    this.cloudCurrent[2] += (this.cloudTarget[2] - this.cloudCurrent[2]) * k;
-    this._cloudBuf[0] = this.cloudCurrent[0];
-    this._cloudBuf[1] = this.cloudCurrent[1];
-    this._cloudBuf[2] = this.cloudCurrent[2];
-    uniforms.uniforms.uColorCloud = this._cloudBuf;
+    const r = this.cloudCurrent[0] + (this.cloudTarget[0] - this.cloudCurrent[0]) * k;
+    const g = this.cloudCurrent[1] + (this.cloudTarget[1] - this.cloudCurrent[1]) * k;
+    const b = this.cloudCurrent[2] + (this.cloudTarget[2] - this.cloudCurrent[2]) * k;
+    const settled =
+      Math.abs(r - this.cloudCurrent[0]) < 1e-5 &&
+      Math.abs(g - this.cloudCurrent[1]) < 1e-5 &&
+      Math.abs(b - this.cloudCurrent[2]) < 1e-5;
+    this.cloudCurrent[0] = r;
+    this.cloudCurrent[1] = g;
+    this.cloudCurrent[2] = b;
+    if (settled) {
+      this.cloudCurrent[0] = this.cloudTarget[0];
+      this.cloudCurrent[1] = this.cloudTarget[1];
+      this.cloudCurrent[2] = this.cloudTarget[2];
+    } else {
+      this._cloudBuf[0] = r;
+      this._cloudBuf[1] = g;
+      this._cloudBuf[2] = b;
+      uniforms.uniforms.uColorCloud = this._cloudBuf;
+    }
   }
 
   private setupVisibility() {

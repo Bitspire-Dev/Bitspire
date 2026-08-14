@@ -113,12 +113,14 @@ void main() {
   float aspect = uResolution.x / max(uResolution.y, 1.0);
   vec2 p = vec2(uv.x * aspect, uv.y);
 
-  // Very subtle parallax from the mouse — keeps the scene calm.
-  vec2 par = uMouse * 0.03;
-  p += par;
+  // Subtle parallax from the mouse — the scene drifts toward the cursor.
+  // Y is flipped because DOM mouse Y grows downward while vUv.y grows upward,
+  // so without the negation moving the mouse down would push clouds up.
+  vec2 par = uMouse * vec2(0.03, -0.03);
+  p -= par;
 
   // Stars are "far away", so they ride a gentler parallax than the clouds.
-  vec2 starP = vec2(uv.x * aspect, uv.y) + par * 0.3;
+  vec2 starP = vec2(uv.x * aspect, uv.y) - par * 0.3;
 
   float t = uTime * 0.08;
 
