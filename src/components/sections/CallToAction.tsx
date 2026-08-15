@@ -7,12 +7,6 @@ import type { ComponentProps } from 'react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/primitives/button';
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/primitives/card';
 import { FadeIn } from '@/components/ui/composites/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/ui/composites/stagger';
 
@@ -31,80 +25,86 @@ export function CallToAction({ page }: CallToActionProps) {
   }
 
   return (
-    <section className="relative w-full bg-background">
+    <section
+      data-tina-field={tinaField(page, 'callToAction')}
+      className="relative w-full bg-background"
+    >
       <div className="container mx-auto max-w-360 px-6 py-24">
         <FadeIn>
-          <Card
-            data-tina-field={tinaField(page, 'callToAction')}
-            className="relative overflow-hidden ring-1 ring-border transition-shadow duration-300 hover:ring-2 hover:ring-ring/20"
-          >
-            <div className="grid grid-cols-1 items-center gap-8 p-8 lg:grid-cols-2 lg:gap-12 lg:p-12">
-              <div className="flex flex-col items-start gap-6">
-                <CardHeader className="p-0">
-                  <CardTitle
-                    data-tina-field={tinaField(cta, 'title')}
-                    className="max-w-xl font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl"
-                  >
-                    {cta.title}
-                  </CardTitle>
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
+            <div className="flex flex-col items-start gap-8">
+              <h2
+                data-tina-field={tinaField(cta, 'title')}
+                className="max-w-3xl font-heading text-4xl font-semibold tracking-tight text-foreground md:text-5xl lg:text-6xl"
+              >
+                {cta.title}
+              </h2>
 
-                  {cta.description ? (
-                    <CardDescription
-                      data-tina-field={tinaField(cta, 'description')}
-                      className="max-w-lg font-sans text-base text-muted-foreground md:text-lg"
-                    >
-                      {cta.description}
-                    </CardDescription>
-                  ) : null}
-                </CardHeader>
-
-                <StaggerContainer className="flex flex-wrap gap-3" stagger={0.1}>
-                  {cta.primaryLabel ? (
-                    <StaggerItem>
-                      <Button asChild size="lg" variant="default">
-                        <Link
-                          data-tina-field={tinaField(cta, 'primaryLabel')}
-                          href={(cta.primaryHref ?? '/contact') as Href}
-                          locale={locale}
-                        >
-                          {cta.primaryLabel}
-                        </Link>
-                      </Button>
-                    </StaggerItem>
-                  ) : null}
-
-                  {cta.secondaryLabel ? (
-                    <StaggerItem>
-                      <Button asChild size="lg" variant="outline">
-                        <Link
-                          data-tina-field={tinaField(cta, 'secondaryLabel')}
-                          href={(cta.secondaryHref ?? '/portfolio') as Href}
-                          locale={locale}
-                        >
-                          {cta.secondaryLabel}
-                        </Link>
-                      </Button>
-                    </StaggerItem>
-                  ) : null}
-                </StaggerContainer>
-              </div>
-
-              {cta.showImage !== false ? (
-                <FadeIn
-                  delay={0.2}
-                    className="relative hidden aspect-square w-full max-w-sm justify-self-end lg:flex"
+              {cta.description ? (
+                <p
+                  data-tina-field={tinaField(cta, 'description')}
+                  className="max-w-2xl font-sans text-lg text-muted-foreground md:text-xl lg:text-2xl"
                 >
-                  <Image
-                    src="/layout/gryf-2.png"
-                    alt=""
-                    fill
-                    className="object-contain opacity-90 dark:invert"
-                    sizes="(max-width: 1024px) 100vw, 40vw"
-                  />
-                </FadeIn>
+                  {cta.description}
+                </p>
               ) : null}
+
+              <StaggerContainer className="flex flex-wrap gap-4" stagger={0.1}>
+                {cta.primaryLabel ? (
+                  <StaggerItem>
+                    <Button
+                      asChild
+                      size="lg"
+                      variant="default"
+                      className="h-11 px-6 text-base md:h-12 md:px-8 md:text-lg"
+                    >
+                      <Link
+                        data-tina-field={tinaField(cta, 'primaryLabel')}
+                        href={(cta.primaryHref ?? '/contact') as Href}
+                        locale={locale}
+                      >
+                        {cta.primaryLabel}
+                      </Link>
+                    </Button>
+                  </StaggerItem>
+                ) : null}
+
+                {cta.secondaryLabel ? (
+                  <StaggerItem>
+                    <Button
+                      asChild
+                      size="lg"
+                      variant="outline"
+                      className="h-11 px-6 text-base md:h-12 md:px-8 md:text-lg"
+                    >
+                      <Link
+                        data-tina-field={tinaField(cta, 'secondaryLabel')}
+                        href={(cta.secondaryHref ?? '/portfolio') as Href}
+                        locale={locale}
+                      >
+                        {cta.secondaryLabel}
+                      </Link>
+                    </Button>
+                  </StaggerItem>
+                ) : null}
+              </StaggerContainer>
             </div>
-          </Card>
+
+            {cta.showImage !== false ? (
+              <FadeIn
+                delay={0.2}
+                className="relative aspect-2500/1555 w-full max-w-xl justify-self-end lg:block"
+              >
+                <Image
+                  src="/layout/gryf.png"
+                  alt={locale === 'pl' ? 'Gryf' : 'Griffin'}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </FadeIn>
+            ) : null}
+          </div>
         </FadeIn>
       </div>
     </section>

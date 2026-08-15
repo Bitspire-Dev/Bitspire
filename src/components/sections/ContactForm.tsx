@@ -149,7 +149,7 @@ export function ContactForm({ contact, locale, className }: ContactFormProps) {
       </FadeIn>
 
       <FadeIn delay={0.2}>
-        <Button type="submit" className="w-full sm:w-fit">
+        <Button type="submit" className="w-full md:w-2/3">
           {ui.send}
         </Button>
       </FadeIn>
