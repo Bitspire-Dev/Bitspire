@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
-import { Button } from '@/components/ui/primitives/button';
+import { GlowButton } from '@/components/animations/glow-button';
 import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/primitives/field';
 import { Input } from '@/components/ui/primitives/input';
 import { Textarea } from '@/components/ui/primitives/textarea';
@@ -149,9 +149,9 @@ export function ContactForm({ contact, locale, className }: ContactFormProps) {
       </FadeIn>
 
       <FadeIn delay={0.2}>
-        <Button type="submit" className="w-full sm:w-fit">
+        <GlowButton type="submit" className="w-full md:w-2/3">
           {ui.send}
-        </Button>
+        </GlowButton>
       </FadeIn>
     </form>
   );
