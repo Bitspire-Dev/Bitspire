@@ -14,8 +14,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/primitives/card';
-import { FadeIn } from '@/components/ui/composites/fade-in';
-import { StaggerContainer, StaggerItem } from '@/components/ui/composites/stagger';
+import { FadeIn } from '@/components/animations/primitives/fade-in';
+import { StaggerContainer, StaggerItem } from '@/components/animations/primitives/stagger';
 
 type WhyBitspireData = NonNullable<PagePartsFragment['whyBitspire']>;
 type WhyBitspireItem = NonNullable<NonNullable<WhyBitspireData['items']>[number]>;

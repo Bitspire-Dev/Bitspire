@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from '@/components/ui/primitives/card';
 import { Separator } from '@/components/ui/primitives/separator';
-import { FadeIn } from '@/components/ui/composites/fade-in';
+import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { PulseDot } from '@/components/animations/pulse-dot';
 import { SocialIcon } from '@/components/ui/composites/social-icon';
 import { cn } from '@/lib/utils';
