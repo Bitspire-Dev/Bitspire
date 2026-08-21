@@ -25,7 +25,7 @@ import {
   CardTitle,
 } from '@/components/ui/primitives/card';
 import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
-import { FadeIn } from '@/components/ui/composites/fade-in';
+import { FadeIn } from '@/components/animations/fade-in';
 
 interface PortfolioHighlightsProps {
   page: PagePartsFragment;

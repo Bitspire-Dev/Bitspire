@@ -1,7 +1,7 @@
 'use client';
 
-import { MarkdownBody } from '@/components/ui/composites/MarkdownBody';
-import { FadeIn } from '@/components/ui/composites/fade-in';
+import { MarkdownBody } from '@/components/ui/content/MarkdownBody';
+import { FadeIn } from '@/components/animations/fade-in';
 
 interface PortfolioProjectBodyProps {
   body: React.ComponentProps<typeof MarkdownBody>['content'];

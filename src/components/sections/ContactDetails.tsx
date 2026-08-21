@@ -3,7 +3,7 @@
 import { Clock, Link2, Mail, MapPin, Phone } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/primitives/card';
 import { Separator } from '@/components/ui/primitives/separator';
-import { FadeIn } from '@/components/ui/composites/fade-in';
+import { FadeIn } from '@/components/animations/fade-in';
 import { cn } from '@/lib/utils';
 import type { PageQuery } from '@tina/__generated__/types';
 

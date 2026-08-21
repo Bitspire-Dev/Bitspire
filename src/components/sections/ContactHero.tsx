@@ -2,7 +2,7 @@
 
 import { tinaField } from 'tinacms/dist/react';
 import type { PageQuery } from '@tina/__generated__/types';
-import { FadeIn } from '@/components/ui/composites/fade-in';
+import { FadeIn } from '@/components/animations/fade-in';
 
 type Page = NonNullable<PageQuery['page']>;
 

@@ -1,9 +1,9 @@
 'use client';
 
-import type { ContentCardItem } from '@/components/ui/composites/content-card';
+import type { ContentCardItem } from '@/components/ui/content/content-card';
 import { Separator } from '@/components/ui/primitives/separator';
-import { CardGrid } from '@/components/ui/composites/card-grid';
-import { FadeIn } from '@/components/ui/composites/fade-in';
+import { CardGrid } from '@/components/ui/content/card-grid';
+import { FadeIn } from '@/components/animations/fade-in';
 
 interface BlogArticleRelatedProps {
   items: ContentCardItem[];

@@ -7,7 +7,7 @@ import { Link } from '@/i18n/navigation';
 import { ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/primitives/button';
 import { ContentListView } from '@/components/sections/ContentListView';
-import type { ContentCardItem } from '@/components/ui/composites/content-card';
+import type { ContentCardItem } from '@/components/ui/content/content-card';
 import { getCategoryBySlug, getProjectHref } from '@/lib/portfolio/categories';
 import type { ReactNode } from 'react';
 

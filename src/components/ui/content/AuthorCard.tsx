@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/primitives/card';
-import { FadeIn } from '@/components/ui/composites/fade-in';
+import { FadeIn } from '@/components/animations/fade-in';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/primitives/avatar';
 import { Button } from '@/components/ui/primitives/button';
 import { ArrowRight } from 'lucide-react';

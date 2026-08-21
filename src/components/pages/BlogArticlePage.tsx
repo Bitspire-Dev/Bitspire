@@ -5,10 +5,10 @@ import type { BlogQuery } from '@tina/__generated__/types';
 import { BlogArticleHeader } from '@/components/sections/BlogArticleHeader';
 import { BlogArticleBody } from '@/components/sections/BlogArticleBody';
 import { BlogArticleRelated } from '@/components/sections/BlogArticleRelated';
-import { AuthorCard } from '@/components/ui/composites/AuthorCard';
-import { ShareCard } from '@/components/ui/composites/ShareCard';
-import { TableOfContents, MobileTocBar } from '@/components/ui/composites/table-of-contents';
-import type { ContentCardItem } from '@/components/ui/composites/content-card';
+import { AuthorCard } from '@/components/ui/content/AuthorCard';
+import { ShareCard } from '@/components/ui/content/ShareCard';
+import { TableOfContents, MobileTocBar } from '@/components/ui/content/table-of-contents';
+import type { ContentCardItem } from '@/components/ui/content/content-card';
 import type { TocItem } from '@/lib/toc';
 
 const UI: Record<string, Record<string, string>> = {

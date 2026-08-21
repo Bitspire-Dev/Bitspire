@@ -4,7 +4,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Globe, Mail, Phone, MapPin, Clock } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { Separator } from '@/components/ui/primitives/separator';
-import { FadeIn } from '@/components/ui/composites/fade-in';
+import { FadeIn } from '@/components/animations/fade-in';
 import { Button } from '@/components/ui/primitives/button';
 
 type Href = ComponentProps<typeof Link>['href'];

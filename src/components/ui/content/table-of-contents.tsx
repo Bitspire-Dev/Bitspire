@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import type { TocItem } from '@/lib/toc';
 import { Button } from '@/components/ui/primitives/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/primitives/card';
-import { FadeIn } from '@/components/ui/composites/fade-in';
+import { FadeIn } from '@/components/animations/fade-in';
 
 export type { TocItem };
 

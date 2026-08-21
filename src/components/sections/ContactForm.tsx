@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/primitives/button';
 import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/primitives/field';
 import { Input } from '@/components/ui/primitives/input';
 import { Textarea } from '@/components/ui/primitives/textarea';
-import { FadeIn } from '@/components/ui/composites/fade-in';
+import { FadeIn } from '@/components/animations/fade-in';
 import { cn } from '@/lib/utils';
 import type { PageQuery } from '@tina/__generated__/types';
 

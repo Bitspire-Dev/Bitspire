@@ -2,8 +2,8 @@
 
 import { ContentCard, type ContentCardItem } from './content-card';
 import type { ReactNode } from 'react';
-import { StaggerContainer, StaggerItem } from '@/components/ui/composites/stagger';
-import { FadeIn } from '@/components/ui/composites/fade-in';
+import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
+import { FadeIn } from '@/components/animations/fade-in';
 
 interface CardGridProps {
   items: ContentCardItem[];
