@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
+import { ImageIcon } from 'lucide-react';
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
 
@@ -13,11 +14,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/primitives/card';
-import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 import { FadeIn } from '@/components/ui/composites/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/ui/composites/stagger';
-
-type CardSize = 'large' | 'wide' | 'tall' | 'small' | 'empty';
 
 type WhyBitspireData = NonNullable<PagePartsFragment['whyBitspire']>;
 type WhyBitspireItem = NonNullable<NonNullable<WhyBitspireData['items']>[number]>;
@@ -26,128 +24,75 @@ interface WhyBitspireProps {
   page: PagePartsFragment;
 }
 
-const SIZE_CLASSES: Record<CardSize, string> = {
-  large: 'col-span-2 row-span-2',
-  wide: 'col-span-2 row-span-1',
-  tall: 'col-span-1 row-span-2',
-  small: 'col-span-1 row-span-1',
-  empty: 'col-span-1 row-span-1',
-};
-
-const SIZE_CLASSES_LG: Record<CardSize, string> = {
-  large: 'lg:col-span-2 lg:row-span-2',
-  wide: 'lg:col-span-2 lg:row-span-1',
-  tall: 'lg:col-span-1 lg:row-span-2',
-  small: 'lg:col-span-1 lg:row-span-1',
-  empty: 'lg:col-span-1 lg:row-span-1',
-};
-
-// Exact 5-card layout: content order is Arch | Scale | UX | Security | Empty.
-// Desktop (4x2): [empty][arch arch][scale]
-//                [ux ux ][security][scale]
-// Mobile (2x4):  [scale][security]
-//                [scale][empty]
-//                [arch arch]
-//                [ux ux]
-const START_CLASSES = [
-  // 0: Architecture (wide)
-  'col-start-1 row-start-3 lg:col-start-2 lg:row-start-1',
-  // 1: Scalability (tall)
-  'col-start-1 row-start-1 lg:col-start-4 lg:row-start-1',
-  // 2: UX (wide)
-  'col-start-1 row-start-4 lg:col-start-1 lg:row-start-2',
-  // 3: Security (small)
-  'col-start-2 row-start-1 lg:col-start-3 lg:row-start-2',
-  // 4: Empty (small)
-  'col-start-2 row-start-2 lg:col-start-1 lg:row-start-1',
-];
-
-const ASPECT_RATIOS: Record<CardSize, number> = {
-  large: 4 / 3,
-  wide: 16 / 9,
-  tall: 3 / 4,
-  small: 1,
-  empty: 1,
-};
-
 function normalizeImageSrc(src?: string | null): string | null {
   if (!src) return null;
   return src.startsWith('/') ? src : `/${src}`;
 }
 
-function parseSize(size?: string | null): CardSize {
-  const valid: CardSize[] = ['large', 'wide', 'tall', 'small', 'empty'];
-  return valid.includes(size as CardSize) ? (size as CardSize) : 'small';
+interface TextSegment {
+  type: 'heading' | 'paragraph';
+  text: string;
 }
 
-function getCardClasses(size: CardSize, index: number, totalCount: number): string {
-  if (totalCount === 5 && index < START_CLASSES.length) {
-    return cn(START_CLASSES[index], SIZE_CLASSES[size], SIZE_CLASSES_LG[size]);
-  }
-  return cn(SIZE_CLASSES[size], SIZE_CLASSES_LG[size]);
+function parseBodyText(source: string): TextSegment[] {
+  return source
+    .split(/\r?\n\s*\r?\n/)
+    .map(p => p.replace(/\r?\n/g, ' ').trim())
+    .filter(Boolean)
+    .map(text => {
+      const match = text.match(/^(#{1,4})\s+(.+)$/);
+      return match
+        ? { type: 'heading' as const, text: match[2] }
+        : { type: 'paragraph' as const, text };
+    });
+}
+
+interface BentoCardProps {
+  item: WhyBitspireItem;
+  className?: string;
+  imageMinHeight?: string;
+  titleClassName?: string;
 }
 
 function BentoCard({
   item,
-  index,
-  totalCount,
-}: {
-  item: WhyBitspireItem;
-  index: number;
-  totalCount: number;
-}) {
-  const size = parseSize(item.size);
-  const isEmpty = size === 'empty';
+  className,
+  imageMinHeight = 'min-h-48',
+  titleClassName,
+}: BentoCardProps) {
   const imageSrc = normalizeImageSrc(item.image);
-
-  const positionClass = getCardClasses(size, index, totalCount);
-
-  if (isEmpty) {
-    return (
-      <StaggerItem y={20} duration={0.4} className={positionClass}>
-        <Card
-          aria-label="Puste pole"
-          data-tina-field={tinaField(item, 'title')}
-          className="size-full items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted/20 ring-0"
-        />
-      </StaggerItem>
-    );
-  }
+  const bodySource = item.body || item.fullText || '';
+  const segments = parseBodyText(bodySource);
 
   return (
-    <StaggerItem
-      y={24}
-      duration={0.5}
-      className={positionClass}
-    >
+    <StaggerItem y={24} duration={0.5} className={cn('flex', className)}>
       <Card
         data-tina-field={tinaField(item, 'title')}
         className="group/card flex size-full flex-col gap-0 overflow-hidden rounded-lg pt-0 transition-shadow duration-300 hover:shadow-lg"
       >
-        {imageSrc && (
-          <div data-tina-field={tinaField(item, 'image')}>
-            <AspectRatio
-              ratio={ASPECT_RATIOS[size]}
-              className="w-full bg-muted"
-            >
-              <Image
-                src={imageSrc}
-                alt={item.imageAlt ?? item.title}
-                fill
-                sizes="(max-width: 1024px) 50vw, 25vw"
-                className="object-contain p-3"
-              />
-            </AspectRatio>
+        {imageSrc ? (
+          <div
+            data-tina-field={tinaField(item, 'image')}
+            className={cn('relative flex-1 overflow-hidden bg-muted', imageMinHeight)}
+          >
+            <Image
+              src={imageSrc}
+              alt={item.imageAlt ?? item.title}
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-contain p-4"
+            />
+          </div>
+        ) : (
+          <div className={cn('flex flex-1 items-center justify-center bg-muted', imageMinHeight)}>
+            <ImageIcon className="size-8 opacity-30" />
           </div>
         )}
 
         <CardHeader className="gap-1.5 px-(--card-spacing) pt-(--card-spacing)">
           <CardTitle
             data-tina-field={tinaField(item, 'title')}
-            className={cn(
-              'font-heading font-medium text-foreground',
-              size === 'small' ? 'text-lg' : 'text-xl'
-            )}
+            className={cn('font-heading font-semibold text-foreground', titleClassName)}
           >
             {item.title}
           </CardTitle>
@@ -155,25 +100,34 @@ function BentoCard({
           {item.subHeadline ? (
             <CardDescription
               data-tina-field={tinaField(item, 'subHeadline')}
-              className={cn(
-                'font-sans text-sm text-muted-foreground',
-                size === 'small' ? 'line-clamp-1' : 'line-clamp-2'
-              )}
+              className="font-sans text-sm text-muted-foreground"
             >
               {item.subHeadline}
             </CardDescription>
           ) : null}
         </CardHeader>
 
-        {item.body ? (
+        {segments.length > 0 ? (
           <CardContent
-            data-tina-field={tinaField(item, 'body')}
-            className={cn(
-              'px-(--card-spacing) pb-(--card-spacing) font-sans text-sm text-muted-foreground',
-              size === 'small' ? 'line-clamp-2' : 'line-clamp-3'
-            )}
+            data-tina-field={tinaField(item, item.body ? 'body' : 'fullText')}
+            className="px-(--card-spacing) pb-(--card-spacing)"
           >
-            {item.body}
+            <div className="space-y-2">
+              {segments.map((segment, pIndex) =>
+                segment.type === 'heading' ? (
+                  <h4
+                    key={pIndex}
+                    className="font-heading mt-2 text-sm font-semibold text-foreground"
+                  >
+                    {segment.text}
+                  </h4>
+                ) : (
+                  <p key={pIndex} className="font-sans text-sm text-muted-foreground">
+                    {segment.text}
+                  </p>
+                )
+              )}
+            </div>
           </CardContent>
         ) : null}
       </Card>
@@ -189,15 +143,22 @@ export function WhyBitspire({ page }: WhyBitspireProps) {
     return null;
   }
 
-  const items = data.items.filter(
-    (item): item is WhyBitspireItem => !!item
-  );
-
+  const items = data.items.filter((item): item is WhyBitspireItem => !!item);
   const titleFallback = locale === 'pl' ? 'Dlaczego Bitspire' : 'Why Bitspire';
-  const isExactLayout = items.length === 5;
+
+  // Asymmetric bento layout (desktop):
+  //  ┌────────────────────────────────┬───────────────┐
+  //  │  High-Performance (large)      │               │
+  //  │  image + text                  │  Szybkość      │
+  //  │                                │  (full height) │
+  //  ├───────────────┬────────────────┤               │
+  //  │ UX            │ Pancerne       │               │
+  //  └───────────────┴────────────────┴───────────────┘
+  //       left column ~64%              right ~36%
+  const [highPerf, ux, speed, security] = items;
 
   return (
-    <section className="relative w-full bg-background">
+    <section className="relative w-full bg-gradient-to-b from-muted/30 to-background">
       <div className="container mx-auto max-w-360 px-6 py-24">
         <FadeIn className="mb-10 max-w-2xl">
           <h2
@@ -220,16 +181,39 @@ export function WhyBitspire({ page }: WhyBitspireProps) {
         <StaggerContainer
           stagger={0.08}
           delay={0.1}
-          className={cn(
-            'grid gap-4 md:gap-6',
-            isExactLayout
-              ? 'grid-cols-2 lg:grid-cols-4 grid-rows-[repeat(4,minmax(180px,auto))] lg:grid-rows-[repeat(2,minmax(180px,auto))]'
-              : 'grid-cols-2 lg:grid-cols-4 grid-flow-dense auto-rows-[minmax(180px,auto)]'
-          )}
+          className="flex flex-col gap-4 md:gap-6 lg:flex-row lg:items-stretch"
         >
-          {items.map((item, index) => (
-            <BentoCard key={index} item={item} index={index} totalCount={items.length} />
-          ))}
+          {/* Left column: High-Performance (top) + UX & Pancerne (bottom row) */}
+          <div className="flex flex-col gap-4 md:gap-6 lg:w-[64%]">
+            <BentoCard
+              item={highPerf}
+              className="flex-1"
+              imageMinHeight="min-h-64"
+              titleClassName="text-2xl font-bold"
+            />
+            <div className="flex flex-col gap-4 md:gap-6 sm:flex-row">
+              <BentoCard
+                item={ux}
+                className="flex-1"
+                imageMinHeight="min-h-48"
+                titleClassName="text-lg"
+              />
+              <BentoCard
+                item={security}
+                className="flex-1"
+                imageMinHeight="min-h-48"
+                titleClassName="text-lg"
+              />
+            </div>
+          </div>
+
+          {/* Right column: Szybkość (full height, tall) */}
+          <BentoCard
+            item={speed}
+            className="lg:w-[36%]"
+            imageMinHeight="min-h-64"
+            titleClassName="text-xl"
+          />
         </StaggerContainer>
       </div>
     </section>
