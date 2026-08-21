@@ -9,8 +9,8 @@ import type { PagePartsFragment } from '@tina/__generated__/types';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/primitives/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/primitives/card';
-import { FadeIn } from '@/components/animations/fade-in';
-import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
+import { FadeIn } from '@/components/animations/primitives/fade-in';
+import { StaggerContainer, StaggerItem } from '@/components/animations/primitives/stagger';
 
 type Href = ComponentProps<typeof Link>['href'];
 

@@ -5,9 +5,9 @@ import {
   Heading2,
   Heading3,
   Heading,
-} from '@/components/ui/content/table-of-contents';
-import { MarkdownBody } from '@/components/ui/content/MarkdownBody';
-import { FadeIn } from '@/components/animations/fade-in';
+} from '@/components/ui/composites/table-of-contents';
+import { MarkdownBody } from '@/components/ui/composites/MarkdownBody';
+import { FadeIn } from '@/components/animations/primitives/fade-in';
 import type { TocItem } from '@/lib/toc';
 
 interface BlogArticleBodyProps {

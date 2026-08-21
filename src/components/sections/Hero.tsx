@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
-import { FadeIn } from '@/components/animations/fade-in';
+import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { ErrorBoundary } from '@/components/providers/error-boundary';
 
 const PixiScene = dynamic(

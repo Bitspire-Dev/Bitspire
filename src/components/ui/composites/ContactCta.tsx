@@ -3,7 +3,7 @@
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/primitives/button';
-import { FadeIn } from '@/components/animations/fade-in';
+import { FadeIn } from '@/components/animations/primitives/fade-in';
 import {
   Card,
   CardDescription,

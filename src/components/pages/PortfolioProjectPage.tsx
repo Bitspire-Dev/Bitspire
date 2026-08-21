@@ -4,7 +4,7 @@ import { useTina, tinaField } from 'tinacms/dist/react';
 import type { ProjectQuery } from '@tina/__generated__/types';
 import { PortfolioProjectHeader } from '@/components/sections/PortfolioProjectHeader';
 import { PortfolioProjectBody } from '@/components/sections/PortfolioProjectBody';
-import { ContactCta } from '@/components/ui/content/ContactCta';
+import { ContactCta } from '@/components/ui/composites/ContactCta';
 import { getCategoryHref, isPortfolioCategoryId } from '@/lib/portfolio/categories';
 
 const UI: Record<string, Record<string, string>> = {

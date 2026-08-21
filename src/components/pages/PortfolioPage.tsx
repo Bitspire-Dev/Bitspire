@@ -8,8 +8,8 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/pr
 import { Button } from '@/components/ui/primitives/button';
 import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 import { Separator } from '@/components/ui/primitives/separator';
-import { FadeIn } from '@/components/animations/fade-in';
-import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
+import { FadeIn } from '@/components/animations/primitives/fade-in';
+import { StaggerContainer, StaggerItem } from '@/components/animations/primitives/stagger';
 import { PORTFOLIO_CATEGORIES, getCategoryHref } from '@/lib/portfolio/categories';
 
 interface PortfolioPageProps {

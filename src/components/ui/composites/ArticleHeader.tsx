@@ -6,7 +6,7 @@ import { Link } from '@/i18n/navigation';
 import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 import { Separator } from '@/components/ui/primitives/separator';
 import { BackLink } from '@/components/ui/navigation/back-link';
-import { FadeIn } from '@/components/animations/fade-in';
+import { FadeIn } from '@/components/animations/primitives/fade-in';
 
 type Href = ComponentProps<typeof Link>['href'];
 

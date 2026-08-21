@@ -2,9 +2,9 @@
 
 import { tinaField } from 'tinacms/dist/react';
 import type { BlogQuery } from '@tina/__generated__/types';
-import { ArticleHeader } from '@/components/ui/content/ArticleHeader';
-import { ArticleMeta } from '@/components/ui/content/article-meta';
-import { FadeIn } from '@/components/animations/fade-in';
+import { ArticleHeader } from '@/components/ui/composites/ArticleHeader';
+import { ArticleMeta } from '@/components/ui/composites/article-meta';
+import { FadeIn } from '@/components/animations/primitives/fade-in';
 
 interface BlogArticleHeaderProps {
   blog: NonNullable<BlogQuery['blog']>;

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardTitle } from '@/components/ui/primitives/card';
-import { FadeIn } from '@/components/animations/fade-in';
+import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { Button } from '@/components/ui/primitives/button';
 import { ExternalLink, Link2, Check } from 'lucide-react';
 

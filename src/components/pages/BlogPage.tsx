@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { useTina, tinaField } from 'tinacms/dist/react';
 import type { BlogConnectionQuery } from '@tina/__generated__/types';
 import { ContentListView } from '@/components/sections/ContentListView';
-import type { ContentCardItem } from '@/components/ui/content/content-card';
+import type { ContentCardItem } from '@/components/ui/composites/content-card';
 import { getBlogArticleHref, extractBlogSlug } from '@/lib/blog';
 
 const UI: Record<string, Record<string, string>> = {

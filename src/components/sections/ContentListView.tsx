@@ -1,10 +1,10 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { FadeIn } from '@/components/animations/fade-in';
-import { ContentSearch } from '@/components/ui/content/content-search';
-import { CardGrid } from '@/components/ui/content/card-grid';
-import type { ContentCardItem } from '@/components/ui/content/content-card';
+import { FadeIn } from '@/components/animations/primitives/fade-in';
+import { ContentSearch } from '@/components/ui/composites/content-search';
+import { CardGrid } from '@/components/ui/composites/card-grid';
+import type { ContentCardItem } from '@/components/ui/composites/content-card';
 import { Separator } from '@/components/ui/primitives/separator';
 
 interface ContentListViewProps {

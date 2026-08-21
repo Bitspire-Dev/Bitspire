@@ -16,8 +16,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/primitives/accordion';
-import { FadeIn } from '@/components/animations/fade-in';
-import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
+import { FadeIn } from '@/components/animations/primitives/fade-in';
+import { StaggerContainer, StaggerItem } from '@/components/animations/primitives/stagger';
 
 interface ServicesProps {
   page: PagePartsFragment;
