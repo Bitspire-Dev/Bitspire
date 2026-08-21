@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { readFile } from 'fs/promises';
 import path from 'path';
 import client from '@tina/__generated__/client';
+import { tinaQueryWithRetry } from '@/lib/tina';
 import { routing } from '@/i18n/routing';
 import { BlogArticle } from '@/components/pages/BlogArticlePage';
 import { toRelatedItems } from '@/lib/blog';
@@ -15,7 +16,7 @@ interface BlogPageParams {
 }
 
 export async function generateStaticParams() {
-  const tina = await client.queries.blogConnection();
+  const tina = await tinaQueryWithRetry(() => client.queries.blogConnection());
   const locales = routing.locales;
   const params: { locale: string; slug: string }[] = [];
 
@@ -38,9 +39,11 @@ export async function generateMetadata({
   params: Promise<BlogPageParams>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const tina = await client.queries.blog({
-    relativePath: `${locale}/${slug}.md`,
-  });
+  const tina = await tinaQueryWithRetry(() =>
+    client.queries.blog({
+      relativePath: `${locale}/${slug}.md`,
+    })
+  );
 
   return {
     title: tina.data.blog?.title,
@@ -54,8 +57,8 @@ export default async function BlogArticlePage({ params }: { params: Promise<Blog
   setRequestLocale(locale);
 
   const [tina, all, rawMarkdown] = await Promise.all([
-    client.queries.blog({ relativePath: `${locale}/${slug}.md` }),
-    client.queries.blogConnection(),
+    tinaQueryWithRetry(() => client.queries.blog({ relativePath: `${locale}/${slug}.md` })),
+    tinaQueryWithRetry(() => client.queries.blogConnection()),
     readFile(path.join(process.cwd(), 'content', 'blog', locale, `${slug}.md`), 'utf-8').catch(
       () => ''
     ),

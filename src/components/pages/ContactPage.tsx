@@ -15,7 +15,7 @@ interface ContactPageProps {
 
 export function ContactPage({ query, variables, data, locale }: ContactPageProps) {
   const { data: tinaData } = useTina({ query, variables, data });
-  const page = tinaData?.page;
+  const page = tinaData?.page ?? data?.page;
 
   if (!page) {
     return null;

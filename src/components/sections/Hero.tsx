@@ -1,12 +1,13 @@
 'use client';
 
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, Suspense, useEffect, useRef, useState } from 'react';
+import { useReducedMotion } from 'motion/react';
 import dynamic from 'next/dynamic';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
-import { TinaMarkdown } from 'tinacms/dist/rich-text';
 import { FadeIn } from '@/components/ui/composites/fade-in';
+import { ErrorBoundary } from '@/components/providers/error-boundary';
 
 const PixiScene = dynamic(
   () => import('@/components/ui/composites/PixiScene').then(m => m.PixiScene),
@@ -15,12 +16,40 @@ const PixiScene = dynamic(
   }
 );
 
+function HeroBackgroundFallback() {
+  return (
+    <div
+      className="pointer-events-none absolute inset-0 size-full"
+      style={{
+        background:
+          'radial-gradient(circle at 50% 40%, color-mix(in oklab, var(--background) 92%, var(--brand)), var(--background) 72%)',
+      }}
+      aria-hidden="true"
+    />
+  );
+}
+
+function HeroErrorFallback() {
+  return (
+    <div
+      className="pointer-events-none absolute inset-0 size-full"
+      style={{
+        background:
+          'radial-gradient(circle at 50% 40%, color-mix(in oklab, #04050b 92%, #0037ff), #000000 72%)',
+      }}
+      aria-hidden="true"
+    />
+  );
+}
+
 interface HeroProps {
   page: PagePartsFragment;
 }
 
 function HeroContent({ page }: HeroProps) {
   const [mounted, setMounted] = useState(false);
+  const [sceneError, setSceneError] = useState(false);
+  const prefersReducedMotion = useReducedMotion() ?? false;
 
   useEffect(() => {
     setMounted(true);
@@ -42,14 +71,33 @@ function HeroContent({ page }: HeroProps) {
       ref={sectionRef}
       className="relative z-0 flex min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-background"
     >
-      <div className="absolute inset-0 z-0 bg-background" aria-hidden="true">
-        {mounted && (
-          <PixiScene
-            data-hero-scene
-            className="pointer-events-none absolute inset-0 size-full"
-          />
-        )}
+      <div className="absolute inset-0 -z-10" aria-hidden="true">
+        <HeroBackgroundFallback />
       </div>
+
+      {prefersReducedMotion ? (
+        <div className="absolute inset-0 z-0" aria-hidden="true">
+          <HeroErrorFallback />
+        </div>
+      ) : mounted ? (
+        <div className="absolute inset-0 z-0" aria-hidden="true">
+          <ErrorBoundary fallback={<HeroErrorFallback />}>
+            <Suspense fallback={null}>
+              <PixiScene
+                data-hero-scene
+                onError={() => setSceneError(true)}
+                className="pointer-events-none absolute inset-0 size-full"
+              />
+            </Suspense>
+          </ErrorBoundary>
+        </div>
+      ) : null}
+
+      {sceneError && (
+        <div className="absolute inset-0 z-0" aria-hidden="true">
+          <HeroErrorFallback />
+        </div>
+      )}
 
       <div
         className="pointer-events-none absolute bottom-0 left-0 z-10 hidden h-72 w-full dark:block"
@@ -83,9 +131,7 @@ function HeroContent({ page }: HeroProps) {
             </p>
           </FadeIn>
         )}
-
       </motion.div>
-
       <motion.div
         style={{ opacity: indicatorOpacity }}
         className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2"

@@ -1,32 +1,13 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
-
-let mounted = false;
-const subscribers = new Set<() => void>();
-
-function setMounted(value: boolean) {
-  mounted = value;
-  subscribers.forEach(callback => callback());
-}
+import { useEffect, useState } from 'react';
 
 export function useMounted() {
-  return useSyncExternalStore(
-    callback => {
-      subscribers.add(callback);
+  const [mounted, setMounted] = useState(false);
 
-      if (!mounted) {
-        const id = setTimeout(() => setMounted(true), 0);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-        return () => {
-          clearTimeout(id);
-          subscribers.delete(callback);
-        };
-      }
-
-      return () => subscribers.delete(callback);
-    },
-    () => mounted,
-    () => false
-  );
+  return mounted;
 }

@@ -1,5 +1,7 @@
 import { setRequestLocale } from 'next-intl/server';
+import { notFound } from 'next/navigation';
 import client from '@tina/__generated__/client';
+import { tinaQueryWithRetry } from '@/lib/tina';
 import { HomePage } from '@/components/pages/HomePage';
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
@@ -7,9 +9,15 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   setRequestLocale(locale);
 
-  const tina = await client.queries.page({
-    relativePath: `${locale}/home.md`,
-  });
+  const tina = await tinaQueryWithRetry(() =>
+    client.queries.page({
+      relativePath: `${locale}/home.md`,
+    })
+  );
+
+  if (!tina.data.page) {
+    notFound();
+  }
 
   return <HomePage query={tina.query} variables={tina.variables} data={tina.data} />;
 }

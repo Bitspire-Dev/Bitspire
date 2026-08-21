@@ -37,7 +37,7 @@ interface BlogArticleProps {
 
 export function BlogArticle({ query, variables, data, related, locale, toc }: BlogArticleProps) {
   const { data: tinaData } = useTina({ query, variables, data });
-  const blog = tinaData?.blog;
+  const blog = tinaData?.blog ?? data?.blog;
   const ui = UI[locale] ?? UI.pl;
 
   if (!blog) {

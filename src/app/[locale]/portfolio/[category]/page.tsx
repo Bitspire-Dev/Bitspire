@@ -1,5 +1,6 @@
 import { setRequestLocale } from 'next-intl/server';
 import client from '@tina/__generated__/client';
+import { tinaQueryWithRetry } from '@/lib/tina';
 import { PortfolioCategoryPage } from '@/components/pages/PortfolioCategoryPage';
 import { PORTFOLIO_CATEGORIES } from '@/lib/portfolio/categories';
 
@@ -19,7 +20,7 @@ export default async function PortfolioCategory({
 
   setRequestLocale(locale);
 
-  const tina = await client.queries.projectConnection();
+  const tina = await tinaQueryWithRetry(() => client.queries.projectConnection());
 
   return (
     <PortfolioCategoryPage

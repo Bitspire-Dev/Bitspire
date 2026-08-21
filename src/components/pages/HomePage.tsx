@@ -17,7 +17,7 @@ interface HomePageProps {
 
 function HomePageContent({ query, variables, data }: HomePageProps) {
   const { data: tinaData } = useTina({ query, variables, data });
-  const page = useMemo(() => tinaData?.page ?? null, [tinaData?.page]);
+  const page = useMemo(() => tinaData?.page ?? data?.page ?? null, [tinaData, data]);
 
   if (!page) {
     return null;

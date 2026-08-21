@@ -11,6 +11,16 @@ import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
 
+// Filenames in /public/logo-carousel do not all match the canonical logo names.
+const LOGO_FILE_NAMES: Record<string, string> = {
+  docker: 'Docker',
+  react: 'React',
+  strapi: 'Strapi',
+  stripe: 'Stripe',
+  typescript: 'Typescript',
+  vite: 'Vite',
+};
+
 const LOGOS = [
   'docker',
   'electron',
@@ -121,7 +131,7 @@ const LogoIcon = memo(function LogoIcon({ name }: LogoIconProps) {
     <div className="flex size-16 shrink-0 items-center justify-center p-2">
       <AspectRatio ratio={1 / 1} className="w-full rounded">
         <Image
-          src={`/logo-carousel/${name}.svg`}
+          src={`/logo-carousel/${LOGO_FILE_NAMES[name] ?? name}.svg`}
           alt={name}
           fill
           sizes="48px"

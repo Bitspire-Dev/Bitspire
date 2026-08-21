@@ -23,47 +23,6 @@ interface ServicesProps {
   page: PagePartsFragment;
 }
 
-export interface Service {
-  title: string;
-  tagline: string;
-  description: string;
-}
-
-function splitSentences(text: string): string[] {
-  return text
-    .trim()
-    .split(/(?<=[.!?])\s+/)
-    .map(s => s.trim())
-    .filter(Boolean);
-}
-
-function toParagraphs(text: string): string[] {
-  const sentences = splitSentences(text);
-  const paragraphs: string[] = [];
-
-  for (let i = 0; i < sentences.length; i += 2) {
-    const chunk = sentences.slice(i, i + 2).join(' ');
-    paragraphs.push(chunk);
-  }
-
-  return paragraphs;
-}
-
-function LeadWord({ text }: { text: string }) {
-  const [first, ...rest] = text.split(' ');
-
-  if (!first) {
-    return <>{text}</>;
-  }
-
-  return (
-    <>
-      <span className="font-semibold text-foreground">{first}</span>
-      {rest.length > 0 ? ` ${rest.join(' ')}` : null}
-    </>
-  );
-}
-
 function ServicesContent({ page }: ServicesProps) {
   const services = page.services;
   const [openValue, setOpenValue] = useState<string>('');
@@ -120,27 +79,35 @@ function ServicesContent({ page }: ServicesProps) {
                     x="100%"
                     y={0}
                     duration={0.5}
-                    className={cn(
-                      'w-full border-b border-border',
-                      index === items.length - 1 && 'border-b-0'
-                    )}
+                    className={cn('w-full border-b border-border last:border-b-0')}
                   >
-                    <AccordionItem value={value} className="data-open:bg-muted/50">
+                    <AccordionItem
+                      value={value}
+                      className="group/item transition-all duration-300 data-open:bg-muted/50"
+                    >
                       <AccordionTrigger
                         className={cn(
                           "**:data-[slot='accordion-trigger-icon']:hidden",
                           'py-4 text-left md:py-6'
                         )}
                       >
-                        <span
-                          data-tina-field={tinaField(item, 'title')}
-                          className="font-heading text-lg font-medium text-foreground md:text-xl"
-                        >
-                          {item.title}
+                        <span className="flex flex-row items-center gap-4">
+                          <span
+                            className="font-heading text-sm font-medium text-muted-foreground tabular-nums md:text-base"
+                            aria-hidden
+                          >
+                            {String(index + 1).padStart(2, '0')}
+                          </span>
+                          <span
+                            data-tina-field={tinaField(item, 'title')}
+                            className="font-heading text-lg font-medium text-foreground transition-transform duration-300 group-hover/item:translate-x-1 md:text-xl"
+                          >
+                            {item.title}
+                          </span>
                         </span>
 
                         <motion.span
-                          className="ml-auto shrink-0 text-muted-foreground"
+                          className="ml-auto shrink-0 text-muted-foreground transition-colors duration-300 group-hover/item:text-brand"
                           animate={{ rotate: isOpen ? 180 : 0 }}
                           transition={{ duration: 0.25 }}
                         >
@@ -151,14 +118,10 @@ function ServicesContent({ page }: ServicesProps) {
                       <AccordionContent className="pb-6 text-sm leading-relaxed md:text-base">
                         <div
                           data-tina-field={tinaField(item, 'description')}
-                          className="text-justify text-pretty hyphens-auto"
+                          className="text-pretty"
                           lang={locale}
                         >
-                          {toParagraphs(item.description).map((paragraph, index) => (
-                            <p key={index} className="mb-3 leading-relaxed last:mb-0 md:mb-4">
-                              <LeadWord text={paragraph} />
-                            </p>
-                          ))}
+                          {item.description}
                         </div>
                       </AccordionContent>
                     </AccordionItem>

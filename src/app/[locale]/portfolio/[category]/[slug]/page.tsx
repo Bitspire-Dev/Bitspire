@@ -2,6 +2,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import client from '@tina/__generated__/client';
+import { tinaQueryWithRetry } from '@/lib/tina';
 import { PortfolioProjectPage } from '@/components/pages/PortfolioProjectPage';
 import { getCategoryBySlug, PORTFOLIO_CATEGORIES } from '@/lib/portfolio/categories';
 
@@ -13,7 +14,7 @@ interface ProjectPageParams {
 
 export async function generateStaticParams({ params }: { params: { locale: string } }) {
   const { locale } = params;
-  const tina = await client.queries.projectConnection();
+  const tina = await tinaQueryWithRetry(() => client.queries.projectConnection());
   const edges = tina.data.projectConnection?.edges ?? [];
   const routeParams: { category: string; slug: string }[] = [];
 
@@ -52,9 +53,11 @@ export async function generateMetadata({
     return {};
   }
 
-  const tina = await client.queries.project({
-    relativePath: `${locale}/${canonicalCategory}/${slug}.md`,
-  });
+  const tina = await tinaQueryWithRetry(() =>
+    client.queries.project({
+      relativePath: `${locale}/${canonicalCategory}/${slug}.md`,
+    })
+  );
 
   return {
     title: tina.data.project?.title,
@@ -76,9 +79,11 @@ export default async function ProjectArticlePage({
     notFound();
   }
 
-  const tina = await client.queries.project({
-    relativePath: `${locale}/${canonicalCategory}/${slug}.md`,
-  });
+  const tina = await tinaQueryWithRetry(() =>
+    client.queries.project({
+      relativePath: `${locale}/${canonicalCategory}/${slug}.md`,
+    })
+  );
 
   if (!tina.data.project) {
     notFound();

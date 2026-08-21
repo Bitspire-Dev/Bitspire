@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 type PixiSceneProps = {
   theme?: SceneTheme;
   onReady?: () => void;
+  onError?: () => void;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 function getDocumentTheme(): SceneTheme {
@@ -18,12 +19,17 @@ export function PixiScene({
   className,
   style,
   onReady,
+  onError,
   ...rest
 }: PixiSceneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<PixiSceneEngine | null>(null);
   const onReadyRef = useRef(onReady);
+  const onErrorRef = useRef(onError);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+  const readyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const themePropRef = useRef(themeProp);
   themePropRef.current = themeProp;
 
@@ -32,6 +38,10 @@ export function PixiScene({
   useEffect(() => {
     onReadyRef.current = onReady;
   }, [onReady]);
+
+  useEffect(() => {
+    onErrorRef.current = onError;
+  }, [onError]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -45,6 +55,7 @@ export function PixiScene({
   // loop while still letting the cloud tint snap to the new palette.
   useEffect(() => {
     if (reducedMotion) return;
+    if (hasError) return;
 
     const container = containerRef.current;
     if (!container) return;
@@ -52,13 +63,32 @@ export function PixiScene({
     let mounted = true;
     const engine = new PixiSceneEngine(container, getTheme());
 
-    engine.init().then(() => {
-      if (!mounted) {
+    engine
+      .init()
+      .then(() => {
+        if (!mounted) {
+          engine.destroy();
+          return;
+        }
+
+        // Wait one extra frame so the first WebGL render has happened before
+        // revealing the canvas. This prevents the initial black/empty frame
+        // from flashing on screen while the scene is still initialising.
+        readyTimer.current = setTimeout(() => {
+          if (mounted) {
+            setIsReady(true);
+            onReadyRef.current?.();
+          }
+        }, 0);
+      })
+      .catch(error => {
+        console.warn('PixiScene failed to initialise, falling back to static background:', error);
+        if (mounted) {
+          setHasError(true);
+        }
+        onErrorRef.current?.();
         engine.destroy();
-        return;
-      }
-      onReadyRef.current?.();
-    });
+      });
 
     engineRef.current = engine;
 
@@ -69,11 +99,14 @@ export function PixiScene({
 
     return () => {
       mounted = false;
+      if (readyTimer.current) {
+        clearTimeout(readyTimer.current);
+      }
       observer.disconnect();
       engine.destroy();
       engineRef.current = null;
     };
-  }, [reducedMotion, getTheme]);
+  }, [reducedMotion, hasError, getTheme]);
 
   // For the (rare) controlled-prop case, push the new theme to the engine
   // directly without recreating it.
@@ -83,12 +116,16 @@ export function PixiScene({
     }
   }, [themeProp]);
 
-  if (reducedMotion) return null;
+  if (reducedMotion || hasError) return null;
 
   return (
     <div
       ref={containerRef}
-      className={cn('relative size-full', className)}
+      className={cn(
+        'relative size-full transition-opacity duration-700',
+        isReady ? 'opacity-100' : 'opacity-0',
+        className
+      )}
       style={style}
       aria-hidden="true"
       {...rest}

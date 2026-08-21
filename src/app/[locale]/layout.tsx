@@ -4,9 +4,10 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import client from '@tina/__generated__/client';
+import { tinaQueryWithRetry } from '@/lib/tina';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { buildBlogArticleMap } from '@/lib/blog';
+import { buildBlogArticleMap, type BlogArticleMap } from '@/lib/blog';
 import { inter, nippo, ibmPlexMono } from '@/lib/fonts';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { siteMetadata } from '@/lib/site';
@@ -38,9 +39,14 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
   const messages = await getMessages();
 
-  const { data: blogData } = await client.queries.blogConnection();
-
-  const blogMap = buildBlogArticleMap(blogData);
+  let blogMap: BlogArticleMap = { byCanonical: {}, bySlug: {} };
+  try {
+    const { data: blogData } = await tinaQueryWithRetry(() => client.queries.blogConnection());
+    blogMap = buildBlogArticleMap(blogData);
+  } catch {
+    // If the Tina dev server is not quite ready yet, still render the shell.
+    // Blog-specific locale switching will fall back to the current slug.
+  }
 
   return (
     <html lang={locale} suppressHydrationWarning>
