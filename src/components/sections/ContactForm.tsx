@@ -75,7 +75,7 @@ export function ContactForm({ contact, locale, className }: ContactFormProps) {
   };
 
   return (
-    <Card className={cn('h-full', className)}>
+    <Card variant="glass" className={cn('h-full', className)}>
       <CardContent>
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <FadeIn delay={0}>
@@ -90,7 +90,7 @@ export function ContactForm({ contact, locale, className }: ContactFormProps) {
                     setErrors(prev => ({ ...prev, name: '' }));
                   }}
                   aria-invalid={!!errors.name}
-                  className="bg-input"
+                  className="bg-input/60 backdrop-blur-[2px]"
                 />
                 {errors.name ? <FieldError>{errors.name}</FieldError> : null}
               </FieldContent>
@@ -110,7 +110,7 @@ export function ContactForm({ contact, locale, className }: ContactFormProps) {
                     setErrors(prev => ({ ...prev, email: '' }));
                   }}
                   aria-invalid={!!errors.email}
-                  className="bg-input"
+                  className="bg-input/60 backdrop-blur-[2px]"
                 />
                 {errors.email ? <FieldError>{errors.email}</FieldError> : null}
               </FieldContent>
@@ -129,7 +129,7 @@ export function ContactForm({ contact, locale, className }: ContactFormProps) {
                     setErrors(prev => ({ ...prev, subject: '' }));
                   }}
                   aria-invalid={!!errors.subject}
-                  className="bg-input"
+                  className="bg-input/60 backdrop-blur-[2px]"
                 />
                 {errors.subject ? <FieldError>{errors.subject}</FieldError> : null}
               </FieldContent>
@@ -148,7 +148,7 @@ export function ContactForm({ contact, locale, className }: ContactFormProps) {
                     setErrors(prev => ({ ...prev, message: '' }));
                   }}
                   aria-invalid={!!errors.message}
-                  className="bg-input"
+                  className="min-h-48 bg-input/60 backdrop-blur-[2px]"
                 />
                 {errors.message ? <FieldError>{errors.message}</FieldError> : null}
               </FieldContent>
@@ -156,7 +156,7 @@ export function ContactForm({ contact, locale, className }: ContactFormProps) {
           </FadeIn>
 
           <FadeIn delay={0.2}>
-            <Button type="submit" className="w-full md:w-2/3">
+            <Button type="submit" className="w-full">
               {ui.send}
             </Button>
           </FadeIn>

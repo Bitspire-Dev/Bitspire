@@ -129,7 +129,7 @@ export function ContactDetails({ contact, locale, className }: ContactDetailsPro
 
   return (
     <FadeIn>
-      <Card className={cn('h-full', className)}>
+      <Card variant="glass" className={cn('h-full', className)}>
         <CardHeader>
           <div className="flex items-start justify-between gap-4">
             <div>

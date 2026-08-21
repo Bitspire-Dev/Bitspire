@@ -5,14 +5,19 @@ import { cn } from '@/lib/utils';
 function Card({
   className,
   size = 'default',
+  variant = 'default',
   ...props
-}: React.ComponentProps<'div'> & { size?: 'default' | 'sm' }) {
+}: React.ComponentProps<'div'> & { size?: 'default' | 'sm'; variant?: 'default' | 'glass' }) {
   return (
     <div
       data-slot="card"
       data-size={size}
+      data-variant={variant}
       className={cn(
-        'group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-lg bg-card py-(--card-spacing) font-sans text-xs/relaxed text-card-foreground shadow-card ring-1 ring-border transition-shadow duration-300 [--card-spacing:--spacing(4)] hover:shadow-lg hover:ring-2 hover:ring-ring/20 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] *:[img:first-child]:rounded-t-lg *:[img:last-child]:rounded-b-lg',
+        'group/card flex flex-col gap-(--card-spacing) overflow-hidden py-(--card-spacing) font-sans text-xs/relaxed text-card-foreground transition-shadow duration-300 [--card-spacing:--spacing(4)] has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] *:[img:first-child]:rounded-t-lg *:[img:last-child]:rounded-b-lg',
+        variant === 'default' &&
+          'rounded-lg bg-card shadow-card ring-1 ring-border hover:shadow-lg hover:ring-2 hover:ring-ring/20',
+        variant === 'glass' && 'glass-card',
         className
       )}
       {...props}
