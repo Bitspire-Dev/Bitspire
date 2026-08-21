@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/primitives/card';
 import { Separator } from '@/components/ui/primitives/separator';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
-import { PulseDot } from '@/components/animations/pulse-dot';
 import { SocialIcon } from '@/components/ui/composites/social-icon';
 import { cn } from '@/lib/utils';
 import type { PageQuery } from '@tina/__generated__/types';
@@ -130,7 +129,7 @@ export function ContactDetails({ contact, locale, className }: ContactDetailsPro
 
   return (
     <FadeIn>
-      <Card className={cn('h-full', className)}>
+      <Card variant="glass" className={cn('h-full', className)}>
         <CardHeader>
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -143,7 +142,9 @@ export function ContactDetails({ contact, locale, className }: ContactDetailsPro
               variant="secondary"
               className="shrink-0 gap-1.5 rounded-full border border-border/60 bg-card px-2.5 py-1 text-xs font-medium text-foreground"
             >
-              <PulseDot className="size-2" />
+              <span className="relative size-2 rounded-full bg-primary">
+                <span className="absolute inset-0 animate-ping rounded-full bg-primary/60 opacity-75" />
+              </span>
               {ui.status}
             </Badge>
           </div>

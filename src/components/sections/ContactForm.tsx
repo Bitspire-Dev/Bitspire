@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
-import { GlowButton } from '@/components/animations/glow-button';
+import { Button } from '@/components/ui/primitives/button';
+import { Card, CardContent } from '@/components/ui/primitives/card';
 import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/primitives/field';
 import { Input } from '@/components/ui/primitives/input';
 import { Textarea } from '@/components/ui/primitives/textarea';
@@ -74,85 +75,93 @@ export function ContactForm({ contact, locale, className }: ContactFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={cn('flex flex-col gap-6', className)}>
-      <FadeIn delay={0}>
-        <Field>
-          <FieldLabel htmlFor="contact-name">{ui.name}</FieldLabel>
-          <FieldContent>
-            <Input
-              id="contact-name"
-              value={name}
-              onChange={e => {
-                setName(e.target.value);
-                setErrors(prev => ({ ...prev, name: '' }));
-              }}
-              aria-invalid={!!errors.name}
-            />
-            {errors.name ? <FieldError>{errors.name}</FieldError> : null}
-          </FieldContent>
-        </Field>
-      </FadeIn>
+    <Card variant="glass" className={cn('h-full', className)}>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <FadeIn delay={0}>
+            <Field>
+              <FieldLabel htmlFor="contact-name">{ui.name}</FieldLabel>
+              <FieldContent>
+                <Input
+                  id="contact-name"
+                  value={name}
+                  onChange={e => {
+                    setName(e.target.value);
+                    setErrors(prev => ({ ...prev, name: '' }));
+                  }}
+                  aria-invalid={!!errors.name}
+                  className="bg-input/60 backdrop-blur-[2px]"
+                />
+                {errors.name ? <FieldError>{errors.name}</FieldError> : null}
+              </FieldContent>
+            </Field>
+          </FadeIn>
 
-      <FadeIn delay={0.05}>
-        <Field>
-          <FieldLabel htmlFor="contact-email">{ui.email}</FieldLabel>
-          <FieldContent>
-            <Input
-              id="contact-email"
-              type="email"
-              value={email}
-              onChange={e => {
-                setEmail(e.target.value);
-                setErrors(prev => ({ ...prev, email: '' }));
-              }}
-              aria-invalid={!!errors.email}
-            />
-            {errors.email ? <FieldError>{errors.email}</FieldError> : null}
-          </FieldContent>
-        </Field>
-      </FadeIn>
+          <FadeIn delay={0.05}>
+            <Field>
+              <FieldLabel htmlFor="contact-email">{ui.email}</FieldLabel>
+              <FieldContent>
+                <Input
+                  id="contact-email"
+                  type="email"
+                  value={email}
+                  onChange={e => {
+                    setEmail(e.target.value);
+                    setErrors(prev => ({ ...prev, email: '' }));
+                  }}
+                  aria-invalid={!!errors.email}
+                  className="bg-input/60 backdrop-blur-[2px]"
+                />
+                {errors.email ? <FieldError>{errors.email}</FieldError> : null}
+              </FieldContent>
+            </Field>
+          </FadeIn>
 
-      <FadeIn delay={0.1}>
-        <Field>
-          <FieldLabel htmlFor="contact-subject">{ui.subject}</FieldLabel>
-          <FieldContent>
-            <Input
-              id="contact-subject"
-              value={subject}
-              onChange={e => {
-                setSubject(e.target.value);
-                setErrors(prev => ({ ...prev, subject: '' }));
-              }}
-              aria-invalid={!!errors.subject}
-            />
-            {errors.subject ? <FieldError>{errors.subject}</FieldError> : null}
-          </FieldContent>
-        </Field>
-      </FadeIn>
+          <FadeIn delay={0.1}>
+            <Field>
+              <FieldLabel htmlFor="contact-subject">{ui.subject}</FieldLabel>
+              <FieldContent>
+                <Input
+                  id="contact-subject"
+                  value={subject}
+                  onChange={e => {
+                    setSubject(e.target.value);
+                    setErrors(prev => ({ ...prev, subject: '' }));
+                  }}
+                  aria-invalid={!!errors.subject}
+                  className="bg-input/60 backdrop-blur-[2px]"
+                />
+                {errors.subject ? <FieldError>{errors.subject}</FieldError> : null}
+              </FieldContent>
+            </Field>
+          </FadeIn>
 
-      <FadeIn delay={0.15}>
-        <Field>
-          <FieldLabel htmlFor="contact-message">{ui.message}</FieldLabel>
-          <FieldContent>
-            <Textarea
-              id="contact-message"
-              value={message}
-              onChange={e => {
-                setMessage(e.target.value);
-                setErrors(prev => ({ ...prev, message: '' }));
-              }}
-              aria-invalid={!!errors.message}
-            />
-            {errors.message ? <FieldError>{errors.message}</FieldError> : null}
-          </FieldContent>
-        </Field>
-      </FadeIn>
+          <FadeIn delay={0.15}>
+            <Field>
+              <FieldLabel htmlFor="contact-message">{ui.message}</FieldLabel>
+              <FieldContent>
+                <Textarea
+                  id="contact-message"
+                  value={message}
+                  onChange={e => {
+                    setMessage(e.target.value);
+                    setErrors(prev => ({ ...prev, message: '' }));
+                  }}
+                  aria-invalid={!!errors.message}
+                  className="min-h-48 bg-input/60 backdrop-blur-[2px]"
+                />
+                {errors.message ? <FieldError>{errors.message}</FieldError> : null}
+              </FieldContent>
+            </Field>
+          </FadeIn>
 
-      <FadeIn delay={0.2}>
-        <GlowButton type="submit" className="w-full md:w-2/3">
-          {ui.send}
-        </GlowButton>
-      </FadeIn>
-    </form>
+          <FadeIn delay={0.2}>
+            <Button type="submit" className="w-full">
+              {ui.send}
+            </Button>
+          </FadeIn>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

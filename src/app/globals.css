@@ -51,10 +51,12 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --shadow-card: var(--card-shadow);
 }
 
 :root {
   /* Light mode */
+  color-scheme: light;
   --background: #ffffff;
   --foreground: #0a0a0b;
   --card: #fbfaf9;
@@ -70,13 +72,13 @@
   --secondary: #f0edea;
   --secondary-foreground: #0a0a0b;
   --muted: #f6f4f2;
-  --muted-foreground: #6e6b66;
+  --muted-foreground: #5c5953;
   --accent: #f0edea;
   --accent-foreground: #0a0a0b;
   --destructive: #d92d20;
   --destructive-foreground: #ffffff;
-  --border: #e5e2de;
-  --input: #e5e2de;
+  --border: #d8d4ce;
+  --input: #d8d4ce;
   --ring: #0037ff;
   --chart-1: #0037ff;
   --chart-2: #6e6b66;
@@ -84,17 +86,19 @@
   --chart-4: #d92d20;
   --chart-5: #a3a09a;
   --radius: 0.25rem;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   --sidebar: #fbfaf9;
   --sidebar-foreground: #0a0a0b;
   --sidebar-primary: #0037ff;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #f0edea;
   --sidebar-accent-foreground: #0a0a0b;
-  --sidebar-border: #e5e2de;
+  --sidebar-border: #d8d4ce;
   --sidebar-ring: #0037ff;
 }
 
 .dark {
+  color-scheme: dark;
   --background: #0c0c0b;
   --foreground: #ecebe9;
   --card: #161514;
@@ -124,6 +128,7 @@
   --chart-4: #ff6b5e;
   --chart-5: #e5e2de;
   --radius: 0.25rem;
+  --card-shadow: none;
   --sidebar: #161514;
   --sidebar-foreground: #ecebe9;
   --sidebar-primary: #3d8bff;
@@ -199,12 +204,32 @@
   }
 }
 
-/* Hero scene — canvas always fills the container to avoid letterbox bars. */
-[data-hero-scene] {
-  backface-visibility: hidden;
+/* Liquid Glass (iOS 26-style) surface.
+ * Use on cards / panels placed over animated backgrounds.
+ * Defined outside @layer so it overrides base Card utilities but is still
+ * overridable by Tailwind utilities passed via `className`.
+ */
+.glass-card {
+  @apply rounded-2xl bg-card/70 backdrop-blur-md backdrop-saturate-125
+         ring-1 ring-black/15 dark:bg-card/30 dark:ring-white/10
+         transition-shadow duration-300;
+  box-shadow:
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.5),
+    0 8px 32px -4px rgba(0, 0, 0, 0.15);
 }
-
-[data-hero-scene] canvas {
-  width: 100% !important;
-  height: 100% !important;
+.glass-card:hover {
+  @apply ring-black/20 dark:ring-white/15;
+  box-shadow:
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.6),
+    0 12px 40px -4px rgba(0, 0, 0, 0.18);
+}
+.dark .glass-card {
+  box-shadow:
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.08),
+    0 8px 32px -4px rgba(0, 0, 0, 0.4);
+}
+.dark .glass-card:hover {
+  box-shadow:
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.1),
+    0 12px 40px -4px rgba(0, 0, 0, 0.5);
 }
