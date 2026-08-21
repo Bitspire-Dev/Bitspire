@@ -3,7 +3,7 @@
 import { useState, type ComponentProps } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
-import { Link } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { Menu, X } from 'lucide-react';
 import { LocaleSwitcher } from '@/components/ui/composites/locale-switcher';
 import { ThemeSwitcher } from '@/components/ui/composites/theme-switcher';
@@ -112,9 +112,14 @@ function DesktopNav({ links, locale }: { links: NavLink[]; locale: string }) {
 }
 
 function PortfolioMenuItem({ label, locale }: { label: string; locale: string }) {
+  const router = useRouter();
+
   return (
     <NavigationMenuItem>
-      <NavigationMenuTrigger className="text-foreground/70 hover:bg-muted hover:text-foreground">
+      <NavigationMenuTrigger
+        className="text-foreground/70 hover:bg-muted hover:text-foreground"
+        onClick={() => router.push('/portfolio')}
+      >
         {label}
       </NavigationMenuTrigger>
       <NavigationMenuContent>
