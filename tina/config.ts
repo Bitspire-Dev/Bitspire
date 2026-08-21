@@ -92,6 +92,76 @@ export default defineConfig({
           },
           {
             type: 'object',
+            name: 'whyBitspire',
+            label: 'Why Bitspire',
+            fields: [
+              {
+                type: 'string',
+                name: 'title',
+                label: 'Section Title',
+              },
+              {
+                type: 'string',
+                name: 'description',
+                label: 'Section Description',
+              },
+              {
+                type: 'object',
+                name: 'items',
+                label: 'Cards',
+                list: true,
+                fields: [
+                  {
+                    type: 'string',
+                    name: 'title',
+                    label: 'Title',
+                    required: true,
+                  },
+                  {
+                    type: 'string',
+                    name: 'subHeadline',
+                    label: 'Sub-headline',
+                  },
+                  {
+                    type: 'string',
+                    name: 'body',
+                    label: 'Body',
+                    ui: {
+                      component: 'textarea',
+                    },
+                    description: 'Short micro-copy displayed on the bento card',
+                  },
+                  {
+                    type: 'string',
+                    name: 'fullText',
+                    label: 'Full Text',
+                    ui: {
+                      component: 'textarea',
+                    },
+                    description: 'Longer description stored in CMS, not rendered in v1',
+                  },
+                  {
+                    type: 'image',
+                    name: 'image',
+                    label: 'Image',
+                  },
+                  {
+                    type: 'string',
+                    name: 'imageAlt',
+                    label: 'Image Alt Text',
+                  },
+                  {
+                    type: 'string',
+                    name: 'size',
+                    label: 'Card Size',
+                    options: ['large', 'wide', 'tall', 'small', 'empty'],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'object',
             name: 'portfolioHighlights',
             label: 'Portfolio Highlights',
             fields: [

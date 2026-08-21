@@ -7,6 +7,7 @@ import { Hero } from '@/components/sections/Hero';
 import { CallToAction } from '@/components/sections/CallToAction';
 import { PortfolioHighlights } from '@/components/sections/PortfolioHighlights';
 import { Services } from '@/components/sections/Services';
+import { WhyBitspire } from '@/components/sections/WhyBitspire';
 import { TechnologyCarousel } from '@/components/sections/TechnologyCarousel';
 
 interface HomePageProps {
@@ -27,9 +28,10 @@ function HomePageContent({ query, variables, data }: HomePageProps) {
     <>
       <Hero page={page} />
       <TechnologyCarousel />
-      <Services page={page} />
-      <PortfolioHighlights page={page} />
-      <CallToAction page={page} />
+      <Services page={tinaData.page} />
+      <WhyBitspire page={tinaData.page} />
+      <PortfolioHighlights page={tinaData.page} />
+      <CallToAction page={tinaData.page} />
     </>
   );
 }
