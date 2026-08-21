@@ -127,7 +127,7 @@ const LogoIcon = memo(function LogoIcon({ name }: LogoIconProps) {
           sizes="48px"
           loading="eager"
           className={cn(
-            'object-contain opacity-50 grayscale transition-all duration-300 hover:scale-110 hover:opacity-100 hover:grayscale-0 dark:invert'
+            'object-contain opacity-60 grayscale transition-all duration-300 hover:scale-110 hover:opacity-100 hover:grayscale-0 dark:opacity-50 dark:invert'
           )}
         />
       </AspectRatio>

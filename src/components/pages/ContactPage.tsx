@@ -8,7 +8,7 @@ import { ContactDetails } from '@/components/sections/ContactDetails';
 import { ContactForm } from '@/components/sections/ContactForm';
 
 const PlasmaBackground = dynamic(
-  () => import('@/components/animations/background/plasma-background').then(mod => mod.PlasmaBackground),
+  () => import('@/components/animations/plasma').then(mod => mod.PlasmaBackground),
   { ssr: false }
 );
 

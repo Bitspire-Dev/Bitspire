@@ -2,9 +2,9 @@
 
 import { useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
-import type { Application, Sprite } from 'pixi.js';
+import type { Application } from 'pixi.js';
 import { cn } from '@/lib/utils';
-import type { PlasmaFilter } from './plasma-filter';
+import type { PlasmaMesh } from './mesh';
 
 interface PlasmaBackgroundProps {
   className?: string;
@@ -30,19 +30,26 @@ function getCssColor(name: string, fallback: string): [number, number, number] {
 export function PlasmaBackground({ className }: PlasmaBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const appRef = useRef<Application | null>(null);
-  const filterRef = useRef<PlasmaFilter | null>(null);
+  const meshRef = useRef<PlasmaMesh | null>(null);
   const reducedMotionRef = useRef(false);
+  const resumeLoopRef = useRef<(() => void) | null>(null);
   const { resolvedTheme } = useTheme();
 
-  // Sync brand/background colors with the active CSS theme.
+  // Sync brand color with the active CSS theme.
+  // Use requestAnimationFrame to ensure the DOM has applied the new theme
+  // class before we read getComputedStyle, otherwise we get the previous
+  // theme's color.
   useEffect(() => {
-    if (!filterRef.current) return;
+    if (!meshRef.current) return;
 
-    const brand = getCssColor('--brand', '#0037ff');
-    const background = getCssColor('--background', '#ffffff');
+    const updateColors = () => {
+      if (!meshRef.current) return;
+      const brand = getCssColor('--brand', '#0037ff');
+      meshRef.current.brandColor = brand;
+    };
 
-    filterRef.current.brandColor = brand;
-    filterRef.current.backgroundColor = background;
+    const rafId = requestAnimationFrame(updateColors);
+    return () => cancelAnimationFrame(rafId);
   }, [resolvedTheme]);
 
   // Initialize and run the Pixi application.
@@ -60,16 +67,15 @@ export function PlasmaBackground({ className }: PlasmaBackgroundProps) {
       const container = containerRef.current;
       if (!container) return;
 
-      const [{ Application, Sprite, Texture }, { PlasmaFilter }] = await Promise.all([
+      const [{ Application }, { PlasmaMesh }] = await Promise.all([
         import('pixi.js'),
-        import('./plasma-filter'),
+        import('./mesh'),
       ]);
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       const { clientWidth, clientHeight } = container;
 
       const brand = getCssColor('--brand', '#0037ff');
-      const background = getCssColor('--background', '#ffffff');
 
       const newApp = new Application();
       await newApp.init({
@@ -94,66 +100,77 @@ export function PlasmaBackground({ className }: PlasmaBackgroundProps) {
       newApp.canvas.style.width = '100%';
       newApp.canvas.style.height = '100%';
       newApp.canvas.style.display = 'block';
+      newApp.canvas.style.margin = '0';
 
-      const filter = new PlasmaFilter({
+      // PlasmaMesh uses gl_FragCoord for positioning, so the beam maps
+      // directly to canvas pixels — no filter pipeline offset.
+      const mesh = new PlasmaMesh({
         brandColor: brand,
-        backgroundColor: background,
+        width: clientWidth * dpr,
+        height: clientHeight * dpr,
       });
-      filter.canvasResolution = [clientWidth * dpr, clientHeight * dpr];
-      filterRef.current = filter;
-
-      const sprite = new Sprite({
-        texture: Texture.WHITE,
-        width: clientWidth,
-        height: clientHeight,
-      });
-      sprite.filters = [filter];
-      newApp.stage.addChild(sprite);
+      meshRef.current = mesh;
+      newApp.stage.addChild(mesh);
 
       startTime = performance.now();
 
       const loop = (now: number) => {
         if (destroyed) return;
 
-        if (!reducedMotionRef.current) {
-          filter.time = (now - startTime) / 1000;
-        } else {
-          filter.time = 0;
+        if (reducedMotionRef.current) {
+          // Static frame: render once, stop the rAF loop.
+          mesh.time = 0;
+          newApp.render();
+          rafId = 0;
+          return;
         }
 
+        mesh.time = (now - startTime) / 1000;
         newApp.render();
         rafId = requestAnimationFrame(loop);
       };
 
       rafId = requestAnimationFrame(loop);
+
+      // Resume the loop when reduced-motion is turned off.
+      resumeLoopRef.current = () => {
+        if (destroyed) return;
+        if (rafId === 0) {
+          startTime = performance.now();
+          rafId = requestAnimationFrame(loop);
+        }
+      };
     };
 
     init();
 
     const handleResize = () => {
       const app = appRef.current;
-      const filter = filterRef.current;
+      const mesh = meshRef.current;
       const container = containerRef.current;
-      if (!app || !filter || !container) return;
+      if (!app || !mesh || !container) return;
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       const { clientWidth, clientHeight } = container;
 
       app.renderer.resize(clientWidth, clientHeight);
-      filter.canvasResolution = [clientWidth * dpr, clientHeight * dpr];
-
-      const sprite = app.stage.children[0] as Sprite;
-      if (sprite) {
-        sprite.width = clientWidth;
-        sprite.height = clientHeight;
-      }
+      mesh.canvasResolution = [clientWidth * dpr, clientHeight * dpr];
     };
 
-    const resizeObserver = new ResizeObserver(handleResize);
+    // Debounce resize: ResizeObserver fires dozens of times during window
+    // drag — only resize once the user stops for 100ms.
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    const debouncedResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(handleResize, 100);
+    };
+
+    const resizeObserver = new ResizeObserver(debouncedResize);
     resizeObserver.observe(containerRef.current);
 
     const handleMotionChange = (event: MediaQueryListEvent) => {
       reducedMotionRef.current = event.matches;
+      if (!event.matches) resumeLoopRef.current?.();
     };
 
     mediaQuery.addEventListener('change', handleMotionChange);
@@ -161,6 +178,7 @@ export function PlasmaBackground({ className }: PlasmaBackgroundProps) {
     return () => {
       destroyed = true;
       cancelAnimationFrame(rafId);
+      clearTimeout(resizeTimer);
       resizeObserver.disconnect();
       mediaQuery.removeEventListener('change', handleMotionChange);
 
@@ -168,7 +186,7 @@ export function PlasmaBackground({ className }: PlasmaBackgroundProps) {
       if (app) {
         app.destroy(true, { children: true });
         appRef.current = null;
-        filterRef.current = null;
+        meshRef.current = null;
       }
     };
   }, []);

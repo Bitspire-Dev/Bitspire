@@ -53,7 +53,8 @@ float snoise(vec2 v)
   return 130.0 * dot(m, g);
 }
 
-// Simplex-based FBM: 5 octaves with rotated domain to avoid axis artifacts.
+// Simplex-based FBM: 3 octaves with rotated domain to avoid axis artifacts.
+// Used for low-frequency warp/curtains where fine detail is invisible.
 // Returns roughly [0, 1] (snoise is remapped from [-1,1] to [0,1]).
 float fbm(vec2 p)
 {
@@ -61,7 +62,7 @@ float fbm(vec2 p)
   float amplitude = 0.5;
   mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
 
-  for (int i = 0; i < 5; i++)
+  for (int i = 0; i < 3; i++)
   {
     value += amplitude * (snoise(p) * 0.5 + 0.5);
     p = m * p;
@@ -79,7 +80,7 @@ float ridgedFbm(vec2 p)
   float amplitude = 0.5;
   mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
 
-  for (int i = 0; i < 5; i++)
+  for (int i = 0; i < 4; i++)
   {
     float n = snoise(p) * 0.5 + 0.5;
     // Ridge: peak at 0.5, sharp falloff to 0 at 0 and 1.

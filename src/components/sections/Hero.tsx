@@ -37,7 +37,7 @@ export function Hero({ page }: HeroProps) {
           <FadeIn delay={0.2}>
             <div
               data-tina-field={tinaField(page, 'body')}
-              className="prose mt-8 max-w-2xl font-sans text-muted-foreground prose-invert"
+              className="prose mt-8 max-w-2xl font-sans text-muted-foreground dark:prose-invert"
             >
               <TinaMarkdown content={page.body} />
             </div>
