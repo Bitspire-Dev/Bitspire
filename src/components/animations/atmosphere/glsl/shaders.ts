@@ -1,12 +1,45 @@
-// Minimal deep-space backdrop fragment shader.
-// A layered, twinkling star field drifts over a near-black cosmos, with soft
-// sky-blue clouds slowly drifting and breathing in a balanced, natural
-// composition. Domain-warped FBM gives the clouds an organic, billowy shape
-// that feathers gently into the backdrop with no hard edges. The palette is
-// universal: the backdrop stays dark under both light and dark UI themes, so
-// one animation fits both.
+/**
+ * GLSL source for the deep-space atmosphere background.
+ *
+ * Rendered via a Pixi v8 Mesh + custom Shader (NOT a Filter), so gl_FragCoord
+ * maps directly to canvas pixels. The effect is a layered, twinkling star
+ * field drifting over a near-black cosmos with soft sky-blue clouds that
+ * slowly drift and breathe. The palette is universal: the backdrop stays dark
+ * under both light and dark UI themes, so one animation fits both.
+ */
+import { NOISE_GLSL } from './noise';
 
-export const atmosphereFragment = /* glsl */ `
+/**
+ * Vertex shader for a fullscreen quad mesh.
+ * aPosition is [0,0, 1,0, 0,1, 1,1]. We map it to clip space [-1,1] and pass
+ * through vUv so the fragment shader can use normalized [0,1] coords.
+ */
+export const ATMOSPHERE_VERTEX = /* glsl */ `
+in vec2 aPosition;
+out vec2 vUv;
+
+uniform vec4 uScreen;
+
+void main() {
+  vUv = aPosition;
+  vec2 pos = aPosition * 2.0 - 1.0;
+  gl_Position = vec4(pos, 0.0, 1.0);
+}
+`;
+
+/**
+ * Fragment shader for the deep-space backdrop.
+ *
+ * Uniforms:
+ *   uTime       - elapsed seconds, drives drift + twinkle.
+ *   uResolution - canvas resolution in pixels.
+ *   uMouse      - smoothed mouse position (-1..1) for parallax.
+ *   uIntensity  - 0..1 quality-driven glow scale.
+ *   uColorDeep  - near-black base color (vec3, linear 0..1).
+ *   uColorCloud - cloud tint (vec3, linear 0..1), theme-driven, interpolated
+ *                 on the CPU so theme switches cross-fade smoothly.
+ */
+export const ATMOSPHERE_FRAGMENT = /* glsl */ `
 precision mediump float;
 
 in vec2 vUv;
@@ -19,38 +52,7 @@ uniform float uIntensity;   // 0..1 quality-driven
 uniform vec3  uColorDeep;   // near-black base
 uniform vec3  uColorCloud;  // cloud tint, theme-driven (interpolated on CPU)
 
-// --- hash / noise ----------------------------------------------------------
-
-float hash21(vec2 p) {
-  p = fract(p * vec2(123.34, 456.21));
-  p += dot(p, p + 45.32);
-  return fract(p.x * p.y);
-}
-
-float noise(vec2 p) {
-  vec2 i = floor(p);
-  vec2 f = fract(p);
-  f = f * f * (3.0 - 2.0 * f);
-  float a = hash21(i);
-  float b = hash21(i + vec2(1.0, 0.0));
-  float c = hash21(i + vec2(0.0, 1.0));
-  float d = hash21(i + vec2(1.0, 1.0));
-  return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
-}
-
-// Fractal Brownian Motion — 4 octaves gives a soft, billowy cloud field
-// while staying cheap enough for low-power GPUs.
-float fbm(vec2 p) {
-  float v = 0.0;
-  float a = 0.5;
-  mat2 rot = mat2(0.8, 0.6, -0.6, 0.8);
-  for (int i = 0; i < 4; i++) {
-    v += a * noise(p);
-    p = rot * p * 2.0;
-    a *= 0.5;
-  }
-  return v;
-}
+${NOISE_GLSL}
 
 // A single soft cloud volume anchored near \`center\`. Returns a smooth
 // density in 0..1 — diffuse in the middle, feathering gently to nothing at

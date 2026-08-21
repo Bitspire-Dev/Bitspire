@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { PixiSceneEngine, type SceneTheme } from './pixi/scene';
+import { PixiSceneEngine, type SceneTheme } from './engine';
 import { cn } from '@/lib/utils';
 
 type PixiSceneProps = {

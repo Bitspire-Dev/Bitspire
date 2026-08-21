@@ -10,7 +10,7 @@ import { FadeIn } from '@/components/animations/fade-in';
 import { ErrorBoundary } from '@/components/providers/error-boundary';
 
 const PixiScene = dynamic(
-  () => import('@/components/animations/PixiScene').then(m => m.PixiScene),
+  () => import('@/components/animations/atmosphere').then(m => m.PixiScene),
   {
     ssr: false,
   }

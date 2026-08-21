@@ -1,10 +1,10 @@
-// Main PixiJS scene orchestrator — renders the atmospheric background
-// shader (a twinkling star field with soft blue clouds drifting over deep
-// space). Handles resize, mouse parallax, visibility pausing and cleanup.
+// Main PixiJS scene orchestrator — owns the Application lifecycle, ticker,
+// resize handling, mouse parallax, visibility pausing and theme cross-fade.
+// The actual shader + geometry live in AtmosphereMesh (./mesh); the engine
+// just drives its uniforms every frame.
 
-import { Application, Geometry, GlProgram, Mesh, Shader } from 'pixi.js';
-import { atmosphereVertex } from './shaders/atmosphere.vert';
-import { atmosphereFragment } from './shaders/atmosphere.frag';
+import { Application } from 'pixi.js';
+import { AtmosphereMesh } from './mesh';
 import { MouseController } from './mouse';
 import { getQualityConfig, type QualityConfig } from './quality';
 
@@ -30,18 +30,9 @@ const THEME_COLORS: Record<SceneTheme, SceneColors> = {
   light: { ...UNIVERSAL_COLORS, cloud: [0.0, 0.6, 1.0] }, // #0099ff
 };
 
-// Fullscreen triangle geometry — covers the whole screen with 3 vertices
-const FULLSCREEN_GEOMETRY = new Geometry({
-  attributes: {
-    aPosition: new Float32Array([0, 0, 1, 0, 0, 1, 1, 1]),
-  },
-  indexBuffer: new Uint16Array([0, 1, 2, 1, 3, 2]),
-});
-
 export class PixiSceneEngine {
   private app: Application;
-  private bgMesh: Mesh<Geometry, Shader> | null = null;
-  private bgShader: Shader | null = null;
+  private mesh: AtmosphereMesh | null = null;
   private mouse: MouseController;
   private quality: QualityConfig;
   private visibilityHandler: (() => void) | null = null;
@@ -108,10 +99,17 @@ export class PixiSceneEngine {
     this.app.canvas.classList.add('absolute', 'inset-0', 'size-full');
     this.container.appendChild(this.app.canvas);
 
-    this.buildBackground();
+    const colors = THEME_COLORS[this.theme];
+    this.mesh = new AtmosphereMesh({
+      width: this.app.screen.width,
+      height: this.app.screen.height,
+      intensity: this.quality.shaderIntensity,
+      colorDeep: colors.deep,
+      colorCloud: [...this.cloudCurrent],
+    });
 
     // Layer order: background only (star field + clouds live entirely in-shader)
-    this.app.stage.addChild(this.bgMesh!);
+    this.app.stage.addChild(this.mesh);
 
     this.mouse.attach();
     this.startTime = performance.now();
@@ -124,37 +122,8 @@ export class PixiSceneEngine {
     this.setupVisibility();
   }
 
-  private buildBackground() {
-    const colors = THEME_COLORS[this.theme];
-
-    this.bgShader = new Shader({
-      glProgram: new GlProgram({
-        vertex: atmosphereVertex,
-        fragment: atmosphereFragment,
-      }),
-      resources: {
-        uTimeUniforms: {
-          uTime: { value: 0, type: 'f32' },
-          uResolution: {
-            value: [this.app.screen.width, this.app.screen.height],
-            type: 'vec2<f32>',
-          },
-          uMouse: { value: [0, 0], type: 'vec2<f32>' },
-          uIntensity: { value: this.quality.shaderIntensity, type: 'f32' },
-          uColorDeep: { value: colors.deep, type: 'vec3<f32>' },
-          uColorCloud: { value: [...this.cloudCurrent], type: 'vec3<f32>' },
-        },
-      },
-    });
-
-    this.bgMesh = new Mesh<Geometry, Shader>({
-      geometry: FULLSCREEN_GEOMETRY,
-      shader: this.bgShader,
-    });
-  }
-
   private tick(dt: number) {
-    if (!this.bgShader) return;
+    if (!this.mesh) return;
 
     const time = performance.now() - this.startTime;
 
@@ -163,15 +132,14 @@ export class PixiSceneEngine {
 
     // Update background shader uniforms — reuse pre-allocated buffers to avoid
     // creating new arrays every frame (GC pressure on hot path).
-    const uniforms = this.bgShader.resources.uTimeUniforms;
-    uniforms.uniforms.uTime = time / 1000;
+    this.mesh.time = time / 1000;
 
     // Mouse uniform — only upload when the smoothed value actually moved, so
     // a resting cursor costs nothing on the hot path.
     if (this._mouseBuf[0] !== this.mouse.x || this._mouseBuf[1] !== this.mouse.y) {
       this._mouseBuf[0] = this.mouse.x;
       this._mouseBuf[1] = this.mouse.y;
-      uniforms.uniforms.uMouse = this._mouseBuf;
+      this.mesh.mouse = this._mouseBuf as unknown as [number, number];
     }
 
     // Resolution only changes on resize — skip the upload when the cached
@@ -180,7 +148,7 @@ export class PixiSceneEngine {
     if (screen.width !== this._resBuf[0] || screen.height !== this._resBuf[1]) {
       this._resBuf[0] = screen.width;
       this._resBuf[1] = screen.height;
-      uniforms.uniforms.uResolution = this._resBuf;
+      this.mesh.resolution = this._resBuf as unknown as [number, number];
     }
 
     // Smoothly chase the theme's cloud tint. Exponential approach, framerate-
@@ -207,7 +175,7 @@ export class PixiSceneEngine {
       this._cloudBuf[0] = r;
       this._cloudBuf[1] = g;
       this._cloudBuf[2] = b;
-      uniforms.uniforms.uColorCloud = this._cloudBuf;
+      this.mesh.colorCloud = this._cloudBuf as unknown as [number, number, number];
     }
   }
 
@@ -230,10 +198,8 @@ export class PixiSceneEngine {
       document.removeEventListener('visibilitychange', this.visibilityHandler);
       this.visibilityHandler = null;
     }
-    this.bgShader?.destroy();
-    this.bgShader = null;
-    this.bgMesh?.destroy();
-    this.bgMesh = null;
+    this.mesh?.destroy();
+    this.mesh = null;
     // Only destroy the application once it has finished initializing — see the
     // `initialized` field comment above. If init is still pending, `init()`
     // will call `destroyInternal()` itself when the await resolves.
