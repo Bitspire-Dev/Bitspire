@@ -1,6 +1,6 @@
 ---
-title: Welcome to Bitspire
-description: We build modern websites
+title: We build services and apps that drive your business.
+description: Highest-performance architecture, unique interfaces and dedicated code. We combine modern technologies with refined design, delivering products ready to scale.
 services:
   title: Our services
   items:

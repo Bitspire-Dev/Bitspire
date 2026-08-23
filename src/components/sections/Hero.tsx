@@ -4,10 +4,13 @@ import { memo, Suspense, useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'motion/react';
 import dynamic from 'next/dynamic';
 import { motion, useScroll, useTransform } from 'motion/react';
+import { useLocale } from 'next-intl';
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { ErrorBoundary } from '@/components/providers/error-boundary';
+import { Button } from '@/components/ui/primitives/button';
+import { Link } from '@/i18n/navigation';
 
 const PixiScene = dynamic(
   () => import('@/components/animations/atmosphere').then(m => m.PixiScene),
@@ -37,6 +40,7 @@ function HeroContent({ page }: HeroProps) {
   const [mounted, setMounted] = useState(false);
   const [sceneError, setSceneError] = useState(false);
   const prefersReducedMotion = useReducedMotion() ?? false;
+  const locale = useLocale();
 
   useEffect(() => {
     setMounted(true);
@@ -108,6 +112,30 @@ function HeroContent({ page }: HeroProps) {
             </p>
           </FadeIn>
         )}
+
+        <FadeIn delay={0.2}>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <Button
+              asChild
+              size="lg"
+              className="h-12 px-8 text-base md:h-13 md:px-10 md:text-lg"
+            >
+              <Link href="/contact" locale={locale}>
+                {locale === 'pl' ? 'Rozpocznij projekt' : 'Start a project'}
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="h-12 px-8 text-base md:h-13 md:px-10 md:text-lg"
+            >
+              <Link href="/portfolio" locale={locale}>
+                {locale === 'pl' ? 'Zobacz wybrane case studies' : 'See selected case studies'}
+              </Link>
+            </Button>
+          </div>
+        </FadeIn>
       </motion.div>
       <motion.div
         style={{ opacity: indicatorOpacity }}

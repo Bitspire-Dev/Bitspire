@@ -1,6 +1,6 @@
 ---
-title: Witaj w Bitspire
-description: Tworzymy nowoczesne strony internetowe
+title: Tworzymy serwisy i aplikacje, które napędzają Twój biznes.
+description: Architektura o najwyższej wydajności, unikalne interfejsy i dedykowany kod. Łączymy nowoczesne technologie z dopracowanym designem, dostarczając produkty gotowe do skalowania.
 services:
   title: Nasze usługi
   items:
