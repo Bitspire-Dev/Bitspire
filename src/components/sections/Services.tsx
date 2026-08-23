@@ -3,6 +3,7 @@
 import { memo, useState } from 'react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
+import { useTheme } from 'next-themes';
 import { motion } from 'motion/react';
 import { ChevronDownIcon } from 'lucide-react';
 
@@ -10,6 +11,7 @@ import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
 import { cn } from '@/lib/utils';
 import { slugify } from '@/lib/string';
+import { useMounted } from '@/lib/use-mounted';
 import {
   Accordion,
   AccordionContent,
@@ -27,6 +29,11 @@ function ServicesContent({ page }: ServicesProps) {
   const services = page.services;
   const [openValue, setOpenValue] = useState<string>('');
   const locale = useLocale();
+  const { resolvedTheme } = useTheme();
+  const mounted = useMounted();
+  const gryfSrc = mounted && resolvedTheme === 'dark'
+    ? '/layout/dark-mode/gryf-oferta.png'
+    : '/layout/light-mode/gryf-oferta.png';
 
   if (!services?.items?.length) {
     return null;
@@ -43,7 +50,7 @@ function ServicesContent({ page }: ServicesProps) {
             delay={0.2}
           >
             <Image
-              src="/layout/gryf-2.png"
+              src={gryfSrc}
               alt={locale === 'pl' ? 'Gryf' : 'Griffin'}
               fill
               className="object-contain p-2"

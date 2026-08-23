@@ -3,6 +3,7 @@
 import { memo } from 'react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
+import { useTheme } from 'next-themes';
 import { tinaField } from 'tinacms/dist/react';
 import type { ComponentProps } from 'react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
@@ -10,6 +11,7 @@ import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/primitives/button';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/primitives/stagger';
+import { useMounted } from '@/lib/use-mounted';
 
 type Href = ComponentProps<typeof Link>['href'];
 
@@ -19,7 +21,12 @@ interface CallToActionProps {
 
 function CallToActionContent({ page }: CallToActionProps) {
   const locale = useLocale();
+  const { resolvedTheme } = useTheme();
+  const mounted = useMounted();
   const cta = page.callToAction;
+  const gryfSrc = mounted && resolvedTheme === 'dark'
+    ? '/layout/dark-mode/gryf-cta.png'
+    : '/layout/light-mode/gryf-cta.png';
 
   if (!cta?.title) {
     return null;
@@ -97,7 +104,7 @@ function CallToActionContent({ page }: CallToActionProps) {
                 className="relative aspect-2500/1555 w-full max-w-xl justify-self-end lg:block"
               >
                 <Image
-                  src="/layout/gryf.png"
+                  src={gryfSrc}
                   alt={locale === 'pl' ? 'Gryf' : 'Griffin'}
                   fill
                   className="object-contain"

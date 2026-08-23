@@ -2,11 +2,13 @@
 
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
+import { useTheme } from 'next-themes';
 import { ImageIcon } from 'lucide-react';
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
 
 import { cn } from '@/lib/utils';
+import { useMounted } from '@/lib/use-mounted';
 import {
   Card,
   CardContent,
@@ -60,7 +62,19 @@ function BentoCard({
   imageMinHeight = 'min-h-48',
   titleClassName,
 }: BentoCardProps) {
-  const imageSrc = normalizeImageSrc(item.image);
+  const { resolvedTheme } = useTheme();
+  const mounted = useMounted();
+  const rawSrc = normalizeImageSrc(item.image);
+  // Route gryf images to the theme-specific subfolder so the griffin matches
+  // the active palette. The Tina CMS path is e.g. `layout/gryf-foo.png`; we
+  // rewrite it to `layout/{light,dark}-mode/gryf-foo.png` on the client.
+  const imageSrc = (() => {
+    if (!rawSrc) return null;
+    const match = rawSrc.match(/^\/layout\/(gryf-[^/]+\.png)$/);
+    if (!match) return rawSrc;
+    const isDark = mounted && resolvedTheme === 'dark';
+    return `/layout/${isDark ? 'dark-mode' : 'light-mode'}/${match[1]}`;
+  })();
   const bodySource = item.body || item.fullText || '';
   const segments = parseBodyText(bodySource);
 
