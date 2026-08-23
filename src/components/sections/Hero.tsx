@@ -29,19 +29,6 @@ function HeroBackgroundFallback() {
   );
 }
 
-function HeroErrorFallback() {
-  return (
-    <div
-      className="pointer-events-none absolute inset-0 size-full"
-      style={{
-        background:
-          'radial-gradient(circle at 50% 40%, color-mix(in oklab, #04050b 92%, #0037ff), #000000 72%)',
-      }}
-      aria-hidden="true"
-    />
-  );
-}
-
 interface HeroProps {
   page: PagePartsFragment;
 }
@@ -69,19 +56,15 @@ function HeroContent({ page }: HeroProps) {
   return (
     <section
       ref={sectionRef}
-      className="relative z-0 flex min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-background"
+      className="relative z-0 flex min-h-dvh w-full items-center justify-center overflow-hidden bg-background"
     >
       <div className="absolute inset-0 -z-10" aria-hidden="true">
         <HeroBackgroundFallback />
       </div>
 
-      {prefersReducedMotion ? (
+      {mounted && !prefersReducedMotion && !sceneError ? (
         <div className="absolute inset-0 z-0" aria-hidden="true">
-          <HeroErrorFallback />
-        </div>
-      ) : mounted ? (
-        <div className="absolute inset-0 z-0" aria-hidden="true">
-          <ErrorBoundary fallback={<HeroErrorFallback />}>
+          <ErrorBoundary fallback={null}>
             <Suspense fallback={null}>
               <PixiScene
                 data-hero-scene
@@ -93,14 +76,8 @@ function HeroContent({ page }: HeroProps) {
         </div>
       ) : null}
 
-      {sceneError && (
-        <div className="absolute inset-0 z-0" aria-hidden="true">
-          <HeroErrorFallback />
-        </div>
-      )}
-
       <div
-        className="pointer-events-none absolute bottom-0 left-0 z-10 hidden h-72 w-full dark:block"
+        className="pointer-events-none absolute bottom-0 left-0 z-10 h-72 w-full"
         style={{
           background:
             'linear-gradient(to top, var(--background) 0%, color-mix(in oklab, var(--background) 88%, transparent) 20%, color-mix(in oklab, var(--background) 60%, transparent) 42%, color-mix(in oklab, var(--background) 28%, transparent) 66%, transparent 100%)',
@@ -115,7 +92,7 @@ function HeroContent({ page }: HeroProps) {
         <FadeIn>
           <h1
             data-tina-field={tinaField(page, 'title')}
-            className="max-w-4xl font-heading text-5xl leading-tight font-semibold tracking-tight text-white md:text-7xl"
+            className="max-w-4xl font-heading text-5xl leading-tight font-semibold tracking-tight text-foreground md:text-7xl"
           >
             {page.title ?? 'Bitspire'}
           </h1>
@@ -125,7 +102,7 @@ function HeroContent({ page }: HeroProps) {
           <FadeIn delay={0.1}>
             <p
               data-tina-field={tinaField(page, 'description')}
-              className="mt-6 max-w-2xl font-sans text-lg leading-relaxed text-white/75 md:text-xl"
+              className="mt-6 max-w-2xl font-sans text-lg leading-relaxed text-muted-foreground md:text-xl"
             >
               {page.description}
             </p>

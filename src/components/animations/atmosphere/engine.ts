@@ -10,25 +10,58 @@ import { getQualityConfig, type QualityConfig } from './quality';
 
 export type SceneTheme = 'dark' | 'light';
 
-interface SceneColors {
-  deep: [number, number, number];
-  cloud: [number, number, number];
+// Fallback colours (dark-mode values) used when the CSS variables can't be
+// read (SSR guard or missing variable). Match globals.css `.dark`.
+const BRAND_FALLBACK: [number, number, number] = [0.239, 0.545, 1.0]; // #3d8bff
+const FOREGROUND_FALLBACK: [number, number, number] = [0.925, 0.922, 0.913]; // #ecebe9
+
+// Cloud density multiplier per theme. The shader blends clouds additively,
+// which washes out on light backgrounds — pushing this above 1.0 in light mode
+// keeps the clouds readable against white.
+const CLOUD_STRENGTH_DARK = 1.0;
+const CLOUD_STRENGTH_LIGHT = 2.5;
+
+function hexToRgb(hex: string, fallback: [number, number, number]): [number, number, number] {
+  const clean = hex.replace('#', '').trim();
+  if (clean.length !== 6) return [...fallback];
+  return [
+    parseInt(clean.slice(0, 2), 16) / 255,
+    parseInt(clean.slice(2, 4), 16) / 255,
+    parseInt(clean.slice(4, 6), 16) / 255,
+  ];
 }
 
-// One universal deep-space palette shared by both UI themes. The cosmos
-// backdrop always reads as dark space (the hero text is white either way),
-// so a single palette means the scene never has to re-initialise on theme
-// switch — only the cloud tint interpolates (see setTheme / tick), so the
-// transition between light/dark is seamless with no flash or re-render.
-const UNIVERSAL_COLORS: SceneColors = {
-  deep: [0.016, 0.02, 0.045], // #04050b — deep space black with a faint navy lift
-  cloud: [0.0, 0.216, 1.0], // #0037ff — default (dark) cloud tint
-};
+// Read the active theme's --brand from the DOM. The hero's CSS background is
+// already driven by var(--brand), so reading the same variable here keeps the
+// cloud tint perfectly in sync with the backdrop under both light and dark
+// themes without hardcoding a palette.
+function getBrandColor(): [number, number, number] {
+  if (typeof document === 'undefined') return [...BRAND_FALLBACK];
+  const value = getComputedStyle(document.documentElement)
+    .getPropertyValue('--brand')
+    .trim();
+  return value ? hexToRgb(value, BRAND_FALLBACK) : [...BRAND_FALLBACK];
+}
 
-const THEME_COLORS: Record<SceneTheme, SceneColors> = {
-  dark: { ...UNIVERSAL_COLORS, cloud: [0.0, 0.216, 1.0] }, // #0037ff
-  light: { ...UNIVERSAL_COLORS, cloud: [0.0, 0.6, 1.0] }, // #0099ff
-};
+// Read the active theme's --foreground from the DOM. Stars use this as their
+// tint so they stay contrasty against the background in both themes — white-ish
+// on dark, near-black on light — matching the hero text colour.
+function getForegroundColor(): [number, number, number] {
+  if (typeof document === 'undefined') return [...FOREGROUND_FALLBACK];
+  const value = getComputedStyle(document.documentElement)
+    .getPropertyValue('--foreground')
+    .trim();
+  return value ? hexToRgb(value, FOREGROUND_FALLBACK) : [...FOREGROUND_FALLBACK];
+}
+
+function getCloudStrength(theme: SceneTheme): number {
+  return theme === 'light' ? CLOUD_STRENGTH_LIGHT : CLOUD_STRENGTH_DARK;
+}
+
+// Particle mode: 0 = stars (dark mode), 1 = fireflies (light mode).
+function getParticleMode(theme: SceneTheme): number {
+  return theme === 'light' ? 1.0 : 0.0;
+}
 
 export class PixiSceneEngine {
   private app: Application;
@@ -44,19 +77,27 @@ export class PixiSceneEngine {
   // `this._cancelResize is not a function`, so we must gate it on this flag.
   private initialized = false;
   private startTime = 0;
-  // Cloud tint is the only theme-dependent value. We keep a current (displayed)
-  // and target colour and lerp current → target each frame, so a theme switch
-  // cross-fades smoothly instead of re-initialising the whole WebGL scene.
+  // Theme-dependent shader values, each interpolated current → target every
+  // frame so a theme switch cross-fades smoothly instead of re-initialising the
+  // WebGL scene. Three channels: cloud tint (--brand), star tint (--foreground),
+  // and cloud density multiplier (compensates for additive blend washing out on
+  // light backgrounds).
   private cloudCurrent: [number, number, number];
   private cloudTarget: [number, number, number];
-  // True once the cloud tint has reached its target — skips the per-frame
-  // interpolation in tick() until setTheme() resets it. Saves ~10 ops/frame
-  // during the (long) idle periods between theme switches.
-  private cloudSettled = false;
+  private starCurrent: [number, number, number];
+  private starTarget: [number, number, number];
+  private strengthCurrent: number;
+  private strengthTarget: number;
+  private particleModeCurrent: number;
+  private particleModeTarget: number;
+  // True once all three interpolations have reached their targets — skips the
+  // per-frame work in tick() until setTheme() resets it.
+  private themeSettled = false;
   // Pre-allocated arrays to avoid per-frame GC pressure in tick()
   private readonly _mouseBuf: Float32Array = new Float32Array(2);
   private readonly _resBuf: Float32Array = new Float32Array(2);
   private readonly _cloudBuf: Float32Array = new Float32Array(3);
+  private readonly _starBuf: Float32Array = new Float32Array(3);
 
   constructor(
     private container: HTMLElement,
@@ -65,20 +106,34 @@ export class PixiSceneEngine {
     this.quality = getQualityConfig();
     this.app = new Application();
     this.mouse = new MouseController(window);
-    this.cloudCurrent = [...THEME_COLORS[this.theme].cloud];
-    this.cloudTarget = [...THEME_COLORS[this.theme].cloud];
+    const brand = getBrandColor();
+    this.cloudCurrent = [...brand];
+    this.cloudTarget = [...brand];
+    const fg = getForegroundColor();
+    this.starCurrent = [...fg];
+    this.starTarget = [...fg];
+    this.strengthCurrent = getCloudStrength(theme);
+    this.strengthTarget = this.strengthCurrent;
+    this.particleModeCurrent = getParticleMode(theme);
+    this.particleModeTarget = this.particleModeCurrent;
   }
 
   /**
-   * Switch the cloud tint target. The actual colour is interpolated toward
-   * this target every frame in `tick()`, so calling this is instant and cheap —
-   * no scene rebuild, no flash, just a smooth cross-fade (~0.4s at 60fps).
+   * Re-read the theme-dependent colours and density from the DOM and chase
+   * them via the ticker. The MutationObserver in scene.tsx calls this after
+   * the <html> class changes, so getComputedStyle already returns the new
+   * theme's variables. Everything is interpolated toward the targets every
+   * frame in `tick()`, so calling this is instant and cheap — no scene rebuild,
+   * no flash, just a smooth cross-fade (~0.4s at 60fps).
    */
   setTheme(theme: SceneTheme) {
     if (this.theme === theme) return;
     this.theme = theme;
-    this.cloudTarget = [...THEME_COLORS[theme].cloud];
-    this.cloudSettled = false;
+    this.cloudTarget = [...getBrandColor()];
+    this.starTarget = [...getForegroundColor()];
+    this.strengthTarget = getCloudStrength(theme);
+    this.particleModeTarget = getParticleMode(theme);
+    this.themeSettled = false;
   }
 
   async init() {
@@ -104,13 +159,14 @@ export class PixiSceneEngine {
     this.app.canvas.classList.add('absolute', 'inset-0', 'size-full');
     this.container.appendChild(this.app.canvas);
 
-    const colors = THEME_COLORS[this.theme];
     this.mesh = new AtmosphereMesh({
       width: this.app.screen.width,
       height: this.app.screen.height,
       intensity: this.quality.shaderIntensity,
-      colorDeep: colors.deep,
       colorCloud: [...this.cloudCurrent],
+      starColor: [...this.starCurrent],
+      cloudStrength: this.strengthCurrent,
+      particleMode: this.particleModeCurrent,
     });
 
     // Layer order: background only (star field + clouds live entirely in-shader)
@@ -156,33 +212,80 @@ export class PixiSceneEngine {
       this.mesh.resolution = this._resBuf as unknown as [number, number];
     }
 
-    // Smoothly chase the theme's cloud tint. Exponential approach, framerate-
-    // independent (dt is in 60fps frames): ~95% in ~0.4s. This is the only
-    // thing that changes on a theme switch, so the cross-fade is clean — no
-    // flash, no re-init, no animation overload. Once settled we snap to the
-    // target and stop uploading uColorCloud, so idle frames write nothing.
-    if (!this.cloudSettled) {
+    // Smoothly chase the theme-dependent shader values (cloud tint, star tint,
+    // cloud density). Exponential approach, framerate-independent (dt is in
+    // 60fps frames): ~95% in ~0.4s. Once everything has settled we snap to the
+    // targets and stop uploading, so idle frames between theme switches write
+    // nothing to the GPU.
+    if (!this.themeSettled) {
       const k = 1 - Math.pow(0.88, dt);
-      const r = this.cloudCurrent[0] + (this.cloudTarget[0] - this.cloudCurrent[0]) * k;
-      const g = this.cloudCurrent[1] + (this.cloudTarget[1] - this.cloudCurrent[1]) * k;
-      const b = this.cloudCurrent[2] + (this.cloudTarget[2] - this.cloudCurrent[2]) * k;
-      const settled =
-        Math.abs(r - this.cloudCurrent[0]) < 1e-5 &&
-        Math.abs(g - this.cloudCurrent[1]) < 1e-5 &&
-        Math.abs(b - this.cloudCurrent[2]) < 1e-5;
-      this.cloudCurrent[0] = r;
-      this.cloudCurrent[1] = g;
-      this.cloudCurrent[2] = b;
-      if (settled) {
+
+      // Cloud tint
+      const cr = this.cloudCurrent[0] + (this.cloudTarget[0] - this.cloudCurrent[0]) * k;
+      const cg = this.cloudCurrent[1] + (this.cloudTarget[1] - this.cloudCurrent[1]) * k;
+      const cb = this.cloudCurrent[2] + (this.cloudTarget[2] - this.cloudCurrent[2]) * k;
+      const cloudSettled =
+        Math.abs(cr - this.cloudCurrent[0]) < 1e-5 &&
+        Math.abs(cg - this.cloudCurrent[1]) < 1e-5 &&
+        Math.abs(cb - this.cloudCurrent[2]) < 1e-5;
+      this.cloudCurrent[0] = cr;
+      this.cloudCurrent[1] = cg;
+      this.cloudCurrent[2] = cb;
+      if (cloudSettled) {
         this.cloudCurrent[0] = this.cloudTarget[0];
         this.cloudCurrent[1] = this.cloudTarget[1];
         this.cloudCurrent[2] = this.cloudTarget[2];
-        this.cloudSettled = true;
       } else {
-        this._cloudBuf[0] = r;
-        this._cloudBuf[1] = g;
-        this._cloudBuf[2] = b;
+        this._cloudBuf[0] = cr;
+        this._cloudBuf[1] = cg;
+        this._cloudBuf[2] = cb;
         this.mesh.colorCloud = this._cloudBuf as unknown as [number, number, number];
+      }
+
+      // Star tint
+      const sr = this.starCurrent[0] + (this.starTarget[0] - this.starCurrent[0]) * k;
+      const sg = this.starCurrent[1] + (this.starTarget[1] - this.starCurrent[1]) * k;
+      const sb = this.starCurrent[2] + (this.starTarget[2] - this.starCurrent[2]) * k;
+      const starSettled =
+        Math.abs(sr - this.starCurrent[0]) < 1e-5 &&
+        Math.abs(sg - this.starCurrent[1]) < 1e-5 &&
+        Math.abs(sb - this.starCurrent[2]) < 1e-5;
+      this.starCurrent[0] = sr;
+      this.starCurrent[1] = sg;
+      this.starCurrent[2] = sb;
+      if (starSettled) {
+        this.starCurrent[0] = this.starTarget[0];
+        this.starCurrent[1] = this.starTarget[1];
+        this.starCurrent[2] = this.starTarget[2];
+      } else {
+        this._starBuf[0] = sr;
+        this._starBuf[1] = sg;
+        this._starBuf[2] = sb;
+        this.mesh.starColor = this._starBuf as unknown as [number, number, number];
+      }
+
+      // Cloud density multiplier
+      const sn = this.strengthCurrent + (this.strengthTarget - this.strengthCurrent) * k;
+      const strengthSettled = Math.abs(sn - this.strengthCurrent) < 1e-4;
+      this.strengthCurrent = sn;
+      if (strengthSettled) {
+        this.strengthCurrent = this.strengthTarget;
+      } else {
+        this.mesh.cloudStrength = sn;
+      }
+
+      // Particle mode (stars ↔ fireflies)
+      const pm = this.particleModeCurrent + (this.particleModeTarget - this.particleModeCurrent) * k;
+      const particleSettled = Math.abs(pm - this.particleModeCurrent) < 1e-4;
+      this.particleModeCurrent = pm;
+      if (particleSettled) {
+        this.particleModeCurrent = this.particleModeTarget;
+      } else {
+        this.mesh.particleMode = pm;
+      }
+
+      if (cloudSettled && starSettled && strengthSettled && particleSettled) {
+        this.themeSettled = true;
       }
     }
   }

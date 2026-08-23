@@ -5,8 +5,10 @@ export interface AtmosphereMeshOptions {
   width?: number;
   height?: number;
   intensity?: number;
-  colorDeep?: [number, number, number];
   colorCloud?: [number, number, number];
+  starColor?: [number, number, number];
+  cloudStrength?: number;
+  particleMode?: number;
 }
 
 // Fullscreen quad geometry — covers the whole screen with two triangles.
@@ -37,13 +39,21 @@ export class AtmosphereMesh extends Mesh<Geometry, Shader> {
       },
       uMouse: { value: [0, 0], type: 'vec2<f32>' },
       uIntensity: { value: options.intensity ?? 1, type: 'f32' },
-      uColorDeep: {
-        value: options.colorDeep ?? [0.016, 0.02, 0.045],
-        type: 'vec3<f32>',
-      },
       uColorCloud: {
         value: options.colorCloud ?? [0.0, 0.216, 1.0],
         type: 'vec3<f32>',
+      },
+      uStarColor: {
+        value: options.starColor ?? [0.925, 0.922, 0.913],
+        type: 'vec3<f32>',
+      },
+      uCloudStrength: {
+        value: options.cloudStrength ?? 1,
+        type: 'f32',
+      },
+      uParticleMode: {
+        value: options.particleMode ?? 0,
+        type: 'f32',
       },
     });
 
@@ -93,15 +103,35 @@ export class AtmosphereMesh extends Mesh<Geometry, Shader> {
     return this.atmosphereUniforms.uniforms.uIntensity as number;
   }
 
-  get colorDeep(): [number, number, number] {
-    return this.atmosphereUniforms.uniforms.uColorDeep as [number, number, number];
-  }
-
   get colorCloud(): [number, number, number] {
     return this.atmosphereUniforms.uniforms.uColorCloud as [number, number, number];
   }
 
   set colorCloud(value: [number, number, number]) {
     this.atmosphereUniforms.uniforms.uColorCloud = value;
+  }
+
+  get starColor(): [number, number, number] {
+    return this.atmosphereUniforms.uniforms.uStarColor as [number, number, number];
+  }
+
+  set starColor(value: [number, number, number]) {
+    this.atmosphereUniforms.uniforms.uStarColor = value;
+  }
+
+  get cloudStrength(): number {
+    return this.atmosphereUniforms.uniforms.uCloudStrength as number;
+  }
+
+  set cloudStrength(value: number) {
+    this.atmosphereUniforms.uniforms.uCloudStrength = value;
+  }
+
+  get particleMode(): number {
+    return this.atmosphereUniforms.uniforms.uParticleMode as number;
+  }
+
+  set particleMode(value: number) {
+    this.atmosphereUniforms.uniforms.uParticleMode = value;
   }
 }
