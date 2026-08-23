@@ -1,10 +1,19 @@
+/* ================================================================
+ * 1. IMPORTS — Tailwind, animations, shadcn, typography plugin
+ * ================================================================ */
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 @plugin '@tailwindcss/typography';
 
+/* ================================================================
+ * 2. DARK VARIANT — .dark class selector
+ * ================================================================ */
 @custom-variant dark (&:is(.dark *));
 
+/* ================================================================
+ * 3. THEME TOKENS — Tailwind → CSS var mappings (shadcn v4)
+ * ================================================================ */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -54,111 +63,118 @@
   --shadow-card: var(--card-shadow);
 }
 
+/* ================================================================
+ * 4. DESIGN TOKENS — :root (light) + .dark
+ *    Primitives are defined once and referenced by semantic tokens,
+ *    so changing the brand colour is a one-line edit instead of five.
+ * ================================================================ */
 :root {
-  /* Light mode */
+  /* Primitive palette — single source of truth */
+  --brand-hex: #0037ff;
+  --fg-hex: #0a0a0b;
+  --border-hex: #d8d4ce;
+  --surface-1: #fbfaf9; /* card / popover / sidebar */
+  --surface-2: #f0edea; /* secondary / accent / sidebar-accent */
+  --surface-3: #f6f4f2; /* muted */
+  --muted-fg: #5c5953;
+
+  /* Semantic tokens */
   color-scheme: light;
   --background: #ffffff;
-  --foreground: #0a0a0b;
-  --card: #fbfaf9;
-  --card-foreground: #0a0a0b;
-  --popover: #fbfaf9;
-  --popover-foreground: #0a0a0b;
-  --brand: #0037ff;
+  --foreground: var(--fg-hex);
+  --card: var(--surface-1);
+  --card-foreground: var(--fg-hex);
+  --popover: var(--surface-1);
+  --popover-foreground: var(--fg-hex);
+  --brand: var(--brand-hex);
   --brand-foreground: #ffffff;
-  --brand-solid: #0037ff;
+  --brand-solid: var(--brand-hex);
   --brand-solid-foreground: #ffffff;
-  --primary: #0037ff;
+  --primary: var(--brand-hex);
   --primary-foreground: #ffffff;
-  --secondary: #f0edea;
-  --secondary-foreground: #0a0a0b;
-  --muted: #f6f4f2;
-  --muted-foreground: #5c5953;
-  --accent: #f0edea;
-  --accent-foreground: #0a0a0b;
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--fg-hex);
+  --muted: var(--surface-3);
+  --muted-foreground: var(--muted-fg);
+  --accent: var(--surface-2);
+  --accent-foreground: var(--fg-hex);
   --destructive: #d92d20;
   --destructive-foreground: #ffffff;
-  --border: #d8d4ce;
-  --input: #d8d4ce;
-  --ring: #0037ff;
-  --chart-1: #0037ff;
+  --border: var(--border-hex);
+  --input: var(--border-hex);
+  --ring: var(--brand-hex);
+  --chart-1: var(--brand-hex);
   --chart-2: #6e6b66;
   --chart-3: #2c2a28;
   --chart-4: #d92d20;
   --chart-5: #a3a09a;
   --radius: 0.25rem;
   --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --sidebar: #fbfaf9;
-  --sidebar-foreground: #0a0a0b;
-  --sidebar-primary: #0037ff;
+  --sidebar: var(--surface-1);
+  --sidebar-foreground: var(--fg-hex);
+  --sidebar-primary: var(--brand-hex);
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f0edea;
-  --sidebar-accent-foreground: #0a0a0b;
-  --sidebar-border: #d8d4ce;
-  --sidebar-ring: #0037ff;
+  --sidebar-accent: var(--surface-2);
+  --sidebar-accent-foreground: var(--fg-hex);
+  --sidebar-border: var(--border-hex);
+  --sidebar-ring: var(--brand-hex);
 }
 
 .dark {
+  /* Primitive palette — dark */
+  --brand-hex: #3d8bff;
+  --fg-hex: #ecebe9;
+  --border-hex: #2c2a28;
+  --surface-1: #161514;
+  --surface-2: #1e1d1b;
+  --surface-3: #252422;
+  --muted-fg: #a3a09a;
+
+  /* Semantic tokens */
   color-scheme: dark;
   --background: #0c0c0b;
-  --foreground: #ecebe9;
-  --card: #161514;
-  --card-foreground: #ecebe9;
-  --popover: #161514;
-  --popover-foreground: #ecebe9;
-  --brand: #3d8bff;
+  --foreground: var(--fg-hex);
+  --card: var(--surface-1);
+  --card-foreground: var(--fg-hex);
+  --popover: var(--surface-1);
+  --popover-foreground: var(--fg-hex);
+  --brand: var(--brand-hex);
   --brand-foreground: #000000;
   --brand-solid: #1d5fff;
   --brand-solid-foreground: #ffffff;
   --primary: #1d5fff;
   --primary-foreground: #ffffff;
-  --secondary: #252422;
-  --secondary-foreground: #ecebe9;
-  --muted: #1e1d1b;
-  --muted-foreground: #a3a09a;
-  --accent: #1e1d1b;
-  --accent-foreground: #ecebe9;
+  --secondary: var(--surface-3);
+  --secondary-foreground: var(--fg-hex);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--muted-fg);
+  --accent: var(--surface-2);
+  --accent-foreground: var(--fg-hex);
   --destructive: #ff6b5e;
   --destructive-foreground: #0c0c0b;
-  --border: #2c2a28;
-  --input: #2c2a28;
-  --ring: #3d8bff;
-  --chart-1: #3d8bff;
-  --chart-2: #a3a09a;
+  --border: var(--border-hex);
+  --input: var(--border-hex);
+  --ring: var(--brand-hex);
+  --chart-1: var(--brand-hex);
+  --chart-2: var(--muted-fg);
   --chart-3: #6e6b66;
   --chart-4: #ff6b5e;
   --chart-5: #e5e2de;
   --radius: 0.25rem;
   --card-shadow: none;
-  --sidebar: #161514;
-  --sidebar-foreground: #ecebe9;
-  --sidebar-primary: #3d8bff;
+  --sidebar: var(--surface-1);
+  --sidebar-foreground: var(--fg-hex);
+  --sidebar-primary: var(--brand-hex);
   --sidebar-primary-foreground: #000000;
-  --sidebar-accent: #1e1d1b;
-  --sidebar-accent-foreground: #ecebe9;
-  --sidebar-border: #2c2a28;
-  --sidebar-ring: #3d8bff;
+  --sidebar-accent: var(--surface-2);
+  --sidebar-accent-foreground: var(--fg-hex);
+  --sidebar-border: var(--border-hex);
+  --sidebar-ring: var(--brand-hex);
 }
 
-/* View Transitions API styling for buttery-smooth theme cross-fades.
- * The transition is applied to the root snapshot, not to every DOM node,
- * so the browser only cross-fades a single capture instead of recalculating
- * thousands of individual transitions.
- */
-@media (prefers-reduced-motion: no-preference) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: 350ms;
-    animation-timing-function: ease;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: 0.01ms;
-  }
-}
-
+/* ================================================================
+ * 5. KEYFRAMES — marquee (technology carousel)
+ * ================================================================ */
 @keyframes marquee {
   from {
     transform: translateX(0);
@@ -168,12 +184,9 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation: none !important;
-  }
-}
-
+/* ================================================================
+ * 6. BASE LAYER — reset, body, typography, cursor
+ * ================================================================ */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -181,12 +194,12 @@
   body {
     @apply font-sans bg-background text-foreground;
   }
+  html {
+    @apply font-sans;
+  }
   button:not(:disabled),
   [role='button']:not(:disabled) {
     cursor: pointer;
-  }
-  html {
-    @apply font-sans;
   }
   h1,
   h2,
@@ -204,32 +217,62 @@
   }
 }
 
-/* Liquid Glass (iOS 26-style) surface.
- * Use on cards / panels placed over animated backgrounds.
- * Defined outside @layer so it overrides base Card utilities but is still
- * overridable by Tailwind utilities passed via `className`.
- */
+/* ================================================================
+ * 7. COMPONENTS — Liquid Glass (iOS 26-style) surface
+ *    Use on cards / panels placed over animated backgrounds.
+ *    Defined outside @layer so it overrides base Card utilities but
+ *    is still overridable by Tailwind utilities passed via className.
+ *    Shadow/ring/highlight values are driven by CSS custom properties
+ *    so dark mode only needs to reassign the variables.
+ * ================================================================ */
 .glass-card {
+  --glass-ring: rgba(0, 0, 0, 0.15);
+  --glass-ring-hover: rgba(0, 0, 0, 0.2);
+  --glass-highlight: rgba(255, 255, 255, 0.5);
+  --glass-highlight-hover: rgba(255, 255, 255, 0.6);
+  --glass-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.15);
+  --glass-shadow-hover: 0 12px 40px -4px rgba(0, 0, 0, 0.18);
+
   @apply rounded-2xl bg-card/70 backdrop-blur-md backdrop-saturate-125
-         ring-1 ring-black/15 dark:bg-card/30 dark:ring-white/10
-         transition-shadow duration-300;
+         ring-1 ring-[var(--glass-ring)] transition-shadow duration-300;
   box-shadow:
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.5),
-    0 8px 32px -4px rgba(0, 0, 0, 0.15);
+    inset 0 1px 1px 0 var(--glass-highlight),
+    var(--glass-shadow);
 }
 .glass-card:hover {
-  @apply ring-black/20 dark:ring-white/15;
+  @apply ring-[var(--glass-ring-hover)];
   box-shadow:
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.6),
-    0 12px 40px -4px rgba(0, 0, 0, 0.18);
+    inset 0 1px 1px 0 var(--glass-highlight-hover),
+    var(--glass-shadow-hover);
 }
 .dark .glass-card {
-  box-shadow:
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.08),
-    0 8px 32px -4px rgba(0, 0, 0, 0.4);
+  --glass-ring: rgba(255, 255, 255, 0.1);
+  --glass-ring-hover: rgba(255, 255, 255, 0.15);
+  --glass-highlight: rgba(255, 255, 255, 0.08);
+  --glass-highlight-hover: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.4);
+  --glass-shadow-hover: 0 12px 40px -4px rgba(0, 0, 0, 0.5);
 }
-.dark .glass-card:hover {
-  box-shadow:
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.1),
-    0 12px 40px -4px rgba(0, 0, 0, 0.5);
+
+/* ================================================================
+ * 8. MOTION — view-transitions + reduced-motion overrides
+ *    The root snapshot transition cross-fades a single capture
+ *    instead of recalculating thousands of individual transitions.
+ * ================================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 350ms;
+    animation-timing-function: ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms;
+  }
+  .marquee-track {
+    animation: none !important;
+  }
 }
