@@ -60,6 +60,13 @@ ${NOISE_GLSL}
 float cloud(vec2 p, vec2 center, float t, float seed, float size, vec2 stretch) {
   vec2 d = p - center;
 
+  // Elliptical falloff — stretch controls the aspect (x vs y sensitivity).
+  // Computed first so we can bail out before the expensive fbm calls when the
+  // pixel is outside the cloud (fall ≈ 0 → contribution below 8-bit precision).
+  float fall = 1.0 - smoothstep(0.0, size, length(d * stretch));
+  if (fall < 0.001) return 0.0;
+  fall = fall * fall;
+
   // Slow domain warp for organic, drifting shape.
   vec2 warp = vec2(
     fbm(p * 1.1 + t * 0.15 + seed),
@@ -67,10 +74,6 @@ float cloud(vec2 p, vec2 center, float t, float seed, float size, vec2 stretch) 
   ) - 0.5;
 
   float density = fbm(p * 1.35 + warp * 0.9 + vec2(t * 0.05, -t * 0.03) + seed);
-
-  // Elliptical falloff — stretch controls the aspect (x vs y sensitivity).
-  float fall = 1.0 - smoothstep(0.0, size, length(d * stretch));
-  fall = fall * fall;
 
   // Gentle vertical breathing so it feels alive without any motion lines.
   float breathe = 0.5 + 0.5 * sin(t * 0.4 + seed);
@@ -95,6 +98,9 @@ float starLayer(vec2 uv, float scale, float threshold, float size, float twinkle
   // Jittered position within the cell.
   vec2 sp = vec2(hash21(id + 1.3), hash21(id + 2.7));
   float d = length(f - sp);
+
+  // Outside the halo radius — both core and halo are 0, bail before sin/smoothstep.
+  if (d > size * 2.2) return 0.0;
 
   // Soft round core plus a tight faint halo around it — kept small so stars
   // read as crisp points rather than soft dust motes.

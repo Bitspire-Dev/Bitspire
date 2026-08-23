@@ -49,6 +49,10 @@ export class PixiSceneEngine {
   // cross-fades smoothly instead of re-initialising the whole WebGL scene.
   private cloudCurrent: [number, number, number];
   private cloudTarget: [number, number, number];
+  // True once the cloud tint has reached its target — skips the per-frame
+  // interpolation in tick() until setTheme() resets it. Saves ~10 ops/frame
+  // during the (long) idle periods between theme switches.
+  private cloudSettled = false;
   // Pre-allocated arrays to avoid per-frame GC pressure in tick()
   private readonly _mouseBuf: Float32Array = new Float32Array(2);
   private readonly _resBuf: Float32Array = new Float32Array(2);
@@ -74,6 +78,7 @@ export class PixiSceneEngine {
     if (this.theme === theme) return;
     this.theme = theme;
     this.cloudTarget = [...THEME_COLORS[theme].cloud];
+    this.cloudSettled = false;
   }
 
   async init() {
@@ -156,26 +161,29 @@ export class PixiSceneEngine {
     // thing that changes on a theme switch, so the cross-fade is clean — no
     // flash, no re-init, no animation overload. Once settled we snap to the
     // target and stop uploading uColorCloud, so idle frames write nothing.
-    const k = 1 - Math.pow(0.88, dt);
-    const r = this.cloudCurrent[0] + (this.cloudTarget[0] - this.cloudCurrent[0]) * k;
-    const g = this.cloudCurrent[1] + (this.cloudTarget[1] - this.cloudCurrent[1]) * k;
-    const b = this.cloudCurrent[2] + (this.cloudTarget[2] - this.cloudCurrent[2]) * k;
-    const settled =
-      Math.abs(r - this.cloudCurrent[0]) < 1e-5 &&
-      Math.abs(g - this.cloudCurrent[1]) < 1e-5 &&
-      Math.abs(b - this.cloudCurrent[2]) < 1e-5;
-    this.cloudCurrent[0] = r;
-    this.cloudCurrent[1] = g;
-    this.cloudCurrent[2] = b;
-    if (settled) {
-      this.cloudCurrent[0] = this.cloudTarget[0];
-      this.cloudCurrent[1] = this.cloudTarget[1];
-      this.cloudCurrent[2] = this.cloudTarget[2];
-    } else {
-      this._cloudBuf[0] = r;
-      this._cloudBuf[1] = g;
-      this._cloudBuf[2] = b;
-      this.mesh.colorCloud = this._cloudBuf as unknown as [number, number, number];
+    if (!this.cloudSettled) {
+      const k = 1 - Math.pow(0.88, dt);
+      const r = this.cloudCurrent[0] + (this.cloudTarget[0] - this.cloudCurrent[0]) * k;
+      const g = this.cloudCurrent[1] + (this.cloudTarget[1] - this.cloudCurrent[1]) * k;
+      const b = this.cloudCurrent[2] + (this.cloudTarget[2] - this.cloudCurrent[2]) * k;
+      const settled =
+        Math.abs(r - this.cloudCurrent[0]) < 1e-5 &&
+        Math.abs(g - this.cloudCurrent[1]) < 1e-5 &&
+        Math.abs(b - this.cloudCurrent[2]) < 1e-5;
+      this.cloudCurrent[0] = r;
+      this.cloudCurrent[1] = g;
+      this.cloudCurrent[2] = b;
+      if (settled) {
+        this.cloudCurrent[0] = this.cloudTarget[0];
+        this.cloudCurrent[1] = this.cloudTarget[1];
+        this.cloudCurrent[2] = this.cloudTarget[2];
+        this.cloudSettled = true;
+      } else {
+        this._cloudBuf[0] = r;
+        this._cloudBuf[1] = g;
+        this._cloudBuf[2] = b;
+        this.mesh.colorCloud = this._cloudBuf as unknown as [number, number, number];
+      }
     }
   }
 
