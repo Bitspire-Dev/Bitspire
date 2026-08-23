@@ -51,6 +51,7 @@ export function StaggerContainer({
 interface StaggerItemProps {
   children: ReactNode;
   className?: string;
+  style?: React.CSSProperties;
   x?: number | string;
   y?: number | string;
   duration?: number;
@@ -73,6 +74,7 @@ const itemVariants = {
 export function StaggerItem({
   children,
   className,
+  style,
   x = 0,
   y = 16,
   duration = 0.5,
@@ -80,11 +82,20 @@ export function StaggerItem({
   const shouldReduceMotion = useReducedMotion();
 
   if (shouldReduceMotion) {
-    return <div className={className}>{children}</div>;
+    return (
+      <div className={className} style={style}>
+        {children}
+      </div>
+    );
   }
 
   return (
-    <motion.div className={className} variants={itemVariants} custom={{ x, y, duration }}>
+    <motion.div
+      className={className}
+      style={style}
+      variants={itemVariants}
+      custom={{ x, y, duration }}
+    >
       {children}
     </motion.div>
   );

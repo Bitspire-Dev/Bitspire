@@ -74,7 +74,7 @@ function ServicesContent({ page }: ServicesProps) {
             collapsible
             value={openValue}
             onValueChange={setOpenValue}
-            className="w-full overflow-hidden rounded-md border lg:col-start-2 lg:row-start-2"
+            className="glass-card w-full overflow-hidden rounded-2xl border-none lg:col-start-2 lg:row-start-2"
           >
             {items.map((item, index) => {
               const value = slugify(item.title);
@@ -86,11 +86,20 @@ function ServicesContent({ page }: ServicesProps) {
                     x="100%"
                     y={0}
                     duration={0.5}
-                    className={cn('w-full border-b border-border last:border-b-0')}
+                    className="w-full"
+                    style={
+                      index !== items.length - 1
+                        ? {
+                            borderBottom: '1px solid transparent',
+                            borderImage:
+                              'linear-gradient(to right, transparent, var(--color-border), transparent) 1',
+                          }
+                        : undefined
+                    }
                   >
                     <AccordionItem
                       value={value}
-                      className="group/item transition-all duration-300 data-open:bg-muted/50"
+                      className="group/item border-none transition-all duration-300 data-open:bg-white/5 dark:data-open:bg-white/5"
                     >
                       <AccordionTrigger
                         className={cn(
