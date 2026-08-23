@@ -28,7 +28,8 @@ whyBitspire:
         We build lightweight headless architectures and serverless solutions tailored to the project. Fewer elements mean faster performance and a smoother experience.
 
         Technology designed from the ground up, without compromises.
-      imageAlt: 'Laptop showing 100/100 score in PageSpeed Insights'
+      image: layout/ekran-vs-code.png
+      imageAlt: 'VS Code editor screen with project code'
       size: large
     - title: 'UX & Conversion'
       subHeadline: 'We don''t just design pretty visuals. We build sales engines.'

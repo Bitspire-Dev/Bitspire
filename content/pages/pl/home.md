@@ -28,7 +28,8 @@ whyBitspire:
         Tworzymy lekkie architektury headless i rozwiązania bezserwerowe, dopasowane do projektu. Mniej zbędnych elementów to szybsze działanie i płynniejsze doświadczenie.
 
         Technologia zaprojektowana od podstaw, bez kompromisów.
-      imageAlt: 'Laptop z wynikiem 100/100 w PageSpeed Insights'
+      image: layout/ekran-vs-code.png
+      imageAlt: 'Ekran edytora VS Code z kodem projektu'
       size: large
     - title: 'UX & Konwersja'
       subHeadline: 'Nie tworzymy ładnych obrazków. Projektujemy narzędzia sprzedażowe.'

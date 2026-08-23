@@ -81,13 +81,14 @@ function BentoCard({
   return (
     <StaggerItem y={24} duration={0.5} className={cn('flex', className)}>
       <Card
+        variant="glass"
         data-tina-field={tinaField(item, 'title')}
-        className="group/card flex size-full flex-col gap-0 overflow-hidden rounded-lg pt-0 transition-shadow duration-300 hover:shadow-lg"
+        className="group/card flex size-full flex-col gap-0 overflow-hidden rounded-2xl pt-0"
       >
         {imageSrc ? (
           <div
             data-tina-field={tinaField(item, 'image')}
-            className={cn('relative flex-1 overflow-hidden bg-muted', imageMinHeight)}
+            className={cn('relative flex-1 overflow-hidden bg-muted/50', imageMinHeight)}
           >
             <Image
               src={imageSrc}
@@ -98,7 +99,7 @@ function BentoCard({
             />
           </div>
         ) : (
-          <div className={cn('flex flex-1 items-center justify-center bg-muted', imageMinHeight)}>
+          <div className={cn('flex flex-1 items-center justify-center bg-muted/50', imageMinHeight)}>
             <ImageIcon className="size-8 opacity-30" />
           </div>
         )}
@@ -114,7 +115,7 @@ function BentoCard({
           {item.subHeadline ? (
             <CardDescription
               data-tina-field={tinaField(item, 'subHeadline')}
-              className="font-sans text-sm text-muted-foreground"
+              className="font-sans text-sm text-foreground/70"
             >
               {item.subHeadline}
             </CardDescription>
@@ -126,7 +127,7 @@ function BentoCard({
             data-tina-field={tinaField(item, item.body ? 'body' : 'fullText')}
             className="px-(--card-spacing) pb-(--card-spacing)"
           >
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {segments.map((segment, pIndex) =>
                 segment.type === 'heading' ? (
                   <h4
@@ -136,7 +137,10 @@ function BentoCard({
                     {segment.text}
                   </h4>
                 ) : (
-                  <p key={pIndex} className="font-sans text-sm text-muted-foreground">
+                  <p
+                    key={pIndex}
+                    className="font-sans text-sm leading-7 text-foreground/75"
+                  >
                     {segment.text}
                   </p>
                 )
@@ -162,17 +166,17 @@ export function WhyBitspire({ page }: WhyBitspireProps) {
 
   // Asymmetric bento layout (desktop):
   //  ┌────────────────────────────────┬───────────────┐
-  //  │  High-Performance (large)      │               │
-  //  │  image + text                  │  Szybkość      │
+  //  │  UX & Konwersja (large)        │               │
+  //  │  image + text                  │  High-Perf     │
   //  │                                │  (full height) │
   //  ├───────────────┬────────────────┤               │
-  //  │ UX            │ Pancerne       │               │
+  //  │ Szybkość      │ Pancerne       │               │
   //  └───────────────┴────────────────┴───────────────┘
   //       left column ~64%              right ~36%
   const [highPerf, ux, speed, security] = items;
 
   return (
-    <section className="relative w-full bg-gradient-to-b from-muted/30 to-background">
+    <section className="relative w-full bg-background">
       <div className="container mx-auto max-w-360 px-6 py-24">
         <FadeIn className="mb-10 max-w-2xl">
           <h2
@@ -197,17 +201,17 @@ export function WhyBitspire({ page }: WhyBitspireProps) {
           delay={0.1}
           className="flex flex-col gap-4 md:gap-6 lg:flex-row lg:items-stretch"
         >
-          {/* Left column: High-Performance (top) + UX & Pancerne (bottom row) */}
+          {/* Left column: UX & Konwersja (top, large) + Szybkość & Pancerne (bottom row) */}
           <div className="flex flex-col gap-4 md:gap-6 lg:w-[64%]">
             <BentoCard
-              item={highPerf}
+              item={ux}
               className="flex-1"
               imageMinHeight="min-h-64"
               titleClassName="text-2xl font-bold"
             />
             <div className="flex flex-col gap-4 md:gap-6 sm:flex-row">
               <BentoCard
-                item={ux}
+                item={speed}
                 className="flex-1"
                 imageMinHeight="min-h-48"
                 titleClassName="text-lg"
@@ -221,9 +225,9 @@ export function WhyBitspire({ page }: WhyBitspireProps) {
             </div>
           </div>
 
-          {/* Right column: Szybkość (full height, tall) */}
+          {/* Right column: High-Performance (full height, tall) */}
           <BentoCard
-            item={speed}
+            item={highPerf}
             className="lg:w-[36%]"
             imageMinHeight="min-h-64"
             titleClassName="text-xl"
