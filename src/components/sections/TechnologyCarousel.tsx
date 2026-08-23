@@ -40,8 +40,8 @@ const LOGOS = [
   'vitest',
 ];
 
-const ITEM_WIDTH = 64;
-const GAP = 8;
+const ITEM_WIDTH = 36;
+const GAP = 16;
 const OFFSET = Math.round(ITEM_WIDTH * 0.75);
 const MIN_VIEWPORT_WIDTH = 2560;
 const MARQUEE_SPEED = 60;
@@ -128,16 +128,16 @@ interface LogoIconProps {
 
 const LogoIcon = memo(function LogoIcon({ name }: LogoIconProps) {
   return (
-    <div className="flex size-16 shrink-0 items-center justify-center p-2">
+    <div className="flex size-9 shrink-0 items-center justify-center p-1">
       <AspectRatio ratio={1 / 1} className="w-full rounded">
         <Image
           src={`/logo-carousel/${LOGO_FILE_NAMES[name] ?? name}.svg`}
           alt={name}
           fill
-          sizes="48px"
+          sizes="32px"
           loading="eager"
           className={cn(
-            'object-contain opacity-60 grayscale transition-all duration-300 hover:scale-110 hover:opacity-100 hover:grayscale-0 dark:opacity-50 dark:invert'
+            'object-contain opacity-60 grayscale transition-all duration-300 hover:scale-110 hover:opacity-100 hover:grayscale-0 dark:invert dark:opacity-60'
           )}
         />
       </AspectRatio>
@@ -158,9 +158,18 @@ const MarqueeRow = memo(function MarqueeRow({ offset = false }: MarqueeRowProps)
   const { containerRef, repeatedLogos, duration } = useMarqueeLogos(seed);
 
   return (
-    <div ref={containerRef} className="relative w-full overflow-hidden">
+    <div
+      ref={containerRef}
+      className="relative w-full overflow-hidden"
+      style={{
+        maskImage:
+          'linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)',
+        WebkitMaskImage:
+          'linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)',
+      }}
+    >
       <div
-        className="marquee-track flex w-max gap-2" // eslint-disable-line tailwindcss/no-custom-classname
+        className="marquee-track flex w-max gap-4" // eslint-disable-line tailwindcss/no-custom-classname
         style={{
           marginLeft: offset ? `${-OFFSET}px` : undefined,
           willChange: 'transform',
@@ -185,16 +194,13 @@ function TechnologyCarouselContent() {
       role="region"
       aria-roledescription="carousel"
       aria-label="Technology carousel"
-      className="relative w-full overflow-hidden bg-background py-16"
+      className="relative w-full overflow-hidden border-b border-border/50 bg-background py-12 text-foreground"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true, amount: 0, margin: '100px 0px' }}
       transition={{ duration: 0.8, delay: 0.2 }}
     >
-      <div className="flex flex-col gap-2">
-        <MarqueeRow />
-        <MarqueeRow offset />
-      </div>
+      <MarqueeRow />
     </motion.section>
   );
 }
