@@ -139,7 +139,7 @@ function BentoCard({
                 ) : (
                   <p
                     key={pIndex}
-                    className="font-sans text-sm leading-7 text-foreground/75"
+                    className="font-sans text-sm leading-7 text-foreground/75 md:text-base"
                   >
                     {segment.text}
                   </p>
@@ -176,12 +176,12 @@ export function WhyBitspire({ page }: WhyBitspireProps) {
   const [highPerf, ux, speed, security] = items;
 
   return (
-    <section className="relative w-full bg-background">
+    <section className="relative w-full scroll-mt-20 bg-background">
       <div className="container mx-auto max-w-360 px-6 py-24">
         <FadeIn className="mb-10 max-w-2xl">
           <h2
             data-tina-field={tinaField(data, 'title')}
-            className="font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl"
+            className="text-balance font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl"
           >
             {data.title ?? titleFallback}
           </h2>
@@ -189,7 +189,7 @@ export function WhyBitspire({ page }: WhyBitspireProps) {
           {data.description ? (
             <p
               data-tina-field={tinaField(data, 'description')}
-              className="mt-4 font-sans text-lg text-muted-foreground"
+              className="mt-4 text-pretty font-sans text-lg leading-relaxed text-muted-foreground"
             >
               {data.description}
             </p>

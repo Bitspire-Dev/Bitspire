@@ -35,7 +35,7 @@ function CallToActionContent({ page }: CallToActionProps) {
   return (
     <section
       data-tina-field={tinaField(page, 'callToAction')}
-      className="relative w-full bg-background"
+      className="relative w-full scroll-mt-20 bg-background"
     >
       <div className="container mx-auto max-w-360 px-6 py-24">
         <FadeIn>
@@ -43,7 +43,7 @@ function CallToActionContent({ page }: CallToActionProps) {
             <div className="flex flex-col items-start gap-8">
               <h2
                 data-tina-field={tinaField(cta, 'title')}
-                className="max-w-3xl font-heading text-4xl font-semibold tracking-tight text-foreground md:text-5xl lg:text-6xl"
+                className="max-w-3xl text-balance font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl lg:text-5xl"
               >
                 {cta.title}
               </h2>
@@ -51,7 +51,7 @@ function CallToActionContent({ page }: CallToActionProps) {
               {cta.description ? (
                 <p
                   data-tina-field={tinaField(cta, 'description')}
-                  className="max-w-2xl font-sans text-lg text-muted-foreground md:text-xl lg:text-2xl"
+                  className="max-w-2xl text-pretty font-sans text-lg leading-relaxed text-muted-foreground md:text-xl lg:text-2xl"
                 >
                   {cta.description}
                 </p>

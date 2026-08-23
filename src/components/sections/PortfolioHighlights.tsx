@@ -170,10 +170,7 @@ const ProjectCard = memo(function ProjectCard({
           {project.description ? (
             <CardDescription
               data-tina-field={tinaField(project, 'description')}
-              className={cn(
-                'line-clamp-2 font-sans text-muted-foreground',
-                isCenter ? 'text-sm' : 'text-xs'
-              )}
+              className="line-clamp-2 font-sans text-sm text-muted-foreground"
             >
               {project.description}
             </CardDescription>
@@ -254,12 +251,12 @@ function PortfolioHighlightsContent({ page }: PortfolioHighlightsProps) {
   };
 
   return (
-    <section className="relative w-full bg-background">
+    <section className="relative w-full scroll-mt-20 bg-background">
       <div className="container mx-auto max-w-360 px-6 py-24">
         <FadeIn className="mb-12 max-w-2xl">
           <h2
             data-tina-field={tinaField(highlights, 'title')}
-            className="font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl"
+            className="text-balance font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl"
           >
             {highlights.title ?? ui.titleFallback}
           </h2>
@@ -267,7 +264,7 @@ function PortfolioHighlightsContent({ page }: PortfolioHighlightsProps) {
           {highlights.description ? (
             <p
               data-tina-field={tinaField(highlights, 'description')}
-              className="mt-4 font-sans text-base text-muted-foreground"
+              className="mt-4 text-pretty font-sans text-base leading-relaxed text-muted-foreground md:text-lg"
             >
               {highlights.description}
             </p>

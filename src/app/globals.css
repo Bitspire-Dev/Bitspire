@@ -76,7 +76,7 @@
   --surface-1: #fbfaf9; /* card / popover / sidebar */
   --surface-2: #f0edea; /* secondary / accent / sidebar-accent */
   --surface-3: #f6f4f2; /* muted */
-  --muted-fg: #5c5953;
+  --muted-fg: #4a4742;
 
   /* Semantic tokens */
   color-scheme: light;
@@ -128,7 +128,7 @@
   --surface-1: #161514;
   --surface-2: #1e1d1b;
   --surface-3: #252422;
-  --muted-fg: #a3a09a;
+  --muted-fg: #b8b5af;
 
   /* Semantic tokens */
   color-scheme: dark;

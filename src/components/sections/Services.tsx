@@ -42,7 +42,7 @@ function ServicesContent({ page }: ServicesProps) {
   const items = services.items.filter((item): item is NonNullable<typeof item> => !!item);
 
   return (
-    <section className="relative w-full bg-background">
+    <section className="relative w-full scroll-mt-20 bg-background">
       <div className="container mx-auto max-w-360 px-6 py-24">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
           <FadeIn
@@ -60,7 +60,7 @@ function ServicesContent({ page }: ServicesProps) {
 
           <motion.h2
             data-tina-field={tinaField(services, 'title')}
-            className="max-w-4xl font-heading text-4xl font-semibold tracking-tight text-foreground md:text-5xl lg:col-span-2 lg:col-start-1 lg:row-start-1"
+            className="max-w-4xl text-balance font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl lg:col-span-2 lg:col-start-1 lg:row-start-1"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -131,7 +131,7 @@ function ServicesContent({ page }: ServicesProps) {
                         </motion.span>
                       </AccordionTrigger>
 
-                      <AccordionContent className="pb-6 text-sm leading-relaxed md:text-base">
+                      <AccordionContent className="pb-6 text-sm leading-7 md:text-base md:leading-7">
                         <div
                           data-tina-field={tinaField(item, 'description')}
                           className="text-pretty"
