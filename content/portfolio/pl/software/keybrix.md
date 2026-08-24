@@ -13,7 +13,7 @@ technologies:
   - Zod
   - Tailwind CSS
 websiteUrl: https://github.com/Jakub-Pujanek/Keybrix
-screenshot: /portfolio/software/KeyBrix.svg
+screenshot: /portfolio/software/keybrix/keybrix.gif
 ---
 
 # Keybrix — automatyzuj powtarzalne zadania bez pisania kodu
@@ -22,7 +22,7 @@ Powtarzalne czynności kosztują czas i energię — niezależnie od tego, czy c
 
 Keybrix powstał, żeby tę barierę usunąć.
 
-<!-- WSTAW GRAFIKĘ: keybrix.gif — animacja pokazująca budowanie makra z bloków -->
+![Animacja pokazująca budowanie makra z bloków](/portfolio/software/keybrix/keybrix.gif)
 
 ## Pomysł i cel projektu
 
@@ -35,7 +35,7 @@ Celem było stworzenie aplikacji desktopowej, w której użytkownik buduje makro
 - **Użytkownicy nietechniczni**, którzy potrzebują automatyzacji, ale nie chcą uczyć się skryptów.
 - **Osoby z ograniczoną mobilnością**, którym łatwiej uruchomić makro jednym skrótem niż wykonywać skomplikowane gesty.
 
-<!-- WSTAW GRAFIKĘ: block-editor.png — widok edytora bloków -->
+![Widok edytora bloków Keybrix](/portfolio/software/keybrix/block-editor.png)
 
 ## Jak to działa?
 
@@ -46,7 +46,7 @@ Pod maską aplikacja działa w trzech warstwach:
 - **Preload + IPC** tworzy bezpieczny, typowany mostek do interfejsu — każda wiadomość walidowana jest przez `zod`.
 - **React + Vite** dostarcza szybki, responsywny interfejs z ciemnym/light motywem, animacjami i lokalizacją PL/EN.
 
-<!-- WSTAW GRAFIKĘ: dashboard.png — widok dashboardu ze statystykami -->
+![Widok dashboardu Keybrix ze statystykami](/portfolio/software/keybrix/dashboard.png)
 
 ## Stack technologiczny
 
@@ -66,7 +66,7 @@ Najciekawszym problemem okazała się obsługa **Waylanda na Linuxie**. Nowoczes
 
 Drugim wyzwaniem była **niezawodność globalnych skrótów** na trzech systemach operacyjnych. Każda platforma ma inne nazewnictwo modyfikatorów (`Ctrl` vs `Cmd`, `Alt` vs `Option`), więc zaimplementowaliśmy warstwę normalizacji akceleratorów, która zamienia ludzkie skróty w format rozumiany przez Electrona i zapobiega konfliktom między makrami.
 
-<!-- WSTAW GRAFIKĘ: settings.png — widok ustawień lub poradnik Wayland -->
+![Widok ustawień Keybrix](/portfolio/software/keybrix/settings.png)
 
 ## Efekty i rozwój
 

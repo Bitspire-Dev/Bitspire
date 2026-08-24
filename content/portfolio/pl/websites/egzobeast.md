@@ -12,7 +12,7 @@ technologies:
   - Framer Motion
   - Vercel
 websiteUrl: https://exobist.com
-screenshot: /portfolio/websites/egzobeast.png
+screenshot: /portfolio/websites/egzobeast/egzobeast.png
 ---
 
 # Egzobeast — strona, która pokazuje pasję do gadów
@@ -21,7 +21,7 @@ Sklep terrarystyczny to nisza, w której klient musi poczuć zaangażowanie, wie
 
 Dla Bitspire-Dev oznaczało to zbudowanie rozbudowanej strony firmowej opartej na Next.js z edytowalnym CMS-em, gdzie właściciel może samodzielnie zarządzać treścią: od sekcji na stronie głównej, przez wpisy blogowe, po zdjęcia w galerii.
 
-<!-- WSTAW GRAFIKĘ: egzobeast-hero.png — sekcja hero z gekonem i hasłem "Twoja pasja do gadów" -->
+![Sekcja hero Egzobeast z gekonem i hasłem](/portfolio/websites/egzobeast/egzobeast-hero.png)
 
 ## Klient i cel projektu
 
@@ -39,7 +39,7 @@ Najważniejsze wymagania:
 - **Edytowalny CMS** — łatwa aktualizacja sekcji, bloga i galerii.
 - **Lokalna obecność** — Słupsk i okolice jako naturalny kontekst.
 
-<!-- WSTAW GRAFIKĘ: egzobeast-about.png — sekcja "O nas" z kolorystyką leśną i kartami -->
+![Sekcja "O nas" Egzobeast z kolorystyką leśną i kartami](/portfolio/websites/egzobeast/egzobeast-about.png)
 
 ## Dla kogo jest ta strona?
 
@@ -49,7 +49,7 @@ Najważniejsze wymagania:
 - Osób potrzebujących bezpiecznego hotelu dla gadów na czas wyjazdu.
 - Właściciela sklepu, który sam aktualizuje treści i prowadzi blog.
 
-<!-- WSTAW GRAFIKĘ: egzobeast-gallery.png — widok galerii z kategoriami zwierząt -->
+![Galeria Egzobeast z kategoriami zwierząt](/portfolio/websites/egzobeast/egzobeast-gallery.png)
 
 ## Jak to działa?
 
@@ -80,7 +80,7 @@ Technicznie:
 - **SEO** — sitemap, robots.ts, canonical, OpenGraph, Twitter Cards.
 - **Vercel** — hosting z CI/CD i podglądem preview.
 
-<!-- WSTAW GRAFIKĘ: egzobeast-cms.png — panel edycji Tina CMS ze stroną główną -->
+![Panel edycji Tina CMS Egzobeast](/portfolio/websites/egzobeast/egzobeast-cms.png)
 
 ## Wyzwanie: system design i optymalizacja
 
@@ -96,14 +96,13 @@ Najwięcej czasu zajęło zbudowanie **spójnego design systemu** i dopasowanie 
 - **Mobile-first** — większość ruchu to użytkownicy telefonów.
 - **Własna domena `exobist.com`** — pełne SEO, preview na Vercel.
 
-<!-- WSTAW GRAFIKĘ: egzobeast-pagespeed.png — wyniki PageSpeed Insights -->
-<!-- WSTAW GRAFIKĘ: egzobeast-gallery-detail.png — widok szczegółowy kategorii galerii -->
+![Wyniki PageSpeed Insights Egzobeast](/portfolio/websites/egzobeast/egzobeast-pagespeed.png)
 
 ## Efekty
 
 Wdrożenie strony na `exobist.com` dało Egzobeast profesjonalną wizytówkę, która buduje wizerunek eksperta w branży terrarystycznej. Strona jest łatwa do aktualizacji przez właściciela, co pozwala regularnie dodawać wpisy na blogu, nowe zdjęcia zwierząt i aktualne informacje o ofercie. Dobra wydajność i SEO wspierają organiczną widoczność w Słupsku i okolicach.
 
-<!-- WSTAW GRAFIKĘ: egzobeast-mockup.png — podgląd strony na mobile i desktop -->
+![Podgląd strony Egzobeast na mobile i desktop](/portfolio/websites/egzobeast/egzobeast-mockup.png)
 
 ## Co dalej?
 

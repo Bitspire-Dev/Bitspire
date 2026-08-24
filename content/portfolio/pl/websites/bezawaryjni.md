@@ -12,7 +12,7 @@ technologies:
   - Framer Motion
   - Vercel
 websiteUrl: https://bezawaryjni.com
-screenshot: /portfolio/websites/bezawaryjni.png
+screenshot: /portfolio/websites/bezawaryjni/bezawaryjni.png
 ---
 
 # Bezawaryjni — strona, która naprawia wizerunek warsztatu
@@ -21,7 +21,7 @@ Warsztat samochodowy to biznes, w którym zaufanie buduje się w kilka sekund �
 
 Dla zespołu Bitspire-Dev oznaczało to zbudowanie lekkiego, szybkiego landing page'u z edytowalnym CMS-em, który właściciel może sam aktualizować bez pisania do programisty.
 
-<!-- WSTAW GRAFIKĘ: bezawaryjni-hero.png — widok sekcji hero z żółtym samochodem i CTA -->
+![Sekcja hero Bezawaryjni z żółtym samochodem i CTA](/portfolio/websites/bezawaryjni/bezawaryjni-hero.png)
 
 ## Klient i cel projektu
 
@@ -46,7 +46,7 @@ Najważniejsze wymagania:
 - Osoby chcące samodzielnie naprawiać auto pod okiem mechanika.
 - Firmy flotowe poszukujące stałego, zaufanego warsztatu.
 
-<!-- WSTAW GRAFIKĘ: bezawaryjni-offer.png — widok sekcji oferty z ikonami usług -->
+![Sekcja oferty Bezawaryjni z ikonami usług](/portfolio/websites/bezawaryjni/bezawaryjni-oferta.png)
 
 ## Jak to działa?
 
@@ -74,8 +74,6 @@ Technicznie:
 - **Vitest + Testing Library** — testy jednostkowe komponentów.
 - **Vercel** — hosting i deployment CI/CD.
 
-<!-- WSTAW GRAFIKĘ: bezawaryjni-cms.png — widok panelu edycji Tina CMS -->
-
 ## Wyzwanie: wydajność i SEO lokalne
 
 Najwięcej czasu zajęło połączenie **szybkiej strony z dobrą widocznością w wyszukiwarce**. Warsztat działa lokalnie, więc liczy się każda sekunda ładowania i każda fraza związana z Słupskiem / Kobylnicą. Rozwiązania:
@@ -89,16 +87,11 @@ Najwięcej czasu zajęło połączenie **szybkiej strony z dobrą widocznością
 - **Sitemap, robots.ts, canonical, OpenGraph, Twitter Cards** — kompletna obsługa SEO.
 - **Mobile-first** — większość klientów wchodzi z telefonu.
 
-<!-- WSTAW GRAFIKĘ: bezawaryjni-pagespeed.png — wyniki PageSpeed Insights dla bezawaryjni.com -->
-<!-- WSTAW GRAFIKĘ: bezawaryjni-facebook-insights.png — statystyki Facebook Insights -->
-
 ## Efekty
 
 Wdrożenie strony na `bezawaryjni.com` poprawiło obecność warsztatu w internecie i usprawniło kontakt z klientami. Strona generuje zapytania telefoniczne i wizyty, a klienci docierają do niej organicznie z wyszukiwarki. Właściciel może samodzielnie aktualizować treści, cennik i godziny otwarcia — bez czekania na programistę i bez ryzyka popsucia kodu.
 
 Czas ładowania i wyniki w PageSpeed Insights utrzymują się na wysokim poziomie, co przekłada się na lepsze doświadczenie użytkownika i wyższą konwersję.
-
-<!-- WSTAW GRAFIKĘ: bezawaryjni-mockup.png — podgląd strony na mobile i desktop -->
 
 ## Co dalej?
 

@@ -115,6 +115,8 @@ const ProjectCard = memo(function ProjectCard({
     .filter((tech): tech is string => !!tech)
     .slice(0, isCenter ? 5 : 3);
   const isSvg = project.screenshot?.endsWith('.svg') ?? false;
+  const isGif = project.screenshot?.endsWith('.gif') ?? false;
+  const isUnoptimized = isSvg || isGif;
 
   return (
     <AspectRatio ratio={10 / 14} className="w-full">
@@ -125,7 +127,7 @@ const ProjectCard = memo(function ProjectCard({
         <div
           className={cn(
             'relative min-h-0 w-full flex-1 rounded-t-lg bg-muted',
-            isSvg && 'bg-muted/50'
+            isUnoptimized && 'bg-muted/50'
           )}
         >
           {project.screenshot ? (
@@ -133,11 +135,11 @@ const ProjectCard = memo(function ProjectCard({
               src={project.screenshot}
               alt={project.title}
               fill
-              unoptimized={isSvg}
+              unoptimized={isUnoptimized}
               sizes="(max-width: 768px) 100vw, 45vw"
               className={cn(
                 'transition-transform duration-500',
-                isSvg ? 'object-contain p-8' : 'object-cover group-hover/card:scale-105'
+                isUnoptimized ? 'object-contain p-8' : 'object-cover object-top group-hover/card:scale-105'
               )}
             />
           ) : (

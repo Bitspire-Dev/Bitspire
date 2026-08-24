@@ -13,7 +13,7 @@ technologies:
   - Zod
   - Tailwind CSS
 websiteUrl: https://github.com/Jakub-Pujanek/Keybrix
-screenshot: /portfolio/software/KeyBrix.svg
+screenshot: /portfolio/software/keybrix/keybrix.gif
 ---
 
 # Keybrix — automate repetitive tasks without writing code
@@ -22,7 +22,7 @@ Repetitive actions cost time and energy — whether it is filling forms, grindin
 
 Keybrix was built to remove that barrier.
 
-<!-- INSERT IMAGE: keybrix.gif — animation showing drag-and-drop macro building -->
+![Animation showing drag-and-drop macro building](/portfolio/software/keybrix/keybrix.gif)
 
 ## Idea and project goal
 
@@ -35,7 +35,7 @@ The goal was to create a desktop application where users build macros like a puz
 - **Non-technical users** who need automation but do not want to write scripts.
 - **People with limited mobility** who can trigger complex actions with a single shortcut.
 
-<!-- INSERT IMAGE: block-editor.png — block editor view -->
+![Keybrix block editor view](/portfolio/software/keybrix/block-editor.png)
 
 ## How it works
 
@@ -46,7 +46,7 @@ Under the hood the app has three layers:
 - **Preload + IPC** provides a secure, typed bridge to the UI — every message is validated with `zod`.
 - **React + Vite** delivers a fast, responsive interface with dark/light theme, animations, and PL/EN localization.
 
-<!-- INSERT IMAGE: dashboard.png — dashboard view with stats -->
+![Keybrix dashboard view with stats](/portfolio/software/keybrix/dashboard.png)
 
 ## Tech stack
 
@@ -66,7 +66,7 @@ The most interesting problem turned out to be **Wayland support on Linux**. Mode
 
 Another challenge was **reliable global shortcuts across three operating systems**. Every platform names modifiers differently (`Ctrl` vs `Cmd`, `Alt` vs `Option`), so we implemented an accelerator normalization layer that translates human-readable shortcuts into the format Electron understands and prevents conflicts between macros.
 
-<!-- INSERT IMAGE: settings.png — settings or Wayland guide view -->
+![Keybrix settings view](/portfolio/software/keybrix/settings.png)
 
 ## Results and future plans
 

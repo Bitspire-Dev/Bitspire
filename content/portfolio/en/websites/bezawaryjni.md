@@ -12,7 +12,7 @@ technologies:
   - Framer Motion
   - Vercel
 websiteUrl: https://bezawaryjni.com
-screenshot: /portfolio/websites/bezawaryjni.png
+screenshot: /portfolio/websites/bezawaryjni/bezawaryjni.png
 ---
 
 # Bezawaryjni — a website that fixes the workshop's image
@@ -21,7 +21,7 @@ An auto repair shop is a business where trust is built in seconds, so the websit
 
 For the Bitspire-Dev team, this meant building a lightweight, fast landing page with an editable CMS that the owner can update themselves without calling a developer.
 
-<!-- INSERT IMAGE: bezawaryjni-hero.png — hero section with yellow car and CTA -->
+![Bezawaryjni hero section with yellow car and CTA](/portfolio/websites/bezawaryjni/bezawaryjni-hero.png)
 
 ## Client and project goal
 
@@ -46,7 +46,7 @@ Key requirements:
 - People who want to repair their car themselves under a mechanic's supervision.
 - Fleet companies looking for a trusted, regular workshop.
 
-<!-- INSERT IMAGE: bezawaryjni-offer.png — offer section with service icons -->
+![Bezawaryjni offer section with service icons](/portfolio/websites/bezawaryjni/bezawaryjni-oferta.png)
 
 ## How it works
 
@@ -74,8 +74,6 @@ Technically:
 - **Vitest + Testing Library** — unit tests for components.
 - **Vercel** — hosting and CI/CD deployment.
 
-<!-- INSERT IMAGE: bezawaryjni-cms.png — Tina CMS editing panel view -->
-
 ## Challenge: performance and local SEO
 
 The most time-consuming part was combining a **fast site with good search visibility**. The garage operates locally, so every second of load time and every keyword related to Słupsk / Kobylnica matters. Solutions:
@@ -89,16 +87,11 @@ The most time-consuming part was combining a **fast site with good search visibi
 - **Sitemap, robots.ts, canonical, OpenGraph, Twitter Cards** — full SEO coverage.
 - **Mobile-first** — most customers visit from their phones.
 
-<!-- INSERT IMAGE: bezawaryjni-pagespeed.png — PageSpeed Insights results for bezawaryjni.com -->
-<!-- INSERT IMAGE: bezawaryjni-facebook-insights.png — Facebook Insights stats -->
-
 ## Results
 
 Deploying the site to `bezawaryjni.com` improved the workshop's online presence and streamlined customer contact. The site generates phone inquiries and visits, and customers reach it organically from search. The owner can independently update content, pricing, and opening hours — without waiting for a developer and without risking breaking the code.
 
 Load time and PageSpeed Insights results remain at a high level, which translates into a better user experience and higher conversion.
-
-<!-- INSERT IMAGE: bezawaryjni-mockup.png — website preview on mobile and desktop -->
 
 ## What's next?
 

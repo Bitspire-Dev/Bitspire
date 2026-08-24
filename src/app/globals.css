@@ -218,6 +218,20 @@
 }
 
 /* ================================================================
+ * 6b. PROSE IMAGES — TinaMarkdown image constraints
+ *    Max dimensions + rounded corners for inline article images.
+ * ================================================================ */
+.prose img {
+  max-width: 768px;
+  max-height: 80vh;
+  width: auto;
+  height: auto;
+  margin-inline: auto;
+  border-radius: 0.75rem;
+  display: block;
+}
+
+/* ================================================================
  * 7. COMPONENTS — Liquid Glass (iOS 26-style) surface
  *    Use on cards / panels placed over animated backgrounds.
  *    Defined outside @layer so it overrides base Card utilities but

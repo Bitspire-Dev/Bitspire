@@ -4,6 +4,7 @@ import Image from 'next/image';
 import type { ComponentProps, ReactNode } from 'react';
 import { useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import { cn } from '@/lib/utils';
 import {
   Card,
   CardContent,
@@ -68,9 +69,13 @@ export function ContentCard({ item, imageRatio = 4 / 3, unoptimized, footer }: C
             src={image}
             alt={imageAlt}
             fill
-            className="object-cover transition-transform duration-500 group-hover/card:scale-105"
+            className={cn(
+              'object-cover object-top transition-transform duration-500 group-hover/card:scale-105',
+              (unoptimized ?? (image.endsWith('.svg') || image.endsWith('.gif'))) &&
+                'object-contain bg-muted/50'
+            )}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            unoptimized={unoptimized ?? image.endsWith('.svg')}
+            unoptimized={unoptimized ?? (image.endsWith('.svg') || image.endsWith('.gif'))}
           />
         ) : (
           <div className="flex size-full items-center justify-center text-muted-foreground">

@@ -11,7 +11,7 @@ technologies:
   - Framer Motion
   - Vercel
 websiteUrl: https://eduvantage.pl
-screenshot: /portfolio/websites/eduvantage.png
+screenshot: /portfolio/websites/eduvantage/eduvantage.png
 ---
 
 # EduVantage — strona, która przyciąga uczniów i rodziców
@@ -20,7 +20,7 @@ Lokalny biznes korepetycyjny potrzebował strony, która w jednym miejscu wyjaś
 
 Dla zespołu Bitspire-Dev oznaczało to stworzenie lekkiego, skalowalnego landing page'u zoptymalizowanego pod lokalne SEO i konwersję.
 
-<!-- WSTAW GRAFIKĘ: eduvantage-hero.png — widok sekcji hero z tłem i CTA -->
+![Sekcja hero EduVantage z tłem i CTA](/portfolio/websites/eduvantage/eduvantage-hero.png)
 
 ## Klient i cel projektu
 
@@ -38,7 +38,7 @@ Najważniejsze wymagania:
 - Uczniowie przygotowujący się do egzaminu ósmoklasisty i matury.
 - Osoby preferujące zajęcia stacjonarne lub z dojazdem w Słupsku i okolicach.
 
-<!-- WSTAW GRAFIKĘ: eduvantage-subjects.png — widok sekcji przedmiotów i cennika -->
+![Sekcja przedmiotów i cennika EduVantage](/portfolio/websites/eduvantage/eduvantage-subjects.png)
 
 ## Jak to działa?
 
@@ -64,7 +64,7 @@ Technicznie:
 - **Cookie consent + lazy analytics** — zgodność z RODO i wydajne ładowanie tagów.
 - **WhatsAppButton + mobile menu** — szybki kontakt na każdym urządzeniu.
 
-<!-- WSTAW GRAFIKĘ: eduvantage-pagespeed.png — wyniki PageSpeed Insights dla eduvantage.pl -->
+![Wyniki PageSpeed Insights dla eduvantage.pl](/portfolio/websites/eduvantage/eduvantage-pagespeed.png)
 
 ## Wyzwanie: wydajność i widoczność lokalna
 
@@ -81,7 +81,7 @@ Największym wyzwaniem było połączenie **atrakcyjnego designu z szybkością*
 
 Wdrożenie strony na `eduvantage.pl` poprawiło obecność firmy w internecie i usprawniło proces pozyskiwania klientów. Strona generuje pierwsze kontakty telefoniczne, a użytkownicy docierają do niej organicznie z wyszukiwarki. Czas ładowania został utrzymany na niskim poziomie, co przekłada się na lepsze doświadczenie i wyższą ocenę w PageSpeed Insights.
 
-<!-- WSTAW GRAFIKĘ: eduvantage-mockup.png — podgląd strony na mobile i desktop -->
+![Podgląd strony EduVantage na mobile i desktop](/portfolio/websites/eduvantage/bitspire-mockup.png)
 
 ## Co dalej?
 

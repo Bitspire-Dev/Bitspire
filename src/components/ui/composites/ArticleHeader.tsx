@@ -7,6 +7,7 @@ import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 import { Separator } from '@/components/ui/primitives/separator';
 import { BackLink } from '@/components/ui/navigation/back-link';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
+import { cn } from '@/lib/utils';
 
 type Href = ComponentProps<typeof Link>['href'];
 
@@ -47,7 +48,11 @@ export function ArticleHeader({
               alt={coverAlt ?? title}
               fill
               priority
-              className="object-cover"
+              unoptimized={cover?.endsWith('.gif') || cover?.endsWith('.svg')}
+              className={cn(
+                'object-cover',
+                (cover?.endsWith('.gif') || cover?.endsWith('.svg')) && 'object-contain bg-muted/50'
+              )}
               sizes="100vw"
             />
           </AspectRatio>

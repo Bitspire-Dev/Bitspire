@@ -12,7 +12,7 @@ technologies:
   - Framer Motion
   - Vercel
 websiteUrl: https://exobist.com
-screenshot: /portfolio/websites/egzobeast.png
+screenshot: /portfolio/websites/egzobeast/egzobeast.png
 ---
 
 # Exobist — a website with a passion for reptiles
@@ -21,7 +21,7 @@ A reptile pet store is a niche where customers must feel commitment, expertise, 
 
 For Bitspire-Dev, this meant building an extended Next.js company website with an editable CMS where the owner can manage content independently: from homepage sections to blog posts and gallery photos.
 
-<!-- INSERT IMAGE: egzobeast-hero.png — hero section with a gecko and the tagline "Your passion for reptiles starts here" -->
+![Egzobeast hero section with a gecko and tagline](/portfolio/websites/egzobeast/egzobeast-hero.png)
 
 ## Client and project goal
 
@@ -39,7 +39,7 @@ Key requirements:
 - **Editable CMS** — easy updates to sections, blog, and gallery.
 - **Local presence** — Słupsk and the surrounding area as natural context.
 
-<!-- INSERT IMAGE: egzobeast-about.png — "About us" section with forest color palette and cards -->
+![Egzobeast "About us" section with forest color palette and cards](/portfolio/websites/egzobeast/egzobeast-about.png)
 
 ## Who is it for?
 
@@ -49,7 +49,7 @@ Key requirements:
 - People in need of a safe reptile hotel while traveling.
 - The store owner, who updates content and writes the blog independently.
 
-<!-- INSERT IMAGE: egzobeast-gallery.png — gallery view with animal categories -->
+![Egzobeast gallery view with animal categories](/portfolio/websites/egzobeast/egzobeast-gallery.png)
 
 ## How it works
 
@@ -80,7 +80,7 @@ Technically:
 - **SEO** — sitemap, robots.ts, canonical, OpenGraph, Twitter Cards.
 - **Vercel** — hosting with CI/CD and preview deployments.
 
-<!-- INSERT IMAGE: egzobeast-cms.png — Tina CMS editing panel for the homepage -->
+![Egzobeast Tina CMS editing panel for the homepage](/portfolio/websites/egzobeast/egzobeast-cms.png)
 
 ## Challenge: system design and optimization
 
@@ -96,14 +96,13 @@ The most time-consuming part was building a **cohesive design system** and match
 - **Mobile-first** — most traffic comes from mobile users.
 - **Custom domain `exobist.com`** — full SEO, Vercel preview.
 
-<!-- INSERT IMAGE: egzobeast-pagespeed.png — PageSpeed Insights results -->
-<!-- INSERT IMAGE: egzobeast-gallery-detail.png — detailed gallery category view -->
+![Egzobeast PageSpeed Insights results](/portfolio/websites/egzobeast/egzobeast-pagespeed.png)
 
 ## Results
 
 Launching the site on `exobist.com` gave Exobist a professional business card that builds an expert image in the terraristics industry. The site is easy for the owner to update, allowing regular blog posts, new animal photos, and current offer information. Strong performance and SEO support organic visibility in Słupsk and the surrounding area.
 
-<!-- INSERT IMAGE: egzobeast-mockup.png — website preview on mobile and desktop -->
+![Egzobeast website preview on mobile and desktop](/portfolio/websites/egzobeast/egzobeast-mockup.png)
 
 ## What's next?
 
