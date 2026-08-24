@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import client from '@tina/__generated__/client';
-import { tinaQueryWithRetry } from '@/lib/tina';
-import { buildMetadata } from '@/lib/metadata';
+import { getPage } from '@/lib/tina';
 import { PrivacyPage } from '@/components/pages/PrivacyPage';
+import { localeAlternates } from '@/lib/site';
 
 export async function generateMetadata({
   params,
@@ -12,25 +11,17 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const { data } = await tinaQueryWithRetry(() =>
-    client.queries.page({
-      relativePath: `${locale}/privacy.md`,
-    })
-  );
+  const { data } = await getPage(`${locale}/privacy.md`);
 
   const title = data.page?.title ?? (locale === 'pl' ? 'Polityka prywatności' : 'Privacy Policy');
-  const description =
-    data.page?.description ??
-    (locale === 'pl'
-      ? 'Informujemy, jak przetwarzamy Twoje dane osobowe i jakie masz prawa.'
-      : 'Learn how we process your personal data and what rights you have.');
+  const description = data.page?.description ?? undefined;
 
-  return buildMetadata({
+  return {
     title,
     description,
-    locale,
-    pathname: '/privacy',
-  });
+    alternates: localeAlternates(locale, () => '/privacy'),
+    openGraph: { title, description },
+  };
 }
 
 export default async function Privacy({ params }: { params: Promise<{ locale: string }> }) {
@@ -38,11 +29,7 @@ export default async function Privacy({ params }: { params: Promise<{ locale: st
 
   setRequestLocale(locale);
 
-  const tina = await tinaQueryWithRetry(() =>
-    client.queries.page({
-      relativePath: `${locale}/privacy.md`,
-    })
-  );
+  const tina = await getPage(`${locale}/privacy.md`);
 
   if (!tina.data.page) {
     notFound();

@@ -1,138 +1,102 @@
 import type { MetadataRoute } from 'next';
-import { readdir, stat } from 'fs/promises';
-import path from 'path';
+import { getBlogConnection, getProjectConnection } from '@/lib/tina';
+import { routing } from '@/i18n/routing';
+import { siteUrl } from '@/lib/site';
+import { buildBlogArticleMap, extractBlogSlug } from '@/lib/blog';
 import { PORTFOLIO_CATEGORIES, getCategoryUrlSlug } from '@/lib/portfolio/categories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://bitspire.pl';
-const DEFAULT_LOCALE = 'pl' as const;
-const LOCALES = ['pl', 'en'] as const;
+const STATIC_PATHS = ['/', '/blog', '/portfolio', '/contact'] as const;
 
-const STATIC_PATHS = ['', 'contact', 'portfolio', 'blog', 'privacy'] as const;
-
-async function getFileMtime(filePath: string): Promise<Date | undefined> {
-  try {
-    const stats = await stat(filePath);
-    return stats.mtime;
-  } catch {
-    return undefined;
-  }
+function localizedUrl(locale: string, path: string) {
+  return `${siteUrl}/${locale}${path === '/' ? '' : path}`;
 }
 
-function buildUrl(locale: string, segments: string[]): string {
-  const encodedPath = segments.map(s => encodeURIComponent(s)).join('/');
-  const localePrefix = locale === DEFAULT_LOCALE ? '' : `/${locale}`;
-  if (!encodedPath) {
-    return `${SITE_URL}${localePrefix}`;
-  }
-  return `${SITE_URL}${localePrefix}/${encodedPath}`;
-}
-
-async function getPortfolioEntries(): Promise<MetadataRoute.Sitemap> {
-  const entries: MetadataRoute.Sitemap = [];
-
-  for (const locale of LOCALES) {
-    for (const category of PORTFOLIO_CATEGORIES) {
-      const categorySlug = getCategoryUrlSlug(category.id, locale);
-      const categoryDir = path.join(
-        process.cwd(),
-        'content',
-        'portfolio',
-        locale,
-        category.id
-      );
-
-      try {
-        const files = await readdir(categoryDir);
-        for (const file of files) {
-          if (!file.endsWith('.md')) continue;
-
-          const slug = file.replace(/\.md$/, '');
-          const filePath = path.join(categoryDir, file);
-          const lastModified = await getFileMtime(filePath);
-
-          entries.push({
-            url: buildUrl(locale, ['portfolio', categorySlug, slug]),
-            lastModified,
-            changeFrequency: 'monthly',
-            priority: 0.6,
-          });
-        }
-      } catch {
-        // Directory may not exist for a given locale/category.
-      }
-    }
-  }
-
-  return entries;
-}
-
-async function getBlogEntries(): Promise<MetadataRoute.Sitemap> {
-  const entries: MetadataRoute.Sitemap = [];
-
-  for (const locale of LOCALES) {
-    const blogDir = path.join(process.cwd(), 'content', 'blog', locale);
-
-    try {
-      const files = await readdir(blogDir);
-      for (const file of files) {
-        if (!file.endsWith('.md')) continue;
-
-        const slug = file.replace(/\.md$/, '');
-        const filePath = path.join(blogDir, file);
-        const lastModified = await getFileMtime(filePath);
-
-        entries.push({
-          url: buildUrl(locale, ['blog', slug]),
-          lastModified,
-          changeFrequency: 'monthly',
-          priority: 0.6,
-        });
-      }
-    } catch {
-      // Directory may not exist for a given locale.
-    }
-  }
-
-  return entries;
+function languageAlternates(pathForLocale: (locale: string) => string) {
+  return {
+    languages: {
+      ...Object.fromEntries(
+        routing.locales.map(locale => [locale, localizedUrl(locale, pathForLocale(locale))])
+      ),
+      'x-default': localizedUrl(routing.defaultLocale, pathForLocale(routing.defaultLocale)),
+    },
+  };
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticEntries: MetadataRoute.Sitemap = [];
+  const entries: MetadataRoute.Sitemap = [];
 
-  for (const locale of LOCALES) {
-    for (const pagePath of STATIC_PATHS) {
-      const segments = pagePath ? [pagePath] : [];
-      const url = buildUrl(locale, segments);
-      const isHome = pagePath === '';
-
-      staticEntries.push({
-        url,
-        lastModified: new Date(),
-        changeFrequency: isHome ? 'weekly' : 'monthly',
-        priority: isHome ? 1.0 : 0.8,
+  for (const path of STATIC_PATHS) {
+    for (const locale of routing.locales) {
+      entries.push({
+        url: localizedUrl(locale, path),
+        changeFrequency: path === '/' ? 'weekly' : 'monthly',
+        priority: path === '/' ? 1 : 0.8,
+        alternates: languageAlternates(() => path),
       });
     }
   }
 
-  const categoryEntries: MetadataRoute.Sitemap = [];
-
-  for (const locale of LOCALES) {
-    for (const category of PORTFOLIO_CATEGORIES) {
-      const categorySlug = getCategoryUrlSlug(category.id, locale);
-
-      categoryEntries.push({
-        url: buildUrl(locale, ['portfolio', categorySlug]),
-        lastModified: new Date(),
+  for (const category of PORTFOLIO_CATEGORIES) {
+    for (const locale of routing.locales) {
+      entries.push({
+        url: localizedUrl(locale, `/portfolio/${getCategoryUrlSlug(category.id, locale)}`),
         changeFrequency: 'monthly',
         priority: 0.7,
+        alternates: languageAlternates(l => `/portfolio/${getCategoryUrlSlug(category.id, l)}`),
       });
     }
   }
 
-  const [portfolioEntries, blogEntries] = await Promise.all([
-    getPortfolioEntries(),
-    getBlogEntries(),
-  ]);
+  try {
+    const [blogData, projectData] = await Promise.all([
+      getBlogConnection(),
+      getProjectConnection(),
+    ]);
 
-  return [...staticEntries, ...categoryEntries, ...portfolioEntries, ...blogEntries];
+    const blogMap = buildBlogArticleMap(blogData.data);
+    const blogEdges = blogData.data.blogConnection?.edges ?? [];
+
+    for (const edge of blogEdges) {
+      const node = edge?.node;
+      if (!node) continue;
+      const [locale, filename] = node._sys.relativePath.split('/');
+      if (!locale || !filename) continue;
+      const slug = extractBlogSlug(filename);
+      const canonical = node.canonical?.trim() || slug;
+      const byLocale = blogMap.byCanonical[canonical] ?? {};
+
+      entries.push({
+        url: localizedUrl(locale, `/blog/${slug}`),
+        lastModified: node.date ? new Date(node.date) : undefined,
+        changeFrequency: 'yearly',
+        priority: 0.6,
+        alternates: languageAlternates(l => `/blog/${byLocale[l] ?? slug}`),
+      });
+    }
+
+    const projectEdges = projectData.data.projectConnection?.edges ?? [];
+    for (const edge of projectEdges) {
+      const node = edge?.node;
+      if (!node) continue;
+      const [locale, categoryId, filename] = node._sys.relativePath.split('/');
+      if (!locale || !categoryId || !filename) continue;
+      const slug = filename.replace(/\.md$/, '');
+
+      entries.push({
+        url: localizedUrl(
+          locale,
+          `/portfolio/${getCategoryUrlSlug(categoryId as 'websites' | 'software', locale)}/${slug}`
+        ),
+        changeFrequency: 'yearly',
+        priority: 0.6,
+        alternates: languageAlternates(
+          l => `/portfolio/${getCategoryUrlSlug(categoryId as 'websites' | 'software', l)}/${slug}`
+        ),
+      });
+    }
+  } catch {
+    // Content backend unavailable at build time — serve the static routes only.
+  }
+
+  return entries;
 }

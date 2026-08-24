@@ -24,9 +24,10 @@ function CallToActionContent({ page }: CallToActionProps) {
   const { resolvedTheme } = useTheme();
   const mounted = useMounted();
   const cta = page.callToAction;
-  const gryfSrc = mounted && resolvedTheme === 'dark'
-    ? '/layout/dark-mode/gryf-cta.png'
-    : '/layout/light-mode/gryf-cta.png';
+  const gryfSrc =
+    mounted && resolvedTheme === 'dark'
+      ? '/layout/dark-mode/gryf-cta.png'
+      : '/layout/light-mode/gryf-cta.png';
 
   if (!cta?.title) {
     return null;

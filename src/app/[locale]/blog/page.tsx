@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
-import client from '@tina/__generated__/client';
-import { tinaQueryWithRetry } from '@/lib/tina';
-import { buildMetadata } from '@/lib/metadata';
+import { getBlogConnection, getPage } from '@/lib/tina';
 import { BlogPage } from '@/components/pages/BlogPage';
+import { localeAlternates } from '@/lib/site';
 
 export async function generateMetadata({
   params,
@@ -12,15 +11,22 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
 
-  return buildMetadata({
-    title: locale === 'pl' ? 'Blog' : 'Blog',
-    description:
-      locale === 'pl'
-        ? 'Artykuły o tworzeniu stron, aplikacji i nowoczesnym oprogramowaniu.'
-        : 'Articles about building websites, applications and modern software.',
-    locale,
-    pathname: '/blog',
-  });
+  let title = 'Blog';
+  let description: string | undefined;
+  try {
+    const { data } = await getPage(`${locale}/blog.md`);
+    title = data.page?.title ?? title;
+    description = data.page?.description ?? undefined;
+  } catch {
+    // Content unavailable — fall back to the defaults above.
+  }
+
+  return {
+    title,
+    description,
+    alternates: localeAlternates(locale, () => '/blog'),
+    openGraph: { title, description },
+  };
 }
 
 export default async function Blog({ params }: { params: Promise<{ locale: string }> }) {
@@ -28,7 +34,7 @@ export default async function Blog({ params }: { params: Promise<{ locale: strin
 
   setRequestLocale(locale);
 
-  const tina = await tinaQueryWithRetry(() => client.queries.blogConnection());
+  const tina = await getBlogConnection();
 
   return (
     <BlogPage query={tina.query} variables={tina.variables} data={tina.data} locale={locale} />

@@ -99,7 +99,9 @@ function BentoCard({
             />
           </div>
         ) : (
-          <div className={cn('flex flex-1 items-center justify-center bg-muted/50', imageMinHeight)}>
+          <div
+            className={cn('flex flex-1 items-center justify-center bg-muted/50', imageMinHeight)}
+          >
             <ImageIcon className="size-8 opacity-30" />
           </div>
         )}

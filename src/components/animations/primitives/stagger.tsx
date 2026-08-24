@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useReducedMotion } from 'motion/react';
+import { m, useReducedMotion } from 'motion/react';
 import type { ReactNode } from 'react';
 
 const EASE_OUT_EXPO = [0.22, 1, 0.36, 1] as const;
@@ -35,7 +35,7 @@ export function StaggerContainer({
   }
 
   return (
-    <motion.div
+    <m.div
       className={className}
       variants={containerVariants}
       initial="hidden"
@@ -44,7 +44,7 @@ export function StaggerContainer({
       custom={{ stagger, delay }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -90,13 +90,8 @@ export function StaggerItem({
   }
 
   return (
-    <motion.div
-      className={className}
-      style={style}
-      variants={itemVariants}
-      custom={{ x, y, duration }}
-    >
+    <m.div className={className} style={style} variants={itemVariants} custom={{ x, y, duration }}>
       {children}
-    </motion.div>
+    </m.div>
   );
 }

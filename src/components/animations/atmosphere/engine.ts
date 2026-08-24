@@ -37,9 +37,7 @@ function hexToRgb(hex: string, fallback: [number, number, number]): [number, num
 // themes without hardcoding a palette.
 function getBrandColor(): [number, number, number] {
   if (typeof document === 'undefined') return [...BRAND_FALLBACK];
-  const value = getComputedStyle(document.documentElement)
-    .getPropertyValue('--brand')
-    .trim();
+  const value = getComputedStyle(document.documentElement).getPropertyValue('--brand').trim();
   return value ? hexToRgb(value, BRAND_FALLBACK) : [...BRAND_FALLBACK];
 }
 
@@ -48,9 +46,7 @@ function getBrandColor(): [number, number, number] {
 // on dark, near-black on light — matching the hero text colour.
 function getForegroundColor(): [number, number, number] {
   if (typeof document === 'undefined') return [...FOREGROUND_FALLBACK];
-  const value = getComputedStyle(document.documentElement)
-    .getPropertyValue('--foreground')
-    .trim();
+  const value = getComputedStyle(document.documentElement).getPropertyValue('--foreground').trim();
   return value ? hexToRgb(value, FOREGROUND_FALLBACK) : [...FOREGROUND_FALLBACK];
 }
 
@@ -275,7 +271,8 @@ export class PixiSceneEngine {
       }
 
       // Particle mode (stars ↔ fireflies)
-      const pm = this.particleModeCurrent + (this.particleModeTarget - this.particleModeCurrent) * k;
+      const pm =
+        this.particleModeCurrent + (this.particleModeTarget - this.particleModeCurrent) * k;
       const particleSettled = Math.abs(pm - this.particleModeCurrent) < 1e-4;
       this.particleModeCurrent = pm;
       if (particleSettled) {

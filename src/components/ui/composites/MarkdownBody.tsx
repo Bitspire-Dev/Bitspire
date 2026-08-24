@@ -15,7 +15,13 @@ const richTextComponents: Components<Record<string, object>> = {
         width={1200}
         height={675}
         sizes="(max-width: 768px) 100vw, 768px"
-        style={{ width: 'auto', height: 'auto', display: 'block', borderRadius: '0.75rem', margin: '0 auto' }}
+        style={{
+          width: 'auto',
+          height: 'auto',
+          display: 'block',
+          borderRadius: '0.75rem',
+          margin: '0 auto',
+        }}
         className="max-w-3xl"
         unoptimized={url?.endsWith('.gif') || url?.endsWith('.svg')}
       />

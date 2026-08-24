@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import client from '@tina/__generated__/client';
-import { tinaQueryWithRetry } from '@/lib/tina';
-import { buildMetadata } from '@/lib/metadata';
+import { getPage } from '@/lib/tina';
 import { HomePage } from '@/components/pages/HomePage';
+import { localeAlternates } from '@/lib/site';
 
 export async function generateMetadata({
   params,
@@ -12,25 +11,17 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const { data } = await tinaQueryWithRetry(() =>
-    client.queries.page({
-      relativePath: `${locale}/home.md`,
-    })
-  );
+  const { data } = await getPage(`${locale}/home.md`);
 
-  const title = data.page?.title ?? (locale === 'pl' ? 'Strona główna' : 'Home');
-  const description =
-    data.page?.description ??
-    (locale === 'pl'
-      ? 'Tworzymy nowoczesne strony i oprogramowanie na miarę Twojego biznesu.'
-      : 'We build modern websites and tailor-made software for your business.');
+  const title = data.page?.title;
+  const description = data.page?.description ?? undefined;
 
-  return buildMetadata({
-    title,
+  return {
+    title: title ? { absolute: title } : undefined,
     description,
-    locale,
-    pathname: '/',
-  });
+    alternates: localeAlternates(locale, () => '/'),
+    openGraph: { title, description },
+  };
 }
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
@@ -38,11 +29,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   setRequestLocale(locale);
 
-  const tina = await tinaQueryWithRetry(() =>
-    client.queries.page({
-      relativePath: `${locale}/home.md`,
-    })
-  );
+  const tina = await getPage(`${locale}/home.md`);
 
   if (!tina.data.page) {
     notFound();

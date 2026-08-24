@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
-import client from '@tina/__generated__/client';
-import { tinaQueryWithRetry } from '@/lib/tina';
-import { buildMetadata } from '@/lib/metadata';
+import { getProjectConnection } from '@/lib/tina';
 import { PortfolioCategoryPage } from '@/components/pages/PortfolioCategoryPage';
-import { PORTFOLIO_CATEGORIES, getCategoryBySlug } from '@/lib/portfolio/categories';
+import {
+  PORTFOLIO_CATEGORIES,
+  getCategoryBySlug,
+  getCategoryUrlSlug,
+} from '@/lib/portfolio/categories';
+import { localeAlternates } from '@/lib/site';
 
 export function generateStaticParams({ params }: { params: { locale: string } }) {
   const { locale } = params;
@@ -20,21 +23,20 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, category } = await params;
   const categoryData = getCategoryBySlug(category, locale);
+  if (!categoryData) return {};
 
-  const title = categoryData?.label[locale] ?? categoryData?.label.pl ?? category;
-  const description =
-    categoryData?.description[locale] ??
-    categoryData?.description.pl ??
-    (locale === 'pl'
-      ? 'Przeglądaj nasze realizacje.'
-      : 'Browse our work.');
+  const title = categoryData.label[locale] ?? categoryData.label.pl;
+  const description = categoryData.description[locale] ?? categoryData.description.pl;
 
-  return buildMetadata({
+  return {
     title,
     description,
-    locale,
-    pathname: `/portfolio/${category}`,
-  });
+    alternates: localeAlternates(
+      locale,
+      l => `/portfolio/${getCategoryUrlSlug(categoryData.id, l)}`
+    ),
+    openGraph: { title, description },
+  };
 }
 
 export default async function PortfolioCategory({
@@ -46,7 +48,7 @@ export default async function PortfolioCategory({
 
   setRequestLocale(locale);
 
-  const tina = await tinaQueryWithRetry(() => client.queries.projectConnection());
+  const tina = await getProjectConnection();
 
   return (
     <PortfolioCategoryPage

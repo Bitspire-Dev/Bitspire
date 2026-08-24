@@ -1,11 +1,15 @@
 import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import client from '@tina/__generated__/client';
-import { tinaQueryWithRetry } from '@/lib/tina';
-import { buildMetadata } from '@/lib/metadata';
+import { getProject, getProjectConnection } from '@/lib/tina';
 import { PortfolioProjectPage } from '@/components/pages/PortfolioProjectPage';
-import { getCategoryBySlug, PORTFOLIO_CATEGORIES } from '@/lib/portfolio/categories';
+import {
+  getCategoryBySlug,
+  getCategoryUrlSlug,
+  PORTFOLIO_CATEGORIES,
+  type PortfolioCategoryId,
+} from '@/lib/portfolio/categories';
+import { localeAlternates } from '@/lib/site';
 
 interface ProjectPageParams {
   locale: string;
@@ -15,7 +19,7 @@ interface ProjectPageParams {
 
 export async function generateStaticParams({ params }: { params: { locale: string } }) {
   const { locale } = params;
-  const tina = await tinaQueryWithRetry(() => client.queries.projectConnection());
+  const tina = await getProjectConnection();
   const edges = tina.data.projectConnection?.edges ?? [];
   const routeParams: { category: string; slug: string }[] = [];
 
@@ -39,7 +43,10 @@ export async function generateStaticParams({ params }: { params: { locale: strin
   return routeParams;
 }
 
-function getCanonicalCategory(locale: string, categorySlug: string): string | undefined {
+function getCanonicalCategory(
+  locale: string,
+  categorySlug: string
+): PortfolioCategoryId | undefined {
   return getCategoryBySlug(categorySlug, locale)?.id;
 }
 
@@ -54,24 +61,33 @@ export async function generateMetadata({
     return {};
   }
 
-  const tina = await tinaQueryWithRetry(() =>
-    client.queries.project({
-      relativePath: `${locale}/${canonicalCategory}/${slug}.md`,
-    })
-  );
+  const tina = await getProject(`${locale}/${canonicalCategory}/${slug}.md`);
 
   const project = tina.data.project;
-  if (!project) {
-    return {};
-  }
+  if (!project) return {};
 
-  return buildMetadata({
-    title: project.title ?? slug,
-    description: project.description ?? '',
-    locale,
-    pathname: `/portfolio/${category}/${slug}`,
-    image: project.screenshot ?? undefined,
-  });
+  const screenshot = project.screenshot ?? undefined;
+
+  return {
+    title: project.title,
+    description: project.description,
+    alternates: localeAlternates(
+      locale,
+      l => `/portfolio/${getCategoryUrlSlug(canonicalCategory, l)}/${slug}`
+    ),
+    openGraph: {
+      type: 'article',
+      title: project.title,
+      description: project.description ?? undefined,
+      images: screenshot ? [{ url: screenshot, alt: project.title }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: project.title,
+      description: project.description ?? undefined,
+      images: screenshot ? [screenshot] : undefined,
+    },
+  };
 }
 
 export default async function ProjectArticlePage({
@@ -88,11 +104,7 @@ export default async function ProjectArticlePage({
     notFound();
   }
 
-  const tina = await tinaQueryWithRetry(() =>
-    client.queries.project({
-      relativePath: `${locale}/${canonicalCategory}/${slug}.md`,
-    })
-  );
+  const tina = await getProject(`${locale}/${canonicalCategory}/${slug}.md`);
 
   if (!tina.data.project) {
     notFound();

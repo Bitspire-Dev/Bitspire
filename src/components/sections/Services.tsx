@@ -4,7 +4,7 @@ import { memo, useState } from 'react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import { useTheme } from 'next-themes';
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
 import { ChevronDownIcon } from 'lucide-react';
 
 import { tinaField } from 'tinacms/dist/react';
@@ -31,9 +31,10 @@ function ServicesContent({ page }: ServicesProps) {
   const locale = useLocale();
   const { resolvedTheme } = useTheme();
   const mounted = useMounted();
-  const gryfSrc = mounted && resolvedTheme === 'dark'
-    ? '/layout/dark-mode/gryf-oferta.png'
-    : '/layout/light-mode/gryf-oferta.png';
+  const gryfSrc =
+    mounted && resolvedTheme === 'dark'
+      ? '/layout/dark-mode/gryf-oferta.png'
+      : '/layout/light-mode/gryf-oferta.png';
 
   if (!services?.items?.length) {
     return null;
@@ -58,7 +59,7 @@ function ServicesContent({ page }: ServicesProps) {
             />
           </FadeIn>
 
-          <motion.h2
+          <m.h2
             data-tina-field={tinaField(services, 'title')}
             className="max-w-4xl text-balance font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl lg:col-span-2 lg:col-start-1 lg:row-start-1"
             initial={{ opacity: 0, y: 30 }}
@@ -67,7 +68,7 @@ function ServicesContent({ page }: ServicesProps) {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
             {services.title ?? 'Services'}
-          </motion.h2>
+          </m.h2>
 
           <Accordion
             type="single"
@@ -122,13 +123,13 @@ function ServicesContent({ page }: ServicesProps) {
                           </span>
                         </span>
 
-                        <motion.span
+                        <m.span
                           className="ml-auto shrink-0 text-muted-foreground transition-colors duration-300 group-hover/item:text-brand"
                           animate={{ rotate: isOpen ? 180 : 0 }}
                           transition={{ duration: 0.25 }}
                         >
                           <ChevronDownIcon className="size-4" />
-                        </motion.span>
+                        </m.span>
                       </AccordionTrigger>
 
                       <AccordionContent className="pb-6 text-sm leading-7 md:text-base md:leading-7">

@@ -24,9 +24,7 @@ export function PrivacyPage({ query, variables, data, locale }: PrivacyPageProps
 
   const lastUpdated = (page as { lastUpdated?: string | null }).lastUpdated;
   const displayDate = lastUpdated ?? '24.08.2026';
-  const isoDate = lastUpdated
-    ? lastUpdated.split('.').reverse().join('-')
-    : '2026-08-24';
+  const isoDate = lastUpdated ? lastUpdated.split('.').reverse().join('-') : '2026-08-24';
   const updatedLabel = locale === 'pl' ? 'Ostatnia aktualizacja:' : 'Last updated:';
 
   return (

@@ -4,12 +4,14 @@ export const inter = localFont({
   src: '../../public/fonts/Inter/InterVariable.woff2',
   variable: '--font-sans',
   display: 'swap',
+  fallback: ['system-ui', 'Segoe UI', 'sans-serif'],
 });
 
 export const nippo = localFont({
   src: '../../public/fonts/Nippo/Nippo-Variable.woff2',
   variable: '--font-heading',
   display: 'swap',
+  fallback: ['system-ui', 'Segoe UI', 'sans-serif'],
 });
 
 export const ibmPlexMono = localFont({
@@ -37,4 +39,5 @@ export const ibmPlexMono = localFont({
   ],
   variable: '--font-mono',
   display: 'swap',
+  fallback: ['ui-monospace', 'SFMono-Regular', 'monospace'],
 });
