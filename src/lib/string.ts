@@ -1,3 +1,7 @@
+export function extractContentSlug(filename: string): string {
+  return filename.replace(/\.md$/, '');
+}
+
 export function slugify(text: string): string {
   return text
     .toLowerCase()

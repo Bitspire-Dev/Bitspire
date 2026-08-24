@@ -17,38 +17,19 @@ import {
 } from '@/components/ui/primitives/navigation-menu';
 import { getCategoryHref } from '@/lib/portfolio/categories';
 import type { BlogArticleMap } from '@/lib/blog';
+import { MAIN_NAV_LINKS, type NavLink } from '@/lib/navigation';
 
 type Href = ComponentProps<typeof Link>['href'];
-
-interface NavLink {
-  label: string;
-  href: string;
-}
 
 interface HeaderProps {
   locale: string;
   blogMap: BlogArticleMap;
 }
 
-const NAV_LINKS: Record<'pl' | 'en', NavLink[]> = {
-  pl: [
-    { label: 'Strona główna', href: '/' },
-    { label: 'Portfolio', href: '/portfolio' },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Kontakt', href: '/contact' },
-  ],
-  en: [
-    { label: 'Home', href: '/' },
-    { label: 'Portfolio', href: '/portfolio' },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Contact', href: '/contact' },
-  ],
-};
-
 export function Header({ locale, blogMap }: HeaderProps) {
   const { resolvedTheme } = useTheme();
   const mounted = useMounted();
-  const navLinks = NAV_LINKS[locale as 'pl' | 'en'] ?? NAV_LINKS.pl;
+  const navLinks = MAIN_NAV_LINKS[locale as 'pl' | 'en'] ?? MAIN_NAV_LINKS.pl;
   const isDark = mounted && resolvedTheme === 'dark';
   const logoSrc = isDark ? '/favicon-dark-mode.svg' : '/favicon-light-mode.svg';
 

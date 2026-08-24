@@ -1,5 +1,6 @@
 import type { BlogConnectionQuery } from '@tina/__generated__/types';
 import type { ContentCardItem } from '@/components/ui/composites/content-card';
+import { extractContentSlug } from '@/lib/string';
 
 export interface BlogArticleMap {
   byCanonical: Record<string, Record<string, string>>;
@@ -14,7 +15,7 @@ export function getBlogArticleHref(slug: string) {
 }
 
 export function extractBlogSlug(relativePath: string): string {
-  return relativePath.split('/').pop()?.replace(/\.md$/, '') ?? '';
+  return extractContentSlug(relativePath.split('/').pop() ?? '');
 }
 
 export function buildBlogArticleMap(data: BlogConnectionQuery): BlogArticleMap {

@@ -1,26 +1,12 @@
 import type { MetadataRoute } from 'next';
-import { getBlogConnection, getProjectConnection } from '@/lib/tina';
 import { routing } from '@/i18n/routing';
-import { siteUrl } from '@/lib/site';
-import { buildBlogArticleMap, extractBlogSlug } from '@/lib/blog';
+import { localePathname, sitemapAlternates } from '@/lib/site';
+import { getBlogConnection, getProjectConnection } from '@/lib/tina';
+import { buildBlogArticleMap } from '@/lib/blog';
 import { PORTFOLIO_CATEGORIES, getCategoryUrlSlug } from '@/lib/portfolio/categories';
+import { extractContentSlug } from '@/lib/string';
 
 const STATIC_PATHS = ['/', '/blog', '/portfolio', '/contact'] as const;
-
-function localizedUrl(locale: string, path: string) {
-  return `${siteUrl}/${locale}${path === '/' ? '' : path}`;
-}
-
-function languageAlternates(pathForLocale: (locale: string) => string) {
-  return {
-    languages: {
-      ...Object.fromEntries(
-        routing.locales.map(locale => [locale, localizedUrl(locale, pathForLocale(locale))])
-      ),
-      'x-default': localizedUrl(routing.defaultLocale, pathForLocale(routing.defaultLocale)),
-    },
-  };
-}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
@@ -28,10 +14,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const path of STATIC_PATHS) {
     for (const locale of routing.locales) {
       entries.push({
-        url: localizedUrl(locale, path),
+        url: localePathname(locale, path),
         changeFrequency: path === '/' ? 'weekly' : 'monthly',
         priority: path === '/' ? 1 : 0.8,
-        alternates: languageAlternates(() => path),
+        alternates: sitemapAlternates(() => path),
       });
     }
   }
@@ -39,10 +25,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const category of PORTFOLIO_CATEGORIES) {
     for (const locale of routing.locales) {
       entries.push({
-        url: localizedUrl(locale, `/portfolio/${getCategoryUrlSlug(category.id, locale)}`),
+        url: localePathname(locale, `/portfolio/${getCategoryUrlSlug(category.id, locale)}`),
         changeFrequency: 'monthly',
         priority: 0.7,
-        alternates: languageAlternates(l => `/portfolio/${getCategoryUrlSlug(category.id, l)}`),
+        alternates: sitemapAlternates(l => `/portfolio/${getCategoryUrlSlug(category.id, l)}`),
       });
     }
   }
@@ -61,16 +47,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       if (!node) continue;
       const [locale, filename] = node._sys.relativePath.split('/');
       if (!locale || !filename) continue;
-      const slug = extractBlogSlug(filename);
+      const slug = extractContentSlug(filename);
       const canonical = node.canonical?.trim() || slug;
       const byLocale = blogMap.byCanonical[canonical] ?? {};
 
       entries.push({
-        url: localizedUrl(locale, `/blog/${slug}`),
+        url: localePathname(locale, `/blog/${slug}`),
         lastModified: node.date ? new Date(node.date) : undefined,
         changeFrequency: 'yearly',
         priority: 0.6,
-        alternates: languageAlternates(l => `/blog/${byLocale[l] ?? slug}`),
+        alternates: sitemapAlternates(l => `/blog/${byLocale[l] ?? slug}`),
       });
     }
 
@@ -80,22 +66,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       if (!node) continue;
       const [locale, categoryId, filename] = node._sys.relativePath.split('/');
       if (!locale || !categoryId || !filename) continue;
-      const slug = filename.replace(/\.md$/, '');
+      const slug = extractContentSlug(filename);
 
       entries.push({
-        url: localizedUrl(
+        url: localePathname(
           locale,
           `/portfolio/${getCategoryUrlSlug(categoryId as 'websites' | 'software', locale)}/${slug}`
         ),
         changeFrequency: 'yearly',
         priority: 0.6,
-        alternates: languageAlternates(
+        alternates: sitemapAlternates(
           l => `/portfolio/${getCategoryUrlSlug(categoryId as 'websites' | 'software', l)}/${slug}`
         ),
       });
     }
   } catch {
-    // Content backend unavailable at build time — serve the static routes only.
+    // Content backend unavailable at build time -- serve the static routes only.
   }
 
   return entries;

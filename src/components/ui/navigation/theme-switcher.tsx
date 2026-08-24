@@ -1,12 +1,13 @@
 'use client';
 
-import { useRef, useSyncExternalStore } from 'react';
+import { useRef } from 'react';
 import { flushSync } from 'react-dom';
 import { useTheme } from 'next-themes';
 import { Moon, Sun } from 'lucide-react';
 import { AnimatePresence, m } from 'motion/react';
 
 import { useMounted } from '@/lib/use-mounted';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/primitives/button';
 import { Skeleton } from '@/components/ui/primitives/skeleton';
@@ -15,38 +16,6 @@ const ICON_ANIMATION_DURATION = 0.25;
 
 interface ThemeSwitcherProps {
   className?: string;
-}
-
-let reducedMotion = false;
-let reducedMotionMediaQuery: MediaQueryList | null = null;
-const reducedSubscribers = new Set<() => void>();
-
-function getReducedMotionMediaQuery() {
-  if (typeof window === 'undefined') return null;
-  if (!reducedMotionMediaQuery) {
-    reducedMotionMediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    reducedMotion = reducedMotionMediaQuery.matches;
-    reducedMotionMediaQuery.addEventListener('change', () => {
-      reducedMotion = reducedMotionMediaQuery?.matches ?? false;
-      reducedSubscribers.forEach(cb => cb());
-    });
-  }
-  return reducedMotionMediaQuery;
-}
-
-function useReducedMotion() {
-  return useSyncExternalStore(
-    callback => {
-      reducedSubscribers.add(callback);
-      getReducedMotionMediaQuery();
-      return () => reducedSubscribers.delete(callback);
-    },
-    () => {
-      getReducedMotionMediaQuery();
-      return reducedMotion;
-    },
-    () => false
-  );
 }
 
 function suppressTransitions(): HTMLStyleElement {

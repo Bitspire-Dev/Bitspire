@@ -9,6 +9,7 @@ import { BlogArticle } from '@/components/pages/BlogArticlePage';
 import { buildBlogArticleMap, toRelatedItems } from '@/lib/blog';
 import { extractTocFromMarkdown } from '@/lib/toc';
 import { localeAlternates } from '@/lib/site';
+import { extractContentSlug } from '@/lib/string';
 
 interface BlogPageParams {
   locale: string;
@@ -24,7 +25,7 @@ export async function generateStaticParams() {
     const slugs =
       tina.data.blogConnection?.edges
         ?.filter(edge => edge?.node?._sys.relativePath.startsWith(`${locale}/`))
-        .map(edge => edge?.node?._sys.basename.replace(/\.md$/, '')) ?? [];
+        .map(edge => extractContentSlug(edge?.node?._sys.basename ?? '')) ?? [];
     for (const slug of slugs) {
       if (slug) params.push({ locale, slug });
     }

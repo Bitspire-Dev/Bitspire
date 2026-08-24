@@ -12,7 +12,7 @@ import {
 import { Separator } from '@/components/ui/primitives/separator';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { SocialIcon } from '@/components/ui/composites/social-icon';
-import { COMPANY } from '@/lib/company';
+import { COMPANY, DEFAULT_EMAIL } from '@/lib/company';
 import { cn } from '@/lib/utils';
 import type { PageQuery } from '@tina/__generated__/types';
 
@@ -23,39 +23,11 @@ type ContactSocial = {
   url?: string | null;
 };
 
-const DEFAULT_EMAIL = COMPANY.email;
-
 interface ContactDetailsProps {
   contact: Contact | null | undefined;
   locale: string;
   className?: string;
 }
-
-const DEFAULTS: Record<
-  'pl' | 'en',
-  {
-    salesPhone: string;
-    address: string;
-    hours: string;
-    taxId: string;
-    krs: string;
-  }
-> = {
-  pl: {
-    salesPhone: COMPANY.phone,
-    address: COMPANY.address.pl,
-    hours: COMPANY.hours.pl,
-    taxId: COMPANY.taxId ?? '',
-    krs: COMPANY.krs ?? '',
-  },
-  en: {
-    salesPhone: COMPANY.phone,
-    address: COMPANY.address.en,
-    hours: COMPANY.hours.en,
-    taxId: COMPANY.taxId ?? '',
-    krs: COMPANY.krs ?? '',
-  },
-};
 
 const UI: Record<string, Record<string, string>> = {
   pl: {
@@ -86,13 +58,13 @@ const UI: Record<string, Record<string, string>> = {
 
 export function ContactDetails({ contact, locale, className }: ContactDetailsProps) {
   const ui = UI[locale] ?? UI.pl;
-  const defaults = DEFAULTS[(locale === 'pl' ? 'pl' : 'en') as 'pl' | 'en'];
   const email = contact?.email || DEFAULT_EMAIL;
-  const phone = contact?.phone || defaults.salesPhone;
-  const address = contact?.address || defaults.address;
-  const hours = contact?.hours || defaults.hours;
-  const taxId = defaults.taxId;
-  const krs = defaults.krs;
+  const phone = contact?.phone || COMPANY.phone;
+  const address =
+    contact?.address || (COMPANY.address[locale as 'pl' | 'en'] ?? COMPANY.address.pl);
+  const hours = contact?.hours || (COMPANY.hours[locale as 'pl' | 'en'] ?? COMPANY.hours.pl);
+  const taxId = COMPANY.taxId ?? '';
+  const krs = COMPANY.krs ?? '';
 
   const cmsSocials = (contact?.socials?.filter(s => Boolean(s?.url)) ?? []).map(
     s => s as ContactSocial

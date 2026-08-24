@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { routing } from '@/i18n/routing';
+import { COMPANY } from '@/lib/company';
 
-export const siteName = 'Bitspire';
+export const siteName = COMPANY.name;
 
 export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(
   /\/$/,
@@ -10,6 +11,17 @@ export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:30
 
 export const localePathname = (locale: string, path: string) =>
   `${siteUrl}/${locale}${path === '/' ? '' : path}`;
+
+export function sitemapAlternates(pathForLocale: (locale: string) => string) {
+  return {
+    languages: {
+      ...Object.fromEntries(
+        routing.locales.map(locale => [locale, localePathname(locale, pathForLocale(locale))])
+      ),
+      'x-default': localePathname(routing.defaultLocale, pathForLocale(routing.defaultLocale)),
+    },
+  };
+}
 
 export function localeAlternates(
   locale: string,

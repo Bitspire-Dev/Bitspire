@@ -37,3 +37,5 @@ export const COMPANY: CompanyData = {
     { platform: 'Facebook', url: 'https://www.facebook.com/profile.php?id=61578556904045' },
   ],
 } as const;
+
+export const DEFAULT_EMAIL = COMPANY.email;

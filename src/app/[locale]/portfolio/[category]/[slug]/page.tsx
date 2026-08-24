@@ -10,6 +10,7 @@ import {
   type PortfolioCategoryId,
 } from '@/lib/portfolio/categories';
 import { localeAlternates } from '@/lib/site';
+import { extractContentSlug } from '@/lib/string';
 
 interface ProjectPageParams {
   locale: string;
@@ -33,7 +34,7 @@ export async function generateStaticParams({ params }: { params: { locale: strin
     if (contentLocale !== locale) continue;
     const categoryData = PORTFOLIO_CATEGORIES.find(category => category.id === canonicalCategory);
     if (!categoryData) continue;
-    const slug = filename.replace(/\.md$/, '');
+    const slug = extractContentSlug(filename);
     routeParams.push({
       category: categoryData.slug[locale] ?? categoryData.slug.pl,
       slug,

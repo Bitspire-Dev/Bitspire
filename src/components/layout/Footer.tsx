@@ -8,6 +8,7 @@ import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { Button } from '@/components/ui/primitives/button';
 import { SocialIcon } from '@/components/ui/composites/social-icon';
 import { COMPANY } from '@/lib/company';
+import { MAIN_NAV_LINKS, type NavLink } from '@/lib/navigation';
 
 type Href = ComponentProps<typeof Link>['href'];
 
@@ -23,7 +24,6 @@ interface FooterContent {
     contact: string;
     legal: string;
   };
-  navLinks: { label: string; href: Href }[];
   legal: { label: string; href: Href }[];
   copyright: string;
 }
@@ -37,12 +37,6 @@ const FOOTER_CONTENT: Record<'pl' | 'en', FooterContent> = {
       contact: 'Kontakt',
       legal: 'Prawne',
     },
-    navLinks: [
-      { label: 'Strona główna', href: '/' },
-      { label: 'Portfolio', href: '/portfolio' },
-      { label: 'Blog', href: '/blog' },
-      { label: 'Kontakt', href: '/contact' },
-    ],
     legal: [{ label: 'Polityka prywatności', href: '/privacy' }],
     copyright: '© 2026 Bitspire. Wszelkie prawa zastrzeżone.',
   },
@@ -54,12 +48,6 @@ const FOOTER_CONTENT: Record<'pl' | 'en', FooterContent> = {
       contact: 'Contact',
       legal: 'Legal',
     },
-    navLinks: [
-      { label: 'Home', href: '/' },
-      { label: 'Portfolio', href: '/portfolio' },
-      { label: 'Blog', href: '/blog' },
-      { label: 'Contact', href: '/contact' },
-    ],
     legal: [{ label: 'Privacy Policy', href: '/privacy' }],
     copyright: '© 2026 Bitspire. All rights reserved.',
   },
@@ -123,15 +111,17 @@ function FooterContent({ locale }: FooterProps) {
             {/* Navigation */}
             <FooterColumn title={content.headings.navigation}>
               <nav className="flex flex-col gap-2">
-                {content.navLinks.map(link => (
-                  <Link
-                    key={link.label}
-                    href={link.href as Href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                {(MAIN_NAV_LINKS[locale as 'pl' | 'en'] ?? MAIN_NAV_LINKS.pl).map(
+                  (link: NavLink) => (
+                    <Link
+                      key={link.href}
+                      href={link.href as Href}
+                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      {link.label}
+                    </Link>
+                  )
+                )}
               </nav>
             </FooterColumn>
 

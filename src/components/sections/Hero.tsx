@@ -1,8 +1,9 @@
 'use client';
 
-import { memo, Suspense, useEffect, useRef, useState } from 'react';
+import { memo, Suspense, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { m, useReducedMotion, useScroll, useTransform } from 'motion/react';
+import { m, useScroll, useTransform } from 'motion/react';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { useLocale } from 'next-intl';
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
@@ -10,6 +11,7 @@ import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { ErrorBoundary } from '@/components/providers/error-boundary';
 import { Button } from '@/components/ui/primitives/button';
 import { Link } from '@/i18n/navigation';
+import { useMounted } from '@/lib/use-mounted';
 
 const PixiScene = dynamic(
   () => import('@/components/animations/atmosphere').then(m => m.PixiScene),
@@ -36,14 +38,10 @@ interface HeroProps {
 }
 
 function HeroContent({ page }: HeroProps) {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const [sceneError, setSceneError] = useState(false);
   const prefersReducedMotion = useReducedMotion() ?? false;
   const locale = useLocale();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const sectionRef = useRef<HTMLElement>(null);
 
