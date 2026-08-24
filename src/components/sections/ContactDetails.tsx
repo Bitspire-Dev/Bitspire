@@ -12,6 +12,7 @@ import {
 import { Separator } from '@/components/ui/primitives/separator';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { SocialIcon } from '@/components/ui/composites/social-icon';
+import { COMPANY } from '@/lib/company';
 import { cn } from '@/lib/utils';
 import type { PageQuery } from '@tina/__generated__/types';
 
@@ -22,7 +23,7 @@ type ContactSocial = {
   url?: string | null;
 };
 
-const DEFAULT_EMAIL = 'kontakt@bitspire.pl';
+const DEFAULT_EMAIL = COMPANY.email;
 
 interface ContactDetailsProps {
   contact: Contact | null | undefined;
@@ -30,7 +31,6 @@ interface ContactDetailsProps {
   className?: string;
 }
 
-// NOTE: Replace placeholder NIP/KRS with real company data.
 const DEFAULTS: Record<
   'pl' | 'en',
   {
@@ -39,34 +39,21 @@ const DEFAULTS: Record<
     hours: string;
     taxId: string;
     krs: string;
-    socials: ContactSocial[];
   }
 > = {
   pl: {
-    salesPhone: '+48 123 456 789',
-    address: 'ul. Przykładowa 1, 00-000 Warszawa',
-    hours: 'pn–pt: 9:00–17:00',
-    taxId: '000-00-00-000',
-    krs: '0000000000',
-    socials: [
-      { platform: 'LinkedIn', url: 'https://www.linkedin.com/company/bitspire' },
-      { platform: 'GitHub', url: 'https://github.com/bitspire' },
-      { platform: 'Instagram', url: 'https://www.instagram.com/bitspire' },
-      { platform: 'Twitter', url: 'https://x.com/bitspire' },
-    ],
+    salesPhone: COMPANY.phone,
+    address: COMPANY.address.pl,
+    hours: COMPANY.hours.pl,
+    taxId: COMPANY.taxId ?? '',
+    krs: COMPANY.krs ?? '',
   },
   en: {
-    salesPhone: '+48 123 456 789',
-    address: 'ul. Przykładowa 1, 00-000 Warsaw',
-    hours: 'Mon–Fri: 9:00–17:00',
-    taxId: '000-00-00-000',
-    krs: '0000000000',
-    socials: [
-      { platform: 'LinkedIn', url: 'https://www.linkedin.com/company/bitspire' },
-      { platform: 'GitHub', url: 'https://github.com/bitspire' },
-      { platform: 'Instagram', url: 'https://www.instagram.com/bitspire' },
-      { platform: 'Twitter', url: 'https://x.com/bitspire' },
-    ],
+    salesPhone: COMPANY.phone,
+    address: COMPANY.address.en,
+    hours: COMPANY.hours.en,
+    taxId: COMPANY.taxId ?? '',
+    krs: COMPANY.krs ?? '',
   },
 };
 
@@ -110,7 +97,7 @@ export function ContactDetails({ contact, locale, className }: ContactDetailsPro
   const cmsSocials = (contact?.socials?.filter(s => Boolean(s?.url)) ?? []).map(
     s => s as ContactSocial
   );
-  const socials = cmsSocials.length > 0 ? cmsSocials : defaults.socials;
+  const socials = cmsSocials.length > 0 ? cmsSocials : (COMPANY.socials as ContactSocial[]);
 
   const contactItems = [
     { key: 'email', label: ui.email, value: email, href: `mailto:${email}`, icon: Mail },

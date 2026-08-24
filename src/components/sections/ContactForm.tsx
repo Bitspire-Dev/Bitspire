@@ -8,12 +8,13 @@ import { Input } from '@/components/ui/primitives/input';
 import { Textarea } from '@/components/ui/primitives/textarea';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { Link } from '@/i18n/navigation';
+import { COMPANY } from '@/lib/company';
 import { cn } from '@/lib/utils';
 import type { PageQuery } from '@tina/__generated__/types';
 
 type Contact = NonNullable<NonNullable<PageQuery['page']>['contact']>;
 
-const DEFAULT_EMAIL = 'kontakt@bitspire.pl';
+const DEFAULT_EMAIL = COMPANY.email;
 
 interface ContactFormProps {
   contact: Contact | null | undefined;

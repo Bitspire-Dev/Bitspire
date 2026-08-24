@@ -1,11 +1,13 @@
 import { memo } from 'react';
 import type { ComponentProps } from 'react';
 import type { LucideIcon } from 'lucide-react';
-import { Globe, Mail, Phone, MapPin, Clock } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { Separator } from '@/components/ui/primitives/separator';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { Button } from '@/components/ui/primitives/button';
+import { SocialIcon } from '@/components/ui/composites/social-icon';
+import { COMPANY } from '@/lib/company';
 
 type Href = ComponentProps<typeof Link>['href'];
 
@@ -22,14 +24,7 @@ interface FooterContent {
     legal: string;
   };
   navLinks: { label: string; href: Href }[];
-  contact: {
-    email: string;
-    phone: string;
-    address: string;
-    hours: string;
-  };
-  socials: { platform: string; url: string }[];
-  legal: { label: string; href: Href | string; placeholder?: boolean }[];
+  legal: { label: string; href: Href }[];
   copyright: string;
 }
 
@@ -48,23 +43,7 @@ const FOOTER_CONTENT: Record<'pl' | 'en', FooterContent> = {
       { label: 'Blog', href: '/blog' },
       { label: 'Kontakt', href: '/contact' },
     ],
-    contact: {
-      email: 'hello@bitspire.pl',
-      phone: '+48 123 456 789',
-      address: 'ul. Przykładowa 1, 00-000 Warszawa',
-      hours: 'pn–pt: 9:00–17:00',
-    },
-    socials: [
-      { platform: 'LinkedIn', url: 'https://www.linkedin.com/company/bitspire' },
-      { platform: 'GitHub', url: 'https://github.com/bitspire' },
-      { platform: 'Instagram', url: 'https://www.instagram.com/bitspire' },
-      { platform: 'Twitter', url: 'https://x.com/bitspire' },
-    ],
-    legal: [
-      { label: 'Polityka prywatności', href: '/privacy' },
-      { label: 'Regulamin', href: '#', placeholder: true },
-      { label: 'Polityka cookies', href: '#', placeholder: true },
-    ],
+    legal: [{ label: 'Polityka prywatności', href: '/privacy' }],
     copyright: '© 2026 Bitspire. Wszelkie prawa zastrzeżone.',
   },
   en: {
@@ -81,23 +60,7 @@ const FOOTER_CONTENT: Record<'pl' | 'en', FooterContent> = {
       { label: 'Blog', href: '/blog' },
       { label: 'Contact', href: '/contact' },
     ],
-    contact: {
-      email: 'hello@bitspire.pl',
-      phone: '+48 123 456 789',
-      address: 'ul. Przykładowa 1, 00-000 Warsaw',
-      hours: 'Mon–Fri: 9:00–17:00',
-    },
-    socials: [
-      { platform: 'LinkedIn', url: 'https://www.linkedin.com/company/bitspire' },
-      { platform: 'GitHub', url: 'https://github.com/bitspire' },
-      { platform: 'Instagram', url: 'https://www.instagram.com/bitspire' },
-      { platform: 'Twitter', url: 'https://x.com/bitspire' },
-    ],
-    legal: [
-      { label: 'Privacy Policy', href: '/privacy' },
-      { label: 'Terms of Service', href: '#', placeholder: true },
-      { label: 'Cookie Policy', href: '#', placeholder: true },
-    ],
+    legal: [{ label: 'Privacy Policy', href: '/privacy' }],
     copyright: '© 2026 Bitspire. All rights reserved.',
   },
 };
@@ -122,6 +85,7 @@ function FooterColumn({ title, children }: { title: string; children: React.Reac
 
 function FooterContent({ locale }: FooterProps) {
   const content = FOOTER_CONTENT[(locale === 'pl' ? 'pl' : 'en') as 'pl' | 'en'];
+  const company = COMPANY;
 
   return (
     <footer className="w-full border-t border-border/60 bg-background">
@@ -135,7 +99,7 @@ function FooterContent({ locale }: FooterProps) {
               </span>
               <p className="text-sm leading-relaxed text-muted-foreground">{content.tagline}</p>
               <div className="flex items-center gap-2">
-                {content.socials.map(social => (
+                {company.socials.map(social => (
                   <Button
                     key={social.platform}
                     asChild
@@ -149,7 +113,7 @@ function FooterContent({ locale }: FooterProps) {
                       rel="noopener noreferrer"
                       aria-label={social.platform}
                     >
-                      <Globe className="size-4" />
+                      <SocialIcon platform={social.platform} className="size-4" />
                     </a>
                   </Button>
                 ))}
@@ -176,25 +140,25 @@ function FooterContent({ locale }: FooterProps) {
               <div className="flex flex-col gap-3">
                 <ContactItem icon={Mail}>
                   <a
-                    href={`mailto:${content.contact.email}`}
+                    href={`mailto:${company.email}`}
                     className="transition-colors hover:text-foreground"
                   >
-                    {content.contact.email}
+                    {company.email}
                   </a>
                 </ContactItem>
                 <ContactItem icon={Phone}>
                   <a
-                    href={`tel:${content.contact.phone.replace(/\s/g, '')}`}
+                    href={`tel:${company.phoneRaw}`}
                     className="transition-colors hover:text-foreground"
                   >
-                    {content.contact.phone}
+                    {company.phone}
                   </a>
                 </ContactItem>
                 <ContactItem icon={MapPin}>
-                  <span>{content.contact.address}</span>
+                  <span>{company.address[locale as 'pl' | 'en'] ?? company.address.pl}</span>
                 </ContactItem>
                 <ContactItem icon={Clock}>
-                  <span>{content.contact.hours}</span>
+                  <span>{company.hours[locale as 'pl' | 'en'] ?? company.hours.pl}</span>
                 </ContactItem>
               </div>
             </FooterColumn>
@@ -202,26 +166,15 @@ function FooterContent({ locale }: FooterProps) {
             {/* Legal */}
             <FooterColumn title={content.headings.legal}>
               <nav className="flex flex-col gap-2">
-                {content.legal.map(link =>
-                  link.placeholder ? (
-                    <a
-                      key={link.label}
-                      href={link.href as string}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                      aria-disabled="true"
-                    >
-                      {link.label}
-                    </a>
-                  ) : (
-                    <Link
-                      key={link.label}
-                      href={link.href as Href}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {link.label}
-                    </Link>
-                  )
-                )}
+                {content.legal.map(link => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </nav>
             </FooterColumn>
           </div>

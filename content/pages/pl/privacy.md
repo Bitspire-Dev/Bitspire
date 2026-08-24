@@ -9,7 +9,7 @@ lastUpdated: 24.08.2026
 Administratorem Twoich danych osobowych jest **Bitspire**, z siedzibą w Polsce.
 
 - E-mail: [kontakt@bitspire.pl](mailto:kontakt@bitspire.pl)
-- Telefon: [780 926 993](tel:780926993)
+- Telefon: [+48 780 926 993](tel:+48780926993)
 
 ## 2. Jakie dane zbieramy i dlaczego?
 
