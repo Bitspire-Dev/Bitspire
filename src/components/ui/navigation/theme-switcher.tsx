@@ -4,7 +4,7 @@ import { useRef, useSyncExternalStore } from 'react';
 import { flushSync } from 'react-dom';
 import { useTheme } from 'next-themes';
 import { Moon, Sun } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, m } from 'motion/react';
 
 import { useMounted } from '@/lib/use-mounted';
 import { cn } from '@/lib/utils';
@@ -126,7 +126,7 @@ export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
         )
       ) : (
         <AnimatePresence mode="wait" initial={false}>
-          <motion.span
+          <m.span
             key={isDark ? 'dark' : 'light'}
             initial={{ opacity: 0, rotate: -90, scale: 0 }}
             animate={{ opacity: 1, rotate: 0, scale: 1 }}
@@ -135,7 +135,7 @@ export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
             className="inline-flex size-5 items-center justify-center"
           >
             {isDark ? <Moon className="size-5" /> : <Sun className="size-5" />}
-          </motion.span>
+          </m.span>
         </AnimatePresence>
       )}
     </Button>

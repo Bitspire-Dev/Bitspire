@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import client from '@tina/__generated__/client';
-import { tinaQueryWithRetry } from '@/lib/tina';
+import { getPage } from '@/lib/tina';
 import { ContactPage } from '@/components/pages/ContactPage';
+import { localeAlternates } from '@/lib/site';
 
 export async function generateMetadata({
   params,
@@ -11,18 +11,16 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const { data } = await tinaQueryWithRetry(() =>
-    client.queries.page({
-      relativePath: `${locale}/contact.md`,
-    })
-  );
+  const { data } = await getPage(`${locale}/contact.md`);
 
   const title = data.page?.title ?? (locale === 'pl' ? 'Kontakt' : 'Contact');
-  const description = data.page?.description ?? '';
+  const description = data.page?.description ?? undefined;
 
   return {
-    title: `${title} | Bitspire`,
+    title,
     description,
+    alternates: localeAlternates(locale, () => '/contact'),
+    openGraph: { title, description },
   };
 }
 
@@ -31,11 +29,7 @@ export default async function Contact({ params }: { params: Promise<{ locale: st
 
   setRequestLocale(locale);
 
-  const tina = await tinaQueryWithRetry(() =>
-    client.queries.page({
-      relativePath: `${locale}/contact.md`,
-    })
-  );
+  const tina = await getPage(`${locale}/contact.md`);
 
   if (!tina.data.page) {
     notFound();

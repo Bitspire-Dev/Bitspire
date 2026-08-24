@@ -3,8 +3,8 @@
 import { useState, type ComponentProps } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
-import { Link, useRouter } from '@/i18n/navigation';
-import { Menu, X } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
+import { ChevronDownIcon, Menu, X } from 'lucide-react';
 import { LocaleSwitcher } from '@/components/ui/navigation/locale-switcher';
 import { ThemeSwitcher } from '@/components/ui/navigation/theme-switcher';
 import { useMounted } from '@/lib/use-mounted';
@@ -12,10 +12,8 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/primitives/button';
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from '@/components/ui/primitives/navigation-menu';
 import { getCategoryHref } from '@/lib/portfolio/categories';
 import type { BlogArticleMap } from '@/lib/blog';
@@ -112,30 +110,55 @@ function DesktopNav({ links, locale }: { links: NavLink[]; locale: string }) {
 }
 
 function PortfolioMenuItem({ label, locale }: { label: string; locale: string }) {
-  const router = useRouter();
+  const [open, setOpen] = useState(false);
 
   return (
-    <NavigationMenuItem>
-      <NavigationMenuTrigger
+    <NavigationMenuItem
+      className="relative"
+      onBlur={event => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          setOpen(false);
+        }
+      }}
+    >
+      <Button
+        variant="ghost"
+        onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
+        aria-haspopup="menu"
         className="text-foreground/70 hover:bg-muted hover:text-foreground"
-        onClick={() => router.push('/portfolio')}
       >
         {label}
-      </NavigationMenuTrigger>
-      <NavigationMenuContent>
-        <div className="flex flex-col gap-1 p-2">
-          <Button asChild variant="ghost" className="justify-start">
-            <Link href={getCategoryHref(locale, 'websites')}>
-              {locale === 'pl' ? 'Strony internetowe' : 'Websites'}
-            </Link>
-          </Button>
-          <Button asChild variant="ghost" className="justify-start">
-            <Link href={getCategoryHref(locale, 'software')}>
-              {locale === 'pl' ? 'Oprogramowanie' : 'Software'}
-            </Link>
-          </Button>
+        <ChevronDownIcon
+          className={cn(
+            'relative top-px ml-1 size-3 transition duration-300',
+            open && 'rotate-180'
+          )}
+          aria-hidden="true"
+        />
+      </Button>
+      {open ? (
+        <div className="absolute top-full left-0 z-50 mt-1.5 w-auto rounded-xl bg-popover p-1.5 text-popover-foreground shadow-md ring-1 ring-foreground/10">
+          <div className="flex flex-col gap-1">
+            <Button asChild variant="ghost" className="justify-start">
+              <Link
+                href={getCategoryHref(locale, 'websites')}
+                onClick={() => setOpen(false)}
+              >
+                {locale === 'pl' ? 'Strony internetowe' : 'Websites'}
+              </Link>
+            </Button>
+            <Button asChild variant="ghost" className="justify-start">
+              <Link
+                href={getCategoryHref(locale, 'software')}
+                onClick={() => setOpen(false)}
+              >
+                {locale === 'pl' ? 'Oprogramowanie' : 'Software'}
+              </Link>
+            </Button>
+          </div>
         </div>
-      </NavigationMenuContent>
+      ) : null}
     </NavigationMenuItem>
   );
 }
@@ -173,17 +196,45 @@ function MobileMenu({
       >
         <nav className="w-full">
           <ul className="flex flex-col items-start gap-1">
-            {links.map(link => (
-              <li key={link.href} className="w-full">
-                <Link
-                  href={link.href as Href}
-                  onClick={() => setOpen(false)}
-                  className="block w-full rounded-lg py-2 font-sans text-sm text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+            {links.map(link =>
+              link.href === '/portfolio' ? (
+                <li key={link.href} className="w-full">
+                  <span className="block w-full rounded-lg py-2 font-sans text-sm font-medium text-foreground/80">
+                    {link.label}
+                  </span>
+                  <ul className="ml-4 flex flex-col gap-1 border-l border-border/40 pl-2">
+                    <li className="w-full">
+                      <Link
+                        href={getCategoryHref(locale, 'websites')}
+                        onClick={() => setOpen(false)}
+                        className="block w-full rounded-lg py-2 font-sans text-sm text-foreground/60 transition-colors hover:bg-muted hover:text-foreground"
+                      >
+                        {locale === 'pl' ? 'Strony internetowe' : 'Websites'}
+                      </Link>
+                    </li>
+                    <li className="w-full">
+                      <Link
+                        href={getCategoryHref(locale, 'software')}
+                        onClick={() => setOpen(false)}
+                        className="block w-full rounded-lg py-2 font-sans text-sm text-foreground/60 transition-colors hover:bg-muted hover:text-foreground"
+                      >
+                        {locale === 'pl' ? 'Oprogramowanie' : 'Software'}
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+              ) : (
+                <li key={link.href} className="w-full">
+                  <Link
+                    href={link.href as Href}
+                    onClick={() => setOpen(false)}
+                    className="block w-full rounded-lg py-2 font-sans text-sm text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              )
+            )}
           </ul>
         </nav>
 

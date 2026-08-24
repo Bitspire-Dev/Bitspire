@@ -3,12 +3,12 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { readFile } from 'fs/promises';
 import path from 'path';
-import client from '@tina/__generated__/client';
-import { tinaQueryWithRetry } from '@/lib/tina';
+import { getBlogConnection, getBlogPost } from '@/lib/tina';
 import { routing } from '@/i18n/routing';
 import { BlogArticle } from '@/components/pages/BlogArticlePage';
-import { toRelatedItems } from '@/lib/blog';
+import { buildBlogArticleMap, toRelatedItems } from '@/lib/blog';
 import { extractTocFromMarkdown } from '@/lib/toc';
+import { localeAlternates } from '@/lib/site';
 
 interface BlogPageParams {
   locale: string;
@@ -16,7 +16,7 @@ interface BlogPageParams {
 }
 
 export async function generateStaticParams() {
-  const tina = await tinaQueryWithRetry(() => client.queries.blogConnection());
+  const tina = await getBlogConnection();
   const locales = routing.locales;
   const params: { locale: string; slug: string }[] = [];
 
@@ -39,15 +39,36 @@ export async function generateMetadata({
   params: Promise<BlogPageParams>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const tina = await tinaQueryWithRetry(() =>
-    client.queries.blog({
-      relativePath: `${locale}/${slug}.md`,
-    })
-  );
+  const [tina, all] = await Promise.all([
+    getBlogPost(`${locale}/${slug}.md`),
+    getBlogConnection(),
+  ]);
+
+  const post = tina.data.blog;
+  if (!post) return {};
+
+  const canonical = post.canonical?.trim() || slug;
+  const byLocale = buildBlogArticleMap(all.data).byCanonical[canonical] ?? {};
+  const cover = post.cover ?? undefined;
 
   return {
-    title: tina.data.blog?.title,
-    description: tina.data.blog?.description,
+    title: post.title,
+    description: post.description,
+    alternates: localeAlternates(locale, l => `/blog/${byLocale[l] ?? slug}`),
+    openGraph: {
+      type: 'article',
+      title: post.title,
+      description: post.description ?? undefined,
+      publishedTime: post.date ?? undefined,
+      authors: post.author?.name ? [post.author.name] : undefined,
+      images: cover ? [{ url: cover, alt: post.title }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.description ?? undefined,
+      images: cover ? [cover] : undefined,
+    },
   };
 }
 
@@ -57,8 +78,8 @@ export default async function BlogArticlePage({ params }: { params: Promise<Blog
   setRequestLocale(locale);
 
   const [tina, all, rawMarkdown] = await Promise.all([
-    tinaQueryWithRetry(() => client.queries.blog({ relativePath: `${locale}/${slug}.md` })),
-    tinaQueryWithRetry(() => client.queries.blogConnection()),
+    getBlogPost(`${locale}/${slug}.md`),
+    getBlogConnection(),
     readFile(path.join(process.cwd(), 'content', 'blog', locale, `${slug}.md`), 'utf-8').catch(
       () => ''
     ),

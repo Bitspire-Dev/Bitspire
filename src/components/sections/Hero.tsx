@@ -1,9 +1,8 @@
 'use client';
 
 import { memo, Suspense, useEffect, useRef, useState } from 'react';
-import { useReducedMotion } from 'motion/react';
 import dynamic from 'next/dynamic';
-import { motion, useScroll, useTransform } from 'motion/react';
+import { m, useReducedMotion, useScroll, useTransform } from 'motion/react';
 import { useLocale } from 'next-intl';
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
@@ -89,7 +88,7 @@ function HeroContent({ page }: HeroProps) {
         aria-hidden="true"
       />
 
-      <motion.div
+      <m.div
         style={{ y: contentY, opacity: contentOpacity }}
         className="relative z-20 container mx-auto flex max-w-360 flex-col items-center px-6 py-24 text-center"
       >
@@ -136,8 +135,8 @@ function HeroContent({ page }: HeroProps) {
             </Button>
           </div>
         </FadeIn>
-      </motion.div>
-      <motion.div
+      </m.div>
+      <m.div
         style={{ opacity: indicatorOpacity }}
         className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2"
         aria-hidden="true"
@@ -147,14 +146,14 @@ function HeroContent({ page }: HeroProps) {
             Scroll
           </span>
           <div className="flex h-10 w-6 justify-center rounded-full border border-muted-foreground/30 p-1">
-            <motion.div
+            <m.div
               className="h-2 w-1 rounded-full bg-muted-foreground/50"
               animate={{ y: [0, 12, 0] }}
               transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
             />
           </div>
         </div>
-      </motion.div>
+      </m.div>
     </section>
   );
 }

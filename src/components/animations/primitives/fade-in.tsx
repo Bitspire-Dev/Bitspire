@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useReducedMotion } from 'motion/react';
+import { m, useReducedMotion } from 'motion/react';
 import type { ReactNode } from 'react';
 
 const EASE_OUT_EXPO = [0.22, 1, 0.36, 1] as const;
@@ -21,7 +21,7 @@ export function FadeIn({ children, delay = 0, duration = 0.6, y = 24, className 
   }
 
   return (
-    <motion.div
+    <m.div
       className={className}
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -29,6 +29,6 @@ export function FadeIn({ children, delay = 0, duration = 0.6, y = 24, className 
       transition={{ duration, delay, ease: EASE_OUT_EXPO }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }

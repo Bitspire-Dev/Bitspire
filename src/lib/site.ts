@@ -1,8 +1,56 @@
 import type { Metadata } from 'next';
+import { routing } from '@/i18n/routing';
+
+export const siteName = 'Bitspire';
+
+export const siteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
+).replace(/\/$/, '');
+
+export const localePathname = (locale: string, path: string) =>
+  `${siteUrl}/${locale}${path === '/' ? '' : path}`;
+
+export function localeAlternates(
+  locale: string,
+  pathForLocale: (locale: string) => string
+): Metadata['alternates'] {
+  return {
+    canonical: localePathname(locale, pathForLocale(locale)),
+    languages: {
+      ...Object.fromEntries(
+        routing.locales.map(l => [l, localePathname(l, pathForLocale(l))])
+      ),
+      'x-default': localePathname(routing.defaultLocale, pathForLocale(routing.defaultLocale)),
+    },
+  };
+}
 
 export const siteMetadata: Metadata = {
-  applicationName: 'Bitspire',
+  metadataBase: new URL(siteUrl),
+  applicationName: siteName,
   manifest: '/site.webmanifest',
+  creator: siteName,
+  publisher: siteName,
+  formatDetection: { telephone: false },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    siteName,
+    locale: 'pl_PL',
+    alternateLocale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
   icons: {
     icon: [
       {
