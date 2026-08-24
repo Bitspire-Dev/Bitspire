@@ -47,6 +47,12 @@ export default defineConfig({
             label: 'Description',
           },
           {
+            type: 'string',
+            name: 'lastUpdated',
+            label: 'Last updated',
+            description: 'Date displayed on legal pages, e.g. 24.08.2026.',
+          },
+          {
             type: 'rich-text',
             name: 'body',
             label: 'Body',

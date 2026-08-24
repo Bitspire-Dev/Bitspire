@@ -7,6 +7,7 @@ import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/pri
 import { Input } from '@/components/ui/primitives/input';
 import { Textarea } from '@/components/ui/primitives/textarea';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
+import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
 import type { PageQuery } from '@tina/__generated__/types';
 
@@ -29,6 +30,8 @@ const UI: Record<string, Record<string, string>> = {
     send: 'Wyślij wiadomość',
     required: 'To pole jest wymagane',
     invalidEmail: 'Podaj prawidłowy adres e-mail',
+    privacyNotice: 'Wysyłając wiadomość, akceptujesz',
+    privacyLink: 'Politykę prywatności',
   },
   en: {
     name: 'Name',
@@ -38,6 +41,8 @@ const UI: Record<string, Record<string, string>> = {
     send: 'Send message',
     required: 'This field is required',
     invalidEmail: 'Please enter a valid email address',
+    privacyNotice: 'By sending a message, you accept our',
+    privacyLink: 'Privacy Policy',
   },
 };
 
@@ -159,6 +164,18 @@ export function ContactForm({ contact, locale, className }: ContactFormProps) {
             <Button type="submit" className="w-full">
               {ui.send}
             </Button>
+          </FadeIn>
+
+          <FadeIn delay={0.25}>
+            <p className="text-center font-sans text-xs text-muted-foreground">
+              {ui.privacyNotice}{' '}
+              <Link
+                href="/privacy"
+                className="text-foreground underline underline-offset-4 transition-colors hover:text-primary"
+              >
+                {ui.privacyLink}
+              </Link>
+            </p>
           </FadeIn>
         </form>
       </CardContent>
