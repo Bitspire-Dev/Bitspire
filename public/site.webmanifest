@@ -1,7 +1,7 @@
 {
   "name": "Bitspire",
   "short_name": "Bitspire",
-  "description": "Bitspire website",
+  "description": "Bitspire — modern websites and tailor-made software for your business.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

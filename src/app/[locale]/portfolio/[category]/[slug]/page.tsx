@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import client from '@tina/__generated__/client';
 import { tinaQueryWithRetry } from '@/lib/tina';
+import { buildMetadata } from '@/lib/metadata';
 import { PortfolioProjectPage } from '@/components/pages/PortfolioProjectPage';
 import { getCategoryBySlug, PORTFOLIO_CATEGORIES } from '@/lib/portfolio/categories';
 
@@ -59,10 +60,18 @@ export async function generateMetadata({
     })
   );
 
-  return {
-    title: tina.data.project?.title,
-    description: tina.data.project?.description,
-  };
+  const project = tina.data.project;
+  if (!project) {
+    return {};
+  }
+
+  return buildMetadata({
+    title: project.title ?? slug,
+    description: project.description ?? '',
+    locale,
+    pathname: `/portfolio/${category}/${slug}`,
+    image: project.screenshot ?? undefined,
+  });
 }
 
 export default async function ProjectArticlePage({

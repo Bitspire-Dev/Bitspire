@@ -15,7 +15,11 @@ import '@/app/globals.css';
 
 export const metadata: Metadata = {
   ...siteMetadata,
-  title: 'Bitspire',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://bitspire.pl'),
+  title: {
+    default: 'Bitspire',
+    template: '%s | Bitspire',
+  },
   description: 'Bitspire website',
 };
 

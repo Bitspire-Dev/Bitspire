@@ -5,6 +5,7 @@ import { readFile } from 'fs/promises';
 import path from 'path';
 import client from '@tina/__generated__/client';
 import { tinaQueryWithRetry } from '@/lib/tina';
+import { buildMetadata } from '@/lib/metadata';
 import { routing } from '@/i18n/routing';
 import { BlogArticle } from '@/components/pages/BlogArticlePage';
 import { toRelatedItems } from '@/lib/blog';
@@ -45,10 +46,23 @@ export async function generateMetadata({
     })
   );
 
-  return {
-    title: tina.data.blog?.title,
-    description: tina.data.blog?.description,
-  };
+  const blog = tina.data.blog;
+  if (!blog) {
+    return {};
+  }
+
+  const authorName = typeof blog.author === 'object' && blog.author ? blog.author.name : undefined;
+
+  return buildMetadata({
+    title: blog.title ?? slug,
+    description: blog.description ?? '',
+    locale,
+    pathname: `/blog/${slug}`,
+    image: blog.cover ?? undefined,
+    type: 'article',
+    publishedTime: blog.date ?? undefined,
+    authors: authorName ? [authorName] : undefined,
+  });
 }
 
 export default async function BlogArticlePage({ params }: { params: Promise<BlogPageParams> }) {
