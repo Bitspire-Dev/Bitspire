@@ -4,7 +4,8 @@ import { notFound } from 'next/navigation';
 import { getPage } from '@/lib/tina';
 import { PortfolioPage } from '@/components/pages/PortfolioPage';
 import { getPageFallbackTitle } from '@/lib/ui';
-import { localeAlternates } from '@/lib/site';
+import { localeAlternates, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { combineJsonLd, webPageJsonLd, breadcrumbListJsonLd } from '@/lib/json-ld';
 
 export async function generateMetadata({
   params,
@@ -16,12 +17,14 @@ export async function generateMetadata({
 
   const title = data.page?.title ?? getPageFallbackTitle(locale, 'portfolio');
   const description = data.page?.description ?? undefined;
+  const defaultImages = getDefaultOgImages(locale);
 
   return {
     title,
     description,
     alternates: localeAlternates(locale, () => '/portfolio'),
-    openGraph: { title, description },
+    openGraph: { ...siteMetadata.openGraph, title, description, images: defaultImages.openGraph },
+    twitter: { ...siteMetadata.twitter, title, description, images: defaultImages.twitter },
   };
 }
 
@@ -36,7 +39,31 @@ export default async function Portfolio({ params }: { params: Promise<{ locale: 
     notFound();
   }
 
+  const page = tina.data.page;
+  const pageUrl = `${siteUrl}/${locale}/portfolio`;
+  const homeLabel = locale === 'pl' ? 'Strona główna' : 'Home';
+  const portfolioLabel = page.title ?? getPageFallbackTitle(locale, 'portfolio');
+  const description = page.description;
+  const jsonLd = combineJsonLd(
+    webPageJsonLd({
+      name: portfolioLabel,
+      description,
+      url: pageUrl,
+    }),
+    breadcrumbListJsonLd([
+      { name: homeLabel, item: `${siteUrl}/${locale}` },
+      { name: portfolioLabel, item: pageUrl },
+    ])
+  );
+
   return (
-    <PortfolioPage query={tina.query} variables={tina.variables} data={tina.data} locale={locale} />
+    <PortfolioPage
+      query={tina.query}
+      variables={tina.variables}
+      data={tina.data}
+      locale={locale}
+      jsonLd={jsonLd}
+      breadcrumbs={[{ label: homeLabel, href: '/' }, { label: portfolioLabel }]}
+    />
   );
 }

@@ -6,6 +6,7 @@ import { PortfolioProjectHeader } from '@/components/sections/PortfolioProjectHe
 import { PortfolioProjectBody } from '@/components/sections/PortfolioProjectBody';
 import { ContactCta } from '@/components/ui/composites/ContactCta';
 import { getCategoryHref, isPortfolioCategoryId } from '@/lib/portfolio/categories';
+import { Breadcrumb, type BreadcrumbItem } from '@/components/ui/navigation/breadcrumb';
 
 const UI: Record<string, Record<string, string>> = {
   pl: {
@@ -24,6 +25,8 @@ interface PortfolioProjectPageProps {
   data: ProjectQuery;
   locale: string;
   category: string;
+  jsonLd?: Record<string, unknown>;
+  breadcrumbs?: BreadcrumbItem[];
 }
 
 export function PortfolioProjectPage({
@@ -32,6 +35,8 @@ export function PortfolioProjectPage({
   data,
   locale,
   category,
+  jsonLd,
+  breadcrumbs,
 }: PortfolioProjectPageProps) {
   const { data: tinaData } = useTina({ query, variables, data });
   const project = tinaData?.project ?? data?.project;
@@ -46,16 +51,30 @@ export function PortfolioProjectPage({
     : '/portfolio';
 
   return (
-    <article className="container mx-auto max-w-360 px-4 pb-24 md:px-6 lg:pb-12">
-      <PortfolioProjectHeader
-        project={project}
-        backLabel={ui.back}
-        backHref={backHref}
-        visitLabel={ui.visit}
-        locale={locale}
-      />
-      <PortfolioProjectBody body={project.body} tinaFieldBody={tinaField(project, 'body')} />
-      <ContactCta locale={locale} />
-    </article>
+    <>
+      {jsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      ) : null}
+      {breadcrumbs ? (
+        <Breadcrumb
+          items={breadcrumbs}
+          className="container mx-auto max-w-360 px-4 pt-6 md:px-6 md:pt-8"
+        />
+      ) : null}
+      <article className="container mx-auto max-w-360 px-4 pb-24 md:px-6 lg:pb-12">
+        <PortfolioProjectHeader
+          project={project}
+          backLabel={ui.back}
+          backHref={backHref}
+          visitLabel={ui.visit}
+          locale={locale}
+        />
+        <PortfolioProjectBody body={project.body} tinaFieldBody={tinaField(project, 'body')} />
+        <ContactCta locale={locale} />
+      </article>
+    </>
   );
 }

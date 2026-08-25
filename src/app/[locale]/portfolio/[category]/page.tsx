@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
+import { notFound } from 'next/navigation';
 import { getProjectConnection } from '@/lib/tina';
 import { PortfolioCategoryPage } from '@/components/pages/PortfolioCategoryPage';
 import {
@@ -7,7 +8,10 @@ import {
   getCategoryBySlug,
   getCategoryUrlSlug,
 } from '@/lib/portfolio/categories';
-import { localeAlternates } from '@/lib/site';
+import { localeAlternates, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { combineJsonLd, webPageJsonLd, breadcrumbListJsonLd } from '@/lib/json-ld';
+
+export const dynamicParams = false;
 
 export function generateStaticParams({ params }: { params: { locale: string } }) {
   const { locale } = params;
@@ -27,6 +31,7 @@ export async function generateMetadata({
 
   const title = categoryData.label[locale] ?? categoryData.label.pl;
   const description = categoryData.description[locale] ?? categoryData.description.pl;
+  const defaultImages = getDefaultOgImages(locale);
 
   return {
     title,
@@ -35,7 +40,8 @@ export async function generateMetadata({
       locale,
       l => `/portfolio/${getCategoryUrlSlug(categoryData.id, l)}`
     ),
-    openGraph: { title, description },
+    openGraph: { ...siteMetadata.openGraph, title, description, images: defaultImages.openGraph },
+    twitter: { ...siteMetadata.twitter, title, description, images: defaultImages.twitter },
   };
 }
 
@@ -48,7 +54,30 @@ export default async function PortfolioCategory({
 
   setRequestLocale(locale);
 
+  const categoryData = getCategoryBySlug(category, locale);
+  if (!categoryData) {
+    notFound();
+  }
+
   const tina = await getProjectConnection();
+  const categoryLabel = categoryData.label[locale] ?? categoryData.label.pl;
+  const categoryDescription = categoryData.description[locale] ?? categoryData.description.pl;
+  const categoryUrlSlug = getCategoryUrlSlug(categoryData.id, locale);
+  const pageUrl = `${siteUrl}/${locale}/portfolio/${categoryUrlSlug}`;
+  const homeLabel = locale === 'pl' ? 'Strona główna' : 'Home';
+  const portfolioLabel = 'Portfolio';
+  const jsonLd = combineJsonLd(
+    webPageJsonLd({
+      name: categoryLabel,
+      description: categoryDescription,
+      url: pageUrl,
+    }),
+    breadcrumbListJsonLd([
+      { name: homeLabel, item: `${siteUrl}/${locale}` },
+      { name: portfolioLabel, item: `${siteUrl}/${locale}/portfolio` },
+      { name: categoryLabel, item: pageUrl },
+    ])
+  );
 
   return (
     <PortfolioCategoryPage
@@ -57,6 +86,12 @@ export default async function PortfolioCategory({
       data={tina.data}
       category={category}
       locale={locale}
+      jsonLd={jsonLd}
+      breadcrumbs={[
+        { label: homeLabel, href: '/' },
+        { label: portfolioLabel, href: '/portfolio' },
+        { label: categoryLabel },
+      ]}
     />
   );
 }

@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 import { useTina, tinaField } from 'tinacms/dist/react';
 import type { BlogConnectionQuery } from '@tina/__generated__/types';
 import { ContentListView } from '@/components/sections/ContentListView';
+import { Breadcrumb, type BreadcrumbItem } from '@/components/ui/navigation/breadcrumb';
 import type { ContentCardItem } from '@/components/ui/composites/content-card';
 import { getBlogArticleHref, extractBlogSlug } from '@/lib/blog';
 import { useContentList } from '@/lib/content-list';
@@ -36,6 +37,8 @@ interface BlogPageProps {
   variables: Record<string, unknown>;
   data: BlogConnectionQuery;
   locale: string;
+  jsonLd?: Record<string, unknown>;
+  breadcrumbs?: BreadcrumbItem[];
 }
 
 function matches(post: BlogNode, term: string): boolean {
@@ -45,7 +48,7 @@ function matches(post: BlogNode, term: string): boolean {
   return title.includes(term) || description.includes(term) || tags.includes(term);
 }
 
-export function BlogPage({ query, variables, data, locale }: BlogPageProps) {
+export function BlogPage({ query, variables, data, locale, jsonLd, breadcrumbs }: BlogPageProps) {
   const { data: tinaData } = useTina({ query, variables, data });
   const [search, setSearch] = useState('');
   const ui = UI[locale] ?? UI.pl;
@@ -76,15 +79,29 @@ export function BlogPage({ query, variables, data, locale }: BlogPageProps) {
   const posts = useContentList(tinaData?.blogConnection, locale, search, '', matches, map);
 
   return (
-    <ContentListView
-      title={ui.title}
-      description={ui.description}
-      searchValue={search}
-      onSearchChange={setSearch}
-      searchPlaceholder={ui.searchPlaceholder}
-      emptyMessage={ui.empty}
-      items={posts}
-      imageRatio={16 / 9}
-    />
+    <>
+      {jsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      ) : null}
+      {breadcrumbs ? (
+        <Breadcrumb
+          items={breadcrumbs}
+          className="container mx-auto max-w-360 px-4 pt-6 md:px-6 md:pt-8"
+        />
+      ) : null}
+      <ContentListView
+        title={ui.title}
+        description={ui.description}
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder={ui.searchPlaceholder}
+        emptyMessage={ui.empty}
+        items={posts}
+        imageRatio={16 / 9}
+      />
+    </>
   );
 }

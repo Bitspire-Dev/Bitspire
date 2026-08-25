@@ -1,20 +1,49 @@
 import type { MetadataRoute } from 'next';
 import { routing } from '@/i18n/routing';
 import { localePathname, sitemapAlternates } from '@/lib/site';
-import { getBlogConnection, getProjectConnection } from '@/lib/tina';
+import { getBlogConnection, getPageConnection, getProjectConnection } from '@/lib/tina';
 import { buildBlogArticleMap } from '@/lib/blog';
 import { PORTFOLIO_CATEGORIES, getCategoryUrlSlug } from '@/lib/portfolio/categories';
 import { extractContentSlug } from '@/lib/string';
+import { dottedDateToIso } from '@/lib/date';
 
-const STATIC_PATHS = ['/', '/blog', '/portfolio', '/contact'] as const;
+const STATIC_PATHS = ['/', '/blog', '/portfolio', '/contact', '/privacy'] as const;
+
+const PATH_TO_PAGE_SLUG: Record<(typeof STATIC_PATHS)[number], string> = {
+  '/': 'home',
+  '/blog': 'blog',
+  '/portfolio': 'portfolio',
+  '/contact': 'contact',
+  '/privacy': 'privacy',
+};
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
+  const pageLastUpdated = new Map<string, string | null>();
+  let pageData: Awaited<ReturnType<typeof getPageConnection>> | undefined;
+
+  try {
+    pageData = await getPageConnection();
+    for (const edge of pageData.data.pageConnection?.edges ?? []) {
+      const node = edge?.node;
+      if (!node) continue;
+      const [locale, filename] = node._sys.relativePath.split('/');
+      if (!locale || !filename) continue;
+      const slug = extractContentSlug(filename);
+      pageLastUpdated.set(`${locale}:${slug}`, dottedDateToIso(node.lastUpdated));
+    }
+  } catch {
+    // Content backend unavailable -- continue without lastModified for pages.
+  }
+
   for (const path of STATIC_PATHS) {
+    const pageSlug = PATH_TO_PAGE_SLUG[path];
     for (const locale of routing.locales) {
+      const lastUpdated = pageLastUpdated.get(`${locale}:${pageSlug}`);
       entries.push({
         url: localePathname(locale, path),
+        lastModified: lastUpdated ? new Date(lastUpdated) : undefined,
         changeFrequency: path === '/' ? 'weekly' : 'monthly',
         priority: path === '/' ? 1 : 0.8,
         alternates: sitemapAlternates(() => path),

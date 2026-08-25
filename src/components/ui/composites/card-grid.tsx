@@ -5,14 +5,23 @@ import type { ReactNode } from 'react';
 import { StaggerContainer, StaggerItem } from '@/components/animations/primitives/stagger';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 
+import type { CardTitleProps } from '@/components/ui/primitives/card';
+
 interface CardGridProps {
   items: ContentCardItem[];
   emptyMessage: string;
   imageRatio?: number;
   renderFooter?: (item: ContentCardItem) => ReactNode;
+  titleAs?: CardTitleProps['as'];
 }
 
-export function CardGrid({ items, emptyMessage, imageRatio = 4 / 3, renderFooter }: CardGridProps) {
+export function CardGrid({
+  items,
+  emptyMessage,
+  imageRatio = 4 / 3,
+  renderFooter,
+  titleAs = 'h3',
+}: CardGridProps) {
   if (items.length === 0) {
     return (
       <FadeIn>
@@ -29,6 +38,7 @@ export function CardGrid({ items, emptyMessage, imageRatio = 4 / 3, renderFooter
             item={item}
             imageRatio={imageRatio}
             footer={renderFooter ? renderFooter(item) : undefined}
+            titleAs={titleAs}
           />
         </StaggerItem>
       ))}

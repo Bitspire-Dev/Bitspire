@@ -6,6 +6,7 @@ import type { Application } from 'pixi.js';
 import { cn } from '@/lib/utils';
 import { getCssColor } from '@/lib/color';
 import type { PlasmaMesh } from './mesh';
+import { getPlasmaQuality } from './quality';
 
 interface PlasmaBackgroundProps {
   className?: string;
@@ -16,6 +17,7 @@ export function PlasmaBackground({ className }: PlasmaBackgroundProps) {
   const appRef = useRef<Application | null>(null);
   const meshRef = useRef<PlasmaMesh | null>(null);
   const reducedMotionRef = useRef(false);
+  const isVisibleRef = useRef(true);
   const resumeLoopRef = useRef<(() => void) | null>(null);
   const { resolvedTheme } = useTheme();
 
@@ -56,7 +58,10 @@ export function PlasmaBackground({ className }: PlasmaBackgroundProps) {
         import('./mesh'),
       ]);
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const quality = getPlasmaQuality();
+      const dpr = quality.dpr;
+      const maxFps = quality.maxFps;
+      const minFrameTime = 1000 / maxFps;
       const { clientWidth, clientHeight } = container;
 
       const brand = getCssColor('--brand', '#0037ff');
@@ -97,6 +102,7 @@ export function PlasmaBackground({ className }: PlasmaBackgroundProps) {
       newApp.stage.addChild(mesh);
 
       startTime = performance.now();
+      let lastFrameTime = 0;
 
       const loop = (now: number) => {
         if (destroyed) return;
@@ -109,6 +115,18 @@ export function PlasmaBackground({ className }: PlasmaBackgroundProps) {
           return;
         }
 
+        if (!isVisibleRef.current) {
+          rafId = requestAnimationFrame(loop);
+          return;
+        }
+
+        const elapsed = now - lastFrameTime;
+        if (elapsed < minFrameTime) {
+          rafId = requestAnimationFrame(loop);
+          return;
+        }
+
+        lastFrameTime = now;
         mesh.time = (now - startTime) / 1000;
         newApp.render();
         rafId = requestAnimationFrame(loop);
@@ -134,7 +152,8 @@ export function PlasmaBackground({ className }: PlasmaBackgroundProps) {
       const container = containerRef.current;
       if (!app || !mesh || !container) return;
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const quality = getPlasmaQuality();
+      const dpr = quality.dpr;
       const { clientWidth, clientHeight } = container;
 
       app.renderer.resize(clientWidth, clientHeight);
@@ -157,7 +176,15 @@ export function PlasmaBackground({ className }: PlasmaBackgroundProps) {
       if (!event.matches) resumeLoopRef.current?.();
     };
 
+    const handleVisibilityChange = () => {
+      isVisibleRef.current = !document.hidden;
+      if (isVisibleRef.current) {
+        resumeLoopRef.current?.();
+      }
+    };
+
     mediaQuery.addEventListener('change', handleMotionChange);
+    document.addEventListener('visibilitychange', handleVisibilityChange, { passive: true });
 
     return () => {
       destroyed = true;
@@ -165,6 +192,7 @@ export function PlasmaBackground({ className }: PlasmaBackgroundProps) {
       clearTimeout(resizeTimer);
       resizeObserver.disconnect();
       mediaQuery.removeEventListener('change', handleMotionChange);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
 
       const app = appRef.current;
       if (app) {

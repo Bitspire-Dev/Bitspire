@@ -10,7 +10,8 @@ import { buildBlogArticleMap, type BlogArticleMap } from '@/lib/blog';
 import { inter, nippo, ibmPlexMono } from '@/lib/fonts';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { MotionProvider } from '@/components/providers/motion-provider';
-import { siteMetadata, siteName, siteUrl, localePathname, localeAlternates } from '@/lib/site';
+import { siteMetadata, siteName, localePathname, localeAlternates } from '@/lib/site';
+import { combineJsonLd, organizationJsonLd, websiteJsonLd } from '@/lib/json-ld';
 import '@/app/globals.css';
 
 const LOCALE_TO_OG: Record<string, string> = { pl: 'pl_PL', en: 'en_US' };
@@ -36,21 +37,31 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
 
+  const title = `${siteName} — ${locale === 'pl' ? 'Nowoczesne rozwiązania webowe' : 'Modern web solutions'}`;
+  const description = DESCRIPTIONS[locale] ?? DESCRIPTIONS.pl;
+
   return {
     ...siteMetadata,
     title: {
-      default: `${siteName} — ${locale === 'pl' ? 'Nowoczesne rozwiązania webowe' : 'Modern web solutions'}`,
+      default: title,
       template: `%s | ${siteName}`,
     },
-    description: DESCRIPTIONS[locale] ?? DESCRIPTIONS.pl,
+    description,
     alternates: localeAlternates(locale, () => '/'),
     openGraph: {
       ...siteMetadata.openGraph,
+      title,
+      description,
       locale: LOCALE_TO_OG[locale] ?? 'pl_PL',
       alternateLocale: routing.locales
         .map(l => LOCALE_TO_OG[l] ?? l)
         .filter(l => l !== LOCALE_TO_OG[locale]),
       url: localePathname(locale, '/'),
+    },
+    twitter: {
+      ...siteMetadata.twitter,
+      title,
+      description,
     },
   };
 }
@@ -72,7 +83,6 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  setRequestLocale(locale);
   const messages = await getMessages();
 
   let blogMap: BlogArticleMap = { byCanonical: {}, bySlug: {} };
@@ -84,31 +94,12 @@ export default async function LocaleLayout({
     // Blog-specific locale switching will fall back to the current slug.
   }
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${siteUrl}/#organization`,
-        name: siteName,
-        url: siteUrl,
-        logo: `${siteUrl}/favicon-light-mode.svg`,
-      },
-      {
-        '@type': 'WebSite',
-        '@id': `${siteUrl}/#website`,
-        name: siteName,
-        url: siteUrl,
-        publisher: { '@id': `${siteUrl}/#organization` },
-        inLanguage: routing.locales,
-      },
-    ],
-  };
+  const jsonLd = combineJsonLd(organizationJsonLd(), websiteJsonLd());
 
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${nippo.variable} ${ibmPlexMono.variable} flex min-h-screen flex-col bg-background text-foreground antialiased`}
+        className={`${inter.variable} ${nippo.variable} ${ibmPlexMono.variable} flex min-h-dvh flex-col bg-background text-foreground antialiased`}
       >
         <script
           type="application/ld+json"

@@ -38,9 +38,14 @@ function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
+export interface CardTitleProps extends React.HTMLAttributes<HTMLElement> {
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'div' | 'span';
+}
+
+function CardTitle({ as = 'h3', className, ...props }: CardTitleProps) {
+  const Tag = as;
   return (
-    <div
+    <Tag
       data-slot="card-title"
       className={cn('font-heading text-sm font-medium', className)}
       {...props}

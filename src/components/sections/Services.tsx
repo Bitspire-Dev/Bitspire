@@ -43,7 +43,7 @@ function ServicesContent({ page }: ServicesProps) {
 
   return (
     <section className="relative w-full scroll-mt-20 bg-background">
-      <div className="container mx-auto max-w-360 px-6 py-24">
+      <div className="container mx-auto max-w-360 px-4 py-16 md:px-6 md:py-24">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
           <FadeIn
             className="relative h-80 min-h-0 w-full lg:col-start-1 lg:row-start-2 lg:h-full"

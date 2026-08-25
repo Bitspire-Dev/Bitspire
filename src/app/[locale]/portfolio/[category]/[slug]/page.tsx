@@ -5,11 +5,13 @@ import { getProject, getProjectConnection } from '@/lib/tina';
 import { PortfolioProjectPage } from '@/components/pages/PortfolioProjectPage';
 import {
   getCategoryBySlug,
+  getCategoryById,
   getCategoryUrlSlug,
   PORTFOLIO_CATEGORIES,
   type PortfolioCategoryId,
 } from '@/lib/portfolio/categories';
-import { localeAlternates } from '@/lib/site';
+import { localeAlternates, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { combineJsonLd, webPageJsonLd, articleJsonLd, breadcrumbListJsonLd } from '@/lib/json-ld';
 import { extractContentSlug } from '@/lib/string';
 
 interface ProjectPageParams {
@@ -17,6 +19,8 @@ interface ProjectPageParams {
   category: string;
   slug: string;
 }
+
+export const dynamicParams = false;
 
 export async function generateStaticParams({ params }: { params: { locale: string } }) {
   const { locale } = params;
@@ -68,6 +72,7 @@ export async function generateMetadata({
   if (!project) return {};
 
   const screenshot = project.screenshot ?? undefined;
+  const defaultImages = getDefaultOgImages(locale);
 
   return {
     title: project.title,
@@ -77,16 +82,18 @@ export async function generateMetadata({
       l => `/portfolio/${getCategoryUrlSlug(canonicalCategory, l)}/${slug}`
     ),
     openGraph: {
+      ...siteMetadata.openGraph,
       type: 'article',
       title: project.title,
       description: project.description ?? undefined,
-      images: screenshot ? [{ url: screenshot, alt: project.title }] : undefined,
+      images: screenshot ? [{ url: screenshot, alt: project.title }] : defaultImages.openGraph,
     },
     twitter: {
+      ...siteMetadata.twitter,
       card: 'summary_large_image',
       title: project.title,
       description: project.description ?? undefined,
-      images: screenshot ? [screenshot] : undefined,
+      images: screenshot ? [screenshot] : defaultImages.twitter,
     },
   };
 }
@@ -111,6 +118,34 @@ export default async function ProjectArticlePage({
     notFound();
   }
 
+  const project = tina.data.project;
+  const categoryData = getCategoryById(canonicalCategory);
+  const categoryUrlSlug = getCategoryUrlSlug(canonicalCategory, locale);
+  const categoryLabel = categoryData?.label[locale] ?? categoryData?.label.pl ?? category;
+  const projectUrl = `${siteUrl}/${locale}/portfolio/${categoryUrlSlug}/${slug}`;
+  const homeLabel = locale === 'pl' ? 'Strona główna' : 'Home';
+  const portfolioLabel = 'Portfolio';
+  const jsonLd = combineJsonLd(
+    webPageJsonLd({
+      name: project.title,
+      description: project.description,
+      url: projectUrl,
+      image: project.screenshot,
+    }),
+    articleJsonLd({
+      title: project.title,
+      description: project.description,
+      url: projectUrl,
+      image: project.screenshot,
+    }),
+    breadcrumbListJsonLd([
+      { name: homeLabel, item: `${siteUrl}/${locale}` },
+      { name: portfolioLabel, item: `${siteUrl}/${locale}/portfolio` },
+      { name: categoryLabel, item: `${siteUrl}/${locale}/portfolio/${categoryUrlSlug}` },
+      { name: project.title, item: projectUrl },
+    ])
+  );
+
   return (
     <PortfolioProjectPage
       query={tina.query}
@@ -118,6 +153,16 @@ export default async function ProjectArticlePage({
       data={tina.data}
       locale={locale}
       category={canonicalCategory}
+      jsonLd={jsonLd}
+      breadcrumbs={[
+        { label: homeLabel, href: '/' },
+        { label: portfolioLabel, href: '/portfolio' },
+        {
+          label: categoryLabel,
+          href: { pathname: '/portfolio/[category]', params: { category: categoryUrlSlug } },
+        },
+        { label: project.title },
+      ]}
     />
   );
 }

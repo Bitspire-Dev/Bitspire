@@ -42,14 +42,23 @@ export interface ContentCardItem {
   meta?: ContentCardMeta;
 }
 
+type CardTitleAs = React.ComponentProps<typeof CardTitle>['as'];
+
 interface ContentCardProps {
   item: ContentCardItem;
   imageRatio?: number;
   unoptimized?: boolean;
   footer?: ReactNode;
+  titleAs?: CardTitleAs;
 }
 
-export function ContentCard({ item, imageRatio = 4 / 3, unoptimized, footer }: ContentCardProps) {
+export function ContentCard({
+  item,
+  imageRatio = 4 / 3,
+  unoptimized,
+  footer,
+  titleAs = 'h3',
+}: ContentCardProps) {
   const locale = useLocale();
   const image = item.image ?? null;
   const imageAlt = item.imageAlt ?? item.title ?? '';
@@ -85,6 +94,7 @@ export function ContentCard({ item, imageRatio = 4 / 3, unoptimized, footer }: C
       </AspectRatio>
       <CardHeader className="items-start gap-2">
         <CardTitle
+          as={titleAs}
           data-tina-field={item.meta?.tinaField_title as string | undefined}
           className="font-heading text-lg"
         >

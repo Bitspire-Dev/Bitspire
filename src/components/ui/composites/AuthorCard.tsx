@@ -48,7 +48,9 @@ export function AuthorCard({ author, tinaField, className, locale }: AuthorCardP
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col gap-1">
-            <CardTitle className="text-base">{author.name}</CardTitle>
+            <CardTitle as="h3" className="text-base">
+              {author.name}
+            </CardTitle>
             {author.role ? (
               <CardDescription className="text-xs">{author.role}</CardDescription>
             ) : null}

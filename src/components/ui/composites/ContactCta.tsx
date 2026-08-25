@@ -37,7 +37,9 @@ export function ContactCta({ locale, className }: ContactCtaProps) {
     <FadeIn>
       <Card className={cn('mt-12 w-full', className)}>
         <CardHeader>
-          <CardTitle className="font-heading text-xl md:text-2xl">{ui.title}</CardTitle>
+          <CardTitle as="h2" className="font-heading text-xl md:text-2xl">
+            {ui.title}
+          </CardTitle>
           <CardDescription className="font-sans text-base text-muted-foreground">
             {ui.description}
           </CardDescription>

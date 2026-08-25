@@ -25,6 +25,7 @@ export function BlogArticleBody({ body, tinaFieldBody, toc, className }: BlogArt
           content={body}
           tinaField={tinaFieldBody}
           components={{
+            h1: Heading2,
             h2: Heading2,
             h3: Heading3,
             heading: Heading,

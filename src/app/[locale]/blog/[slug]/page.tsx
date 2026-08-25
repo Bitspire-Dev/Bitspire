@@ -8,13 +8,21 @@ import { routing } from '@/i18n/routing';
 import { BlogArticle } from '@/components/pages/BlogArticlePage';
 import { buildBlogArticleMap, toRelatedItems } from '@/lib/blog';
 import { extractTocFromMarkdown } from '@/lib/toc';
-import { localeAlternates } from '@/lib/site';
+import { localeAlternates, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import {
+  combineJsonLd,
+  webPageJsonLd,
+  blogPostingJsonLd,
+  breadcrumbListJsonLd,
+} from '@/lib/json-ld';
 import { extractContentSlug } from '@/lib/string';
 
 interface BlogPageParams {
   locale: string;
   slug: string;
 }
+
+export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const tina = await getBlogConnection();
@@ -43,29 +51,32 @@ export async function generateMetadata({
   const [tina, all] = await Promise.all([getBlogPost(`${locale}/${slug}.md`), getBlogConnection()]);
 
   const post = tina.data.blog;
-  if (!post) return {};
+  if (!post) notFound();
 
   const canonical = post.canonical?.trim() || slug;
   const byLocale = buildBlogArticleMap(all.data).byCanonical[canonical] ?? {};
   const cover = post.cover ?? undefined;
+  const defaultImages = getDefaultOgImages(locale);
 
   return {
     title: post.title,
     description: post.description,
     alternates: localeAlternates(locale, l => `/blog/${byLocale[l] ?? slug}`),
     openGraph: {
+      ...siteMetadata.openGraph,
       type: 'article',
       title: post.title,
       description: post.description ?? undefined,
       publishedTime: post.date ?? undefined,
       authors: post.author?.name ? [post.author.name] : undefined,
-      images: cover ? [{ url: cover, alt: post.title }] : undefined,
+      images: cover ? [{ url: cover, alt: post.title }] : defaultImages.openGraph,
     },
     twitter: {
+      ...siteMetadata.twitter,
       card: 'summary_large_image',
       title: post.title,
       description: post.description ?? undefined,
-      images: cover ? [cover] : undefined,
+      images: cover ? [cover] : defaultImages.twitter,
     },
   };
 }
@@ -87,8 +98,34 @@ export default async function BlogArticlePage({ params }: { params: Promise<Blog
     notFound();
   }
 
+  const post = tina.data.blog;
   const related = toRelatedItems(slug, locale, all.data);
   const toc = extractTocFromMarkdown(rawMarkdown);
+
+  const postUrl = `${siteUrl}/${locale}/blog/${slug}`;
+  const homeLabel = locale === 'pl' ? 'Strona główna' : 'Home';
+  const blogLabel = 'Blog';
+  const jsonLd = combineJsonLd(
+    webPageJsonLd({
+      name: post.title,
+      description: post.description,
+      url: postUrl,
+      image: post.cover,
+    }),
+    blogPostingJsonLd({
+      title: post.title,
+      description: post.description,
+      url: postUrl,
+      image: post.cover,
+      datePublished: post.date,
+      author: post.author,
+    }),
+    breadcrumbListJsonLd([
+      { name: homeLabel, item: `${siteUrl}/${locale}` },
+      { name: blogLabel, item: `${siteUrl}/${locale}/blog` },
+      { name: post.title, item: postUrl },
+    ])
+  );
 
   return (
     <BlogArticle
@@ -98,6 +135,12 @@ export default async function BlogArticlePage({ params }: { params: Promise<Blog
       related={related}
       locale={locale}
       toc={toc}
+      jsonLd={jsonLd}
+      breadcrumbs={[
+        { label: homeLabel, href: '/' },
+        { label: blogLabel, href: '/blog' },
+        { label: post.title },
+      ]}
     />
   );
 }

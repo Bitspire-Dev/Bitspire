@@ -16,7 +16,12 @@ export function PortfolioProjectBody({
 }: PortfolioProjectBodyProps) {
   return (
     <FadeIn>
-      <MarkdownBody content={body} tinaField={tinaFieldBody} className={className} />
+      <MarkdownBody
+        content={body}
+        tinaField={tinaFieldBody}
+        className={className}
+        shiftHeadings={1}
+      />
     </FadeIn>
   );
 }

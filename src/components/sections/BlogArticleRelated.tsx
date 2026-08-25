@@ -23,7 +23,7 @@ export function BlogArticleRelated({ items, title, emptyMessage }: BlogArticleRe
         <h2 className="font-heading text-2xl font-bold text-foreground md:text-3xl">{title}</h2>
       </FadeIn>
       <div className="mt-8">
-        <CardGrid items={items} emptyMessage={emptyMessage} imageRatio={16 / 9} />
+        <CardGrid items={items} emptyMessage={emptyMessage} imageRatio={16 / 9} titleAs="h3" />
       </div>
     </section>
   );

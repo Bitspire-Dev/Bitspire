@@ -4,13 +4,23 @@ import { COMPANY } from '@/lib/company';
 
 export const siteName = COMPANY.name;
 
-export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(
-  /\/$/,
-  ''
-);
+const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
-export const localePathname = (locale: string, path: string) =>
-  `${siteUrl}/${locale}${path === '/' ? '' : path}`;
+export const siteUrl = rawSiteUrl
+  .replace(/^https?:\/\/www\./, match => match.replace('www.', ''))
+  .replace(/\/$/, '');
+
+export const localePathname = (locale: string, path: string) => {
+  const normalizedPath = path.replace(/\/$/, '');
+  return `${siteUrl}/${locale}${normalizedPath === '/' ? '' : normalizedPath}`;
+};
+
+export function getDefaultOgImages(locale: string) {
+  return {
+    openGraph: [{ url: `/${locale}/opengraph-image`, alt: siteName }],
+    twitter: [{ url: `/${locale}/twitter-image`, alt: siteName }],
+  };
+}
 
 export function sitemapAlternates(pathForLocale: (locale: string) => string) {
   return {
@@ -56,11 +66,17 @@ export const siteMetadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName,
+    title: siteName,
+    description:
+      'Bitspire — nowoczesne strony i aplikacje webowe. Projektujemy i budujemy szybkie, dopracowane produkty cyfrowe.',
     locale: 'pl_PL',
     alternateLocale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
+    title: siteName,
+    description:
+      'Bitspire — nowoczesne strony i aplikacje webowe. Projektujemy i budujemy szybkie, dopracowane produkty cyfrowe.',
   },
   icons: {
     icon: [

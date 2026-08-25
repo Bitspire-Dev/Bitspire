@@ -201,7 +201,9 @@ export function TableOfContents({ toc, title, className }: TableOfContentsProps)
     <FadeIn>
       <Card className={cn('sticky top-24 w-full self-start', className)}>
         <CardHeader>
-          <CardTitle className="text-sm">{title}</CardTitle>
+          <CardTitle as="h3" className="text-sm">
+            {title}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <TocList toc={toc} activeId={activeId} />

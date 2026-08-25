@@ -78,7 +78,7 @@ function FooterContent({ locale }: FooterProps) {
   return (
     <footer className="w-full border-t border-border/60 bg-background">
       <FadeIn className="w-full">
-        <div className="container mx-auto max-w-360 px-6 py-12">
+        <div className="container mx-auto max-w-360 px-4 py-12 md:px-6">
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
             {/* Brand */}
             <div className="flex flex-col gap-4">

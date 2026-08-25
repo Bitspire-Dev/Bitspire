@@ -3,7 +3,8 @@ import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { getPage } from '@/lib/tina';
 import { HomePage } from '@/components/pages/HomePage';
-import { localeAlternates } from '@/lib/site';
+import { localeAlternates, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { combineJsonLd, webPageJsonLd } from '@/lib/json-ld';
 
 export async function generateMetadata({
   params,
@@ -15,12 +16,14 @@ export async function generateMetadata({
 
   const title = data.page?.title;
   const description = data.page?.description ?? undefined;
+  const defaultImages = getDefaultOgImages(locale);
 
   return {
     title: title ? { absolute: title } : undefined,
     description,
     alternates: localeAlternates(locale, () => '/'),
-    openGraph: { title, description },
+    openGraph: { ...siteMetadata.openGraph, title, description, images: defaultImages.openGraph },
+    twitter: { ...siteMetadata.twitter, title, description, images: defaultImages.twitter },
   };
 }
 
@@ -35,5 +38,23 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     notFound();
   }
 
-  return <HomePage query={tina.query} variables={tina.variables} data={tina.data} />;
+  const page = tina.data.page;
+  const pageUrl = `${siteUrl}/${locale}`;
+  const jsonLd = combineJsonLd(
+    webPageJsonLd({
+      name: page.title ?? 'Bitspire',
+      description: page.description,
+      url: pageUrl,
+    })
+  );
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <HomePage query={tina.query} variables={tina.variables} data={tina.data} />
+    </>
+  );
 }

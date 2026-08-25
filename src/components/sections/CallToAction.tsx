@@ -35,7 +35,7 @@ function CallToActionContent({ page }: CallToActionProps) {
       data-tina-field={tinaField(page, 'callToAction')}
       className="relative w-full scroll-mt-20 bg-background"
     >
-      <div className="container mx-auto max-w-360 px-6 py-24">
+      <div className="container mx-auto max-w-360 px-4 py-16 md:px-6 md:py-24">
         <FadeIn>
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
             <div className="flex flex-col items-start gap-8">

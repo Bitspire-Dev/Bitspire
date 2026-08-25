@@ -92,7 +92,9 @@ export function ContactDetails({ contact, locale, className }: ContactDetailsPro
         <CardHeader>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <CardTitle className="font-heading text-xl md:text-2xl">{ui.title}</CardTitle>
+              <CardTitle as="h2" className="font-heading text-xl md:text-2xl">
+                {ui.title}
+              </CardTitle>
               <CardDescription className="mt-1 font-sans text-xs text-muted-foreground">
                 {locale === 'pl' ? 'Jesteśmy do Twojej dyspozycji.' : 'We are at your disposal.'}
               </CardDescription>

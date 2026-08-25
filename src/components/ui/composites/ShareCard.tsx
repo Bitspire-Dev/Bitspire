@@ -66,7 +66,9 @@ export function ShareCard({ title, locale, className }: ShareCardProps) {
     <FadeIn>
       <Card className={cn('gap-3', className)}>
         <CardContent className="flex flex-col gap-3 pt-4">
-          <CardTitle className="text-sm">{ui.share}</CardTitle>
+          <CardTitle as="h3" className="text-sm">
+            {ui.share}
+          </CardTitle>
           <div className="flex flex-col gap-2">
             {links.map(link => (
               <Button

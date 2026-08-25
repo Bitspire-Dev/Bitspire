@@ -2,6 +2,8 @@
   "name": "Bitspire",
   "short_name": "Bitspire",
   "description": "Bitspire — modern websites and tailor-made software for your business.",
+  "lang": "pl",
+  "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

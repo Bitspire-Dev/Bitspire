@@ -97,6 +97,7 @@ function BentoCard({
 
         <CardHeader className="gap-1.5 px-(--card-spacing) pt-(--card-spacing)">
           <CardTitle
+            as="h3"
             data-tina-field={tinaField(item, 'title')}
             className={cn('font-heading font-semibold text-foreground', titleClassName)}
           >
@@ -195,7 +196,7 @@ export function WhyBitspire({ page }: WhyBitspireProps) {
 
   return (
     <section className="relative w-full scroll-mt-20 bg-background">
-      <div className="container mx-auto max-w-360 px-6 py-24">
+      <div className="container mx-auto max-w-360 px-4 py-16 md:px-6 md:py-24">
         <FadeIn className="mb-10 max-w-2xl">
           <h2
             data-tina-field={tinaField(data, 'title')}

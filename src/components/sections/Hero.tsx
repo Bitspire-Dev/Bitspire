@@ -88,7 +88,7 @@ function HeroContent({ page }: HeroProps) {
 
       <m.div
         style={{ y: contentY, opacity: contentOpacity }}
-        className="relative z-20 container mx-auto flex max-w-360 flex-col items-center px-6 py-24 text-center"
+        className="relative z-20 container mx-auto flex max-w-360 flex-col items-center px-4 py-16 text-center md:px-6 md:py-24"
       >
         <FadeIn>
           <h1

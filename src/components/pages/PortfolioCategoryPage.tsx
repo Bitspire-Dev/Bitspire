@@ -16,6 +16,7 @@ import {
 } from '@/lib/portfolio/categories';
 import { extractContentSlug } from '@/lib/string';
 import { useContentList } from '@/lib/content-list';
+import { Breadcrumb, type BreadcrumbItem } from '@/components/ui/navigation/breadcrumb';
 
 const UI: Record<string, Record<string, string>> = {
   pl: {
@@ -46,6 +47,8 @@ interface PortfolioCategoryPageProps {
   data: ProjectConnectionQuery;
   category: string;
   locale: string;
+  jsonLd?: Record<string, unknown>;
+  breadcrumbs?: BreadcrumbItem[];
 }
 
 function matchesProject(project: ProjectNode, term: string): boolean {
@@ -61,6 +64,8 @@ export function PortfolioCategoryPage({
   data,
   category,
   locale,
+  jsonLd,
+  breadcrumbs,
 }: PortfolioCategoryPageProps) {
   const { data: tinaData } = useTina({ query, variables, data });
   const [search, setSearch] = useState('');
@@ -139,16 +144,30 @@ export function PortfolioCategoryPage({
   const title = categoryData?.label[locale] ?? category;
 
   return (
-    <ContentListView
-      title={title}
-      description={ui.description}
-      searchValue={search}
-      onSearchChange={setSearch}
-      searchPlaceholder={ui.searchPlaceholder}
-      emptyMessage={ui.empty}
-      items={projects}
-      imageRatio={16 / 9}
-      renderFooter={renderFooter}
-    />
+    <>
+      {jsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      ) : null}
+      {breadcrumbs ? (
+        <Breadcrumb
+          items={breadcrumbs}
+          className="container mx-auto max-w-360 px-4 pt-6 md:px-6 md:pt-8"
+        />
+      ) : null}
+      <ContentListView
+        title={title}
+        description={ui.description}
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder={ui.searchPlaceholder}
+        emptyMessage={ui.empty}
+        items={projects}
+        imageRatio={16 / 9}
+        renderFooter={renderFooter}
+      />
+    </>
   );
 }

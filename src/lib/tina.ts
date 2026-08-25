@@ -29,6 +29,26 @@ export async function tinaQueryWithRetry<T>(
   throw lastError;
 }
 
+function isTinaNotFound(error: unknown): boolean {
+  return error instanceof Error && /Unable to find record/i.test(error.message);
+}
+
+function withTinaNotFound<T>(
+  query: () => Promise<T>,
+  emptyData: Record<string, unknown>
+): () => Promise<T> {
+  return async () => {
+    try {
+      return await tinaQueryWithRetry(query);
+    } catch (error) {
+      if (isTinaNotFound(error)) {
+        return { data: emptyData, query: '', variables: {} } as T;
+      }
+      throw error;
+    }
+  };
+}
+
 /**
  * Request-scoped memoized connection queries. React's `cache` dedupes these
  * across layout, page and generateMetadata within a single render pass, so the
@@ -43,13 +63,17 @@ export const getProjectConnection = cache(() =>
 );
 
 export const getPage = cache((relativePath: string) =>
-  tinaQueryWithRetry(() => client.queries.page({ relativePath }))
+  withTinaNotFound(() => client.queries.page({ relativePath }), { page: null })()
+);
+
+export const getPageConnection = cache(() =>
+  tinaQueryWithRetry(() => client.queries.pageConnection())
 );
 
 export const getBlogPost = cache((relativePath: string) =>
-  tinaQueryWithRetry(() => client.queries.blog({ relativePath }))
+  withTinaNotFound(() => client.queries.blog({ relativePath }), { blog: null })()
 );
 
 export const getProject = cache((relativePath: string) =>
-  tinaQueryWithRetry(() => client.queries.project({ relativePath }))
+  withTinaNotFound(() => client.queries.project({ relativePath }), { project: null })()
 );

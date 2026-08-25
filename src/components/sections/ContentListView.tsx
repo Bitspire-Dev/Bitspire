@@ -5,6 +5,7 @@ import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { ContentSearch } from '@/components/ui/composites/content-search';
 import { CardGrid } from '@/components/ui/composites/card-grid';
 import type { ContentCardItem } from '@/components/ui/composites/content-card';
+import type { CardTitleProps } from '@/components/ui/primitives/card';
 import { Separator } from '@/components/ui/primitives/separator';
 
 interface ContentListViewProps {
@@ -17,6 +18,7 @@ interface ContentListViewProps {
   items: ContentCardItem[];
   imageRatio?: number;
   renderFooter?: (item: ContentCardItem) => ReactNode;
+  titleAs?: CardTitleProps['as'];
 }
 
 export function ContentListView({
@@ -29,6 +31,7 @@ export function ContentListView({
   items,
   imageRatio = 4 / 3,
   renderFooter,
+  titleAs = 'h2',
 }: ContentListViewProps) {
   return (
     <section className="container mx-auto max-w-360 px-4 py-16 md:px-6 md:py-24">
@@ -56,6 +59,7 @@ export function ContentListView({
         emptyMessage={emptyMessage}
         imageRatio={imageRatio}
         renderFooter={renderFooter}
+        titleAs={titleAs}
       />
     </section>
   );
