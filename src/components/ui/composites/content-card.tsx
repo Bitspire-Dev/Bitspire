@@ -17,6 +17,7 @@ import { Badge } from '@/components/ui/primitives/badge';
 import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 import { Skeleton } from '@/components/ui/primitives/skeleton';
 import { Button } from '@/components/ui/primitives/button';
+import { isUnoptimizedImage } from '@/lib/image';
 
 type Href = ComponentProps<typeof Link>['href'];
 
@@ -71,11 +72,10 @@ export function ContentCard({ item, imageRatio = 4 / 3, unoptimized, footer }: C
             fill
             className={cn(
               'object-cover object-top transition-transform duration-500 group-hover/card:scale-105',
-              (unoptimized ?? (image.endsWith('.svg') || image.endsWith('.gif'))) &&
-                'object-contain bg-muted/50'
+              (unoptimized ?? isUnoptimizedImage(image)) && 'bg-muted/50 object-contain'
             )}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            unoptimized={unoptimized ?? (image.endsWith('.svg') || image.endsWith('.gif'))}
+            unoptimized={unoptimized ?? isUnoptimizedImage(image)}
           />
         ) : (
           <div className="flex size-full items-center justify-center text-muted-foreground">

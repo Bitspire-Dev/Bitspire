@@ -34,6 +34,7 @@ Bezawaryjni is a real auto repair shop offering computer diagnostics, general me
 - loads instantly and ranks well in local search results.
 
 Key requirements:
+
 - **Fast loading** — a destination page for mobile customers.
 - **Local SEO** — visibility for service / garage queries near Słupsk.
 - **No-code content editing** — a simple CMS for the owner.
@@ -63,6 +64,7 @@ React components render content from Tina, add animations, a carousel, and inter
 7. **Contact** — form, obfuscated email (anti-spam), WhatsApp, Google Map.
 
 Technically:
+
 - **Next.js 16 + App Router** — SSR, fast loading, clean URLs.
 - **Tina CMS 3.8.1** — content editing in markdown, version control on GitHub.
 - **TypeScript 5** — full typing of components and CMS data.

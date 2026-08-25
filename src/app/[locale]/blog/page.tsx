@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { getBlogConnection, getPage } from '@/lib/tina';
 import { BlogPage } from '@/components/pages/BlogPage';
+import { getPageFallbackTitle } from '@/lib/ui';
 import { localeAlternates } from '@/lib/site';
 
 export async function generateMetadata({
@@ -11,7 +12,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
 
-  let title = 'Blog';
+  let title = getPageFallbackTitle(locale, 'blog');
   let description: string | undefined;
   try {
     const { data } = await getPage(`${locale}/blog.md`);

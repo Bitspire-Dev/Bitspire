@@ -3,7 +3,6 @@
 import { memo } from 'react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
-import { useTheme } from 'next-themes';
 import { tinaField } from 'tinacms/dist/react';
 import type { ComponentProps } from 'react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
@@ -11,7 +10,7 @@ import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/primitives/button';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/primitives/stagger';
-import { useMounted } from '@/lib/use-mounted';
+import { useThemeImage } from '@/hooks/use-theme-image';
 
 type Href = ComponentProps<typeof Link>['href'];
 
@@ -21,13 +20,11 @@ interface CallToActionProps {
 
 function CallToActionContent({ page }: CallToActionProps) {
   const locale = useLocale();
-  const { resolvedTheme } = useTheme();
-  const mounted = useMounted();
   const cta = page.callToAction;
-  const gryfSrc =
-    mounted && resolvedTheme === 'dark'
-      ? '/layout/dark-mode/gryf-cta.png'
-      : '/layout/light-mode/gryf-cta.png';
+  const gryfSrc = useThemeImage(
+    '/layout/light-mode/gryf-cta.png',
+    '/layout/light-mode/gryf-cta.png'
+  );
 
   if (!cta?.title) {
     return null;
@@ -44,7 +41,7 @@ function CallToActionContent({ page }: CallToActionProps) {
             <div className="flex flex-col items-start gap-8">
               <h2
                 data-tina-field={tinaField(cta, 'title')}
-                className="max-w-3xl text-balance font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl lg:text-5xl"
+                className="max-w-3xl font-heading text-3xl font-semibold tracking-tight text-balance text-foreground md:text-4xl lg:text-5xl"
               >
                 {cta.title}
               </h2>
@@ -52,7 +49,7 @@ function CallToActionContent({ page }: CallToActionProps) {
               {cta.description ? (
                 <p
                   data-tina-field={tinaField(cta, 'description')}
-                  className="max-w-2xl text-pretty font-sans text-lg leading-relaxed text-muted-foreground md:text-xl lg:text-2xl"
+                  className="max-w-2xl font-sans text-lg leading-relaxed text-pretty text-muted-foreground md:text-xl lg:text-2xl"
                 >
                   {cta.description}
                 </p>

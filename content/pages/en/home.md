@@ -32,7 +32,7 @@ whyBitspire:
       imageAlt: 'VS Code editor screen with project code'
       size: large
     - title: 'UX & Conversion'
-      subHeadline: 'We don''t just design pretty visuals. We build sales engines.'
+      subHeadline: "We don't just design pretty visuals. We build sales engines."
       body: 'Sleek minimalism with conversion-focused information architecture. Every button serves a strategic purpose.'
       fullText: 'A beautiful website that fails to generate leads is just an expensive vanity project. Before writing code or designing in Figma, we analyze user intent, customer decision pathways, and your core business targets. We build interfaces that guide visitors from first click to inquiry or purchase.'
       image: layout/4-iphone.png

@@ -2,13 +2,13 @@
 
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
-import { useTheme } from 'next-themes';
 import { ImageIcon } from 'lucide-react';
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
+import { getWhyBitspireUi } from '@/lib/ui';
 
 import { cn } from '@/lib/utils';
-import { useMounted } from '@/lib/use-mounted';
+import { useThemeImage } from '@/hooks/use-theme-image';
 import {
   Card,
   CardContent,
@@ -62,19 +62,8 @@ function BentoCard({
   imageMinHeight = 'min-h-48',
   titleClassName,
 }: BentoCardProps) {
-  const { resolvedTheme } = useTheme();
-  const mounted = useMounted();
   const rawSrc = normalizeImageSrc(item.image);
-  // Route gryf images to the theme-specific subfolder so the griffin matches
-  // the active palette. The Tina CMS path is e.g. `layout/gryf-foo.png`; we
-  // rewrite it to `layout/{light,dark}-mode/gryf-foo.png` on the client.
-  const imageSrc = (() => {
-    if (!rawSrc) return null;
-    const match = rawSrc.match(/^\/layout\/(gryf-[^/]+\.png)$/);
-    if (!match) return rawSrc;
-    const isDark = mounted && resolvedTheme === 'dark';
-    return `/layout/${isDark ? 'dark-mode' : 'light-mode'}/${match[1]}`;
-  })();
+  const imageSrc = useThemeImage(rawSrc, '');
   const bodySource = item.body || item.fullText || '';
   const segments = parseBodyText(bodySource);
 
@@ -134,7 +123,7 @@ function BentoCard({
                 segment.type === 'heading' ? (
                   <h4
                     key={pIndex}
-                    className="font-heading mt-2 text-sm font-semibold text-foreground"
+                    className="mt-2 font-heading text-sm font-semibold text-foreground"
                   >
                     {segment.text}
                   </h4>
@@ -155,27 +144,54 @@ function BentoCard({
   );
 }
 
+type BentoSize = 'large' | 'wide' | 'tall' | 'small' | 'empty';
+
+function resolveBentoSize(item: WhyBitspireItem, index: number): BentoSize {
+  if (item.size) return item.size as BentoSize;
+  // Legacy fallback: first four items follow the original hard-coded layout.
+  if (index === 0) return 'tall';
+  if (index === 1) return 'large';
+  return 'small';
+}
+
+function assignBentoSlots(items: WhyBitspireItem[]): {
+  tall?: WhyBitspireItem;
+  large?: WhyBitspireItem;
+  small: WhyBitspireItem[];
+  rest: WhyBitspireItem[];
+} {
+  const small: WhyBitspireItem[] = [];
+  const rest: WhyBitspireItem[] = [];
+  let tall: WhyBitspireItem | undefined;
+  let large: WhyBitspireItem | undefined;
+
+  for (const [index, item] of items.entries()) {
+    const size = resolveBentoSize(item, index);
+    if (size === 'tall' && !tall) {
+      tall = item;
+    } else if (size === 'large' && !large) {
+      large = item;
+    } else if (size === 'small' && small.length < 2) {
+      small.push(item);
+    } else {
+      rest.push(item);
+    }
+  }
+
+  return { tall, large, small, rest };
+}
+
 export function WhyBitspire({ page }: WhyBitspireProps) {
   const locale = useLocale();
   const data = page.whyBitspire;
+  const ui = getWhyBitspireUi(locale);
 
   if (!data?.items?.length) {
     return null;
   }
 
   const items = data.items.filter((item): item is WhyBitspireItem => !!item);
-  const titleFallback = locale === 'pl' ? 'Dlaczego Bitspire' : 'Why Bitspire';
-
-  // Asymmetric bento layout (desktop):
-  //  ┌────────────────────────────────┬───────────────┐
-  //  │  UX & Konwersja (large)        │               │
-  //  │  image + text                  │  High-Perf     │
-  //  │                                │  (full height) │
-  //  ├───────────────┬────────────────┤               │
-  //  │ Szybkość      │ Pancerne       │               │
-  //  └───────────────┴────────────────┴───────────────┘
-  //       left column ~64%              right ~36%
-  const [highPerf, ux, speed, security] = items;
+  const { tall, large, small, rest } = assignBentoSlots(items);
 
   return (
     <section className="relative w-full scroll-mt-20 bg-background">
@@ -183,15 +199,15 @@ export function WhyBitspire({ page }: WhyBitspireProps) {
         <FadeIn className="mb-10 max-w-2xl">
           <h2
             data-tina-field={tinaField(data, 'title')}
-            className="text-balance font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl"
+            className="font-heading text-3xl font-semibold tracking-tight text-balance text-foreground md:text-4xl"
           >
-            {data.title ?? titleFallback}
+            {data.title ?? ui.titleFallback}
           </h2>
 
           {data.description ? (
             <p
               data-tina-field={tinaField(data, 'description')}
-              className="mt-4 text-pretty font-sans text-lg leading-relaxed text-muted-foreground"
+              className="mt-4 font-sans text-lg leading-relaxed text-pretty text-muted-foreground"
             >
               {data.description}
             </p>
@@ -203,37 +219,53 @@ export function WhyBitspire({ page }: WhyBitspireProps) {
           delay={0.1}
           className="flex flex-col gap-4 md:gap-6 lg:flex-row lg:items-stretch"
         >
-          {/* Left column: UX & Konwersja (top, large) + Szybkość & Pancerne (bottom row) */}
           <div className="flex flex-col gap-4 md:gap-6 lg:w-[64%]">
-            <BentoCard
-              item={ux}
-              className="flex-1"
-              imageMinHeight="min-h-64"
-              titleClassName="text-2xl font-bold"
-            />
-            <div className="flex flex-col gap-4 md:gap-6 sm:flex-row">
+            {large ? (
               <BentoCard
-                item={speed}
+                item={large}
                 className="flex-1"
-                imageMinHeight="min-h-48"
-                titleClassName="text-lg"
+                imageMinHeight="min-h-64"
+                titleClassName="text-2xl font-bold"
               />
-              <BentoCard
-                item={security}
-                className="flex-1"
-                imageMinHeight="min-h-48"
-                titleClassName="text-lg"
-              />
-            </div>
+            ) : null}
+
+            {small.length > 0 ? (
+              <div className="flex flex-col gap-4 sm:flex-row md:gap-6">
+                {small.map(item => (
+                  <BentoCard
+                    key={item.title}
+                    item={item}
+                    className="flex-1"
+                    imageMinHeight="min-h-48"
+                    titleClassName="text-lg"
+                  />
+                ))}
+              </div>
+            ) : null}
+
+            {rest.length > 0 ? (
+              <div className="grid gap-4 sm:grid-cols-2 md:gap-6">
+                {rest.map(item => (
+                  <BentoCard
+                    key={item.title}
+                    item={item}
+                    className="flex-1"
+                    imageMinHeight="min-h-48"
+                    titleClassName="text-lg"
+                  />
+                ))}
+              </div>
+            ) : null}
           </div>
 
-          {/* Right column: High-Performance (full height, tall) */}
-          <BentoCard
-            item={highPerf}
-            className="lg:w-[36%]"
-            imageMinHeight="min-h-64"
-            titleClassName="text-xl"
-          />
+          {tall ? (
+            <BentoCard
+              item={tall}
+              className="lg:w-[36%]"
+              imageMinHeight="min-h-64"
+              titleClassName="text-xl"
+            />
+          ) : null}
         </StaggerContainer>
       </div>
     </section>

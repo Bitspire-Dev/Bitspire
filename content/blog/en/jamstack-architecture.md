@@ -43,13 +43,13 @@ In a traditional web architecture, a browser sends a request to a server. The se
 
 In a Jamstack architecture, the server work is done before the user arrives. Pages are pre-built, stored on a CDN, and served instantly. APIs still handle dynamic tasks, but the heavy lifting of rendering happens once, not on every request.
 
-| Traditional | Jamstack |
-| --- | --- |
-| Pages rendered on each request | Pages pre-rendered at build time |
-| Server and database under load | Static files served from a CDN |
+| Traditional                      | Jamstack                          |
+| -------------------------------- | --------------------------------- |
+| Pages rendered on each request   | Pages pre-rendered at build time  |
+| Server and database under load   | Static files served from a CDN    |
 | Higher hosting and scaling costs | Lower costs and automatic scaling |
-| Larger attack surface | Smaller, safer attack surface |
-| Slower global delivery | Fast delivery from edge locations |
+| Larger attack surface            | Smaller, safer attack surface     |
+| Slower global delivery           | Fast delivery from edge locations |
 
 ## Core principles of Jamstack
 

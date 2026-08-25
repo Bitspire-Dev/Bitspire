@@ -34,6 +34,7 @@ Exobist is a real reptile pet store in Słupsk, run by enthusiasts of reptiles a
 - is fast, responsive, and visible in local search results.
 
 Key requirements:
+
 - **Product-level design system** — consistent color palette and typography from day one.
 - **Speed and SEO** — good search ranking and smooth mobile experience.
 - **Editable CMS** — easy updates to sections, blog, and gallery.
@@ -67,6 +68,7 @@ Main sections and features:
 8. **Legal pages** — privacy policy and terms managed from the CMS.
 
 Technically:
+
 - **Next.js 16 + App Router** — SSR/SSG, clean URLs, and fast transitions.
 - **React 19 + TypeScript 5** — modern code with full typing.
 - **Tailwind CSS 4** — utility-first styles based on a custom design system.

@@ -1,6 +1,7 @@
 'use client';
 
 import { Badge } from '@/components/ui/primitives/badge';
+import { formatLongDate } from '@/lib/date';
 
 interface ArticleMetaProps {
   date: string | null | undefined;
@@ -17,14 +18,7 @@ export function ArticleMeta({
   tinaFieldDate,
   tinaFieldTags,
 }: ArticleMetaProps) {
-  const formattedDate = (() => {
-    if (!date) return null;
-    try {
-      return new Intl.DateTimeFormat(locale, { dateStyle: 'long' }).format(new Date(date));
-    } catch {
-      return date;
-    }
-  })();
+  const formattedDate = formatLongDate(date ?? '', locale);
 
   return (
     <div className="flex flex-wrap items-center gap-3">

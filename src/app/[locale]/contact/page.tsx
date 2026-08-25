@@ -3,6 +3,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { getPage } from '@/lib/tina';
 import { ContactPage } from '@/components/pages/ContactPage';
+import { getPageFallbackTitle } from '@/lib/ui';
 import { localeAlternates } from '@/lib/site';
 
 export async function generateMetadata({
@@ -13,7 +14,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const { data } = await getPage(`${locale}/contact.md`);
 
-  const title = data.page?.title ?? (locale === 'pl' ? 'Kontakt' : 'Contact');
+  const title = data.page?.title ?? getPageFallbackTitle(locale, 'contact');
   const description = data.page?.description ?? undefined;
 
   return {

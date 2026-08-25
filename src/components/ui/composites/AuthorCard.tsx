@@ -3,6 +3,7 @@
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/primitives/card';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
+import { getAuthorCardUi } from '@/lib/ui';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/primitives/avatar';
 import { Button } from '@/components/ui/primitives/button';
 import { ArrowRight } from 'lucide-react';
@@ -19,9 +20,12 @@ interface AuthorCardProps {
   author?: Author | null;
   tinaField?: string;
   className?: string;
+  locale: string;
 }
 
-export function AuthorCard({ author, tinaField, className }: AuthorCardProps) {
+export function AuthorCard({ author, tinaField, className, locale }: AuthorCardProps) {
+  const ui = getAuthorCardUi(locale);
+
   if (!author?.name) {
     return null;
   }
@@ -67,7 +71,7 @@ export function AuthorCard({ author, tinaField, className }: AuthorCardProps) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1"
               >
-                Poznaj ofertę
+                {ui.cta}
                 <ArrowRight className="size-3" />
               </a>
             </Button>

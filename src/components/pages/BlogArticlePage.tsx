@@ -58,7 +58,7 @@ export function BlogArticle({ query, variables, data, related, locale, toc }: Bl
             className={related.length === 0 ? 'pb-8 md:pb-12' : undefined}
           />
           <div className="flex flex-col gap-6 py-8 lg:hidden">
-            <AuthorCard author={author} tinaField={tinaField(blog, 'author')} />
+            <AuthorCard author={author} tinaField={tinaField(blog, 'author')} locale={locale} />
             <ShareCard title={blog.title} locale={locale} />
           </div>
           {related.length > 0 ? (
@@ -66,7 +66,7 @@ export function BlogArticle({ query, variables, data, related, locale, toc }: Bl
           ) : null}
         </main>
         <aside className="hidden flex-col gap-6 lg:flex">
-          <AuthorCard author={author} tinaField={tinaField(blog, 'author')} />
+          <AuthorCard author={author} tinaField={tinaField(blog, 'author')} locale={locale} />
           <ShareCard title={blog.title} locale={locale} />
           <TableOfContents toc={toc} title={ui.toc} />
         </aside>

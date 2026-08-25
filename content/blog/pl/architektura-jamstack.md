@@ -43,13 +43,13 @@ W tradycyjnej architekturze przeglądarka wysyła żądanie do serwera. Serwer o
 
 W architekturze Jamstack praca serwera odbywa się przed przybyciem użytkownika. Strony są zbudowane z wyprzedzeniem, przechowywane na CDN i serwowane natychmiast. API nadal obsługują zadania dynamiczne, ale główne renderowanie dzieje się raz, a nie przy każdym żądaniu.
 
-| Tradycyjnie | Jamstack |
-| --- | --- |
-| Strony renderowane przy każdym żądaniu | Strony prerenderowane w czasie budowania |
-| Serwer i baza danych pod obciążeniem | Pliki statyczne serwowane przez CDN |
-| Wyższe koszty hostingu i skalowania | Niższe koszty i automatyczne skalowanie |
-| Większa powierzchnia ataku | Mniejsza, bezpieczniejsza powierzchnia ataku |
-| Wolniejsze globalne dostarczanie | Szybka dostawa z lokalizacji edge |
+| Tradycyjnie                            | Jamstack                                     |
+| -------------------------------------- | -------------------------------------------- |
+| Strony renderowane przy każdym żądaniu | Strony prerenderowane w czasie budowania     |
+| Serwer i baza danych pod obciążeniem   | Pliki statyczne serwowane przez CDN          |
+| Wyższe koszty hostingu i skalowania    | Niższe koszty i automatyczne skalowanie      |
+| Większa powierzchnia ataku             | Mniejsza, bezpieczniejsza powierzchnia ataku |
+| Wolniejsze globalne dostarczanie       | Szybka dostawa z lokalizacji edge            |
 
 ## Podstawowe zasady Jamstack
 

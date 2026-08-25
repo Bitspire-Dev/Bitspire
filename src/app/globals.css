@@ -288,13 +288,13 @@
   --glass-shadow-hover: 0 12px 40px -4px rgba(0, 0, 0, 0.18);
 
   @apply rounded-2xl bg-card/70 backdrop-blur-md backdrop-saturate-125
-         ring-1 ring-[var(--glass-ring)] transition-shadow duration-300;
+         ring-1 ring-(--glass-ring) transition-shadow duration-300;
   box-shadow:
     inset 0 1px 1px 0 var(--glass-highlight),
     var(--glass-shadow);
 }
 .glass-card:hover {
-  @apply ring-[var(--glass-ring-hover)];
+  @apply ring-(--glass-ring-hover);
   box-shadow:
     inset 0 1px 1px 0 var(--glass-highlight-hover),
     var(--glass-shadow-hover);

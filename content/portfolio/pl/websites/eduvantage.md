@@ -27,6 +27,7 @@ Dla zespołu Bitspire-Dev oznaczało to stworzenie lekkiego, skalowalnego landin
 EduVantage to firma oferująca indywidualne korepetycje z matematyki i języka angielskiego. Celem projektu było zbudowanie strony wizytówki, która w jasnym, przystępnym języku przedstawi ofertę, cennik, metodę nauki i dane kontaktowe — oraz ułatwi rodzicom i uczniom natychmiastowy kontakt telefoniczny lub przez WhatsApp.
 
 Najważniejsze wymagania:
+
 - **Szybkość ładowania** — strona docelowa dla użytkowników mobilnych z okolicy.
 - **Lokalne SEO** — widoczność na frazy takie jak „korepetycje Słupsk”, „matura matematyka Słupsk”.
 - **Pozwolenie i zaufanie** — jasny regulamin, polityka prywatności i cookies.
@@ -54,6 +55,7 @@ Strona składa się z sekcji pionowo zorganizowanych w logicznym flow decyzji u�
 8. **FAQ i kontakt** — odpowiedzi na najczęstsze pytania i dane teleadresowe.
 
 Technicznie:
+
 - **Next.js 16 + App Router** — szybkie renderowanie po stronie serwera i czyste adresy.
 - **TypeScript** — pełne typowanie komponentów i danych.
 - **Tailwind CSS 4** — utility-first styling, spójny system wizualny.

@@ -42,6 +42,7 @@ Celem było stworzenie aplikacji desktopowej, w której użytkownik buduje makro
 Użytkownik otwiera edytor wizualny i układa bloki reprezentujące akcje: wciśnij klawisz, przytrzymaj, wpisz tekst, przesuń mysz, kliknij, poczekaj, powtórz. Każdy blok to mały, opisany komponent z walidowanymi polami. Po zapisaniu makra przypisuje się mu globalny skrót (np. `Ctrl + Shift + M`), który działa z dowolnego miejsca w systemie.
 
 Pod maską aplikacja działa w trzech warstwach:
+
 - **Electron main process** zarządza rejestracją skrótów, dostępem do systemu i wykonaniem makr.
 - **Preload + IPC** tworzy bezpieczny, typowany mostek do interfejsu — każda wiadomość walidowana jest przez `zod`.
 - **React + Vite** dostarcza szybki, responsywny interfejs z ciemnym/light motywem, animacjami i lokalizacją PL/EN.

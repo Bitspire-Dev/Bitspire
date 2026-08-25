@@ -32,7 +32,7 @@ export function LocaleSwitcher({ locale, blogMap }: LocaleSwitcherProps) {
 
   return (
     <Select value={locale} onValueChange={switchLocale}>
-      <SelectTrigger aria-label="Change language" className="w-[5.5rem] font-sans">
+      <SelectTrigger aria-label="Change language" className="w-22 font-sans">
         <SelectValue placeholder={locale.toUpperCase()} />
       </SelectTrigger>
       <SelectContent align="end">
@@ -44,7 +44,7 @@ export function LocaleSwitcher({ locale, blogMap }: LocaleSwitcherProps) {
                 alt={LOCALE_LABEL[loc] ?? loc.toUpperCase()}
                 width={16}
                 height={12}
-                className="size-4 shrink-0 rounded-[2px] object-cover"
+                className="size-4 shrink-0 rounded-xs object-cover"
                 unoptimized
               />
               {LOCALE_LABEL[loc] ?? loc.toUpperCase()}

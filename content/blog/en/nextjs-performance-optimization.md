@@ -58,12 +58,12 @@ ISR lets you update static pages after build without a full redeploy. It combine
 
 ### When to use each strategy
 
-| Use case | Recommended strategy |
-| --- | --- |
-| Marketing site, blog, docs | SSG or ISR |
-| Personalized dashboard | SSR with caching |
-| Real-time data | SSR or Client data fetching |
-| Interactive widgets | Client Components with SSG shell |
+| Use case                   | Recommended strategy             |
+| -------------------------- | -------------------------------- |
+| Marketing site, blog, docs | SSG or ISR                       |
+| Personalized dashboard     | SSR with caching                 |
+| Real-time data             | SSR or Client data fetching      |
+| Interactive widgets        | Client Components with SSG shell |
 
 ## Image optimization in Next.js
 

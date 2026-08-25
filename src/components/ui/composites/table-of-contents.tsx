@@ -23,7 +23,6 @@ const TocContext = createContext<TocContextValue | null>(null);
 
 export function TocProvider({ toc, children }: { toc: TocItem[]; children: React.ReactNode }) {
   const indicesRef = useRef<Record<number, number>>({});
-  indicesRef.current = {};
 
   const getNextId = (level: number): string | null => {
     const idx = indicesRef.current[level] ?? 0;

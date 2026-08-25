@@ -3,6 +3,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { getPage } from '@/lib/tina';
 import { PrivacyPage } from '@/components/pages/PrivacyPage';
+import { getPageFallbackTitle } from '@/lib/ui';
 import { localeAlternates } from '@/lib/site';
 
 export async function generateMetadata({
@@ -13,7 +14,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const { data } = await getPage(`${locale}/privacy.md`);
 
-  const title = data.page?.title ?? (locale === 'pl' ? 'Polityka prywatności' : 'Privacy Policy');
+  const title = data.page?.title ?? getPageFallbackTitle(locale, 'privacy');
   const description = data.page?.description ?? undefined;
 
   return {

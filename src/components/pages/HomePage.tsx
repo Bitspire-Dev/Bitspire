@@ -1,6 +1,7 @@
 'use client';
 
 import { memo, useMemo } from 'react';
+import { useLocale } from 'next-intl';
 import { useTina } from 'tinacms/dist/react';
 import type { PageQuery } from '@tina/__generated__/types';
 import { Hero } from '@/components/sections/Hero';
@@ -19,6 +20,7 @@ interface HomePageProps {
 function HomePageContent({ query, variables, data }: HomePageProps) {
   const { data: tinaData } = useTina({ query, variables, data });
   const page = useMemo(() => tinaData?.page ?? data?.page ?? null, [tinaData, data]);
+  const locale = useLocale();
 
   if (!page) {
     return null;
@@ -27,11 +29,11 @@ function HomePageContent({ query, variables, data }: HomePageProps) {
   return (
     <>
       <Hero page={page} />
-      <TechnologyCarousel />
-      <Services page={tinaData.page} />
-      <WhyBitspire page={tinaData.page} />
-      <PortfolioHighlights page={tinaData.page} />
-      <CallToAction page={tinaData.page} />
+      <TechnologyCarousel locale={locale} />
+      <Services page={page} />
+      <WhyBitspire page={page} />
+      <PortfolioHighlights page={page} />
+      <CallToAction page={page} />
     </>
   );
 }

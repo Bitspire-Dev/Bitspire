@@ -17,6 +17,8 @@ import {
 } from '@/lib/portfolio/categories';
 import { Badge } from '@/components/ui/primitives/badge';
 import { Button } from '@/components/ui/primitives/button';
+import { isUnoptimizedImage } from '@/lib/image';
+import { extractContentSlug } from '@/lib/string';
 import {
   Card,
   CardDescription,
@@ -61,7 +63,7 @@ function getProjectLink(project: Project, locale: string) {
     return null;
   }
 
-  const slug = filename.replace(/\.md$/, '');
+  const slug = extractContentSlug(filename);
 
   return getProjectHref(locale, category as PortfolioCategoryId, slug);
 }
@@ -114,9 +116,7 @@ const ProjectCard = memo(function ProjectCard({
   const technologies = (project.technologies ?? [])
     .filter((tech): tech is string => !!tech)
     .slice(0, isCenter ? 5 : 3);
-  const isSvg = project.screenshot?.endsWith('.svg') ?? false;
-  const isGif = project.screenshot?.endsWith('.gif') ?? false;
-  const isUnoptimized = isSvg || isGif;
+  const isUnoptimized = isUnoptimizedImage(project.screenshot);
 
   return (
     <AspectRatio ratio={10 / 14} className="w-full">
@@ -260,7 +260,7 @@ function PortfolioHighlightsContent({ page }: PortfolioHighlightsProps) {
         <FadeIn className="mb-12 max-w-2xl">
           <h2
             data-tina-field={tinaField(highlights, 'title')}
-            className="text-balance font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl"
+            className="font-heading text-3xl font-semibold tracking-tight text-balance text-foreground md:text-4xl"
           >
             {highlights.title ?? ui.titleFallback}
           </h2>
@@ -268,7 +268,7 @@ function PortfolioHighlightsContent({ page }: PortfolioHighlightsProps) {
           {highlights.description ? (
             <p
               data-tina-field={tinaField(highlights, 'description')}
-              className="mt-4 text-pretty font-sans text-base leading-relaxed text-muted-foreground md:text-lg"
+              className="mt-4 font-sans text-base leading-relaxed text-pretty text-muted-foreground md:text-lg"
             >
               {highlights.description}
             </p>

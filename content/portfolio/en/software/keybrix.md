@@ -42,6 +42,7 @@ The goal was to create a desktop application where users build macros like a puz
 Users open the visual editor and arrange blocks representing actions: press a key, hold it, type text, move the mouse, click, wait, repeat. Each block is a small, self-describing component with validated fields. After saving a macro, they assign a global shortcut (e.g. `Ctrl + Shift + M`) that works from anywhere in the system.
 
 Under the hood the app has three layers:
+
 - **Electron main process** handles shortcut registration, system access, and macro execution.
 - **Preload + IPC** provides a secure, typed bridge to the UI — every message is validated with `zod`.
 - **React + Vite** delivers a fast, responsive interface with dark/light theme, animations, and PL/EN localization.

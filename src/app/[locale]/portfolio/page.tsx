@@ -3,6 +3,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { getPage } from '@/lib/tina';
 import { PortfolioPage } from '@/components/pages/PortfolioPage';
+import { getPageFallbackTitle } from '@/lib/ui';
 import { localeAlternates } from '@/lib/site';
 
 export async function generateMetadata({
@@ -13,7 +14,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const { data } = await getPage(`${locale}/portfolio.md`);
 
-  const title = data.page?.title ?? 'Portfolio';
+  const title = data.page?.title ?? getPageFallbackTitle(locale, 'portfolio');
   const description = data.page?.description ?? undefined;
 
   return {

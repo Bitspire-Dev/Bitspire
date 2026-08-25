@@ -34,6 +34,7 @@ Bezawaryjni to prawdziwy warsztat samochodowy oferujący diagnostykę komputerow
 - będzie ładować się błyskawicznie i dobrze pozycjonować w lokalnych wynikach wyszukiwania.
 
 Najważniejsze wymagania:
+
 - **Szybkość ładowania** — strona docelowa dla klientów mobilnych.
 - **Lokalne SEO** — widoczność na frazy serwis / warsztat w okolicy Słupska.
 - **Edycja treści bez programisty** — prosty CMS dla właściciela.
@@ -63,6 +64,7 @@ Komponenty React renderują treść z Tina, dodają animacje, karuzelę i intera
 7. **Kontakt** — formularz, zakodowany email (antyspam), WhatsApp, mapa Google.
 
 Technicznie:
+
 - **Next.js 16 + App Router** — SSR, szybkie ładowanie, czyste adresy.
 - **Tina CMS 3.8.1** — edycja treści w markdown, wersjonowanie na GitHub.
 - **TypeScript 5** — pełne typowanie komponentów i danych z CMS.

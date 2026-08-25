@@ -27,6 +27,7 @@ For the Bitspire-Dev team, this meant building a lightweight, scalable landing p
 EduVantage offers individual math and English tutoring. The goal was to build a landing page that presents the offer, pricing, teaching method, and contact details in clear, accessible language — and makes it easy for parents and students to call or message immediately.
 
 Key requirements:
+
 - **Fast loading** — a destination page for mobile users in the local area.
 - **Local SEO** — visibility for queries like „tutoring Słupsk", „matura math Słupsk".
 - **Compliance and trust** — clear terms, privacy policy, and cookie consent.
@@ -54,6 +55,7 @@ The page is structured as a vertical decision flow:
 8. **FAQ and contact** — answers to common questions and contact details.
 
 Technically:
+
 - **Next.js 16 + App Router** — fast server-side rendering and clean URLs.
 - **TypeScript** — full component and data typing.
 - **Tailwind CSS 4** — utility-first styling, consistent visual system.

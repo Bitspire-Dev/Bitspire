@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { m } from 'motion/react';
 
 import { cn } from '@/lib/utils';
+import { getTechnologyCarouselUi } from '@/lib/ui';
 import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 
 /* ------------------------------------------------------------------ */
@@ -136,7 +137,7 @@ const LogoIcon = memo(function LogoIcon({ name }: LogoIconProps) {
           fill
           sizes="32px"
           className={cn(
-            'object-contain opacity-60 grayscale transition-all duration-300 hover:scale-110 hover:opacity-100 hover:grayscale-0 dark:invert dark:opacity-60'
+            'object-contain opacity-60 grayscale transition-all duration-300 hover:scale-110 hover:opacity-100 hover:grayscale-0 dark:opacity-60 dark:invert'
           )}
         />
       </AspectRatio>
@@ -187,12 +188,17 @@ const MarqueeRow = memo(function MarqueeRow({ offset = false }: MarqueeRowProps)
 /*  TechnologyCarousel – section                                       */
 /* ------------------------------------------------------------------ */
 
-function TechnologyCarouselContent() {
+interface TechnologyCarouselProps {
+  locale?: string;
+}
+
+function TechnologyCarouselContent({ locale = 'pl' }: TechnologyCarouselProps) {
+  const ui = getTechnologyCarouselUi(locale);
   return (
     <m.section
       role="region"
       aria-roledescription="carousel"
-      aria-label="Technology carousel"
+      aria-label={ui.ariaLabel}
       className="relative w-full overflow-hidden border-b border-border/50 bg-background py-12 text-foreground"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}

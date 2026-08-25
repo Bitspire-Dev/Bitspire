@@ -93,7 +93,7 @@ function HeroContent({ page }: HeroProps) {
         <FadeIn>
           <h1
             data-tina-field={tinaField(page, 'title')}
-            className="max-w-4xl text-balance font-heading text-5xl leading-tight font-semibold tracking-tight text-foreground md:text-7xl"
+            className="max-w-4xl font-heading text-5xl leading-tight font-semibold tracking-tight text-balance text-foreground md:text-7xl"
           >
             {page.title ?? 'Bitspire'}
           </h1>
@@ -103,7 +103,7 @@ function HeroContent({ page }: HeroProps) {
           <FadeIn delay={0.1}>
             <p
               data-tina-field={tinaField(page, 'description')}
-              className="mt-6 max-w-2xl text-pretty font-sans text-lg leading-relaxed text-foreground/70 md:text-xl"
+              className="mt-6 max-w-2xl font-sans text-lg leading-relaxed text-pretty text-foreground/70 md:text-xl"
             >
               {page.description}
             </p>

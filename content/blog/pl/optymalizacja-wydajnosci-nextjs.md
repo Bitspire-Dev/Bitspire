@@ -58,12 +58,12 @@ ISR pozwala aktualizować strony statyczne po buildzie bez pełnego redeployu. �
 
 ### Kiedy używać której strategii
 
-| Zastosowanie | Rekomendowana strategia |
-| --- | --- |
-| Strona marketingowa, blog, dokumentacja | SSG lub ISR |
-| Spersonalizowany dashboard | SSR z cache |
-| Dane w czasie rzeczywistym | SSR lub pobieranie po stronie klienta |
-| Interaktywne widgety | Client Components w szkielecie SSG |
+| Zastosowanie                            | Rekomendowana strategia               |
+| --------------------------------------- | ------------------------------------- |
+| Strona marketingowa, blog, dokumentacja | SSG lub ISR                           |
+| Spersonalizowany dashboard              | SSR z cache                           |
+| Dane w czasie rzeczywistym              | SSR lub pobieranie po stronie klienta |
+| Interaktywne widgety                    | Client Components w szkielecie SSG    |
 
 ## Optymalizacja obrazów w Next.js
 

@@ -6,6 +6,7 @@ import { ContactHero } from '@/components/sections/ContactHero';
 import { MarkdownBody } from '@/components/ui/composites/MarkdownBody';
 import { Separator } from '@/components/ui/primitives/separator';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
+import { getPrivacyUi } from '@/lib/ui';
 
 interface PrivacyPageProps {
   query: string;
@@ -22,21 +23,23 @@ export function PrivacyPage({ query, variables, data, locale }: PrivacyPageProps
     return null;
   }
 
-  const lastUpdated = (page as { lastUpdated?: string | null }).lastUpdated;
-  const displayDate = lastUpdated ?? '24.08.2026';
-  const isoDate = lastUpdated ? lastUpdated.split('.').reverse().join('-') : '2026-08-24';
-  const updatedLabel = locale === 'pl' ? 'Ostatnia aktualizacja:' : 'Last updated:';
+  const lastUpdated = page.lastUpdated;
+  const displayDate = lastUpdated ?? '';
+  const isoDate = lastUpdated ? lastUpdated.split('.').reverse().join('-') : undefined;
+  const ui = getPrivacyUi(locale);
 
   return (
     <section className="container mx-auto max-w-360 px-4 py-16 md:px-6 md:py-24">
       <ContactHero page={page} />
 
-      <FadeIn delay={0.15}>
-        <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-          <span>{updatedLabel}</span>
-          <time dateTime={isoDate}>{displayDate}</time>
-        </div>
-      </FadeIn>
+      {displayDate ? (
+        <FadeIn delay={0.15}>
+          <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+            <span>{ui.lastUpdated}</span>
+            <time dateTime={isoDate}>{displayDate}</time>
+          </div>
+        </FadeIn>
+      ) : null}
 
       <Separator className="my-12" />
 

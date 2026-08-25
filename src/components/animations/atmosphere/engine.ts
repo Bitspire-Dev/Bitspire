@@ -7,6 +7,7 @@ import { Application } from 'pixi.js';
 import { AtmosphereMesh } from './mesh';
 import { MouseController } from './mouse';
 import { getQualityConfig, type QualityConfig } from './quality';
+import { getCssColor } from '@/lib/color';
 
 export type SceneTheme = 'dark' | 'light';
 
@@ -20,35 +21,6 @@ const FOREGROUND_FALLBACK: [number, number, number] = [0.925, 0.922, 0.913]; // 
 // keeps the clouds readable against white.
 const CLOUD_STRENGTH_DARK = 1.0;
 const CLOUD_STRENGTH_LIGHT = 2.5;
-
-function hexToRgb(hex: string, fallback: [number, number, number]): [number, number, number] {
-  const clean = hex.replace('#', '').trim();
-  if (clean.length !== 6) return [...fallback];
-  return [
-    parseInt(clean.slice(0, 2), 16) / 255,
-    parseInt(clean.slice(2, 4), 16) / 255,
-    parseInt(clean.slice(4, 6), 16) / 255,
-  ];
-}
-
-// Read the active theme's --brand from the DOM. The hero's CSS background is
-// already driven by var(--brand), so reading the same variable here keeps the
-// cloud tint perfectly in sync with the backdrop under both light and dark
-// themes without hardcoding a palette.
-function getBrandColor(): [number, number, number] {
-  if (typeof document === 'undefined') return [...BRAND_FALLBACK];
-  const value = getComputedStyle(document.documentElement).getPropertyValue('--brand').trim();
-  return value ? hexToRgb(value, BRAND_FALLBACK) : [...BRAND_FALLBACK];
-}
-
-// Read the active theme's --foreground from the DOM. Stars use this as their
-// tint so they stay contrasty against the background in both themes — white-ish
-// on dark, near-black on light — matching the hero text colour.
-function getForegroundColor(): [number, number, number] {
-  if (typeof document === 'undefined') return [...FOREGROUND_FALLBACK];
-  const value = getComputedStyle(document.documentElement).getPropertyValue('--foreground').trim();
-  return value ? hexToRgb(value, FOREGROUND_FALLBACK) : [...FOREGROUND_FALLBACK];
-}
 
 function getCloudStrength(theme: SceneTheme): number {
   return theme === 'light' ? CLOUD_STRENGTH_LIGHT : CLOUD_STRENGTH_DARK;
@@ -102,10 +74,10 @@ export class PixiSceneEngine {
     this.quality = getQualityConfig();
     this.app = new Application();
     this.mouse = new MouseController(window);
-    const brand = getBrandColor();
+    const brand = getCssColor('--brand', BRAND_FALLBACK);
     this.cloudCurrent = [...brand];
     this.cloudTarget = [...brand];
-    const fg = getForegroundColor();
+    const fg = getCssColor('--foreground', FOREGROUND_FALLBACK);
     this.starCurrent = [...fg];
     this.starTarget = [...fg];
     this.strengthCurrent = getCloudStrength(theme);
@@ -125,8 +97,8 @@ export class PixiSceneEngine {
   setTheme(theme: SceneTheme) {
     if (this.theme === theme) return;
     this.theme = theme;
-    this.cloudTarget = [...getBrandColor()];
-    this.starTarget = [...getForegroundColor()];
+    this.cloudTarget = [...getCssColor('--brand', BRAND_FALLBACK)];
+    this.starTarget = [...getCssColor('--foreground', FOREGROUND_FALLBACK)];
     this.strengthTarget = getCloudStrength(theme);
     this.particleModeTarget = getParticleMode(theme);
     this.themeSettled = false;

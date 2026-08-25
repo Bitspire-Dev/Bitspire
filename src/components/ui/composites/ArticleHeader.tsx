@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/primitives/separator';
 import { BackLink } from '@/components/ui/navigation/back-link';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { cn } from '@/lib/utils';
+import { isUnoptimizedImage } from '@/lib/image';
 
 type Href = ComponentProps<typeof Link>['href'];
 
@@ -48,10 +49,10 @@ export function ArticleHeader({
               alt={coverAlt ?? title}
               fill
               priority
-              unoptimized={cover?.endsWith('.gif') || cover?.endsWith('.svg')}
+              unoptimized={isUnoptimizedImage(cover)}
               className={cn(
                 'object-cover',
-                (cover?.endsWith('.gif') || cover?.endsWith('.svg')) && 'object-contain bg-muted/50'
+                isUnoptimizedImage(cover) && 'bg-muted/50 object-contain'
               )}
               sizes="100vw"
             />

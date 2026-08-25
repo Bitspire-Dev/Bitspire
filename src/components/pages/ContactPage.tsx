@@ -30,7 +30,7 @@ export function ContactPage({ query, variables, data, locale }: ContactPageProps
   return (
     <section className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
       <PlasmaBackground />
-      <div className="container relative z-10 mx-auto max-w-360 px-4 py-16 md:px-6 md:py-24">
+      <div className="relative z-10 container mx-auto max-w-360 px-4 py-16 md:px-6 md:py-24">
         <ContactHero page={page} />
         <div className="mt-12 grid gap-8 lg:grid-cols-2">
           <ContactDetails contact={page.contact} locale={locale} />

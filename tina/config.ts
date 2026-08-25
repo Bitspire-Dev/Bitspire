@@ -1,4 +1,5 @@
 import { defineConfig } from 'tinacms';
+import { extractContentSlug } from '../src/lib/string';
 
 // Your hosting provider likely exposes this as an environment variable
 const branch =
@@ -29,7 +30,7 @@ export default defineConfig({
         ui: {
           router: ({ document }) => {
             const [locale, filename] = document._sys.relativePath.split('/');
-            const slug = filename?.replace(/\.md$/, '') ?? '';
+            const slug = extractContentSlug(filename ?? '');
             return slug === 'home' ? `/${locale}` : `/${locale}/${slug}`;
           },
         },
@@ -386,7 +387,7 @@ export default defineConfig({
         ui: {
           router: ({ document }) => {
             const [locale, category, filename] = document._sys.relativePath.split('/');
-            const slug = filename?.replace(/\.md$/, '');
+            const slug = extractContentSlug(filename ?? '');
             return `/${locale}/portfolio/${category}/${slug}`;
           },
         },

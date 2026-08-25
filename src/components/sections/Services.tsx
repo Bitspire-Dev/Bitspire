@@ -3,7 +3,6 @@
 import { memo, useState } from 'react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
-import { useTheme } from 'next-themes';
 import { m } from 'motion/react';
 import { ChevronDownIcon } from 'lucide-react';
 
@@ -11,7 +10,8 @@ import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
 import { cn } from '@/lib/utils';
 import { slugify } from '@/lib/string';
-import { useMounted } from '@/lib/use-mounted';
+import { getServicesUi } from '@/lib/ui';
+import { useThemeImage } from '@/hooks/use-theme-image';
 import {
   Accordion,
   AccordionContent,
@@ -29,12 +29,11 @@ function ServicesContent({ page }: ServicesProps) {
   const services = page.services;
   const [openValue, setOpenValue] = useState<string>('');
   const locale = useLocale();
-  const { resolvedTheme } = useTheme();
-  const mounted = useMounted();
-  const gryfSrc =
-    mounted && resolvedTheme === 'dark'
-      ? '/layout/dark-mode/gryf-oferta.png'
-      : '/layout/light-mode/gryf-oferta.png';
+  const ui = getServicesUi(locale);
+  const gryfSrc = useThemeImage(
+    '/layout/light-mode/gryf-oferta.png',
+    '/layout/light-mode/gryf-oferta.png'
+  );
 
   if (!services?.items?.length) {
     return null;
@@ -61,13 +60,13 @@ function ServicesContent({ page }: ServicesProps) {
 
           <m.h2
             data-tina-field={tinaField(services, 'title')}
-            className="max-w-4xl text-balance font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl lg:col-span-2 lg:col-start-1 lg:row-start-1"
+            className="max-w-4xl font-heading text-3xl font-semibold tracking-tight text-balance text-foreground md:text-4xl lg:col-span-2 lg:col-start-1 lg:row-start-1"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
-            {services.title ?? 'Services'}
+            {services.title ?? ui.titleFallback}
           </m.h2>
 
           <Accordion

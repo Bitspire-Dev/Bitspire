@@ -34,6 +34,7 @@ Egzobeast to prawdziwy sklep terrarystyczny w Słupsku, prowadzony przez pasjona
 - jest szybka, responsywna i dobrze widoczna w lokalnych wynikach wyszukiwania.
 
 Najważniejsze wymagania:
+
 - **Design system na poziomie produktu** — spójna kolorystyka i typografia od samego startu.
 - **Szybkość i SEO** — dobra pozycja w wyszukiwarce i płynna obsługa na telefonie.
 - **Edytowalny CMS** — łatwa aktualizacja sekcji, bloga i galerii.
@@ -67,6 +68,7 @@ Główne sekcje i funkcjonalności:
 8. **Strony prawne** — polityka prywatności i regulamin zarządzane z CMS.
 
 Technicznie:
+
 - **Next.js 16 + App Router** — SSR/SSG, czyste adresy i szybkie przejścia.
 - **React 19 + TypeScript 5** — nowoczesny kod, pełne typowanie.
 - **Tailwind CSS 4** — utility-first style oparte na własnym design systemie.
