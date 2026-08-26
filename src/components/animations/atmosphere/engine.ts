@@ -6,7 +6,7 @@
 import { Application } from 'pixi.js';
 import { AtmosphereMesh } from './mesh';
 import { MouseController } from './mouse';
-import { getQualityConfig, type QualityConfig, type QualityTier } from './quality';
+import { getQualityConfig } from './quality';
 import { getCssColor } from '@/lib/color';
 
 export type SceneTheme = 'dark' | 'light';
@@ -35,7 +35,7 @@ export class PixiSceneEngine {
   private app: Application;
   private mesh: AtmosphereMesh | null = null;
   private mouse: MouseController;
-  private quality: QualityConfig;
+  private quality = getQualityConfig();
   private visibilityHandler: (() => void) | null = null;
   private tickerFn: ((ticker: { deltaTime: number }) => void) | null = null;
   private destroyed = false;
@@ -69,10 +69,8 @@ export class PixiSceneEngine {
 
   constructor(
     private container: HTMLElement,
-    private theme: SceneTheme,
-    tier: QualityTier = 'high'
+    private theme: SceneTheme
   ) {
-    this.quality = getQualityConfig(tier);
     this.app = new Application();
     this.mouse = new MouseController(window);
     const brand = getCssColor('--brand', BRAND_FALLBACK);
@@ -105,14 +103,27 @@ export class PixiSceneEngine {
     this.themeSettled = false;
   }
 
+  /**
+   * Pause or resume the ticker. Called by the IntersectionObserver in scene.tsx
+   * so the GPU/CPU work stops entirely when the hero scrolls offscreen.
+   */
+  setRunning(isRunning: boolean) {
+    if (!this.initialized || this.destroyed) return;
+    if (isRunning) {
+      this.app.ticker.start();
+    } else {
+      this.app.ticker.stop();
+    }
+  }
+
   async init() {
     await this.app.init({
       resizeTo: this.container,
       backgroundAlpha: 0,
-      antialias: true,
-      autoDensity: true,
+      antialias: false,
+      autoDensity: false,
       resolution: this.quality.resolution,
-      powerPreference: 'high-performance',
+      powerPreference: 'low-power',
     });
 
     // Init finished — from here `app.destroy()` is safe. Set this before the

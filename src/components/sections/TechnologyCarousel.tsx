@@ -89,7 +89,7 @@ function buildSlides(logos: string[], seed: number, repeats: number) {
 
 function useMarqueeLogos(seed: number) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [repeats, setRepeats] = useState(4);
+  const [repeats, setRepeats] = useState(2);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -98,7 +98,8 @@ function useMarqueeLogos(seed: number) {
     const update = () => {
       const width = el.clientWidth;
       const needed = Math.max(1, Math.ceil(width / SET_WIDTH));
-      setRepeats(needed * 2);
+      // Cap repeats so very wide screens don't render hundreds of logos.
+      setRepeats(Math.min(needed + 1, 6));
     };
 
     update();

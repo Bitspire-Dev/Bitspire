@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, Suspense, useRef, useState } from 'react';
+import { memo, Suspense, useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { m, useScroll, useTransform } from 'motion/react';
 import { useLocale } from 'next-intl';
@@ -11,7 +11,7 @@ import { ErrorBoundary } from '@/components/providers/error-boundary';
 import { Button } from '@/components/ui/primitives/button';
 import { Link } from '@/i18n/navigation';
 import { useMounted } from '@/lib/use-mounted';
-import { useDeviceCapability } from '@/components/providers/device-capability-provider';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
 const PixiScene = dynamic(
   () => import('@/components/animations/atmosphere').then(m => m.PixiScene),
@@ -68,8 +68,9 @@ interface HeroProps {
 function HeroContent({ page }: HeroProps) {
   const mounted = useMounted();
   const [sceneError, setSceneError] = useState(false);
+  const [canUseWebgl, setCanUseWebgl] = useState(false);
+  const isReducedMotion = useReducedMotion();
   const locale = useLocale();
-  const capability = useDeviceCapability();
 
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -82,18 +83,25 @@ function HeroContent({ page }: HeroProps) {
   const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
   const indicatorOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
 
-  // Layered rendering strategy:
-  //   - `low` tier (mobile / weak CPU / reduced motion / save-data): no WebGL
-  //     at all. The CSS gradient fallback is the only background.
-  //   - `medium` tier: WebGL is allowed but deferred until after LCP via
-  //     `requestIdleCallback` so the first paint is not blocked.
-  //   - `high` tier: WebGL mounts as soon as the component is mounted.
-  const shouldRenderPixi =
-    mounted &&
-    !sceneError &&
-    !capability.isReducedMotion &&
-    !capability.saveData &&
-    capability.tier !== 'low';
+  // Simple, local, one-time capability check. We only enable the WebGL hero
+  // background on non-touch, non-mobile, non-battery-saving devices that do
+  // not request reduced motion. This replaces the previous DeviceCapability
+  // context that re-rendered the whole tree and triggered a double WebGL init.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (isReducedMotion) return;
+
+    const isTouch = window.matchMedia('(hover: none)').matches;
+    const isMobile = /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(navigator.userAgent);
+    const saveData =
+      (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData ??
+      false;
+    const hasWebgl = !!document.createElement('canvas').getContext('webgl');
+
+    setCanUseWebgl(!isTouch && !isMobile && !saveData && hasWebgl);
+  }, [isReducedMotion]);
+
+  const shouldRenderPixi = mounted && !sceneError && canUseWebgl;
 
   return (
     <section
@@ -109,8 +117,6 @@ function HeroContent({ page }: HeroProps) {
           <ErrorBoundary fallback={null}>
             <Suspense fallback={null}>
               <PixiScene
-                data-hero-scene
-                deferUntilIdle={capability.tier === 'medium'}
                 onError={() => setSceneError(true)}
                 className="pointer-events-none absolute inset-0 size-full"
               />

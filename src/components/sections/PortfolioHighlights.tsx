@@ -27,7 +27,6 @@ import {
 } from '@/components/ui/primitives/card';
 import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
-import { useDeviceCapability } from '@/components/providers/device-capability-provider';
 
 interface PortfolioHighlightsProps {
   page: PagePartsFragment;
@@ -75,15 +74,17 @@ function getSlideOffset(index: number, selected: number, total: number) {
   return diff;
 }
 
-function getTweenStyles(offset: number, cardWidth: number, useFilters: boolean) {
+function getTweenStyles(offset: number, cardWidth: number) {
   const d = Math.abs(offset);
   const width = cardWidth || 400;
   const scale = 1 - 0.15 * d;
   const rotateY = offset * 45;
   const translateZ = -d * Math.round(width * 0.3);
   const opacity = 1 - 0.35 * d;
+  const blur = d * Math.max(2, Math.round(width * 0.005));
+  const brightness = 1 - 0.25 * d;
   const zIndex = 10 - Math.round(d * 10);
-  const gap = useFilters ? d * Math.max(2, Math.round(width * 0.005)) + 1 : 1;
+  const gap = blur + 1;
   const gapPercent = d === 0 ? 0 : (gap / width) * 100;
   const translateX = offset * gapPercent;
   return {
@@ -91,14 +92,10 @@ function getTweenStyles(offset: number, cardWidth: number, useFilters: boolean) 
     rotateY,
     translateZ,
     opacity,
+    blur,
+    brightness,
     zIndex,
     translateX,
-    // `blur` and `brightness` are only computed when the device can afford
-    // them. On low-tier hardware these filters are the single most expensive
-    // part of the carousel — dropping them keeps the 3D transform but
-    // removes the per-frame rasterisation cost.
-    blur: useFilters ? d * Math.max(2, Math.round(width * 0.005)) : 0,
-    brightness: useFilters ? 1 - 0.25 * d : 1,
   };
 }
 
@@ -242,7 +239,6 @@ interface DesktopCarouselProps {
   locale: string;
   ui: { cta: string };
   desktopRef: React.RefObject<HTMLDivElement | null>;
-  useFilters: boolean;
 }
 
 const DesktopCarousel = memo(function DesktopCarousel({
@@ -252,7 +248,6 @@ const DesktopCarousel = memo(function DesktopCarousel({
   locale,
   ui,
   desktopRef,
-  useFilters,
 }: DesktopCarouselProps) {
   return (
     <div
@@ -263,7 +258,7 @@ const DesktopCarousel = memo(function DesktopCarousel({
       {items.map((item, index) => {
         const offset = getSlideOffset(index, selected, items.length);
         const isCenter = offset === 0;
-        const t = getTweenStyles(offset, cardWidth, useFilters);
+        const t = getTweenStyles(offset, cardWidth);
         const transformOrigin =
           offset > 0 ? 'left center' : offset < 0 ? 'right center' : 'center center';
 
@@ -278,11 +273,10 @@ const DesktopCarousel = memo(function DesktopCarousel({
               transform: `translateY(-50%) translateX(${t.translateX}%) rotateY(${t.rotateY}deg) translateZ(${t.translateZ}px) scale(${t.scale})`,
               transformOrigin,
               opacity: t.opacity,
-              filter:
-                useFilters && !isCenter ? `blur(${t.blur}px) brightness(${t.brightness})` : 'none',
+              filter: isCenter ? 'none' : `blur(${t.blur}px) brightness(${t.brightness})`,
               zIndex: t.zIndex,
               transformStyle: 'preserve-3d',
-              willChange: 'transform, opacity',
+              willChange: 'transform, opacity, filter',
             }}
           >
             <ProjectCard item={item} isCenter={isCenter} locale={locale} ui={ui} />
@@ -330,13 +324,6 @@ function PortfolioHighlightsContent({ page }: PortfolioHighlightsProps) {
   const locale = useLocale();
   const highlights = page.portfolioHighlights;
   const ui = UI[locale] ?? UI.pl;
-  const capability = useDeviceCapability();
-  // `blur()` and `brightness()` filters are the most expensive part of the
-  // carousel's compositing cost. On low-tier devices we drop them entirely
-  // and rely on opacity + scale alone to convey depth. Medium tier keeps
-  // them but with a smaller blur radius (handled inside getTweenStyles via
-  // the same flag — when false, blur is forced to 0).
-  const useFilters = capability.tier !== 'low';
 
   const items = useMemo(
     () =>
@@ -431,7 +418,6 @@ function PortfolioHighlightsContent({ page }: PortfolioHighlightsProps) {
               locale={locale}
               ui={ui}
               desktopRef={desktopRef}
-              useFilters={useFilters}
             />
             <CarouselControls onPrev={prev} onNext={next} />
           </div>
