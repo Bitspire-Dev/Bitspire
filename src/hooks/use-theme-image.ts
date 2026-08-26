@@ -3,8 +3,8 @@
 import { useTheme } from 'next-themes';
 import { useMounted } from '@/lib/use-mounted';
 
-const GRYF_PATTERN = /^\/layout\/(gryf-[^/]+\.png)$/;
-const MODE_PATTERN = /\/layout\/(light|dark)-mode\/(.+)$/;
+const GRYF_PATTERN = /^(?:https:\/\/assets\.tina\.io\/[^/]+)?\/layout\/(gryf-[^/]+\.png)$/;
+const MODE_PATTERN = /(?:https:\/\/assets\.tina\.io\/[^/]+)?\/layout\/(light|dark)-mode\/(.+)$/;
 
 export function useThemeImage(src: string | null | undefined, fallback: string): string {
   const { resolvedTheme } = useTheme();

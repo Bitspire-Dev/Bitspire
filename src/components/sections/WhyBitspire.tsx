@@ -26,8 +26,20 @@ interface WhyBitspireProps {
   page: PagePartsFragment;
 }
 
+const ASSETS_TINA_IO = 'https://assets.tina.io/';
+const TINA_ASSETS_PATTERN =
+  /^https:\/\/assets\.tina\.io\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})([^/].*)/;
+
 function normalizeImageSrc(src?: string | null): string | null {
   if (!src) return null;
+
+  // TinaCMS can emit assets.tina.io URLs without a slash between the clientId
+  // and the file path (e.g. ...e309layout/ekran-vs-code.png). Repair that.
+  const tinaMatch = src.match(TINA_ASSETS_PATTERN);
+  if (tinaMatch) {
+    return `${ASSETS_TINA_IO}${tinaMatch[1]}/${tinaMatch[2]}`;
+  }
+
   return src.startsWith('/') ? src : `/${src}`;
 }
 

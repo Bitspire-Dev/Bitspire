@@ -1,0 +1,58 @@
+# Bitspire — nowoczesne strony, aplikacje i oprogramowanie
+
+Bitspire to digital studio, które projektuje i buduje szybkie, nowoczesne strony internetowe, aplikacje webowe oraz dedykowane oprogramowanie. Łączymy architekturę headless, dedykowany UI/UX i dopracowany kod, dostarczając produkty cyfrowe gotowe do skalowania.
+
+## Główne adresy
+
+- Strona główna (PL): https://bitspire.pl/pl
+- Strona główna (EN): https://bitspire.pl/en
+- Portfolio: https://bitspire.pl/pl/portfolio
+- Blog: https://bitspire.pl/pl/blog
+- Kontakt: https://bitspire.pl/pl/contact
+- Polityka prywatności: https://bitspire.pl/pl/privacy
+
+## Oferta
+
+- **Strony & E-commerce** — szybkie, responsywne strony i sklepy projektowane jako systemy komunikacyjne. Każdy element (od layoutu po checkout) zwiększa widoczność, zaufanie i konwersję.
+- **Aplikacje (Web & Mobile)** — aplikacje działające jak inteligentne narzędzia, łączące web i mobile w jeden ekosystem.
+- **Oprogramowanie dedykowane** — systemy tworzone tam, gdzie kończą się możliwości gotowych rozwiązań. Automatyzacja, integracja danych, eliminacja barier technologicznych.
+- **UI/UX Design** — interfejsy, które prowadzą użytkownika przez produkt w sposób naturalny, przewidywalny i angażujący.
+- **DevOps & Wsparcie** — infrastruktura, CI/CD, serwery, bezpieczeństwo, doradztwo techniczne.
+
+## Dlaczego Bitspire
+
+- **Architektura High-Performance** — lekkie architektury headless i rozwiązania bezserwerowe, dopasowane do projektu.
+- **UX & Konwersja** — minimalistyczny design premium z architekturą informacji nastawioną na konwersję.
+- **Szybkość** — wyniki do 70% lepsze niż standardowe strony, weryfikowane Lighthouse i Core Web Vitals.
+- **Bezpieczeństwo** — Security by Design, rozdzielenie warstwy wizualnej od danych, nowoczesne szyfrowanie.
+
+## Wybrane realizacje (case studies)
+
+- **EduVantage** — landing page dla firmy korepetycyjnej (matematyka, angielski) w Słupsku: https://bitspire.pl/pl/portfolio/strony-internetowe/eduvantage
+- **Bezawaryjni** — strona warsztatu samochodowego: https://bitspire.pl/pl/portfolio/strony-internetowe/bezawaryjni
+- **Egzobeast** — strona wizytówka dla hodowcy gadów (exobist.com): https://bitspire.pl/pl/portfolio/strony-internetowe/egzobeast
+- **Składamy** — strona dla serwisu laptopów i komputerów: https://bitspire.pl/pl/portfolio/strony-internetowe/skladamy
+- **Keybrix** — wizualny kreator makr i automatyzacji (aplikacja desktopowa): https://bitspire.pl/pl/portfolio/oprogramowanie/keybrix
+
+## Blog
+
+- Architektura JAMstack: https://bitspire.pl/pl/blog/architektura-jamstack
+- Błędy w projektowaniu stron: https://bitspire.pl/pl/blog/bledy-w-projektowaniu-stron
+- Optymalizacja wydajności Next.js: https://bitspire.pl/pl/blog/optymalizacja-wydajnosci-nextjs
+- Przewodnik po stosie technologicznym: https://bitspire.pl/pl/blog/przewodnik-po-stosie-technologicznym
+- TypeScript kontra JavaScript: https://bitspire.pl/pl/blog/typescript-kontra-javascript
+
+## Technologie, z których korzystamy
+
+Next.js, React, TypeScript, Tailwind CSS, Node.js, Vite, Vitest, Electron, Strapi, Stripe, Docker, Git, GraphQL, pnpm, TinaCMS, Vercel.
+
+## Kontakt
+
+- E-mail: kontakt@bitspire.pl
+- Telefon: +48 780 926 993
+- Adres: Polska
+- Godziny pracy: pn–pt 9:00–17:00
+
+## Dla modeli językowych
+
+Strona jest wielojęzyczna (polski i angielski). Domyślnym językiem jest polski (`/pl`). Wersja angielska znajduje się pod `/en`. Canonical dla każdej wersji językowej powinien wskazywać siebie; `x-default` wskazuje na wersję polską.
