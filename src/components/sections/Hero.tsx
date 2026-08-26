@@ -3,7 +3,6 @@
 import { memo, Suspense, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { m, useScroll, useTransform } from 'motion/react';
-import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { useLocale } from 'next-intl';
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
@@ -12,6 +11,7 @@ import { ErrorBoundary } from '@/components/providers/error-boundary';
 import { Button } from '@/components/ui/primitives/button';
 import { Link } from '@/i18n/navigation';
 import { useMounted } from '@/lib/use-mounted';
+import { useDeviceCapability } from '@/components/providers/device-capability-provider';
 
 const PixiScene = dynamic(
   () => import('@/components/animations/atmosphere').then(m => m.PixiScene),
@@ -68,8 +68,8 @@ interface HeroProps {
 function HeroContent({ page }: HeroProps) {
   const mounted = useMounted();
   const [sceneError, setSceneError] = useState(false);
-  const prefersReducedMotion = useReducedMotion() ?? false;
   const locale = useLocale();
+  const capability = useDeviceCapability();
 
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -82,6 +82,19 @@ function HeroContent({ page }: HeroProps) {
   const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
   const indicatorOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
 
+  // Layered rendering strategy:
+  //   - `low` tier (mobile / weak CPU / reduced motion / save-data): no WebGL
+  //     at all. The CSS gradient fallback is the only background.
+  //   - `medium` tier: WebGL is allowed but deferred until after LCP via
+  //     `requestIdleCallback` so the first paint is not blocked.
+  //   - `high` tier: WebGL mounts as soon as the component is mounted.
+  const shouldRenderPixi =
+    mounted &&
+    !sceneError &&
+    !capability.isReducedMotion &&
+    !capability.saveData &&
+    capability.tier !== 'low';
+
   return (
     <section
       ref={sectionRef}
@@ -91,12 +104,13 @@ function HeroContent({ page }: HeroProps) {
         <HeroBackgroundFallback />
       </div>
 
-      {mounted && !prefersReducedMotion && !sceneError ? (
+      {shouldRenderPixi ? (
         <div className="absolute inset-0 z-0" aria-hidden="true">
           <ErrorBoundary fallback={null}>
             <Suspense fallback={null}>
               <PixiScene
                 data-hero-scene
+                deferUntilIdle={capability.tier === 'medium'}
                 onError={() => setSceneError(true)}
                 className="pointer-events-none absolute inset-0 size-full"
               />

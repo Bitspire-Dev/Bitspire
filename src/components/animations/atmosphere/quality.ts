@@ -1,51 +1,60 @@
-// Adaptive quality detection — scales resolution and shader intensity based
-// on device capability so weaker hardware stays smooth.
+// Adaptive quality configuration — scales resolution, shader intensity and
+// max FPS based on a device tier provided by DeviceCapabilityProvider.
+//
+// Previously this module ran its own `navigator.hardwareConcurrency` sniff.
+// That worked but duplicated the heuristics that now live in
+// `src/lib/device-capability.ts`. Centralising the tier detection means every
+// heavy component (Hero, Pixi, carousel) reacts to the same signal, and a
+// future change to the heuristics propagates everywhere automatically.
 
-export type QualityTier = 'low' | 'medium' | 'high';
+import type { DeviceTier } from '@/lib/device-capability';
+
+export type QualityTier = DeviceTier;
 
 export interface QualityConfig {
   tier: QualityTier;
-  resolution: number; // renderer resolution multiplier (capped DPR)
-  shaderIntensity: number; // 0..1 — scales expensive glow in fragment shader
+  /** Renderer resolution multiplier (capped DPR). */
+  resolution: number;
+  /** 0..1 — scales expensive glow in the fragment shader. */
+  shaderIntensity: number;
   maxFps: number;
 }
 
-function detectTier(): QualityTier {
-  if (typeof navigator === 'undefined') return 'high';
-
-  const cores = navigator.hardwareConcurrency ?? 4;
-  const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 4;
-  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-  const dpr = window.devicePixelRatio || 1;
-
-  if (isMobile || cores <= 4 || memory <= 2) return 'low';
-  if (cores <= 6 || memory <= 4 || dpr >= 2.5) return 'medium';
-  return 'high';
-}
-
-export function getQualityConfig(): QualityConfig {
-  const tier = detectTier();
-
+/**
+ * Returns the quality config for a given tier. On the server (or before the
+ * DeviceCapabilityProvider has hydrated) callers should pass `'high'` so the
+ * SSR markup matches the richest client render; the real tier is applied on
+ * the first client effect.
+ */
+export function getQualityConfig(tier: QualityTier = 'high'): QualityConfig {
   switch (tier) {
     case 'low':
       return {
         tier,
-        resolution: Math.min(window.devicePixelRatio || 1, 1),
-        shaderIntensity: 0.55,
-        maxFps: 30,
+        // Render at exactly 1× — no DPR scaling. WebGL fill rate is the main
+        // cost on weak GPUs, so dropping resolution is the highest-leverage
+        // lever we have.
+        resolution: 1,
+        shaderIntensity: 0.4,
+        // 24 FPS is enough for a slow-drifting cloud field and keeps the
+        // ticker out of the way of input handling on a busy main thread.
+        maxFps: 24,
       };
     case 'medium':
       return {
         tier,
-        resolution: Math.min(window.devicePixelRatio || 1, 1.5),
-        shaderIntensity: 0.75,
-        maxFps: 45,
+        resolution: 1,
+        shaderIntensity: 0.6,
+        maxFps: 30,
       };
     case 'high':
     default:
       return {
         tier,
-        resolution: Math.min(window.devicePixelRatio || 1, 1.75),
+        resolution: Math.min(
+          typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
+          1.75
+        ),
         shaderIntensity: 0.9,
         maxFps: 60,
       };

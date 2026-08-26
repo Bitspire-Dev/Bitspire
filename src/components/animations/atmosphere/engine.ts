@@ -6,7 +6,7 @@
 import { Application } from 'pixi.js';
 import { AtmosphereMesh } from './mesh';
 import { MouseController } from './mouse';
-import { getQualityConfig, type QualityConfig } from './quality';
+import { getQualityConfig, type QualityConfig, type QualityTier } from './quality';
 import { getCssColor } from '@/lib/color';
 
 export type SceneTheme = 'dark' | 'light';
@@ -69,9 +69,10 @@ export class PixiSceneEngine {
 
   constructor(
     private container: HTMLElement,
-    private theme: SceneTheme
+    private theme: SceneTheme,
+    tier: QualityTier = 'high'
   ) {
-    this.quality = getQualityConfig();
+    this.quality = getQualityConfig(tier);
     this.app = new Application();
     this.mouse = new MouseController(window);
     const brand = getCssColor('--brand', BRAND_FALLBACK);

@@ -10,6 +10,7 @@ import { buildBlogArticleMap, type BlogArticleMap } from '@/lib/blog';
 import { inter, nippo, ibmPlexMono } from '@/lib/fonts';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { MotionProvider } from '@/components/providers/motion-provider';
+import { DeviceCapabilityProvider } from '@/components/providers/device-capability-provider';
 import { siteMetadata, siteName, localePathname, localeAlternates } from '@/lib/site';
 import { combineJsonLd, organizationJsonLd, websiteJsonLd } from '@/lib/json-ld';
 import '@/app/globals.css';
@@ -107,11 +108,13 @@ export default async function LocaleLayout({
         />
         <ThemeProvider>
           <MotionProvider>
-            <NextIntlClientProvider messages={messages} locale={locale}>
-              <Header locale={locale} blogMap={blogMap} />
-              <main className="flex-1">{children}</main>
-              <Footer locale={locale} />
-            </NextIntlClientProvider>
+            <DeviceCapabilityProvider>
+              <NextIntlClientProvider messages={messages} locale={locale}>
+                <Header locale={locale} blogMap={blogMap} />
+                <main className="flex-1">{children}</main>
+                <Footer locale={locale} />
+              </NextIntlClientProvider>
+            </DeviceCapabilityProvider>
           </MotionProvider>
         </ThemeProvider>
       </body>

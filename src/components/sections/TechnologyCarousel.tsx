@@ -115,6 +115,36 @@ function useMarqueeLogos(seed: number) {
   return { containerRef, repeatedLogos, duration };
 }
 
+/**
+ * Pauses the CSS marquee animation when the row is scrolled out of view.
+ * Without this, the browser keeps compositing the animated transform every
+ * frame even though the user can't see it — a measurable drain on weak
+ * mobile GPUs. We toggle a `data-paused` attribute and let CSS handle the
+ * `animation-play-state` switch so no JS runs per frame.
+ */
+function usePauseWhenOffscreen<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      entries => {
+        for (const entry of entries) {
+          entry.target.setAttribute('data-paused', entry.isIntersecting ? 'false' : 'true');
+        }
+      },
+      { rootMargin: '100px 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return ref;
+}
+
 /* ------------------------------------------------------------------ */
 /*  LogoIcon                                                           */
 /* ------------------------------------------------------------------ */
@@ -151,10 +181,11 @@ interface MarqueeRowProps {
 const MarqueeRow = memo(function MarqueeRow({ offset = false }: MarqueeRowProps) {
   const seed = offset ? SEED_ROW_2 : SEED_ROW_1;
   const { containerRef, repeatedLogos, duration } = useMarqueeLogos(seed);
+  const pauseRef = usePauseWhenOffscreen<HTMLDivElement>();
 
   return (
     <div
-      ref={containerRef}
+      ref={pauseRef}
       className="relative w-full overflow-hidden"
       style={{
         maskImage:
@@ -164,6 +195,7 @@ const MarqueeRow = memo(function MarqueeRow({ offset = false }: MarqueeRowProps)
       }}
     >
       <div
+        ref={containerRef}
         className="marquee-track flex w-max gap-4" // eslint-disable-line tailwindcss/no-custom-classname
         style={{
           marginLeft: offset ? `${-OFFSET}px` : undefined,

@@ -330,3 +330,10 @@
     animation: none !important;
   }
 }
+
+/* Pause the marquee animation when the row is scrolled offscreen. The
+ * TechnologyCarousel sets `data-paused="true"` via an IntersectionObserver,
+ * which is cheaper than running a compositing transform the user can't see. */
+[data-paused='true'] .marquee-track {
+  animation-play-state: paused;
+}
