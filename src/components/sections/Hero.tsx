@@ -33,6 +33,34 @@ function HeroBackgroundFallback() {
   );
 }
 
+interface HeroCTAProps {
+  locale: string;
+}
+
+const HeroCTA = memo(function HeroCTA({ locale }: HeroCTAProps) {
+  return (
+    <FadeIn delay={0.2}>
+      <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <Button asChild size="lg" className="h-12 px-8 text-base md:h-13 md:px-10 md:text-lg">
+          <Link href="/contact" locale={locale}>
+            {locale === 'pl' ? 'Rozpocznij projekt' : 'Start a project'}
+          </Link>
+        </Button>
+        <Button
+          asChild
+          size="lg"
+          variant="outline"
+          className="h-12 px-8 text-base md:h-13 md:px-10 md:text-lg"
+        >
+          <Link href="/portfolio" locale={locale}>
+            {locale === 'pl' ? 'Zobacz wybrane case studies' : 'See selected case studies'}
+          </Link>
+        </Button>
+      </div>
+    </FadeIn>
+  );
+});
+
 interface HeroProps {
   page: PagePartsFragment;
 }
@@ -110,25 +138,7 @@ function HeroContent({ page }: HeroProps) {
           </FadeIn>
         )}
 
-        <FadeIn delay={0.2}>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <Button asChild size="lg" className="h-12 px-8 text-base md:h-13 md:px-10 md:text-lg">
-              <Link href="/contact" locale={locale}>
-                {locale === 'pl' ? 'Rozpocznij projekt' : 'Start a project'}
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="h-12 px-8 text-base md:h-13 md:px-10 md:text-lg"
-            >
-              <Link href="/portfolio" locale={locale}>
-                {locale === 'pl' ? 'Zobacz wybrane case studies' : 'See selected case studies'}
-              </Link>
-            </Button>
-          </div>
-        </FadeIn>
+        <HeroCTA locale={locale} />
       </m.div>
       <m.div
         style={{ opacity: indicatorOpacity }}

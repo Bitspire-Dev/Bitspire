@@ -1,12 +1,10 @@
 'use client';
 
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
-import Image from 'next/image';
 import { m } from 'motion/react';
 
 import { cn } from '@/lib/utils';
 import { getTechnologyCarouselUi } from '@/lib/ui';
-import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -44,14 +42,12 @@ const LOGOS = [
 const ITEM_WIDTH = 36;
 const GAP = 16;
 const OFFSET = Math.round(ITEM_WIDTH * 0.75);
-const MIN_VIEWPORT_WIDTH = 2560;
 const MARQUEE_SPEED = 60;
 
 const SEED_ROW_1 = 0x6d2b79f5;
 const SEED_ROW_2 = 0x9e3779b9;
 
 const SET_WIDTH = LOGOS.length * ITEM_WIDTH + (LOGOS.length - 1) * GAP;
-const BASE_REPEATS = Math.max(2, Math.ceil(MIN_VIEWPORT_WIDTH / SET_WIDTH) * 2);
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -93,7 +89,7 @@ function buildSlides(logos: string[], seed: number, repeats: number) {
 
 function useMarqueeLogos(seed: number) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [repeats, setRepeats] = useState(BASE_REPEATS);
+  const [repeats, setRepeats] = useState(4);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -102,7 +98,7 @@ function useMarqueeLogos(seed: number) {
     const update = () => {
       const width = el.clientWidth;
       const needed = Math.max(1, Math.ceil(width / SET_WIDTH));
-      setRepeats(Math.max(BASE_REPEATS, needed * 2));
+      setRepeats(needed * 2);
     };
 
     update();
@@ -130,18 +126,16 @@ interface LogoIconProps {
 const LogoIcon = memo(function LogoIcon({ name }: LogoIconProps) {
   return (
     <div className="flex size-9 shrink-0 items-center justify-center p-1">
-      <AspectRatio ratio={1 / 1} className="w-full rounded">
-        <Image
-          src={`/logo-carousel/${LOGO_FILE_NAMES[name] ?? name}.svg`}
-          alt={name}
-          fill
-          sizes="32px"
-          unoptimized
-          className={cn(
-            'object-contain opacity-60 grayscale transition-all duration-300 hover:scale-110 hover:opacity-100 hover:grayscale-0 dark:opacity-60 dark:invert'
-          )}
-        />
-      </AspectRatio>
+      {/* eslint-disable-next-line @next/next/no-img-element -- small SVG logos in a marquee, Next Image offers no benefit here */}
+      <img
+        src={`/logo-carousel/${LOGO_FILE_NAMES[name] ?? name}.svg`}
+        alt={name}
+        loading="lazy"
+        decoding="async"
+        className={cn(
+          'size-full object-contain opacity-60 grayscale transition-[opacity,filter] duration-300 hover:opacity-100 hover:grayscale-0 dark:opacity-60 dark:invert'
+        )}
+      />
     </div>
   );
 });

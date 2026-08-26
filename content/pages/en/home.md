@@ -28,14 +28,14 @@ whyBitspire:
         We build lightweight headless architectures and serverless solutions tailored to the project. Fewer elements mean faster performance and a smoother experience.
 
         Technology designed from the ground up, without compromises.
-      image: layout/ekran-vs-code.png
+      image: /layout/ekran-vs-code.png
       imageAlt: 'VS Code editor screen with project code'
       size: large
     - title: 'UX & Conversion'
       subHeadline: "We don't just design pretty visuals. We build sales engines."
       body: 'Sleek minimalism with conversion-focused information architecture. Every button serves a strategic purpose.'
       fullText: 'A beautiful website that fails to generate leads is just an expensive vanity project. Before writing code or designing in Figma, we analyze user intent, customer decision pathways, and your core business targets. We build interfaces that guide visitors from first click to inquiry or purchase.'
-      image: layout/4-iphone.png
+      image: /layout/4-iphone.png
       imageAlt: 'Four iPhones showing user interface'
       size: small
     - title: 'Speed matters'
@@ -44,14 +44,14 @@ whyBitspire:
         We design websites for performance from the first line of code. Optimizing code, images, and animations delivers results up to 70% better than standard websites.
 
         We verify performance using Lighthouse and Core Web Vitals. A faster website means less waiting and a better user experience.
-      image: layout/laptop-pagespeed-insights.png
+      image: /layout/laptop-pagespeed-insights.png
       imageAlt: 'Website performance score'
       size: tall
     - title: 'Ironclad Security'
       subHeadline: 'Full protection for your data and brand.'
       body: 'Security by Design. Separating visual layer from data and modern encryption protocols.'
       fullText: 'DDoS attacks and data breaches are constant threats for sites built on vulnerable templates. At Bitspire, security is baked into every project. Your platform becomes virtually impenetrable, and your business runs 24/7 without surprises.'
-      image: layout/gryf-bezpieczenstwo.png
+      image: /layout/gryf-bezpieczenstwo.png
       imageAlt: 'Griffin symbolizing security'
       size: small
 portfolioHighlights:

@@ -28,14 +28,14 @@ whyBitspire:
         Tworzymy lekkie architektury headless i rozwiązania bezserwerowe, dopasowane do projektu. Mniej zbędnych elementów to szybsze działanie i płynniejsze doświadczenie.
 
         Technologia zaprojektowana od podstaw, bez kompromisów.
-      image: layout/ekran-vs-code.png
+      image: /layout/ekran-vs-code.png
       imageAlt: 'Ekran edytora VS Code z kodem projektu'
       size: large
     - title: 'UX & Konwersja'
       subHeadline: 'Nie tworzymy ładnych obrazków. Projektujemy narzędzia sprzedażowe.'
       body: 'Minimalistyczny design premium z architekturą informacji nastawioną na konwersję. Każdy przycisk ma swoje uzasadnienie.'
       fullText: 'Piękna strona, która nie generuje leadów, to drogi wydatek. Zanim usiądziemy do kodu czy makiety Figma, analizujemy intencje klientów, ich ścieżkę zakupową i Twoje cele biznesowe. Tworzymy intuicyjne interfejsy, które prowadzą użytkownika od pierwszego wejścia aż do kontaktu lub zakupu.'
-      image: layout/4-iphone.png
+      image: /layout/4-iphone.png
       imageAlt: 'Cztery iPhone z interfejsem użytkownika'
       size: small
     - title: 'Szybkość ma znaczenie'
@@ -44,14 +44,14 @@ whyBitspire:
         Projektujemy strony z myślą o wydajności od pierwszej linijki kodu. Optymalizacja kodu, obrazów i animacji daje wyniki do 70% lepsze niż standardowe strony.
 
         Wydajność weryfikujemy za pomocą Lighthouse i Core Web Vitals. Szybsza strona to mniej czekania i lepsze doświadczenie użytkownika.
-      image: layout/laptop-pagespeed-insights.png
+      image: /layout/laptop-pagespeed-insights.png
       imageAlt: 'Wykres wydajności strony'
       size: tall
     - title: 'Pancerne Bezpieczeństwo'
       subHeadline: 'Pełna ochrona Twoich danych i wizerunku.'
       body: 'Security by Design. Rozdzielenie warstwy wizualnej od danych i nowoczesne mechanizmy szyfrowania.'
       fullText: 'Ataki DDoS i wycieki danych to codzienność stron na dziurawych gotowcach. W Bitspire bezpieczeństwo wpisujemy w fundamenty każdego projektu. Twoja platforma staje się niemożliwa do sforsowania, a biznes działa 24/7 bez niespodzianek.'
-      image: layout/gryf-bezpieczenstwo.png
+      image: /layout/gryf-bezpieczenstwo.png
       imageAlt: 'Gryf symbolizujący bezpieczeństwo'
       size: small
 portfolioHighlights:

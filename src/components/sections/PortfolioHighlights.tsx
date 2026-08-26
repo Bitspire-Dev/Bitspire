@@ -1,9 +1,8 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment, Project } from '@tina/__generated__/types';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
@@ -204,16 +203,138 @@ const ProjectCard = memo(function ProjectCard({
   );
 });
 
+interface MobileCarouselProps {
+  items: HighlightItem[];
+  selected: number;
+  locale: string;
+  ui: { cta: string };
+}
+
+const MobileCarousel = memo(function MobileCarousel({
+  items,
+  selected,
+  locale,
+  ui,
+}: MobileCarouselProps) {
+  return (
+    <div className="overflow-hidden md:hidden">
+      <div
+        className="flex transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+        style={{ transform: `translateX(-${selected * 100}%)` }}
+      >
+        {items.map((item, index) => (
+          <div key={`mobile-${item.project.id}`} className="w-full shrink-0 grow-0 basis-full px-0">
+            <ProjectCard item={item} isCenter={index === selected} locale={locale} ui={ui} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+});
+
+interface DesktopCarouselProps {
+  items: HighlightItem[];
+  selected: number;
+  cardWidth: number;
+  locale: string;
+  ui: { cta: string };
+  desktopRef: React.RefObject<HTMLDivElement | null>;
+}
+
+const DesktopCarousel = memo(function DesktopCarousel({
+  items,
+  selected,
+  cardWidth,
+  locale,
+  ui,
+  desktopRef,
+}: DesktopCarouselProps) {
+  return (
+    <div
+      ref={desktopRef}
+      className="relative hidden size-full md:block"
+      style={{ transformStyle: 'preserve-3d', minHeight: 560 }}
+    >
+      {items.map((item, index) => {
+        const offset = getSlideOffset(index, selected, items.length);
+        const isCenter = offset === 0;
+        const t = getTweenStyles(offset, cardWidth);
+        const transformOrigin =
+          offset > 0 ? 'left center' : offset < 0 ? 'right center' : 'center center';
+
+        const left = isCenter ? '25%' : offset > 0 ? '75%' : '-25%';
+
+        return (
+          <div
+            key={`desktop-${item.project.id}`}
+            className="absolute top-1/2 w-1/2 transition-[transform,opacity,filter,left] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            style={{
+              left,
+              transform: `translateY(-50%) translateX(${t.translateX}%) rotateY(${t.rotateY}deg) translateZ(${t.translateZ}px) scale(${t.scale})`,
+              transformOrigin,
+              opacity: t.opacity,
+              filter: isCenter ? 'none' : `blur(${t.blur}px) brightness(${t.brightness})`,
+              zIndex: t.zIndex,
+              transformStyle: 'preserve-3d',
+              willChange: 'transform, opacity, filter',
+            }}
+          >
+            <ProjectCard item={item} isCenter={isCenter} locale={locale} ui={ui} />
+          </div>
+        );
+      })}
+    </div>
+  );
+});
+
+interface CarouselControlsProps {
+  onPrev: () => void;
+  onNext: () => void;
+}
+
+const CarouselControls = memo(function CarouselControls({ onPrev, onNext }: CarouselControlsProps) {
+  return (
+    <>
+      <Button
+        type="button"
+        variant="outline"
+        size="icon-sm"
+        className="absolute top-1/2 left-0 -translate-y-1/2 rounded-full md:-left-4"
+        onClick={onPrev}
+        aria-label="Poprzedni projekt"
+      >
+        <ChevronLeftIcon />
+      </Button>
+
+      <Button
+        type="button"
+        variant="outline"
+        size="icon-sm"
+        className="absolute top-1/2 right-0 -translate-y-1/2 rounded-full md:-right-4"
+        onClick={onNext}
+        aria-label="Następny projekt"
+      >
+        <ChevronRightIcon />
+      </Button>
+    </>
+  );
+});
+
 function PortfolioHighlightsContent({ page }: PortfolioHighlightsProps) {
   const locale = useLocale();
   const highlights = page.portfolioHighlights;
   const ui = UI[locale] ?? UI.pl;
 
-  const items = highlights?.items?.length
-    ? highlights.items.filter(
-        (item): item is NonNullable<typeof item> & { project: Project } => !!item && !!item.project
-      )
-    : [];
+  const items = useMemo(
+    () =>
+      highlights?.items?.length
+        ? highlights.items.filter(
+            (item): item is NonNullable<typeof item> & { project: Project } =>
+              !!item && !!item.project
+          )
+        : [],
+    [highlights?.items]
+  );
 
   const [selected, setSelected] = useState(0);
   const [cardWidth, setCardWidth] = useState(0);
@@ -230,30 +351,36 @@ function PortfolioHighlightsContent({ page }: PortfolioHighlightsProps) {
     return () => observer.disconnect();
   }, []);
 
+  const next = useCallback(() => setSelected(prev => (prev + 1) % items.length), [items.length]);
+  const prev = useCallback(
+    () => setSelected(prev => (prev - 1 + items.length) % items.length),
+    [items.length]
+  );
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.changedTouches[0].screenX;
+  }, []);
+
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      const start = touchStartX.current;
+      const end = e.changedTouches[0].screenX;
+      touchStartX.current = null;
+
+      if (start === null) return;
+      const diff = start - end;
+
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) next();
+        else prev();
+      }
+    },
+    [next, prev]
+  );
+
   if (!highlights || !items.length) {
     return null;
   }
-
-  const next = () => setSelected(prev => (prev + 1) % items.length);
-  const prev = () => setSelected(prev => (prev - 1 + items.length) % items.length);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.changedTouches[0].screenX;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const start = touchStartX.current;
-    const end = e.changedTouches[0].screenX;
-    touchStartX.current = null;
-
-    if (start === null) return;
-    const diff = start - end;
-
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) next();
-      else prev();
-    }
-  };
 
   return (
     <section className="relative w-full scroll-mt-20 bg-background">
@@ -283,84 +410,16 @@ function PortfolioHighlightsContent({ page }: PortfolioHighlightsProps) {
             onTouchEnd={handleTouchEnd}
             style={{ perspective: '1500px' }}
           >
-            {/* Mobile: one card at a time */}
-            <div className="overflow-hidden md:hidden">
-              <div
-                className="flex transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                style={{ transform: `translateX(-${selected * 100}%)` }}
-              >
-                {items.map((item, index) => (
-                  <div
-                    key={`mobile-${item.project.id}`}
-                    className="w-full shrink-0 grow-0 basis-full px-0"
-                  >
-                    <ProjectCard
-                      item={item}
-                      isCenter={index === selected}
-                      locale={locale}
-                      ui={ui}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Desktop: 3D coverflow triangle */}
-            <div
-              ref={desktopRef}
-              className="relative hidden size-full md:block"
-              style={{ transformStyle: 'preserve-3d', minHeight: 560 }}
-            >
-              {items.map((item, index) => {
-                const offset = getSlideOffset(index, selected, items.length);
-                const isCenter = offset === 0;
-                const t = getTweenStyles(offset, cardWidth);
-                const transformOrigin =
-                  offset > 0 ? 'left center' : offset < 0 ? 'right center' : 'center center';
-
-                const left = isCenter ? '25%' : offset > 0 ? '75%' : '-25%';
-
-                return (
-                  <div
-                    key={`desktop-${item.project.id}`}
-                    className="absolute top-1/2 w-1/2 transition-[transform,opacity,filter,left] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                    style={{
-                      left,
-                      transform: `translateY(-50%) translateX(${t.translateX}%) rotateY(${t.rotateY}deg) translateZ(${t.translateZ}px) scale(${t.scale})`,
-                      transformOrigin,
-                      opacity: t.opacity,
-                      filter: isCenter ? 'none' : `blur(${t.blur}px) brightness(${t.brightness})`,
-                      zIndex: t.zIndex,
-                      transformStyle: 'preserve-3d',
-                    }}
-                  >
-                    <ProjectCard item={item} isCenter={isCenter} locale={locale} ui={ui} />
-                  </div>
-                );
-              })}
-            </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              className="absolute top-1/2 left-0 -translate-y-1/2 rounded-full md:-left-4"
-              onClick={prev}
-              aria-label="Poprzedni projekt"
-            >
-              <ChevronLeftIcon />
-            </Button>
-
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              className="absolute top-1/2 right-0 -translate-y-1/2 rounded-full md:-right-4"
-              onClick={next}
-              aria-label="Następny projekt"
-            >
-              <ChevronRightIcon />
-            </Button>
+            <MobileCarousel items={items} selected={selected} locale={locale} ui={ui} />
+            <DesktopCarousel
+              items={items}
+              selected={selected}
+              cardWidth={cardWidth}
+              locale={locale}
+              ui={ui}
+              desktopRef={desktopRef}
+            />
+            <CarouselControls onPrev={prev} onNext={next} />
           </div>
         </FadeIn>
       </div>
