@@ -85,10 +85,6 @@ Wdrożenie strony na `eduvantage.pl` poprawiło obecność firmy w internecie i 
 
 ![Podgląd strony EduVantage na mobile i desktop](/portfolio/websites/eduvantage/bitspire-mockup.png)
 
-## Co dalej?
-
-Strona jest gotowa do dalszego rozwoju: integracja realnych opinii, blog edukacyjny pod SEO long-tail, rozbudowana analityka zdarzeń `tel:` i przycisku WhatsApp, a także rozszerzenie o strony poszczególnych kierunków (np. „matematyka matura Słupsk”).
-
 ## Zobacz stronę
 
 [eduvantage.pl](https://eduvantage.pl)

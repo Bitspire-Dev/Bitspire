@@ -95,10 +95,6 @@ Wdrożenie strony na `bezawaryjni.com` poprawiło obecność warsztatu w interne
 
 Czas ładowania i wyniki w PageSpeed Insights utrzymują się na wysokim poziomie, co przekłada się na lepsze doświadczenie użytkownika i wyższą konwersję.
 
-## Co dalej?
-
-Strona jest gotowa do dalszego rozwoju: integracja z systemem rezerwacji terminów, sekcja opinii klientów, rozbudowana analityka zdarzeń (telefon, WhatsApp, formularz), a także dedykowane podstrony dla każdego rodzaju usługi pod SEO long-tail.
-
 ## Zobacz stronę
 
 [bezawaryjni.com](https://bezawaryjni.com)

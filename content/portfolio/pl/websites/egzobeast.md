@@ -106,10 +106,6 @@ Wdrożenie strony na `exobist.com` dało Egzobeast profesjonalną wizytówkę, k
 
 ![Podgląd strony Egzobeast na mobile i desktop](/portfolio/websites/egzobeast/egzobeast-mockup.png)
 
-## Co dalej?
-
-Strona jest gotowa do dalszego rozwoju: rozbudowa bloga o poradniki i filmy, integracja z systemem rezerwacji hotelu dla gadów, sekcja opinii klientów, analityka zdarzeń (telefon, kierunek, formularz) oraz dedykowane landing page'e pod długie frazy SEO.
-
 ## Zobacz stronę
 
 [exobist.com](https://exobist.com)
