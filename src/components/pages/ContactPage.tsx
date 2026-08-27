@@ -57,7 +57,7 @@ export function ContactPage({
           <ContactHero page={page} />
           <div className="mt-12 grid gap-8 lg:grid-cols-2">
             <ContactDetails contact={page.contact} locale={locale} />
-            <ContactForm contact={page.contact} locale={locale} />
+            <ContactForm locale={locale} />
           </div>
         </div>
       </section>

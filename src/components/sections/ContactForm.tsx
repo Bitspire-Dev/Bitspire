@@ -8,14 +8,10 @@ import { Input } from '@/components/ui/primitives/input';
 import { Textarea } from '@/components/ui/primitives/textarea';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { Link } from '@/i18n/navigation';
-import { DEFAULT_EMAIL } from '@/lib/company';
+import { validateContactPayload } from '@/lib/contact';
 import { cn } from '@/lib/utils';
-import type { PageQuery } from '@tina/__generated__/types';
-
-type Contact = NonNullable<NonNullable<PageQuery['page']>['contact']>;
 
 interface ContactFormProps {
-  contact: Contact | null | undefined;
   locale: string;
   className?: string;
 }
@@ -27,6 +23,9 @@ const UI: Record<string, Record<string, string>> = {
     subject: 'Temat',
     message: 'Wiadomość',
     send: 'Wyślij wiadomość',
+    sending: 'Wysyłanie...',
+    success: 'Wiadomość została wysłana.',
+    error: 'Wystąpił błąd. Spróbuj ponownie później.',
     required: 'To pole jest wymagane',
     invalidEmail: 'Podaj prawidłowy adres e-mail',
     privacyNotice: 'Wysyłając wiadomość, akceptujesz',
@@ -38,6 +37,9 @@ const UI: Record<string, Record<string, string>> = {
     subject: 'Subject',
     message: 'Message',
     send: 'Send message',
+    sending: 'Sending...',
+    success: 'Message sent successfully.',
+    error: 'Something went wrong. Please try again later.',
     required: 'This field is required',
     invalidEmail: 'Please enter a valid email address',
     privacyNotice: 'By sending a message, you accept our',
@@ -45,37 +47,56 @@ const UI: Record<string, Record<string, string>> = {
   },
 };
 
-export function ContactForm({ contact, locale, className }: ContactFormProps) {
+export function ContactForm({ locale, className }: ContactFormProps) {
   const ui = UI[locale] ?? UI.pl;
-  const to = contact?.email || DEFAULT_EMAIL;
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  const validateEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const nextErrors: Record<string, string> = {};
+    setSubmitStatus('idle');
 
-    if (!name.trim()) nextErrors.name = ui.required;
-    if (!email.trim()) nextErrors.email = ui.required;
-    else if (!validateEmail(email)) nextErrors.email = ui.invalidEmail;
-    if (!subject.trim()) nextErrors.subject = ui.required;
-    if (!message.trim()) nextErrors.message = ui.required;
+    const { valid, errors: nextErrors } = validateContactPayload(
+      { name, email, subject, message },
+      locale
+    );
 
-    setErrors(nextErrors);
+    setErrors(nextErrors as Record<string, string>);
 
-    if (Object.keys(nextErrors).length > 0) {
+    if (!valid) {
       return;
     }
 
-    const body = `[${ui.name}: ${name}]\n[${ui.email}: ${email}]\n\n${message}`;
-    const mailto = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailto;
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, subject, message, locale }),
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setName('');
+        setEmail('');
+        setSubject('');
+        setMessage('');
+        setErrors({});
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch {
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -160,10 +181,18 @@ export function ContactForm({ contact, locale, className }: ContactFormProps) {
           </FadeIn>
 
           <FadeIn delay={0.2}>
-            <Button type="submit" className="w-full">
-              {ui.send}
+            <Button type="submit" disabled={isSubmitting} className="w-full">
+              {isSubmitting ? ui.sending : ui.send}
             </Button>
           </FadeIn>
+
+          {submitStatus === 'success' ? (
+            <p className="text-center font-sans text-xs text-foreground">{ui.success}</p>
+          ) : null}
+
+          {submitStatus === 'error' ? (
+            <FieldError className="text-center">{ui.error}</FieldError>
+          ) : null}
 
           <FadeIn delay={0.25}>
             <p className="text-center font-sans text-xs text-muted-foreground">
