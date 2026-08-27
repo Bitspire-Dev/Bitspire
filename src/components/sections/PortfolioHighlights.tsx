@@ -138,10 +138,7 @@ const ProjectCard = memo(function ProjectCard({
               unoptimized={isUnoptimized}
               sizes="(max-width: 768px) 100vw, 45vw"
               className={cn(
-                'transition-transform duration-500',
-                isUnoptimized
-                  ? 'object-contain p-8'
-                  : 'object-cover object-top group-hover/card:scale-105'
+                isUnoptimized ? 'object-contain p-8' : 'object-cover object-top'
               )}
             />
           ) : (

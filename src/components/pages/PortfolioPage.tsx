@@ -11,6 +11,8 @@ import { Separator } from '@/components/ui/primitives/separator';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/primitives/stagger';
 import { PORTFOLIO_CATEGORIES, getCategoryHref } from '@/lib/portfolio/categories';
+import { cn } from '@/lib/utils';
+import { isUnoptimizedImage } from '@/lib/image';
 import { Breadcrumb, type BreadcrumbItem } from '@/components/ui/navigation/breadcrumb';
 
 interface PortfolioPageProps {
@@ -83,14 +85,17 @@ export function PortfolioPage({
           {PORTFOLIO_CATEGORIES.map(category => (
             <StaggerItem key={category.id}>
               <Card className="group/card overflow-hidden">
-                <AspectRatio ratio={4 / 3} className="bg-muted">
+                <AspectRatio ratio={4 / 3} className="overflow-hidden bg-muted">
                   <Image
                     src={category.image}
                     alt={category.label[locale] ?? category.label.en}
                     fill
-                    unoptimized
+                    unoptimized={isUnoptimizedImage(category.image)}
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-contain p-8 opacity-50 grayscale transition-all duration-300 group-hover/card:scale-105 group-hover/card:opacity-100 group-hover/card:grayscale-0"
+                    className={cn(
+                      'transition-transform duration-300 group-hover/card:scale-105',
+                      isUnoptimizedImage(category.image) ? 'object-contain p-8' : 'object-cover'
+                    )}
                   />
                 </AspectRatio>
                 <CardHeader className="items-start gap-2">
