@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { extractContentSlug, slugify } from './string';
+import { extractContentSlug, slugify } from '../string';
 
 describe('extractContentSlug', () => {
   it('removes the .md extension', () => {

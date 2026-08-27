@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatLongDate, dottedDateToIso } from './date';
+import { formatLongDate, dottedDateToIso } from '../date';
 
 describe('formatLongDate', () => {
   it('formats a valid date in Polish', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { hexToRgb } from './color';
+import { hexToRgb } from '../color';
 
 describe('hexToRgb', () => {
   it('converts a 6-digit hex colour to normalised RGB', () => {

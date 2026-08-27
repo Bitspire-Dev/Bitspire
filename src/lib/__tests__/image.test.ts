@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isUnoptimizedImage } from './image';
+import { isUnoptimizedImage } from '../image';
 
 describe('isUnoptimizedImage', () => {
   it('returns true for SVG and GIF sources', () => {
