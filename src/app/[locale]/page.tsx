@@ -3,7 +3,8 @@ import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { getPage } from '@/lib/tina';
 import { HomePage } from '@/components/pages/HomePage';
-import { localeAlternates, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { getPageHref } from '@/lib/routes';
 import { combineJsonLd, webPageJsonLd } from '@/lib/json-ld';
 
 export async function generateMetadata({
@@ -21,7 +22,7 @@ export async function generateMetadata({
   return {
     title: title ? { absolute: title } : undefined,
     description,
-    alternates: localeAlternates(locale, () => '/'),
+    alternates: localeAlternates(locale, () => getPageHref('home')),
     openGraph: { ...siteMetadata.openGraph, title, description, images: defaultImages.openGraph },
     twitter: { ...siteMetadata.twitter, title, description, images: defaultImages.twitter },
   };
@@ -39,7 +40,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   }
 
   const page = tina.data.page;
-  const pageUrl = `${siteUrl}/${locale}`;
+  const pageUrl = localePathname(locale, getPageHref('home'));
   const jsonLd = combineJsonLd(
     webPageJsonLd({
       name: page.title ?? 'Bitspire',

@@ -1,10 +1,15 @@
 'use client';
 
+import type { ComponentProps } from 'react';
 import { tinaField } from 'tinacms/dist/react';
 import type { BlogQuery } from '@tina/__generated__/types';
 import { ArticleHeader } from '@/components/ui/composites/ArticleHeader';
 import { ArticleMeta } from '@/components/ui/composites/article-meta';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
+import { Link } from '@/i18n/navigation';
+import { getPageHref } from '@/lib/routes';
+
+type Href = ComponentProps<typeof Link>['href'];
 
 interface BlogArticleHeaderProps {
   blog: NonNullable<BlogQuery['blog']>;
@@ -18,7 +23,7 @@ export function BlogArticleHeader({ blog, locale, backLabel }: BlogArticleHeader
       cover={blog.cover}
       coverAlt={blog.title}
       tinaFieldCover={tinaField(blog, 'cover')}
-      backHref="/blog"
+      backHref={getPageHref('blog') as Href}
       backLabel={backLabel}
       locale={locale}
       title={blog.title}

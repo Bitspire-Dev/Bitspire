@@ -86,7 +86,7 @@ function CallToActionContent({ page }: CallToActionProps) {
                     >
                       <Link
                         data-tina-field={tinaField(cta, 'secondaryLabel')}
-                        href={(cta.secondaryHref ?? '/portfolio') as Href}
+                        href={(cta.secondaryHref ?? (getPageHref('portfolio') as Href)) as Href}
                         locale={locale}
                       >
                         {cta.secondaryLabel}

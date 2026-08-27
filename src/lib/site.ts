@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
-import { getPathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { COMPANY } from '@/lib/company';
-import type { LocalizedHref } from '@/lib/routes';
+import { getLocalizedPath, type LocalizedHref } from '@/lib/routes';
 
 export const siteName = COMPANY.name;
 
@@ -13,8 +12,7 @@ export const siteUrl = rawSiteUrl
   .replace(/\/$/, '');
 
 export const localePathname = (locale: string, href: LocalizedHref) => {
-  const path = getPathname({ locale, href: href as never });
-  return `${siteUrl}${path}`;
+  return `${siteUrl}${getLocalizedPath(locale, href)}`;
 };
 
 export function getDefaultOgImages(locale: string) {

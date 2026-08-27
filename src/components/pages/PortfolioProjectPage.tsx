@@ -1,5 +1,6 @@
 'use client';
 
+import type { ComponentProps } from 'react';
 import { useTina, tinaField } from 'tinacms/dist/react';
 import type { ProjectQuery } from '@tina/__generated__/types';
 import { PortfolioProjectHeader } from '@/components/sections/PortfolioProjectHeader';
@@ -7,6 +8,10 @@ import { PortfolioProjectBody } from '@/components/sections/PortfolioProjectBody
 import { ContactCta } from '@/components/ui/composites/ContactCta';
 import { getCategoryHref, isPortfolioCategoryId } from '@/lib/portfolio/categories';
 import { Breadcrumb, type BreadcrumbItem } from '@/components/ui/navigation/breadcrumb';
+import { Link } from '@/i18n/navigation';
+import { getPageHref } from '@/lib/routes';
+
+type Href = ComponentProps<typeof Link>['href'];
 
 const UI: Record<string, Record<string, string>> = {
   pl: {
@@ -47,8 +52,8 @@ export function PortfolioProjectPage({
   }
 
   const backHref = isPortfolioCategoryId(category)
-    ? getCategoryHref(locale, category)
-    : '/portfolio';
+    ? (getCategoryHref(locale, category) as Href)
+    : (getPageHref('portfolio') as Href);
 
   return (
     <>

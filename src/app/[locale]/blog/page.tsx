@@ -3,7 +3,8 @@ import { setRequestLocale } from 'next-intl/server';
 import { getBlogConnection, getPage } from '@/lib/tina';
 import { BlogPage } from '@/components/pages/BlogPage';
 import { getPageFallbackTitle } from '@/lib/ui';
-import { localeAlternates, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { getPageHref } from '@/lib/routes';
 import { combineJsonLd, webPageJsonLd, breadcrumbListJsonLd } from '@/lib/json-ld';
 
 export async function generateMetadata({
@@ -27,7 +28,7 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: localeAlternates(locale, () => '/blog'),
+    alternates: localeAlternates(locale, () => getPageHref('blog')),
     openGraph: { ...siteMetadata.openGraph, title, description, images: defaultImages.openGraph },
     twitter: { ...siteMetadata.twitter, title, description, images: defaultImages.twitter },
   };
@@ -44,7 +45,7 @@ export default async function Blog({ params }: { params: Promise<{ locale: strin
   ]);
 
   const page = pageData.data.page;
-  const pageUrl = `${siteUrl}/${locale}/blog`;
+  const pageUrl = localePathname(locale, getPageHref('blog'));
   const homeLabel = locale === 'pl' ? 'Strona główna' : 'Home';
   const blogLabel = page?.title ?? getPageFallbackTitle(locale, 'blog');
   const description = page?.description;
@@ -55,7 +56,7 @@ export default async function Blog({ params }: { params: Promise<{ locale: strin
       url: pageUrl,
     }),
     breadcrumbListJsonLd([
-      { name: homeLabel, item: `${siteUrl}/${locale}` },
+      { name: homeLabel, item: localePathname(locale, getPageHref('home')) },
       { name: blogLabel, item: pageUrl },
     ])
   );
@@ -67,7 +68,7 @@ export default async function Blog({ params }: { params: Promise<{ locale: strin
       data={tina.data}
       locale={locale}
       jsonLd={jsonLd}
-      breadcrumbs={[{ label: homeLabel, href: '/' }, { label: blogLabel }]}
+      breadcrumbs={[{ label: homeLabel, href: getPageHref('home') }, { label: blogLabel }]}
     />
   );
 }

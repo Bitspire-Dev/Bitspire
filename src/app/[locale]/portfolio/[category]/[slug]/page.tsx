@@ -10,7 +10,8 @@ import {
   PORTFOLIO_CATEGORIES,
   type PortfolioCategoryId,
 } from '@/lib/portfolio/categories';
-import { localeAlternates, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { getPageHref } from '@/lib/routes';
 import { combineJsonLd, webPageJsonLd, articleJsonLd, breadcrumbListJsonLd } from '@/lib/json-ld';
 import { extractContentSlug } from '@/lib/string';
 
@@ -77,10 +78,13 @@ export async function generateMetadata({
   return {
     title: project.title,
     description: project.description,
-    alternates: localeAlternates(
-      locale,
-      l => `/portfolio/${getCategoryUrlSlug(canonicalCategory, l)}/${slug}`
-    ),
+    alternates: localeAlternates(locale, l => ({
+      pathname: '/portfolio/[category]/[slug]',
+      params: {
+        category: getCategoryUrlSlug(canonicalCategory, l),
+        slug,
+      },
+    })),
     openGraph: {
       ...siteMetadata.openGraph,
       type: 'article',
@@ -122,7 +126,10 @@ export default async function ProjectArticlePage({
   const categoryData = getCategoryById(canonicalCategory);
   const categoryUrlSlug = getCategoryUrlSlug(canonicalCategory, locale);
   const categoryLabel = categoryData?.label[locale] ?? categoryData?.label.pl ?? category;
-  const projectUrl = `${siteUrl}/${locale}/portfolio/${categoryUrlSlug}/${slug}`;
+  const projectUrl = localePathname(locale, {
+    pathname: '/portfolio/[category]/[slug]',
+    params: { category: categoryUrlSlug, slug },
+  });
   const homeLabel = locale === 'pl' ? 'Strona główna' : 'Home';
   const portfolioLabel = 'Portfolio';
   const jsonLd = combineJsonLd(
@@ -139,9 +146,15 @@ export default async function ProjectArticlePage({
       image: project.screenshot,
     }),
     breadcrumbListJsonLd([
-      { name: homeLabel, item: `${siteUrl}/${locale}` },
-      { name: portfolioLabel, item: `${siteUrl}/${locale}/portfolio` },
-      { name: categoryLabel, item: `${siteUrl}/${locale}/portfolio/${categoryUrlSlug}` },
+      { name: homeLabel, item: localePathname(locale, getPageHref('home')) },
+      { name: portfolioLabel, item: localePathname(locale, getPageHref('portfolio')) },
+      {
+        name: categoryLabel,
+        item: localePathname(locale, {
+          pathname: '/portfolio/[category]',
+          params: { category: categoryUrlSlug },
+        }),
+      },
       { name: project.title, item: projectUrl },
     ])
   );
@@ -155,8 +168,8 @@ export default async function ProjectArticlePage({
       category={canonicalCategory}
       jsonLd={jsonLd}
       breadcrumbs={[
-        { label: homeLabel, href: '/' },
-        { label: portfolioLabel, href: '/portfolio' },
+        { label: homeLabel, href: getPageHref('home') },
+        { label: portfolioLabel, href: getPageHref('portfolio') },
         {
           label: categoryLabel,
           href: { pathname: '/portfolio/[category]', params: { category: categoryUrlSlug } },

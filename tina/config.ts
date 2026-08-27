@@ -1,5 +1,7 @@
 import { defineConfig } from 'tinacms';
 import { extractContentSlug } from '../src/lib/string';
+import { getLocalizedPath, getPageHref } from '../src/lib/routes';
+import { getCategoryUrlSlug } from '../src/lib/portfolio/categories';
 
 // Your hosting provider likely exposes this as an environment variable
 const branch =
@@ -35,7 +37,8 @@ export default defineConfig({
           router: ({ document }) => {
             const [locale, filename] = document._sys.relativePath.split('/');
             const slug = extractContentSlug(filename ?? '');
-            return slug === 'home' ? `/${locale}` : `/${locale}/${slug}`;
+            const internalPath = slug === 'home' ? '/' : `/${slug}`;
+            return getLocalizedPath(locale, internalPath);
           },
         },
         fields: [
@@ -303,8 +306,9 @@ export default defineConfig({
         format: 'md',
         ui: {
           router: ({ document }) => {
-            const [locale, slug] = document._sys.relativePath.split('/');
-            return `/${locale}/blog/${slug}`;
+            const [locale, filename] = document._sys.relativePath.split('/');
+            const slug = extractContentSlug(filename ?? '');
+            return getLocalizedPath(locale, { pathname: '/blog/[slug]', params: { slug } });
           },
         },
         fields: [
@@ -392,7 +396,11 @@ export default defineConfig({
           router: ({ document }) => {
             const [locale, category, filename] = document._sys.relativePath.split('/');
             const slug = extractContentSlug(filename ?? '');
-            return `/${locale}/portfolio/${category}/${slug}`;
+            const categorySlug = getCategoryUrlSlug(category as 'websites' | 'software', locale);
+            return getLocalizedPath(locale, {
+              pathname: '/portfolio/[category]/[slug]',
+              params: { category: categorySlug, slug },
+            });
           },
         },
         fields: [

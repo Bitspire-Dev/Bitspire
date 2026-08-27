@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { routing } from '@/i18n/routing';
 import { localePathname, sitemapAlternates } from '@/lib/site';
 import { getBlogConnection, getPageConnection, getProjectConnection } from '@/lib/tina';
-import { buildBlogArticleMap } from '@/lib/blog';
+import { buildBlogArticleMap, getBlogArticleHref } from '@/lib/blog';
 import { PORTFOLIO_CATEGORIES, getCategoryUrlSlug } from '@/lib/portfolio/categories';
 import { extractContentSlug } from '@/lib/string';
 import { dottedDateToIso } from '@/lib/date';
@@ -54,10 +54,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const category of PORTFOLIO_CATEGORIES) {
     for (const locale of routing.locales) {
       entries.push({
-        url: localePathname(locale, `/portfolio/${getCategoryUrlSlug(category.id, locale)}`),
+        url: localePathname(locale, {
+          pathname: '/portfolio/[category]',
+          params: { category: getCategoryUrlSlug(category.id, locale) },
+        }),
         changeFrequency: 'monthly',
         priority: 0.7,
-        alternates: sitemapAlternates(l => `/portfolio/${getCategoryUrlSlug(category.id, l)}`),
+        alternates: sitemapAlternates(l => ({
+          pathname: '/portfolio/[category]',
+          params: { category: getCategoryUrlSlug(category.id, l) },
+        })),
       });
     }
   }
@@ -81,11 +87,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const byLocale = blogMap.byCanonical[canonical] ?? {};
 
       entries.push({
-        url: localePathname(locale, `/blog/${slug}`),
+        url: localePathname(locale, getBlogArticleHref(slug)),
         lastModified: node.date ? new Date(node.date) : undefined,
         changeFrequency: 'yearly',
         priority: 0.6,
-        alternates: sitemapAlternates(l => `/blog/${byLocale[l] ?? slug}`),
+        alternates: sitemapAlternates(l => getBlogArticleHref(byLocale[l] ?? slug)),
       });
     }
 
@@ -98,15 +104,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const slug = extractContentSlug(filename);
 
       entries.push({
-        url: localePathname(
-          locale,
-          `/portfolio/${getCategoryUrlSlug(categoryId as 'websites' | 'software', locale)}/${slug}`
-        ),
+        url: localePathname(locale, {
+          pathname: '/portfolio/[category]/[slug]',
+          params: {
+            category: getCategoryUrlSlug(categoryId as 'websites' | 'software', locale),
+            slug,
+          },
+        }),
         changeFrequency: 'yearly',
         priority: 0.6,
-        alternates: sitemapAlternates(
-          l => `/portfolio/${getCategoryUrlSlug(categoryId as 'websites' | 'software', l)}/${slug}`
-        ),
+        alternates: sitemapAlternates(l => ({
+          pathname: '/portfolio/[category]/[slug]',
+          params: {
+            category: getCategoryUrlSlug(categoryId as 'websites' | 'software', l),
+            slug,
+          },
+        })),
       });
     }
   } catch {

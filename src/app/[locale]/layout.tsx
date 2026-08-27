@@ -11,6 +11,7 @@ import { inter, nippo, ibmPlexMono } from '@/lib/fonts';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { MotionProvider } from '@/components/providers/motion-provider';
 import { siteMetadata, siteName, localePathname, localeAlternates } from '@/lib/site';
+import { getPageHref } from '@/lib/routes';
 import { combineJsonLd, organizationJsonLd, websiteJsonLd } from '@/lib/json-ld';
 import '@/app/globals.css';
 
@@ -47,7 +48,7 @@ export async function generateMetadata({
       template: `%s | ${siteName}`,
     },
     description,
-    alternates: localeAlternates(locale, () => '/'),
+    alternates: localeAlternates(locale, () => getPageHref('home')),
     openGraph: {
       ...siteMetadata.openGraph,
       title,
@@ -56,7 +57,7 @@ export async function generateMetadata({
       alternateLocale: routing.locales
         .map(l => LOCALE_TO_OG[l] ?? l)
         .filter(l => l !== LOCALE_TO_OG[locale]),
-      url: localePathname(locale, '/'),
+      url: localePathname(locale, getPageHref('home')),
     },
     twitter: {
       ...siteMetadata.twitter,

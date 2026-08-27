@@ -6,9 +6,10 @@ import path from 'path';
 import { getBlogConnection, getBlogPost } from '@/lib/tina';
 import { routing } from '@/i18n/routing';
 import { BlogArticle } from '@/components/pages/BlogArticlePage';
-import { buildBlogArticleMap, toRelatedItems } from '@/lib/blog';
+import { buildBlogArticleMap, toRelatedItems, getBlogArticleHref } from '@/lib/blog';
 import { extractTocFromMarkdown } from '@/lib/toc';
-import { localeAlternates, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { getPageHref } from '@/lib/routes';
 import {
   combineJsonLd,
   webPageJsonLd,
@@ -61,7 +62,7 @@ export async function generateMetadata({
   return {
     title: post.title,
     description: post.description,
-    alternates: localeAlternates(locale, l => `/blog/${byLocale[l] ?? slug}`),
+    alternates: localeAlternates(locale, l => getBlogArticleHref(byLocale[l] ?? slug)),
     openGraph: {
       ...siteMetadata.openGraph,
       type: 'article',
@@ -102,7 +103,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<Blog
   const related = toRelatedItems(slug, locale, all.data);
   const toc = extractTocFromMarkdown(rawMarkdown);
 
-  const postUrl = `${siteUrl}/${locale}/blog/${slug}`;
+  const postUrl = localePathname(locale, getBlogArticleHref(slug));
   const homeLabel = locale === 'pl' ? 'Strona główna' : 'Home';
   const blogLabel = 'Blog';
   const jsonLd = combineJsonLd(
@@ -121,8 +122,8 @@ export default async function BlogArticlePage({ params }: { params: Promise<Blog
       author: post.author,
     }),
     breadcrumbListJsonLd([
-      { name: homeLabel, item: `${siteUrl}/${locale}` },
-      { name: blogLabel, item: `${siteUrl}/${locale}/blog` },
+      { name: homeLabel, item: localePathname(locale, getPageHref('home')) },
+      { name: blogLabel, item: localePathname(locale, getPageHref('blog')) },
       { name: post.title, item: postUrl },
     ])
   );
@@ -137,8 +138,8 @@ export default async function BlogArticlePage({ params }: { params: Promise<Blog
       toc={toc}
       jsonLd={jsonLd}
       breadcrumbs={[
-        { label: homeLabel, href: '/' },
-        { label: blogLabel, href: '/blog' },
+        { label: homeLabel, href: getPageHref('home') },
+        { label: blogLabel, href: getPageHref('blog') },
         { label: post.title },
       ]}
     />

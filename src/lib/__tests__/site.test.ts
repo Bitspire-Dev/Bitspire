@@ -17,7 +17,19 @@ describe('localePathname', () => {
   it('builds a locale-prefixed URL', () => {
     expect(localePathname('pl', '/')).toBe('https://example.com/pl');
     expect(localePathname('en', '/blog')).toBe('https://example.com/en/blog');
-    expect(localePathname('pl', '/')).toBe('https://example.com/pl');
+    expect(localePathname('pl', '/contact')).toBe('https://example.com/pl/kontakt');
+    expect(localePathname('en', '/contact')).toBe('https://example.com/en/contact');
+    expect(localePathname('pl', '/privacy')).toBe('https://example.com/pl/polityka-prywatnosci');
+    expect(localePathname('en', '/privacy')).toBe('https://example.com/en/privacy');
+  });
+
+  it('builds URLs for dynamic paths', () => {
+    expect(
+      localePathname('pl', { pathname: '/blog/[slug]', params: { slug: 'pl-slug' } })
+    ).toBe('https://example.com/pl/blog/pl-slug');
+    expect(
+      localePathname('en', { pathname: '/blog/[slug]', params: { slug: 'en-slug' } })
+    ).toBe('https://example.com/en/blog/en-slug');
   });
 });
 
@@ -31,7 +43,10 @@ describe('getDefaultOgImages', () => {
 
 describe('sitemapAlternates', () => {
   it('generates language alternates and x-default', () => {
-    const alts = sitemapAlternates(locale => `/blog/${locale === 'pl' ? 'pl-slug' : 'en-slug'}`);
+    const alts = sitemapAlternates(locale => ({
+      pathname: '/blog/[slug]',
+      params: { slug: locale === 'pl' ? 'pl-slug' : 'en-slug' },
+    }));
     expect(alts.languages.pl).toMatch(/\/pl\/blog\/pl-slug$/);
     expect(alts.languages.en).toMatch(/\/en\/blog\/en-slug$/);
     expect(alts.languages['x-default']).toBeDefined();
@@ -40,10 +55,10 @@ describe('sitemapAlternates', () => {
 
 describe('localeAlternates', () => {
   it('generates canonical and language alternates', () => {
-    const alts = localeAlternates(
-      'pl',
-      locale => `/portfolio/${locale === 'pl' ? 'pl-slug' : 'en-slug'}`
-    );
+    const alts = localeAlternates('pl', locale => ({
+      pathname: '/portfolio/[category]',
+      params: { category: locale === 'pl' ? 'pl-slug' : 'en-slug' },
+    }));
     expect(alts.canonical).toMatch(/\/pl\/portfolio\/pl-slug$/);
     expect(alts.languages?.pl).toMatch(/\/pl\/portfolio\/pl-slug$/);
     expect(alts.languages?.en).toMatch(/\/en\/portfolio\/en-slug$/);
