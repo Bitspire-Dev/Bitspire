@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, Suspense, useEffect, useRef, useState } from 'react';
+import { memo, Suspense, useEffect, useRef, useState, type ComponentProps } from 'react';
 import dynamic from 'next/dynamic';
 import { m, useScroll, useTransform } from 'motion/react';
 import { useLocale } from 'next-intl';
@@ -13,6 +13,8 @@ import { Link } from '@/i18n/navigation';
 import { getPageHref } from '@/lib/routes';
 import { useMounted } from '@/lib/use-mounted';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
+
+type Href = ComponentProps<typeof Link>['href'];
 
 const PixiScene = dynamic(
   () => import('@/components/animations/atmosphere').then(m => m.PixiScene),

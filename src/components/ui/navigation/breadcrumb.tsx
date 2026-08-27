@@ -2,8 +2,9 @@ import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
 import { ChevronRight } from 'lucide-react';
 import type { ComponentProps } from 'react';
+import type { LocalizedHref } from '@/lib/routes';
 
-export type BreadcrumbHref = ComponentProps<typeof Link>['href'];
+export type BreadcrumbHref = LocalizedHref;
 
 export interface BreadcrumbItem {
   label: string;
@@ -27,7 +28,10 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
           return (
             <li key={`${item.label}-${index}`} className="flex items-center gap-2">
               {item.href && !isLast ? (
-                <Link href={item.href} className="transition-colors hover:text-foreground">
+                <Link
+                  href={item.href as ComponentProps<typeof Link>['href']}
+                  className="transition-colors hover:text-foreground"
+                >
                   {item.label}
                 </Link>
               ) : (

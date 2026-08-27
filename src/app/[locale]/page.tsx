@@ -3,7 +3,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { getPage } from '@/lib/tina';
 import { HomePage } from '@/components/pages/HomePage';
-import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages } from '@/lib/site';
 import { getPageHref } from '@/lib/routes';
 import { combineJsonLd, webPageJsonLd } from '@/lib/json-ld';
 

@@ -115,7 +115,7 @@ function FooterContent({ locale }: FooterProps) {
                 {(MAIN_NAV_LINKS[locale as 'pl' | 'en'] ?? MAIN_NAV_LINKS.pl).map(
                   (link: NavLink) => (
                     <Link
-                      key={link.href}
+                      key={link.label}
                       href={link.href as Href}
                       className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >

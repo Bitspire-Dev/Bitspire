@@ -8,7 +8,7 @@ import { routing } from '@/i18n/routing';
 import { BlogArticle } from '@/components/pages/BlogArticlePage';
 import { buildBlogArticleMap, toRelatedItems, getBlogArticleHref } from '@/lib/blog';
 import { extractTocFromMarkdown } from '@/lib/toc';
-import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages } from '@/lib/site';
 import { getPageHref } from '@/lib/routes';
 import {
   combineJsonLd,

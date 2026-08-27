@@ -10,7 +10,7 @@ import {
   PORTFOLIO_CATEGORIES,
   type PortfolioCategoryId,
 } from '@/lib/portfolio/categories';
-import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages } from '@/lib/site';
 import { getPageHref } from '@/lib/routes';
 import { combineJsonLd, webPageJsonLd, articleJsonLd, breadcrumbListJsonLd } from '@/lib/json-ld';
 import { extractContentSlug } from '@/lib/string';

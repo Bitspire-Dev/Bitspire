@@ -1,6 +1,6 @@
 import { defineConfig } from 'tinacms';
 import { extractContentSlug } from '../src/lib/string';
-import { getLocalizedPath, getPageHref } from '../src/lib/routes';
+import { getLocalizedPath } from '../src/lib/routes';
 import { getCategoryUrlSlug } from '../src/lib/portfolio/categories';
 
 // Your hosting provider likely exposes this as an environment variable

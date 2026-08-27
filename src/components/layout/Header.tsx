@@ -73,9 +73,9 @@ function DesktopNav({ links, locale }: { links: NavLink[]; locale: string }) {
       <NavigationMenuList>
         {links.map(link =>
           link.href === '/portfolio' ? (
-            <PortfolioMenuItem key={link.href} label={link.label} locale={locale} />
+            <PortfolioMenuItem key={link.label} label={link.label} locale={locale} />
           ) : (
-            <NavigationMenuItem key={link.href}>
+            <NavigationMenuItem key={link.label}>
               <Button
                 asChild
                 variant="ghost"
@@ -174,7 +174,7 @@ function MobileMenu({
           <ul className="flex flex-col items-start gap-1">
             {links.map(link =>
               link.href === '/portfolio' ? (
-                <li key={link.href} className="w-full">
+                <li key={link.label} className="w-full">
                   <span className="block w-full rounded-lg py-2 font-sans text-sm font-medium text-foreground/80">
                     {link.label}
                   </span>
@@ -200,7 +200,7 @@ function MobileMenu({
                   </ul>
                 </li>
               ) : (
-                <li key={link.href} className="w-full">
+                <li key={link.label} className="w-full">
                   <Link
                     href={link.href as Href}
                     onClick={() => setOpen(false)}

@@ -3,7 +3,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { getBlogConnection, getPage } from '@/lib/tina';
 import { BlogPage } from '@/components/pages/BlogPage';
 import { getPageFallbackTitle } from '@/lib/ui';
-import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages } from '@/lib/site';
 import { getPageHref } from '@/lib/routes';
 import { combineJsonLd, webPageJsonLd, breadcrumbListJsonLd } from '@/lib/json-ld';
 

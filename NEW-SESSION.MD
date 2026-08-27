@@ -28,20 +28,20 @@ Kompleksowa dokumentacja wszystkich systemów, bibliotek, helperów, komponentó
 
 ## Stack technologiczny
 
-| Warstwa | Technologia |
-|---|---|
-| Framework | Next.js 15.5 (App Router, SSG) |
-| Język | TypeScript 5.x |
-| CMS | TinaCMS (local mode, GraphQL) |
-| i18n | next-intl (pl, en) |
-| Styling | Tailwind CSS v4 (PostCSS) |
-| UI primitives | Radix UI + CVA (class-variance-authority) |
-| Animacje | Framer Motion (motion/react), PixiJS 8 (WebGL) |
-| Fonts | next/font/local (Inter, Nippo, IBM Plex Mono) |
-| Markdown | TinaCMS rich-text + react-markdown |
-| SEO | next-metadata, JSON-LD, sitemap.ts, robots.ts |
-| Package manager | pnpm |
-| Build | `pnpm build:local` (tinacms build --local + next build) |
+| Warstwa         | Technologia                                             |
+| --------------- | ------------------------------------------------------- |
+| Framework       | Next.js 15.5 (App Router, SSG)                          |
+| Język           | TypeScript 5.x                                          |
+| CMS             | TinaCMS (local mode, GraphQL)                           |
+| i18n            | next-intl (pl, en)                                      |
+| Styling         | Tailwind CSS v4 (PostCSS)                               |
+| UI primitives   | Radix UI + CVA (class-variance-authority)               |
+| Animacje        | Framer Motion (motion/react), PixiJS 8 (WebGL)          |
+| Fonts           | next/font/local (Inter, Nippo, IBM Plex Mono)           |
+| Markdown        | TinaCMS rich-text + react-markdown                      |
+| SEO             | next-metadata, JSON-LD, sitemap.ts, robots.ts           |
+| Package manager | pnpm                                                    |
+| Build           | `pnpm build:local` (tinacms build --local + next build) |
 
 ---
 
@@ -50,26 +50,32 @@ Kompleksowa dokumentacja wszystkich systemów, bibliotek, helperów, komponentó
 Wszystkie pliki server-only chyba że oznaczone.
 
 ### `utils.ts`
+
 - **`cn(...inputs)`** — łączy klasy CSS (clsx + tailwind-merge). Używaj wszędzie zamiast string concatenation.
 
-### `use-mounted.ts` *(use client)*
+### `use-mounted.ts` _(use client)_
+
 - **`useMounted()`** — zwraca `boolean`, true po hydratacji. Używaj gdy komponent musi wykonać pracę tylko na kliencie.
 
 ### `fonts.ts`
+
 - **`inter`** — font sans (body text)
 - **`nippo`** — font heading (nagłówki)
 - **`ibmPlexMono`** — font mono (code, techniczne)
 
 ### `color.ts`
+
 - **`hexToRgb(hex)`** — konwertuje HEX na `RgbTuple` [r,g,b] w zakresie 0-1
 - **`getCssColor(varName)`** — pobiera wartość zmiennej CSS z `document` (client) lub fallback. Używane przez shadery PixiJS do synchronizacji kolorów z motywem.
 
 ### `company.ts`
+
 - **`COMPANY`** — obiekt z danymi firmy: nazwa, email, telefon, adres (pl/en), godziny (pl/en), social media (LinkedIn, GitHub, Instagram, Facebook), taxId, KRS
 - **`DEFAULT_EMAIL`** — domyślny email kontaktowy
 - **`CompanyData`**, **`CompanySocial`** — typy
 
 ### `site.ts`
+
 - **`siteName`** — nazwa strony (z COMPANY)
 - **`siteUrl`** — kanoniczny URL (z `NEXT_PUBLIC_SITE_URL`, normalizowany — usuwa www., trailing slash)
 - **`siteMetadata`** — pełna konfiguracja `Metadata` Next.js (OG, Twitter, icons, robots, metadataBase)
@@ -79,21 +85,26 @@ Wszystkie pliki server-only chyba że oznaczone.
 - **`getDefaultOgImages(locale)`** — domyślne obrazy OG
 
 ### `navigation.ts`
+
 - **`MAIN_NAV_LINKS`** — definicje linków nawigacji głównej (pl/en)
 - **`NavLink`** — typ
 
 ### `image.ts`
+
 - **`isUnoptimizedImage(src)`** — zwraca true dla SVG i GIF (nie optymalizuj przez Next/Image)
 
 ### `string.ts`
+
 - **`extractContentSlug(filename)`** — ekstrahuje slug z nazwy pliku TinaCMS (np. `pl/home.md` → `home`)
 - **`slugify(text)`** — konwertuje tekst na URL-friendly slug
 
 ### `date.ts`
+
 - **`formatLongDate(dateString, locale)`** — formatuje datę długą (np. "15 stycznia 2024")
 - **`dottedDateToIso(dotted)`** — konwertuje "DD.MM.YYYY" na ISO
 
 ### `blog.ts`
+
 - **`getBlogArticleHref(slug, locale)`** — generuje href dla artykułu bloga
 - **`extractBlogSlug(relativePath)`** — ekstrahuje slug z relativePath TinaCMS
 - **`buildBlogArticleMap(connection)`** — buduje mapę slugów dla LocaleSwitcher (klucz: canonical, wartość: {pl, en})
@@ -101,14 +112,17 @@ Wszystkie pliki server-only chyba że oznaczone.
 - **`BlogArticleMap`** — typ
 
 ### `toc.ts`
+
 - **`extractTocFromMarkdown(markdown)`** — ekstrahuje nagłówki H2 z Markdown do `TocItem[]`
 - **`TocItem`** — typ `{ id, text }`
 
 ### `content-list.ts`
+
 - **`useContentList(items, options)`** — hook do filtrowania listy treści po wyszukiwaniu. Opcje: `searchValue`, `searchKeys` (np. `['title', 'description', 'tags']`)
 - **`joinSearchTerms(item, keys)`** — łączy pola w jeden string do wyszukiwania
 
 ### `ui.ts`
+
 - **`Locale`** = `'pl' | 'en'`
 - **`getUi(locale)`** — zwraca zlokalizowane teksty UI
 - **`getPageFallbackTitle(pathname, locale)`** — fallback tytułu strony
@@ -121,6 +135,7 @@ Wszystkie pliki server-only chyba że oznaczone.
 - Stałe: `PAGE_FALLBACK_TITLES`, `ERROR_UI`, `AUTHOR_CARD_UI`, `TECHNOLOGY_CAROUSEL_UI`, `SERVICES_UI`, `PRIVACY_UI`, `WHY_BITSPIRE_UI`
 
 ### `json-ld.ts`
+
 - **`organizationJsonLd()`** — schema Organization
 - **`websiteJsonLd()`** — schema WebSite
 - **`webPageJsonLd(options)`** — schema WebPage
@@ -131,10 +146,12 @@ Wszystkie pliki server-only chyba że oznaczone.
 - Typy: `JsonLdThing`, `BreadcrumbItem`, `WebPageJsonLdOptions`, `BlogPostingJsonLdOptions`, `ArticleJsonLdOptions`
 
 ### `og-image.tsx`
+
 - **`renderOgImage(options)`** — generuje obraz OG przez Next.js ImageResponse (używa `fs/promises`)
 - **`OgImageOptions`** — typ
 
 ### `tina.ts`
+
 - **`tinaQueryWithRetry(query, { retries, delayMs })`** — wrapper z retry dla zapytań TinaCMS
 - **`getPage(relativePath)`** — pobiera pojedynczą stronę (cache'd)
 - **`getPageConnection()`** — pobiera wszystkie strony (cache'd)
@@ -144,6 +161,7 @@ Wszystkie pliki server-only chyba że oznaczone.
 - **`getProject(relativePath)`** — pobiera projekt (cache'd, 404 → null)
 
 ### `portfolio/categories.ts`
+
 - **`PORTFOLIO_CATEGORIES`** — lista kategorii: `websites`, `software` (z slug/label/description/image dla pl/en)
 - **`PortfolioCategory`**, **`PortfolioCategoryId`** — typy
 - **`isPortfolioCategoryId(id)`** — type guard
@@ -158,6 +176,7 @@ Wszystkie pliki server-only chyba że oznaczone.
 ## src/i18n — routing i nawigacja i18n
 
 ### `routing.ts`
+
 - **`routing`** — konfiguracja `defineRouting` z next-intl:
   - `locales`: `['pl', 'en']`
   - `defaultLocale`: `'pl'`
@@ -165,6 +184,7 @@ Wszystkie pliki server-only chyba że oznaczone.
   - `pathnames`: mapowanie ścieżek URL dla PL/EN (np. `/portfolio` ↔ `/portfolio`)
 
 ### `navigation.ts`
+
 - **`Link`** — komponent Link świadomy locale (z `createNavigation(routing)`)
 - **`redirect`** — funkcja redirect świadoma locale
 - **`usePathname`** — hook zwracający pathname bez prefixu locale
@@ -172,6 +192,7 @@ Wszystkie pliki server-only chyba że oznaczone.
 - **`getPathname`** — funkcja budująca pathname dla locale
 
 ### `request.ts`
+
 - Default export `getRequestConfig` — waliduje locale z requestu, zwraca messages (obecnie puste — teksty UI są w `src/lib/ui.ts`)
 
 ---
@@ -181,12 +202,15 @@ Wszystkie pliki server-only chyba że oznaczone.
 Wszystkie hooki są `'use client'`.
 
 ### `use-locale-switcher.ts`
+
 - **`useLocaleSwitcher(locale, blogMap)`** — zwraca funkcję `(targetLocale) => void` do zmiany języka. Obsługuje translację slugów artykułów blogowych i kategorii portfolio.
 
 ### `use-reduced-motion.ts`
+
 - **`useReducedMotion()`** — zwraca `boolean`. Nasłuchuje `prefers-reduced-motion: reduce` przez `useSyncExternalStore`. Singleton z subskrybentami.
 
 ### `use-theme-image.ts`
+
 - **`useThemeImage(src, fallback)`** — zwraca `string` (ścieżkę obrazu dla aktualnego motywu). Obsługuje:
   - Wzorce `GRYF_PATTERN` (obrazy gryfa light/dark)
   - Wzorce `MODE_PATTERN` (foldery `light-mode/` / `dark-mode/`)
@@ -199,12 +223,15 @@ Wszystkie hooki są `'use client'`.
 Wszystkie providery są `'use client'`. Montowane w `src/app/[locale]/layout.tsx`.
 
 ### `theme-provider.tsx`
+
 - **`ThemeProvider`** — wrapper dla next-themes (dark/light/system). Props: `children`.
 
 ### `motion-provider.tsx`
+
 - **`MotionProvider`** — wrapper dla Framer Motion z `LazyMotion` + `domAnimation` (lazy loading funkcji animacji). Props: `children`.
 
 ### `error-boundary.tsx`
+
 - **`ErrorBoundary`** — klasyczny React Error Boundary. Props: `children`, `fallback?`, `onError?`.
 
 ---
@@ -215,34 +242,34 @@ Komponenty oparte na Radix UI + CVA. Wszystkie używają `cn()` z `src/lib/utils
 
 ### Layout / kontenery
 
-| Komponent | 'use client' | Opis | Kluczowe propsy |
-|---|---|---|---|
-| `Card` | nie | Karta z wariantami `default`/`glass`, rozmiarami `default`/`sm` | `variant`, `size`, `className` |
-| `CardHeader`, `CardFooter`, `CardTitle`, `CardDescription`, `CardContent`, `CardAction` | nie | Sub-komponenty karty | `className`, `as` (CardTitle) |
-| `AspectRatio` | tak | Stałe proporcje (Radix) | `ratio` (np. `16/9`) |
-| `Separator` | tak | Linia pozioma/pionowa (Radix) | `orientation`, `decorative` |
-| `Skeleton` | nie | Placeholder z animacją pulsowania | `className` |
+| Komponent                                                                               | 'use client' | Opis                                                            | Kluczowe propsy                |
+| --------------------------------------------------------------------------------------- | ------------ | --------------------------------------------------------------- | ------------------------------ |
+| `Card`                                                                                  | nie          | Karta z wariantami `default`/`glass`, rozmiarami `default`/`sm` | `variant`, `size`, `className` |
+| `CardHeader`, `CardFooter`, `CardTitle`, `CardDescription`, `CardContent`, `CardAction` | nie          | Sub-komponenty karty                                            | `className`, `as` (CardTitle)  |
+| `AspectRatio`                                                                           | tak          | Stałe proporcje (Radix)                                         | `ratio` (np. `16/9`)           |
+| `Separator`                                                                             | tak          | Linia pozioma/pionowa (Radix)                                   | `orientation`, `decorative`    |
+| `Skeleton`                                                                              | nie          | Placeholder z animacją pulsowania                               | `className`                    |
 
 ### Formularze
 
-| Komponent | 'use client' | Opis | Kluczowe propsy |
-|---|---|---|---|
-| `Button` | nie | Przycisk z CVA wariantami | `variant` (default/outline/secondary/ghost/destructive/link), `size` (default/xs/sm/lg/icon/icon-xs/icon-sm/icon-lg), `asChild` |
-| `Input` | nie | Pole input | `type`, `className` + standardowe input props |
-| `Textarea` | nie | Pole textarea | `className` + standardowe textarea props |
-| `Label` | tak | Etykieta (Radix) | `htmlFor`, `className` |
-| `Field` | tak | Grupa pól z orientacją | `orientation` (vertical/horizontal/responsive) |
-| `FieldLabel`, `FieldDescription`, `FieldError`, `FieldGroup`, `FieldLegend`, `FieldSeparator`, `FieldSet`, `FieldContent`, `FieldTitle` | tak | Sub-komponenty formularzy | `className`, `errors` (FieldError) |
-| `Select` + sub-komponenty | tak | Dropdown select (Radix) | `size`, `position`, `align` |
+| Komponent                                                                                                                               | 'use client' | Opis                      | Kluczowe propsy                                                                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------- | ------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `Button`                                                                                                                                | nie          | Przycisk z CVA wariantami | `variant` (default/outline/secondary/ghost/destructive/link), `size` (default/xs/sm/lg/icon/icon-xs/icon-sm/icon-lg), `asChild` |
+| `Input`                                                                                                                                 | nie          | Pole input                | `type`, `className` + standardowe input props                                                                                   |
+| `Textarea`                                                                                                                              | nie          | Pole textarea             | `className` + standardowe textarea props                                                                                        |
+| `Label`                                                                                                                                 | tak          | Etykieta (Radix)          | `htmlFor`, `className`                                                                                                          |
+| `Field`                                                                                                                                 | tak          | Grupa pól z orientacją    | `orientation` (vertical/horizontal/responsive)                                                                                  |
+| `FieldLabel`, `FieldDescription`, `FieldError`, `FieldGroup`, `FieldLegend`, `FieldSeparator`, `FieldSet`, `FieldContent`, `FieldTitle` | tak          | Sub-komponenty formularzy | `className`, `errors` (FieldError)                                                                                              |
+| `Select` + sub-komponenty                                                                                                               | tak          | Dropdown select (Radix)   | `size`, `position`, `align`                                                                                                     |
 
 ### Wyświetlanie
 
-| Komponent | 'use client' | Opis | Kluczowe propsy |
-|---|---|---|---|
-| `Badge` | nie | Etykieta/status z CVA wariantami | `variant` (default/secondary/destructive/outline/ghost/link), `asChild` |
-| `Avatar`, `AvatarImage`, `AvatarFallback`, `AvatarGroup`, `AvatarGroupCount`, `AvatarBadge` | tak | Awatary (Radix) z rozmiarami | `size` (default/sm/lg), `src`, `alt` |
-| `Accordion`, `AccordionItem`, `AccordionTrigger`, `AccordionContent` | tak | Akordeon (Radix) | `type`, `value`, `disabled` |
-| `NavigationMenu` + sub-komponenty | nie | Menu nawigacyjne z dropdown (Radix) | `viewport`, `className` |
+| Komponent                                                                                   | 'use client' | Opis                                | Kluczowe propsy                                                         |
+| ------------------------------------------------------------------------------------------- | ------------ | ----------------------------------- | ----------------------------------------------------------------------- |
+| `Badge`                                                                                     | nie          | Etykieta/status z CVA wariantami    | `variant` (default/secondary/destructive/outline/ghost/link), `asChild` |
+| `Avatar`, `AvatarImage`, `AvatarFallback`, `AvatarGroup`, `AvatarGroupCount`, `AvatarBadge` | tak          | Awatary (Radix) z rozmiarami        | `size` (default/sm/lg), `src`, `alt`                                    |
+| `Accordion`, `AccordionItem`, `AccordionTrigger`, `AccordionContent`                        | tak          | Akordeon (Radix)                    | `type`, `value`, `disabled`                                             |
+| `NavigationMenu` + sub-komponenty                                                           | nie          | Menu nawigacyjne z dropdown (Radix) | `viewport`, `className`                                                 |
 
 **Eksportowane warianty CVA:** `buttonVariants`, `badgeVariants`, `fieldVariants`, `navigationMenuTriggerStyle`
 
@@ -253,47 +280,58 @@ Komponenty oparte na Radix UI + CVA. Wszystkie używają `cn()` z `src/lib/utils
 Wszystkie `'use client'` chyba że oznaczone.
 
 ### `ArticleHeader.tsx`
+
 - Nagłówek artykułu z okładką 16:9, tytułem, opisem, linkiem powrotnym.
 - Props: `cover`, `coverAlt`, `tinaFieldCover`, `backHref`, `backLabel`, `locale`, `title`, `tinaFieldTitle`, `description`, `tinaFieldDescription`, `children`
 
 ### `AuthorCard.tsx`
+
 - Karta autora z avatarem, nazwą, rolą, biografią, linkiem. Automatycznie generuje inicjały.
 - Props: `author` (Author), `tinaField`, `className`, `locale`
 
 ### `ContactCta.tsx`
+
 - Sekcja CTA zachęcająca do kontaktu (lokalizowany tytuł + opis + przycisk).
 - Props: `locale`, `className`
 
 ### `MarkdownBody.tsx`
+
 - Renderuje treść Markdown z TinaCMS (rich-text). Obsługuje obrazy, linki, nagłówki. Przesunięcie poziomów nagłówków.
 - Props: `content`, `tinaField`, `components?`, `className`, `shiftHeadings?`
 
 ### `ShareCard.tsx`
+
 - Karta udostępniania (X, LinkedIn, Facebook, kopiowanie linku). Automatycznie pobiera URL.
 - Props: `title`, `locale`, `className`
 
 ### `article-meta.tsx`
+
 - Metadane artykułu: data + tagi jako badge'y. Formatuje datę zgodnie z locale.
 - Props: `date`, `tags`, `locale`, `tinaFieldDate?`, `tinaFieldTags?`
 
 ### `card-grid.tsx`
+
 - Siatka kart (1/2/3 kolumny responsywnie) z animacją stagger.
 - Props: `items` (ContentCardItem[]), `emptyMessage`, `imageRatio?`, `renderFooter?`, `titleAs?`
 
 ### `content-card.tsx`
+
 - Pojedyncza karta z obrazem, tytułem, opisem, tagami, opcjonalnym CTA. Skeleton dla brakującego obrazu.
 - Props: `item` (ContentCardItem), `imageRatio?`, `unoptimized?`, `footer?`, `titleAs?`
 - Typy: `ContentCardItem`, `ContentCardMeta`
 
 ### `content-search.tsx`
+
 - Pole wyszukiwania (kontrolowane).
 - Props: `value`, `onChange`, `placeholder`
 
-### `social-icon.tsx` *(server)*
+### `social-icon.tsx` _(server)_
+
 - Ikona social media (GitHub, LinkedIn, X, Twitter, Instagram, Facebook, YouTube). Globe dla nieznanych.
 - Props: `platform`, `className`
 
 ### `table-of-contents.tsx`
+
 - Kompleksowy system TOC z IntersectionObserver do śledzenia aktywnego nagłówka.
 - Eksporty: `TableOfContents` (desktop sticky), `MobileTocBar` (mobile rozwijane), `TocList`, `TocProvider`, `TocHeading`, `Heading2`, `Heading3`, `Heading`, `useTocId`, `useActiveHeading`
 - Props TableOfContents: `toc` (TocItem[]), `title`, `className`
@@ -303,20 +341,24 @@ Wszystkie `'use client'` chyba że oznaczone.
 
 ## src/components/ui/navigation — nawigacja
 
-### `back-link.tsx` *(use client)*
+### `back-link.tsx` _(use client)_
+
 - Link powrotny z ikoną strzałki w lewo.
 - Props: `href` (Href), `label`, `locale`, `className`
 
-### `breadcrumb.tsx` *(server)*
+### `breadcrumb.tsx` _(server)_
+
 - Nawigacja breadcrumb z ChevronRight. Ostatni element nieaktywny.
 - Props: `items` (BreadcrumbItem[]), `className`
 - Typy: `BreadcrumbItem`, `BreadcrumbHref`
 
-### `locale-switcher.tsx` *(use client)*
+### `locale-switcher.tsx` _(use client)_
+
 - Przełącznik języka z flagami (PL/EN). Używa Select. Obsługuje mapowanie slugów bloga.
 - Props: `locale`, `blogMap` (BlogArticleMap)
 
-### `theme-switcher.tsx` *(use client)*
+### `theme-switcher.tsx` _(use client)_
+
 - Przełącznik motywu (dark/light) z animacją Sun/Moon. View Transitions API.
 - Props: `className`
 
@@ -326,11 +368,13 @@ Wszystkie `'use client'` chyba że oznaczone.
 
 ### `primitives/` — animacje Framer Motion
 
-#### `fade-in.tsx` *(use client)*
+#### `fade-in.tsx` _(use client)_
+
 - **`FadeIn`** — animacja fade-in z ruchem Y. Respektuje `prefers-reduced-motion`.
 - Props: `children`, `delay?` (0), `duration?` (0.6), `y?` (24), `className?`
 
-#### `stagger.tsx` *(use client)*
+#### `stagger.tsx` _(use client)_
+
 - **`StaggerContainer`** — kontener staggered animations. Props: `children`, `className?`, `stagger?` (0.05), `delay?` (0.1)
 - **`StaggerItem`** — element stagger. Props: `children`, `className?`, `style?`, `x?`, `y?` (16), `duration?` (0.5)
 
@@ -338,29 +382,29 @@ Wszystkie `'use client'` chyba że oznaczone.
 
 System animowanego tła z chmurami i gwiazdami. 8 plików:
 
-| Plik | Typ | Eksport | Opis |
-|---|---|---|---|
-| `scene.tsx` | React *(use client)* | `PixiScene` | Komponent React. Props: `theme?`, `onReady?`, `onError?`, `className?`, `style?` + HTMLAttributes. Zawiera IntersectionObserver pauzujący ticker. |
-| `engine.ts` | Klasa TS | `PixiSceneEngine`, `SceneTheme` | Orchestrator: Application lifecycle, ticker, resize, mouse parallax, visibility, theme cross-fade, IntersectionObserver pause. Konstruktor: `(container, theme)` |
-| `mesh.ts` | Klasa TS | `AtmosphereMesh`, `AtmosphereMeshOptions` | Fullscreen quad z shaderem. Opcje: `width`, `height`, `intensity`, `colorCloud`, `starColor`, `cloudStrength`, `particleMode` (0=stars, 1=fireflies) |
-| `mouse.ts` | Klasa TS | `MouseController` | Smoothed mouse tracker z parallax. Metody: `attach()`, `detach()`, `update(dt, smoothing)` |
-| `quality.ts` | Moduł | `getQualityConfig()`, `QualityConfig` | Stała konfiguracja jakości: resolution 1, shaderIntensity 0.7, maxFps 30 |
-| `glsl/noise.ts` | Moduł | `NOISE_GLSL` | GLSL noise helpers (hash + FBM) |
-| `glsl/shaders.ts` | Moduł | `ATMOSPHERE_VERTEX`, `ATMOSPHERE_FRAGMENT` | Vertex + fragment shadery |
-| `index.ts` | Re-export | `PixiScene`, `SceneTheme` | Barrel export |
+| Plik              | Typ                  | Eksport                                    | Opis                                                                                                                                                             |
+| ----------------- | -------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scene.tsx`       | React _(use client)_ | `PixiScene`                                | Komponent React. Props: `theme?`, `onReady?`, `onError?`, `className?`, `style?` + HTMLAttributes. Zawiera IntersectionObserver pauzujący ticker.                |
+| `engine.ts`       | Klasa TS             | `PixiSceneEngine`, `SceneTheme`            | Orchestrator: Application lifecycle, ticker, resize, mouse parallax, visibility, theme cross-fade, IntersectionObserver pause. Konstruktor: `(container, theme)` |
+| `mesh.ts`         | Klasa TS             | `AtmosphereMesh`, `AtmosphereMeshOptions`  | Fullscreen quad z shaderem. Opcje: `width`, `height`, `intensity`, `colorCloud`, `starColor`, `cloudStrength`, `particleMode` (0=stars, 1=fireflies)             |
+| `mouse.ts`        | Klasa TS             | `MouseController`                          | Smoothed mouse tracker z parallax. Metody: `attach()`, `detach()`, `update(dt, smoothing)`                                                                       |
+| `quality.ts`      | Moduł                | `getQualityConfig()`, `QualityConfig`      | Stała konfiguracja jakości: resolution 1, shaderIntensity 0.7, maxFps 30                                                                                         |
+| `glsl/noise.ts`   | Moduł                | `NOISE_GLSL`                               | GLSL noise helpers (hash + FBM)                                                                                                                                  |
+| `glsl/shaders.ts` | Moduł                | `ATMOSPHERE_VERTEX`, `ATMOSPHERE_FRAGMENT` | Vertex + fragment shadery                                                                                                                                        |
+| `index.ts`        | Re-export            | `PixiScene`, `SceneTheme`                  | Barrel export                                                                                                                                                    |
 
 ### `plasma/` — tło plasma (Contact)
 
 System diagonalnego plasma beam. 6 plików:
 
-| Plik | Typ | Eksport | Opis |
-|---|---|---|---|
-| `background.tsx` | React *(use client)* | `PlasmaBackground` | Komponent React. Props: `className?` |
-| `mesh.ts` | Klasa TS | `PlasmaMesh`, `PlasmaMeshOptions` | Fullscreen quad z plasma shaderem. Opcje: `brandColor`, `width`, `height` |
-| `quality.ts` | Moduł | `getPlasmaQuality()`, `PlasmaQuality` | Caps resolution i FPS dla mobile |
-| `glsl/noise.ts` | Moduł | `NOISE_GLSL` | 2D Simplex noise + FBM + ridged FBM |
-| `glsl/shaders.ts` | Moduł | `PLASMA_VERTEX`, `PLASMA_FRAGMENT` | Vertex + fragment shadery plasma |
-| `index.ts` | Re-export | `PlasmaBackground` | Barrel export |
+| Plik              | Typ                  | Eksport                               | Opis                                                                      |
+| ----------------- | -------------------- | ------------------------------------- | ------------------------------------------------------------------------- |
+| `background.tsx`  | React _(use client)_ | `PlasmaBackground`                    | Komponent React. Props: `className?`                                      |
+| `mesh.ts`         | Klasa TS             | `PlasmaMesh`, `PlasmaMeshOptions`     | Fullscreen quad z plasma shaderem. Opcje: `brandColor`, `width`, `height` |
+| `quality.ts`      | Moduł                | `getPlasmaQuality()`, `PlasmaQuality` | Caps resolution i FPS dla mobile                                          |
+| `glsl/noise.ts`   | Moduł                | `NOISE_GLSL`                          | 2D Simplex noise + FBM + ridged FBM                                       |
+| `glsl/shaders.ts` | Moduł                | `PLASMA_VERTEX`, `PLASMA_FRAGMENT`    | Vertex + fragment shadery plasma                                          |
+| `index.ts`        | Re-export            | `PlasmaBackground`                    | Barrel export                                                             |
 
 ---
 
@@ -370,55 +414,57 @@ Wszystkie `'use client'`. Większość przyjmuje `page: PagePartsFragment` (dane
 
 ### Sekcje strony głównej
 
-| Komponent | Props | Opis | Używa |
-|---|---|---|---|
-| `Hero` *(memo)* | `page` | Sekcja hero z WebGL tłem, tytułem, CTA. PixiScene renderuje się tylko na desktop (nie touch, nie mobile, nie reduced motion, nie save-data). | `PixiScene` (dynamic), `useReducedMotion`, `useMounted`, `useScroll`, `tinaField`, `FadeIn`, `ErrorBoundary`, `Suspense` |
-| `TechnologyCarousel` *(memo)* | `locale?` | Marquee z logo technologii (2 wiersze). Pauza gdy poza viewport. | IntersectionObserver, CSS animation |
-| `Services` *(memo)* | `page` | Sekcja usług z accordion i obrazem gryfa. | `Accordion`, `useThemeImage`, `tinaField`, `StaggerContainer` |
-| `WhyBitspire` | `page` | Sekcja "Dlaczego Bitspire" — bento grid z obrazami. | `Card`, `useThemeImage`, `tinaField`, `StaggerContainer`. Normalizacja URL obrazów TinaCMS. |
-| `PortfolioHighlights` *(memo)* | `page` | Karuzela 3D z projektami (desktop/mobile). | `Card`, `Badge`, `AspectRatio`, `tinaField` |
-| `CallToAction` *(memo)* | `page` | Sekcja CTA z przyciskami i obrazem gryfa. | `useThemeImage`, `tinaField`, `StaggerContainer` |
+| Komponent                      | Props     | Opis                                                                                                                                         | Używa                                                                                                                    |
+| ------------------------------ | --------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `Hero` _(memo)_                | `page`    | Sekcja hero z WebGL tłem, tytułem, CTA. PixiScene renderuje się tylko na desktop (nie touch, nie mobile, nie reduced motion, nie save-data). | `PixiScene` (dynamic), `useReducedMotion`, `useMounted`, `useScroll`, `tinaField`, `FadeIn`, `ErrorBoundary`, `Suspense` |
+| `TechnologyCarousel` _(memo)_  | `locale?` | Marquee z logo technologii (2 wiersze). Pauza gdy poza viewport.                                                                             | IntersectionObserver, CSS animation                                                                                      |
+| `Services` _(memo)_            | `page`    | Sekcja usług z accordion i obrazem gryfa.                                                                                                    | `Accordion`, `useThemeImage`, `tinaField`, `StaggerContainer`                                                            |
+| `WhyBitspire`                  | `page`    | Sekcja "Dlaczego Bitspire" — bento grid z obrazami.                                                                                          | `Card`, `useThemeImage`, `tinaField`, `StaggerContainer`. Normalizacja URL obrazów TinaCMS.                              |
+| `PortfolioHighlights` _(memo)_ | `page`    | Karuzela 3D z projektami (desktop/mobile).                                                                                                   | `Card`, `Badge`, `AspectRatio`, `tinaField`                                                                              |
+| `CallToAction` _(memo)_        | `page`    | Sekcja CTA z przyciskami i obrazem gryfa.                                                                                                    | `useThemeImage`, `tinaField`, `StaggerContainer`                                                                         |
 
 ### Sekcje bloga
 
-| Komponent | Props | Opis |
-|---|---|---|
-| `BlogArticleHeader` | `blog`, `locale`, `backLabel` | Nagłówek artykułu z okładką, tytułem, metadanymi |
-| `BlogArticleBody` | `body`, `tinaFieldBody`, `toc`, `className?` | Treść artykułu Markdown z TOC |
-| `BlogArticleRelated` | `items`, `title`, `emptyMessage` | Sekcja powiązanych artykułów |
+| Komponent            | Props                                        | Opis                                             |
+| -------------------- | -------------------------------------------- | ------------------------------------------------ |
+| `BlogArticleHeader`  | `blog`, `locale`, `backLabel`                | Nagłówek artykułu z okładką, tytułem, metadanymi |
+| `BlogArticleBody`    | `body`, `tinaFieldBody`, `toc`, `className?` | Treść artykułu Markdown z TOC                    |
+| `BlogArticleRelated` | `items`, `title`, `emptyMessage`             | Sekcja powiązanych artykułów                     |
 
 ### Sekcje portfolio
 
-| Komponent | Props | Opis |
-|---|---|---|
+| Komponent                | Props                                                      | Opis                                                |
+| ------------------------ | ---------------------------------------------------------- | --------------------------------------------------- |
 | `PortfolioProjectHeader` | `project`, `backLabel`, `backHref`, `visitLabel`, `locale` | Nagłówek projektu z okładką, technologiami, linkiem |
-| `PortfolioProjectBody` | `body`, `tinaFieldBody`, `className?` | Treść projektu Markdown |
+| `PortfolioProjectBody`   | `body`, `tinaFieldBody`, `className?`                      | Treść projektu Markdown                             |
 
 ### Sekcje kontaktu
 
-| Komponent | Props | Opis |
-|---|---|---|
-| `ContactHero` | `page` | Nagłówek strony kontaktowej |
+| Komponent        | Props                             | Opis                                                                 |
+| ---------------- | --------------------------------- | -------------------------------------------------------------------- |
+| `ContactHero`    | `page`                            | Nagłówek strony kontaktowej                                          |
 | `ContactDetails` | `contact`, `locale`, `className?` | Karta z danymi kontaktowymi (email, telefon, adres, godziny, social) |
-| `ContactForm` | `contact`, `locale`, `className?` | Formularz kontaktowy (mailto:) |
+| `ContactForm`    | `contact`, `locale`, `className?` | Formularz kontaktowy (mailto:)                                       |
 
 ### Sekcje uniwersalne
 
-| Komponent | Props | Opis |
-|---|---|---|
+| Komponent         | Props                                                                                                                                              | Opis                                                  |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
 | `ContentListView` | `title`, `description?`, `searchValue`, `onSearchChange`, `searchPlaceholder`, `emptyMessage`, `items`, `imageRatio?`, `renderFooter?`, `titleAs?` | Uniwersalny widok listy z wyszukiwaniem i siatką kart |
 
 ---
 
 ## src/components/layout — Header i Footer
 
-### `Header.tsx` *(use client)*
+### `Header.tsx` _(use client)_
+
 - **`Header`** — nagłówek z logo, nawigacją desktop/mobile, przełącznikiem języka i motywu.
 - Props: `locale`, `blogMap`
 - Podkomponenty: `DesktopNav`, `PortfolioMenuItem`, `MobileMenu`
 - Używa: `useTheme`, `Link`, `LocaleSwitcher`, `ThemeSwitcher`, `useMounted`, `NavigationMenu`, `MAIN_NAV_LINKS`, `getCategoryHref`
 
-### `Footer.tsx` *(server, memo)*
+### `Footer.tsx` _(server, memo)_
+
 - **`Footer`** — stopka z nawigacją, danymi kontaktowymi, linkami prawnymi.
 - Props: `locale`
 - Używa: `Link`, `Separator`, `FadeIn`, `Button`, `SocialIcon`, `COMPANY`, `MAIN_NAV_LINKS`
@@ -429,18 +475,19 @@ Wszystkie `'use client'`. Większość przyjmuje `page: PagePartsFragment` (dane
 
 Wszystkie `'use client'`. Wszystkie używają `useTina` do integracji z TinaCMS.
 
-| Komponent | Props (poza query/variables/data) | Opis |
-|---|---|---|
-| `HomePage` *(memo)* | — | Strona główna. Renderuje wszystkie sekcje statycznie. |
-| `BlogPage` | `locale`, `jsonLd?`, `breadcrumbs?` | Lista artykułów bloga z wyszukiwaniem |
-| `BlogArticlePage` | `related`, `locale`, `toc`, `jsonLd?`, `breadcrumbs?` | Pojedynczy artykuł bloga z TOC, autorem, share, powiązanymi |
-| `PortfolioPage` | `locale`, `jsonLd?`, `breadcrumbs?` | Główna strona portfolio z kartami kategorii |
-| `PortfolioCategoryPage` | `category`, `locale`, `jsonLd?`, `breadcrumbs?` | Lista projektów w kategorii z wyszukiwaniem |
-| `PortfolioProjectPage` | `locale`, `category`, `jsonLd?`, `breadcrumbs?` | Pojedynczy projekt z nagłówkiem, treścią, CTA |
-| `ContactPage` | `locale`, `jsonLd?`, `breadcrumbs?` | Strona kontaktowa z formularzem, danymi, tłem plasma |
-| `PrivacyPage` | `locale`, `jsonLd?`, `breadcrumbs?` | Strona polityki prywatności z Markdown |
+| Komponent               | Props (poza query/variables/data)                     | Opis                                                        |
+| ----------------------- | ----------------------------------------------------- | ----------------------------------------------------------- |
+| `HomePage` _(memo)_     | —                                                     | Strona główna. Renderuje wszystkie sekcje statycznie.       |
+| `BlogPage`              | `locale`, `jsonLd?`, `breadcrumbs?`                   | Lista artykułów bloga z wyszukiwaniem                       |
+| `BlogArticlePage`       | `related`, `locale`, `toc`, `jsonLd?`, `breadcrumbs?` | Pojedynczy artykuł bloga z TOC, autorem, share, powiązanymi |
+| `PortfolioPage`         | `locale`, `jsonLd?`, `breadcrumbs?`                   | Główna strona portfolio z kartami kategorii                 |
+| `PortfolioCategoryPage` | `category`, `locale`, `jsonLd?`, `breadcrumbs?`       | Lista projektów w kategorii z wyszukiwaniem                 |
+| `PortfolioProjectPage`  | `locale`, `category`, `jsonLd?`, `breadcrumbs?`       | Pojedynczy projekt z nagłówkiem, treścią, CTA               |
+| `ContactPage`           | `locale`, `jsonLd?`, `breadcrumbs?`                   | Strona kontaktowa z formularzem, danymi, tłem plasma        |
+| `PrivacyPage`           | `locale`, `jsonLd?`, `breadcrumbs?`                   | Strona polityki prywatności z Markdown                      |
 
 **Wspólny wzorzec props:**
+
 ```typescript
 {
   query: string;        // zapytanie GraphQL TinaCMS
@@ -457,6 +504,7 @@ Wszystkie `'use client'`. Wszystkie używają `useTina` do integracji z TinaCMS.
 ## TinaCMS — content, schema, zapytania
 
 ### Konfiguracja (`tina/config.ts`)
+
 - **Branch:** `main` (lub z env)
 - **Media:** `mediaRoot: '/'`, `publicFolder: 'public'`
 - **Build output:** `admin/` folder (dostępny pod `/admin`)
@@ -464,6 +512,7 @@ Wszystkie `'use client'`. Wszystkie używają `useTina` do integracji z TinaCMS.
 ### Kolekcje (3)
 
 #### `page` — strony
+
 - **Path:** `content/pages/{locale}/`
 - **Router:** `/{locale}/{slug}` (home → `/{locale}`)
 - **Pola:**
@@ -478,6 +527,7 @@ Wszystkie `'use client'`. Wszystkie używają `useTina` do integracji z TinaCMS.
   - `contact?` → `{ email?, phone?, address?, hours?, socials[]: { platform, url } }`
 
 #### `blog` — artykuły
+
 - **Path:** `content/blog/{locale}/`
 - **Format:** `.md`
 - **Router:** `/{locale}/blog/{slug}`
@@ -489,6 +539,7 @@ Wszystkie `'use client'`. Wszystkie używają `useTina` do integracji z TinaCMS.
   - `body?` (rich-text, isBody)
 
 #### `project` — projekty portfolio
+
 - **Path:** `content/portfolio/{locale}/{category}/`
 - **Format:** `.md`
 - **Router:** `/{locale}/portfolio/{category}/{slug}`
@@ -498,6 +549,7 @@ Wszystkie `'use client'`. Wszystkie używają `useTina` do integracji z TinaCMS.
   - `body?` (rich-text, isBody)
 
 ### Struktura contentu
+
 ```
 content/
 ├── pages/{en,pl}/     — home, blog, portfolio, contact, privacy
@@ -506,6 +558,7 @@ content/
 ```
 
 ### Typy TypeScript (`tina/__generated__/types.ts`)
+
 - **`Page`** — pełny typ strony z polami: title, description, lastUpdated, body, services, whyBitspire, portfolioHighlights, callToAction, contact
 - **`Blog`** — typ artykułu: title, canonical, description, cover, tags, date, author, body
 - **`Project`** — typ projektu: title, tagline, description, technologies, websiteUrl, screenshot, body
@@ -516,6 +569,7 @@ content/
 - Filter types: `PageFilter`, `BlogFilter`, `ProjectFilter`
 
 ### Helpery zapytań (`src/lib/tina.ts`)
+
 - `getPage(relativePath)` — pojedyncza strona (cache'd)
 - `getPageConnection()` — wszystkie strony
 - `getBlogConnection()` — wszystkie artykuły
@@ -525,6 +579,7 @@ content/
 - `tinaQueryWithRetry(query, { retries, delayMs })` — wrapper z retry
 
 ### Integracja z komponentami
+
 - **`useTina({ query, variables, data })`** — hook łączący komponent z TinaCMS (live editing)
 - **`tinaField(page, fieldName)`** — generuje atrybut `data-tina-field` dla edycji inline
 - Import: `import { useTina } from 'tinacms/dist/react'` i `import { tinaField } from 'tinacms/dist/react'`
@@ -534,18 +589,22 @@ content/
 ## Image optimization
 
 ### `next.config.ts` — konfiguracja
+
 - **Formaty:** AVIF, WebP
 - **deviceSizes:** `[640, 750, 828, 1080, 1200, 1920, 2048, 3840]`
 - **imageSizes:** `[16, 32, 48, 64, 96, 128, 256, 384]`
 - **remotePatterns:** `assets.tina.io` (TinaCMS media)
 
 ### `src/lib/image.ts`
+
 - **`isUnoptimizedImage(src)`** — zwraca true dla SVG i GIF. Używaj z `<Image unoptimized={isUnoptimizedImage(src)}>`.
 
 ### `src/hooks/use-theme-image.ts`
+
 - **`useThemeImage(src, fallback)`** — przełącza ścieżki obrazów zależnie od motywu (light/dark).
 
 ### Wzorce
+
 - Używaj `next/image` `<Image>` dla wszystkich obrazów rastrowych
 - Używaj `<img>` tylko dla małych SVG (np. logo w TechnologyCarousel)
 - Zawsze sprawdzaj `isUnoptimizedImage(src)` dla SVG/GIF
@@ -556,11 +615,13 @@ content/
 ## SEO — metadata, JSON-LD, sitemap, robots
 
 ### Metadata (`src/lib/site.ts`)
+
 - **`siteMetadata`** — pełna konfiguracja `Metadata` Next.js (OG, Twitter, icons, robots, metadataBase)
 - **`localeAlternates(pathname)`** — generuje hreflang alternatywy dla metadata
 - Każda strona w `src/app/[locale]/` ma `generateMetadata` z alternatami
 
 ### JSON-LD (`src/lib/json-ld.ts`)
+
 - `organizationJsonLd()` — Organization schema (w layout)
 - `websiteJsonLd()` — WebSite schema (w layout)
 - `webPageJsonLd(options)` — WebPage schema (na każdej stronie)
@@ -570,15 +631,18 @@ content/
 - `combineJsonLd(...things)` — łączy w `@graph`
 
 ### Sitemap (`src/app/sitemap.ts`)
+
 - Dynamiczna sitemap.xml ze wszystkimi stronami, kategoriami, artykułami, projektami
 - Alternatywy językowe dla każdej strony
 - `lastModified` z daty aktualizacji contentu
 
 ### Robots (`src/app/robots.ts`)
+
 - Blokuje `/admin` i `/api`
 - Wskazuje na sitemap
 
 ### OG images
+
 - `src/app/[locale]/opengraph-image.tsx` — dynamiczny OG image (1200x630 PNG)
 - `src/app/[locale]/twitter-image.tsx` — dynamiczny Twitter image (1200x630 PNG)
 - `src/lib/og-image.tsx` — `renderOgImage(options)` helper
@@ -588,6 +652,7 @@ content/
 ## Next.js config
 
 ### `next.config.ts`
+
 - **Plugin:** `withNextIntl(nextConfig)` z `createNextIntlPlugin('./src/i18n/request.ts')`
 - **Images:** AVIF/WebP, deviceSizes, imageSizes, remotePatterns dla `assets.tina.io`
 - **Headers:** cache dla fonts (1 rok), logo-carousel, flags, favicon
@@ -597,11 +662,13 @@ content/
 - **productionBrowserSourceMaps:** `true`
 
 ### Build commands
+
 - `pnpm build:local` — `tinacms build --local --skip-cloud-checks -c "next build"`
 - `pnpm lint` — `eslint`
 - `pnpm dev` — development
 
 ### Environment variables
+
 - `NEXT_PUBLIC_SITE_URL` — kanoniczny URL strony (np. `https://bitspire.pl`)
 - `TINA_CLIENT_ID`, `TINA_TOKEN` — TinaCMS (opcjonalne dla local mode)
 
@@ -623,6 +690,7 @@ content/
 10. **Lokalna detekcja WebGL w Hero** — nie używaj globalnego providera; sprawdzaj `hover: none`, user agent, `saveData`, `prefers-reduced-motion` lokalnie w komponencie
 
 ### Struktura nowej sekcji
+
 ```tsx
 'use client';
 
@@ -653,15 +721,20 @@ export const MySection = memo(MySectionContent);
 ```
 
 ### Struktura nowej strony
+
 ```tsx
 // src/app/[locale]/my-page/page.tsx (server component)
 import { getPage } from '@/lib/tina';
 import { MyPage } from '@/components/pages/MyPage';
 
-export async function generateMetadata({ params }) { /* ... */ }
+export async function generateMetadata({ params }) {
+  /* ... */
+}
 export default async function Page({ params }) {
   const data = await getPage(`${params.locale}/my-page.md`);
-  return <MyPage query={data.query} variables={data.variables} data={data} locale={params.locale} />;
+  return (
+    <MyPage query={data.query} variables={data.variables} data={data} locale={params.locale} />
+  );
 }
 ```
 
@@ -677,10 +750,12 @@ export function MyPage({ query, variables, data, locale }) {
 ```
 
 ### Lazy loading
+
 - Używaj `next/dynamic` tylko dla ciężkich komponentów, które wymagają `window`/`document` przy inicjalizacji (np. `PixiScene`, `PlasmaBackground`) i mają `ssr: false`.
 - Sekcje stron głównych powinny być importowane statycznie, aby uniknąć waterfall loading i kaskadowych re-renderów.
 
 ### WebGL w Hero — wzorce
+
 ```tsx
 const mounted = useMounted();
 const isReducedMotion = useReducedMotion();
@@ -704,10 +779,12 @@ return <PixiScene />;
 Nie używaj globalnych providerów do detekcji urządzenia — powodują one re-render całej aplikacji po hydracji.
 
 ### Importowanie ikon
+
 - `lucide-react` — używaj named imports (zoptymalizowane przez `optimizePackageImports`)
 - `import { ChevronLeftIcon } from 'lucide-react'`
 
 ### Animacje
+
 - **Framer Motion:** importuj z `motion/react` (nie `framer-motion`)
 - **WebGL:** używaj istniejących systemów `atmosphere/` lub `plasma/`, nie twórz nowych od zera
 - **CSS animations:** używaj `globals.css` z `@keyframes`, pauzuj przez `data-paused` atrybut + IntersectionObserver

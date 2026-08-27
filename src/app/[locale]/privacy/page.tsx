@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { getPage } from '@/lib/tina';
 import { PrivacyPage } from '@/components/pages/PrivacyPage';
 import { getPageFallbackTitle } from '@/lib/ui';
-import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages, siteUrl } from '@/lib/site';
+import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages } from '@/lib/site';
 import { getPageHref } from '@/lib/routes';
 import { combineJsonLd, webPageJsonLd, breadcrumbListJsonLd } from '@/lib/json-ld';
 

@@ -33,13 +33,7 @@ export function getPageHref(page: PageId): LocalizedHref {
   return PAGE_PATHS[page];
 }
 
-export function getPathname({
-  locale,
-  href,
-}: {
-  locale: string;
-  href: LocalizedHref;
-}): string {
+export function getPathname({ locale, href }: { locale: string; href: LocalizedHref }): string {
   let pathname: string;
   const params: Record<string, string> = {};
 

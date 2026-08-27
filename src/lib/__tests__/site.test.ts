@@ -24,12 +24,12 @@ describe('localePathname', () => {
   });
 
   it('builds URLs for dynamic paths', () => {
-    expect(
-      localePathname('pl', { pathname: '/blog/[slug]', params: { slug: 'pl-slug' } })
-    ).toBe('https://example.com/pl/blog/pl-slug');
-    expect(
-      localePathname('en', { pathname: '/blog/[slug]', params: { slug: 'en-slug' } })
-    ).toBe('https://example.com/en/blog/en-slug');
+    expect(localePathname('pl', { pathname: '/blog/[slug]', params: { slug: 'pl-slug' } })).toBe(
+      'https://example.com/pl/blog/pl-slug'
+    );
+    expect(localePathname('en', { pathname: '/blog/[slug]', params: { slug: 'en-slug' } })).toBe(
+      'https://example.com/en/blog/en-slug'
+    );
   });
 });
 
