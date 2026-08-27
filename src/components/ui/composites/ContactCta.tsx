@@ -1,9 +1,13 @@
 'use client';
 
+import type { ComponentProps } from 'react';
 import { Link } from '@/i18n/navigation';
+import { getPageHref } from '@/lib/routes';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/primitives/button';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
+
+type Href = ComponentProps<typeof Link>['href'];
 import {
   Card,
   CardDescription,
@@ -46,7 +50,7 @@ export function ContactCta({ locale, className }: ContactCtaProps) {
         </CardHeader>
         <CardFooter>
           <Button asChild>
-            <Link href="/contact" locale={locale}>
+            <Link href={getPageHref('contact') as Href} locale={locale}>
               {ui.button}
             </Link>
           </Button>

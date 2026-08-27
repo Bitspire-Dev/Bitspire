@@ -8,6 +8,7 @@ import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { Button } from '@/components/ui/primitives/button';
 import { SocialIcon } from '@/components/ui/composites/social-icon';
 import { COMPANY } from '@/lib/company';
+import { getPageHref } from '@/lib/routes';
 import { MAIN_NAV_LINKS, type NavLink } from '@/lib/navigation';
 
 type Href = ComponentProps<typeof Link>['href'];
@@ -37,7 +38,7 @@ const FOOTER_CONTENT: Record<'pl' | 'en', FooterContent> = {
       contact: 'Kontakt',
       legal: 'Prawne',
     },
-    legal: [{ label: 'Polityka prywatności', href: '/privacy' }],
+    legal: [{ label: 'Polityka prywatności', href: getPageHref('privacy') as Href }],
     copyright: '© 2026 Bitspire. Wszelkie prawa zastrzeżone.',
   },
   en: {
@@ -48,7 +49,7 @@ const FOOTER_CONTENT: Record<'pl' | 'en', FooterContent> = {
       contact: 'Contact',
       legal: 'Legal',
     },
-    legal: [{ label: 'Privacy Policy', href: '/privacy' }],
+    legal: [{ label: 'Privacy Policy', href: getPageHref('privacy') as Href }],
     copyright: '© 2026 Bitspire. All rights reserved.',
   },
 };

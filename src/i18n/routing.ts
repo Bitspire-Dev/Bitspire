@@ -5,12 +5,15 @@ export const routing = defineRouting({
   defaultLocale: 'pl',
   pathnames: {
     '/': '/',
-    '/blog': '/blog',
-    '/blog/[slug]': '/blog/[slug]',
-    '/portfolio': '/portfolio',
-    '/portfolio/[category]': '/portfolio/[category]',
-    '/portfolio/[category]/[slug]': '/portfolio/[category]/[slug]',
-    '/contact': '/contact',
-    '/privacy': '/privacy',
+    '/blog': { pl: '/blog', en: '/blog' },
+    '/blog/[slug]': { pl: '/blog/[slug]', en: '/blog/[slug]' },
+    '/portfolio': { pl: '/portfolio', en: '/portfolio' },
+    '/portfolio/[category]': { pl: '/portfolio/[category]', en: '/portfolio/[category]' },
+    '/portfolio/[category]/[slug]': {
+      pl: '/portfolio/[category]/[slug]',
+      en: '/portfolio/[category]/[slug]',
+    },
+    '/contact': { pl: '/kontakt', en: '/contact' },
+    '/privacy': { pl: '/polityka-prywatnosci', en: '/privacy' },
   },
 });

@@ -10,6 +10,7 @@ import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { ErrorBoundary } from '@/components/providers/error-boundary';
 import { Button } from '@/components/ui/primitives/button';
 import { Link } from '@/i18n/navigation';
+import { getPageHref } from '@/lib/routes';
 import { useMounted } from '@/lib/use-mounted';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
@@ -42,7 +43,7 @@ const HeroCTA = memo(function HeroCTA({ locale }: HeroCTAProps) {
     <FadeIn delay={0.2}>
       <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
         <Button asChild size="lg" className="h-12 px-8 text-base md:h-13 md:px-10 md:text-lg">
-          <Link href="/contact" locale={locale}>
+          <Link href={getPageHref('contact') as Href} locale={locale}>
             {locale === 'pl' ? 'Rozpocznij projekt' : 'Start a project'}
           </Link>
         </Button>
@@ -52,7 +53,7 @@ const HeroCTA = memo(function HeroCTA({ locale }: HeroCTAProps) {
           variant="outline"
           className="h-12 px-8 text-base md:h-13 md:px-10 md:text-lg"
         >
-          <Link href="/portfolio" locale={locale}>
+          <Link href={getPageHref('portfolio') as Href} locale={locale}>
             {locale === 'pl' ? 'Zobacz wybrane case studies' : 'See selected case studies'}
           </Link>
         </Button>

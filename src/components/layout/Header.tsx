@@ -9,6 +9,7 @@ import { LocaleSwitcher } from '@/components/ui/navigation/locale-switcher';
 import { ThemeSwitcher } from '@/components/ui/navigation/theme-switcher';
 import { useMounted } from '@/lib/use-mounted';
 import { cn } from '@/lib/utils';
+import { getPageHref } from '@/lib/routes';
 import { Button } from '@/components/ui/primitives/button';
 import {
   NavigationMenu,
@@ -40,7 +41,7 @@ export function Header({ locale, blogMap }: HeaderProps) {
           <MobileMenu locale={locale} links={navLinks} blogMap={blogMap} />
           <ThemeSwitcher className="md:hidden" />
 
-          <Link href="/" className="flex items-center gap-2">
+          <Link href={getPageHref('home') as Href} className="flex items-center gap-2">
             <Image
               src={logoSrc}
               alt="Bitspire"

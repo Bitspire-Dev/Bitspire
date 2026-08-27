@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
+import { getPathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { COMPANY } from '@/lib/company';
+import type { LocalizedHref } from '@/lib/routes';
 
 export const siteName = COMPANY.name;
 
@@ -10,9 +12,9 @@ export const siteUrl = rawSiteUrl
   .replace(/^https?:\/\/www\./, match => match.replace('www.', ''))
   .replace(/\/$/, '');
 
-export const localePathname = (locale: string, path: string) => {
-  const normalizedPath = path.replace(/\/$/, '');
-  return `${siteUrl}/${locale}${normalizedPath === '/' ? '' : normalizedPath}`;
+export const localePathname = (locale: string, href: LocalizedHref) => {
+  const path = getPathname({ locale, href: href as never });
+  return `${siteUrl}${path}`;
 };
 
 export function getDefaultOgImages(locale: string) {
@@ -22,7 +24,7 @@ export function getDefaultOgImages(locale: string) {
   };
 }
 
-export function sitemapAlternates(pathForLocale: (locale: string) => string) {
+export function sitemapAlternates(pathForLocale: (locale: string) => LocalizedHref) {
   return {
     languages: {
       ...Object.fromEntries(
@@ -35,7 +37,7 @@ export function sitemapAlternates(pathForLocale: (locale: string) => string) {
 
 export function localeAlternates(
   locale: string,
-  pathForLocale: (locale: string) => string
+  pathForLocale: (locale: string) => LocalizedHref
 ): Metadata['alternates'] {
   return {
     canonical: localePathname(locale, pathForLocale(locale)),

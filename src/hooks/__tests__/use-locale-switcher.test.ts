@@ -21,7 +21,7 @@ describe('useLocaleSwitcher', () => {
     vi.mocked(useRouter).mockReturnValue({ replace: mockReplace } as never);
   });
 
-  it('switches static paths with a locale option', () => {
+  it('switches the blog index page', () => {
     vi.mocked(usePathname).mockReturnValue('/blog');
     vi.mocked(useParams).mockReturnValue({});
 
@@ -31,6 +31,18 @@ describe('useLocaleSwitcher', () => {
     result.current('en');
 
     expect(mockReplace).toHaveBeenCalledWith('/blog', { locale: 'en' });
+  });
+
+  it('switches the privacy page', () => {
+    vi.mocked(usePathname).mockReturnValue('/privacy');
+    vi.mocked(useParams).mockReturnValue({});
+
+    const { result } = renderHook(() =>
+      useLocaleSwitcher({ locale: 'pl', blogMap: { byCanonical: {}, bySlug: {} } })
+    );
+    result.current('en');
+
+    expect(mockReplace).toHaveBeenCalledWith('/privacy', { locale: 'en' });
   });
 
   it('switches the home page', () => {

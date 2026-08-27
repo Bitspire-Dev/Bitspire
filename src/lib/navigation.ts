@@ -1,19 +1,22 @@
+import type { LocalizedHref } from '@/lib/routes';
+import { getPageHref } from '@/lib/routes';
+
 export interface NavLink {
   label: string;
-  href: string;
+  href: LocalizedHref;
 }
 
 export const MAIN_NAV_LINKS: Record<'pl' | 'en', NavLink[]> = {
   pl: [
-    { label: 'Strona główna', href: '/' },
-    { label: 'Portfolio', href: '/portfolio' },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Kontakt', href: '/contact' },
+    { label: 'Strona główna', href: getPageHref('home') },
+    { label: 'Portfolio', href: getPageHref('portfolio') },
+    { label: 'Blog', href: getPageHref('blog') },
+    { label: 'Kontakt', href: getPageHref('contact') },
   ],
   en: [
-    { label: 'Home', href: '/' },
-    { label: 'Portfolio', href: '/portfolio' },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Contact', href: '/contact' },
+    { label: 'Home', href: getPageHref('home') },
+    { label: 'Portfolio', href: getPageHref('portfolio') },
+    { label: 'Blog', href: getPageHref('blog') },
+    { label: 'Contact', href: getPageHref('contact') },
   ],
 };

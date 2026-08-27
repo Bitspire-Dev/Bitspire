@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useState, type FormEvent, type ComponentProps } from 'react';
 import { Button } from '@/components/ui/primitives/button';
 import { Card, CardContent } from '@/components/ui/primitives/card';
 import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/primitives/field';
@@ -8,8 +8,11 @@ import { Input } from '@/components/ui/primitives/input';
 import { Textarea } from '@/components/ui/primitives/textarea';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { Link } from '@/i18n/navigation';
+import { getPageHref } from '@/lib/routes';
 import { validateContactPayload } from '@/lib/contact';
 import { cn } from '@/lib/utils';
+
+type Href = ComponentProps<typeof Link>['href'];
 
 interface ContactFormProps {
   locale: string;
@@ -198,7 +201,7 @@ export function ContactForm({ locale, className }: ContactFormProps) {
             <p className="text-center font-sans text-xs text-muted-foreground">
               {ui.privacyNotice}{' '}
               <Link
-                href="/privacy"
+                href={getPageHref('privacy') as Href}
                 className="text-foreground underline underline-offset-4 transition-colors hover:text-primary"
               >
                 {ui.privacyLink}

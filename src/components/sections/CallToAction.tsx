@@ -7,6 +7,7 @@ import { tinaField } from 'tinacms/dist/react';
 import type { ComponentProps } from 'react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
 import { Link } from '@/i18n/navigation';
+import { getPageHref } from '@/lib/routes';
 import { Button } from '@/components/ui/primitives/button';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/primitives/stagger';
@@ -66,7 +67,7 @@ function CallToActionContent({ page }: CallToActionProps) {
                     >
                       <Link
                         data-tina-field={tinaField(cta, 'primaryLabel')}
-                        href={(cta.primaryHref ?? '/contact') as Href}
+                        href={(cta.primaryHref ?? (getPageHref('contact') as Href)) as Href}
                         locale={locale}
                       >
                         {cta.primaryLabel}

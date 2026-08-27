@@ -22,7 +22,8 @@ export function useLocaleSwitcher({ locale, blogMap }: UseLocaleSwitcherOptions)
       pathname === '/' ||
       pathname === '/blog' ||
       pathname === '/portfolio' ||
-      pathname === '/contact'
+      pathname === '/contact' ||
+      pathname === '/privacy'
     ) {
       router.replace(pathname, { locale: targetLocale });
       return;
