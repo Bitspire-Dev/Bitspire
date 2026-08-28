@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, type FormEvent, type ComponentProps } from 'react';
+import { useRef, useState, type ChangeEvent, type FormEvent, type ComponentProps } from 'react';
+import { Paperclip, X } from 'lucide-react';
 import { Button } from '@/components/ui/primitives/button';
 import { Card, CardContent } from '@/components/ui/primitives/card';
 import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/primitives/field';
@@ -9,7 +10,12 @@ import { Textarea } from '@/components/ui/primitives/textarea';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { Link } from '@/i18n/navigation';
 import { getPageHref } from '@/lib/routes';
-import { validateContactPayload } from '@/lib/contact';
+import {
+  validateContactPayload,
+  validateAttachment,
+  MAX_FILE_SIZE,
+  MAX_ATTACHMENTS,
+} from '@/lib/contact';
 import { cn } from '@/lib/utils';
 
 type Href = ComponentProps<typeof Link>['href'];
@@ -18,6 +24,8 @@ interface ContactFormProps {
   locale: string;
   className?: string;
 }
+
+const ACCEPT_ATTR = '.pdf,.png,.jpg,.jpeg,.gif,.webp,.txt';
 
 const UI: Record<string, Record<string, string>> = {
   pl: {
@@ -33,6 +41,13 @@ const UI: Record<string, Record<string, string>> = {
     invalidEmail: 'Podaj prawidłowy adres e-mail',
     privacyNotice: 'Wysyłając wiadomość, akceptujesz',
     privacyLink: 'Politykę prywatności',
+    attachment: 'Załącznik (opcjonalnie)',
+    attachmentHint: 'Maks. 3 MB. PDF, PNG, JPG, GIF, WEBP, TXT.',
+    removeFile: 'Usuń plik',
+    fileTooLarge: 'Plik jest za duży. Maksymalny rozmiar to 3 MB.',
+    fileTypeNotAllowed: 'Nieobsługiwany typ pliku. Dozwolone: PDF, PNG, JPG, GIF, WEBP, TXT.',
+    tooManyFiles: 'Możesz dodać maksymalnie 3 pliki.',
+    fileError: 'Błąd pliku',
   },
   en: {
     name: 'Name',
@@ -47,8 +62,21 @@ const UI: Record<string, Record<string, string>> = {
     invalidEmail: 'Please enter a valid email address',
     privacyNotice: 'By sending a message, you accept our',
     privacyLink: 'Privacy Policy',
+    attachment: 'Attachment (optional)',
+    attachmentHint: 'Max 3 MB. PDF, PNG, JPG, GIF, WEBP, TXT.',
+    removeFile: 'Remove file',
+    fileTooLarge: 'File is too large. Maximum size is 3 MB.',
+    fileTypeNotAllowed: 'Unsupported file type. Allowed: PDF, PNG, JPG, GIF, WEBP, TXT.',
+    tooManyFiles: 'You can attach up to 3 files.',
+    fileError: 'File error',
   },
 };
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
 
 export function ContactForm({ locale, className }: ContactFormProps) {
   const ui = UI[locale] ?? UI.pl;
@@ -57,13 +85,57 @@ export function ContactForm({ locale, className }: ContactFormProps) {
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
+  const [files, setFiles] = useState<File[]>([]);
+  const [fileError, setFileError] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setFileError('');
+    const selected = Array.from(event.target.files ?? []);
+
+    if (selected.length === 0) return;
+
+    if (files.length + selected.length > MAX_ATTACHMENTS) {
+      setFileError(ui.tooManyFiles);
+      event.target.value = '';
+      return;
+    }
+
+    for (const file of selected) {
+      if (file.size > MAX_FILE_SIZE) {
+        setFileError(ui.fileTooLarge);
+        event.target.value = '';
+        return;
+      }
+
+      const check = validateAttachment(
+        { name: file.name, type: file.type, size: file.size },
+        locale
+      );
+
+      if (!check.valid) {
+        setFileError(check.error ?? ui.fileTypeNotAllowed);
+        event.target.value = '';
+        return;
+      }
+    }
+
+    setFiles(prev => [...prev, ...selected]);
+    event.target.value = '';
+  };
+
+  const removeFile = (index: number) => {
+    setFiles(prev => prev.filter((_, i) => i !== index));
+    setFileError('');
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmitStatus('idle');
+    setFileError('');
 
     const { valid, errors: nextErrors } = validateContactPayload(
       { name, email, subject, message },
@@ -79,10 +151,19 @@ export function ContactForm({ locale, className }: ContactFormProps) {
     setIsSubmitting(true);
 
     try {
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('subject', subject);
+      formData.append('message', message);
+      formData.append('locale', locale);
+      for (const file of files) {
+        formData.append('file', file);
+      }
+
       const response = await fetch('/api/contact', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, subject, message, locale }),
+        body: formData,
       });
 
       if (response.ok) {
@@ -91,9 +172,18 @@ export function ContactForm({ locale, className }: ContactFormProps) {
         setEmail('');
         setSubject('');
         setMessage('');
+        setFiles([]);
         setErrors({});
+        setFileError('');
       } else {
-        setSubmitStatus('error');
+        const data = await response.json().catch(() => null);
+
+        // Server returned a file-specific error — show it on the file field
+        if (data?.error && (data.filename || response.status === 413)) {
+          setFileError(data.error);
+        } else {
+          setSubmitStatus('error');
+        }
       }
     } catch {
       setSubmitStatus('error');
@@ -179,6 +269,60 @@ export function ContactForm({ locale, className }: ContactFormProps) {
                   className="min-h-48 bg-input/60 backdrop-blur-[2px]"
                 />
                 {errors.message ? <FieldError>{errors.message}</FieldError> : null}
+              </FieldContent>
+            </Field>
+          </FadeIn>
+
+          <FadeIn delay={0.175}>
+            <Field>
+              <FieldLabel htmlFor="contact-file">{ui.attachment}</FieldLabel>
+              <FieldContent>
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="contact-file"
+                    className="inline-flex h-7 w-fit cursor-pointer items-center gap-1.5 rounded-md border border-input bg-input/20 px-2 font-sans text-xs text-muted-foreground transition-colors hover:bg-input/40 hover:text-foreground"
+                  >
+                    <Paperclip className="size-3.5" />
+                    {ui.attachment}
+                  </label>
+                  <input
+                    ref={fileInputRef}
+                    id="contact-file"
+                    type="file"
+                    accept={ACCEPT_ATTR}
+                    multiple
+                    onChange={handleFileChange}
+                    className="sr-only"
+                    aria-invalid={!!fileError}
+                  />
+                  <p className="font-sans text-xs text-muted-foreground">{ui.attachmentHint}</p>
+
+                  {files.length > 0 ? (
+                    <ul className="flex flex-col gap-1.5">
+                      {files.map((file, index) => (
+                        <li
+                          key={`${file.name}-${index}`}
+                          className="flex items-center justify-between gap-2 rounded-md border border-border/60 bg-input/20 px-2 py-1"
+                        >
+                          <span className="truncate font-sans text-xs text-foreground">
+                            {file.name}{' '}
+                            <span className="text-muted-foreground">({formatFileSize(file.size)})</span>
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => removeFile(index)}
+                            className="shrink-0 rounded-sm p-0.5 text-muted-foreground transition-colors hover:text-destructive"
+                            aria-label={ui.removeFile}
+                          >
+                            <X className="size-3.5" />
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+
+                  {fileError ? <FieldError>{fileError}</FieldError> : null}
+                </div>
               </FieldContent>
             </Field>
           </FadeIn>
