@@ -11,6 +11,12 @@ export class MouseController {
   constructor(private readonly el: HTMLElement | Window) {}
 
   attach() {
+    // Skip on touch devices — there's no cursor, so mouse parallax would
+    // never move and the listeners would only waste CPU on touch events.
+    if (typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches) {
+      this.active = false;
+      return;
+    }
     const node = this.el;
     node.addEventListener('pointermove', this.onMove, { passive: true });
     node.addEventListener('pointerleave', this.onLeave, { passive: true });

@@ -99,7 +99,7 @@ function ServicesContent({ page }: ServicesProps) {
                   >
                     <AccordionItem
                       value={value}
-                      className="group/item border-none transition-all duration-300 data-open:bg-white/5 dark:data-open:bg-white/5"
+                      className="group/item border-none transition-colors duration-300 data-open:bg-white/5 dark:data-open:bg-white/5"
                     >
                       <AccordionTrigger
                         className={cn(

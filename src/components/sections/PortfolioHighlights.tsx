@@ -104,15 +104,11 @@ const ProjectCard = memo(function ProjectCard({
   isCenter,
   locale,
   ui,
-  ratio = 10 / 14,
-  imagePosition = 'object-top',
 }: {
   item: HighlightItem;
   isCenter: boolean;
   locale: string;
   ui: { cta: string };
-  ratio?: number;
-  imagePosition?: 'object-top' | 'object-center' | 'object-bottom';
 }): ReactNode {
   const project = item.project;
   const href = getProjectLink(project, locale);
@@ -122,7 +118,7 @@ const ProjectCard = memo(function ProjectCard({
   const isUnoptimized = isUnoptimizedImage(project.screenshot);
 
   return (
-    <AspectRatio ratio={ratio} className="w-full">
+    <AspectRatio ratio={10 / 14} className="w-full">
       <Card
         data-tina-field={tinaField(item, 'project')}
         className="group/card relative size-full overflow-hidden rounded-lg pt-0 transition-shadow duration-300 hover:shadow-lg"
@@ -144,7 +140,7 @@ const ProjectCard = memo(function ProjectCard({
                 'transition-transform duration-500',
                 isUnoptimized
                   ? 'object-contain p-8'
-                  : cn('object-cover', imagePosition, 'group-hover/card:scale-105')
+                  : 'object-cover object-top group-hover/card:scale-105'
               )}
             />
           ) : (
@@ -228,14 +224,7 @@ const MobileCarousel = memo(function MobileCarousel({
       >
         {items.map((item, index) => (
           <div key={`mobile-${item.project.id}`} className="w-full shrink-0 grow-0 basis-full px-0">
-            <ProjectCard
-              item={item}
-              isCenter={index === selected}
-              locale={locale}
-              ui={ui}
-              ratio={4 / 3}
-              imagePosition="object-center"
-            />
+            <ProjectCard item={item} isCenter={index === selected} locale={locale} ui={ui} />
           </div>
         ))}
       </div>
@@ -309,8 +298,8 @@ const CarouselControls = memo(function CarouselControls({ onPrev, onNext }: Caro
       <Button
         type="button"
         variant="outline"
-        size="icon"
-        className="absolute top-1/2 left-2 size-11 -translate-y-1/2 rounded-full md:-left-4"
+        size="icon-sm"
+        className="absolute top-1/2 left-0 -translate-y-1/2 rounded-full md:-left-4"
         onClick={onPrev}
         aria-label="Poprzedni projekt"
       >
@@ -320,8 +309,8 @@ const CarouselControls = memo(function CarouselControls({ onPrev, onNext }: Caro
       <Button
         type="button"
         variant="outline"
-        size="icon"
-        className="absolute top-1/2 right-2 size-11 -translate-y-1/2 rounded-full md:-right-4"
+        size="icon-sm"
+        className="absolute top-1/2 right-0 -translate-y-1/2 rounded-full md:-right-4"
         onClick={onNext}
         aria-label="Następny projekt"
       >
@@ -399,7 +388,7 @@ function PortfolioHighlightsContent({ page }: PortfolioHighlightsProps) {
         <FadeIn className="mb-12 max-w-2xl">
           <h2
             data-tina-field={tinaField(highlights, 'title')}
-            className="font-heading text-2xl font-semibold tracking-tight text-balance text-foreground sm:text-3xl md:text-4xl"
+            className="font-heading text-3xl font-semibold tracking-tight text-balance text-foreground md:text-4xl"
           >
             {highlights.title ?? ui.titleFallback}
           </h2>
@@ -407,7 +396,7 @@ function PortfolioHighlightsContent({ page }: PortfolioHighlightsProps) {
           {highlights.description ? (
             <p
               data-tina-field={tinaField(highlights, 'description')}
-              className="mt-4 font-sans text-sm leading-relaxed text-pretty text-muted-foreground sm:text-base md:text-lg"
+              className="mt-4 font-sans text-base leading-relaxed text-pretty text-muted-foreground md:text-lg"
             >
               {highlights.description}
             </p>
@@ -432,32 +421,6 @@ function PortfolioHighlightsContent({ page }: PortfolioHighlightsProps) {
             />
             <CarouselControls onPrev={prev} onNext={next} />
           </div>
-
-          {items.length > 1 ? (
-            <div
-              className="mt-6 flex items-center justify-center gap-2 md:hidden"
-              role="tablist"
-              aria-label="Wybór projektu"
-            >
-              {items.map((item, index) => {
-                const isActive = index === selected;
-                return (
-                  <button
-                    key={`dot-${item.project.id}`}
-                    type="button"
-                    role="tab"
-                    aria-selected={isActive}
-                    aria-label={`Przejdź do projektu ${index + 1}`}
-                    onClick={() => setSelected(index)}
-                    className={cn(
-                      'h-2 rounded-full transition-all duration-300',
-                      isActive ? 'w-6 bg-foreground' : 'w-2 bg-foreground/30 hover:bg-foreground/50'
-                    )}
-                  />
-                );
-              })}
-            </div>
-          ) : null}
         </FadeIn>
       </div>
     </section>

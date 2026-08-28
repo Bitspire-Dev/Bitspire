@@ -90,22 +90,20 @@ function HeroContent({ page }: HeroProps) {
   const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
   const indicatorOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
 
-  // Simple, local, one-time capability check. We only enable the WebGL hero
-  // background on non-touch, non-mobile, non-battery-saving devices that do
-  // not request reduced motion. This replaces the previous DeviceCapability
-  // context that re-rendered the whole tree and triggered a double WebGL init.
+  // Simple, local, one-time capability check. We enable the WebGL hero
+  // background on any device that supports WebGL, isn't requesting reduced
+  // motion, and isn't in save-data mode. Mobile devices get a lower-quality
+  // config (see quality.ts) so the scene stays performant on phones.
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (isReducedMotion) return;
 
-    const isTouch = window.matchMedia('(hover: none)').matches;
-    const isMobile = /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(navigator.userAgent);
     const saveData =
       (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData ??
       false;
     const hasWebgl = !!document.createElement('canvas').getContext('webgl');
 
-    setCanUseWebgl(!isTouch && !isMobile && !saveData && hasWebgl);
+    setCanUseWebgl(!saveData && hasWebgl);
   }, [isReducedMotion]);
 
   const shouldRenderPixi = mounted && !sceneError && canUseWebgl;

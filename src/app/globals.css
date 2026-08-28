@@ -308,6 +308,16 @@
   --glass-shadow-hover: 0 12px 40px -4px rgba(0, 0, 0, 0.5);
 }
 
+/* Mobile: disable backdrop-blur — it's the single biggest GPU cost on
+ * phones and causes visible jank during scroll. Cards get a near-opaque
+ * background instead of the glass blur, which is visually close enough
+ * while being dramatically cheaper to composite. */
+@media (max-width: 640px) {
+  .glass-card {
+    @apply bg-card/95 backdrop-blur-none backdrop-saturate-100;
+  }
+}
+
 /* ================================================================
  * 8. MOTION — view-transitions + reduced-motion overrides
  *    The root snapshot transition cross-fades a single capture

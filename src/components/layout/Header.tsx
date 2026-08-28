@@ -35,7 +35,7 @@ export function Header({ locale, blogMap }: HeaderProps) {
   const logoSrc = isDark ? '/favicon-dark-mode.svg' : '/favicon-light-mode.svg';
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background md:bg-background/95 md:backdrop-blur">
       <div className="container mx-auto flex h-14 max-w-360 items-center justify-between px-4 md:px-6">
         <div className="flex min-w-0 items-center gap-3 md:gap-4">
           <MobileMenu locale={locale} links={navLinks} blogMap={blogMap} />
@@ -170,7 +170,7 @@ function MobileMenu({
 
       <div
         className={cn(
-          'fixed inset-x-0 top-14 z-40 max-h-[calc(100dvh-3.5rem)] overflow-y-auto border-b border-border/40 bg-background/95 px-4 py-6 backdrop-blur transition-all duration-200 md:hidden',
+          'fixed inset-x-0 top-14 z-40 max-h-[calc(100dvh-3.5rem)] overflow-y-auto border-b border-border/40 bg-background px-4 py-6 transition-all duration-200 md:hidden',
           open ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-2 opacity-0'
         )}
       >
