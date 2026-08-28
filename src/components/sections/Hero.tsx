@@ -43,8 +43,12 @@ interface HeroCTAProps {
 const HeroCTA = memo(function HeroCTA({ locale }: HeroCTAProps) {
   return (
     <FadeIn delay={0.2}>
-      <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-        <Button asChild size="lg" className="h-12 px-8 text-base md:h-13 md:px-10 md:text-lg">
+      <div className="mt-10 flex flex-col items-stretch justify-center gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+        <Button
+          asChild
+          size="lg"
+          className="h-12 w-full px-8 text-base sm:w-auto md:h-13 md:px-10 md:text-lg"
+        >
           <Link href={getPageHref('contact') as Href} locale={locale}>
             {locale === 'pl' ? 'Rozpocznij projekt' : 'Start a project'}
           </Link>
@@ -53,7 +57,7 @@ const HeroCTA = memo(function HeroCTA({ locale }: HeroCTAProps) {
           asChild
           size="lg"
           variant="outline"
-          className="h-12 px-8 text-base md:h-13 md:px-10 md:text-lg"
+          className="h-12 w-full px-8 text-base sm:w-auto md:h-13 md:px-10 md:text-lg"
         >
           <Link href={getPageHref('portfolio') as Href} locale={locale}>
             {locale === 'pl' ? 'Zobacz wybrane case studies' : 'See selected case studies'}
@@ -144,7 +148,7 @@ function HeroContent({ page }: HeroProps) {
         <FadeIn>
           <h1
             data-tina-field={tinaField(page, 'title')}
-            className="max-w-4xl font-heading text-5xl leading-tight font-semibold tracking-tight text-balance text-foreground md:text-7xl"
+            className="max-w-4xl font-heading text-4xl leading-tight font-semibold tracking-tight text-balance text-foreground sm:text-5xl md:text-7xl"
           >
             {page.title ?? 'Bitspire'}
           </h1>
@@ -154,7 +158,7 @@ function HeroContent({ page }: HeroProps) {
           <FadeIn delay={0.1}>
             <p
               data-tina-field={tinaField(page, 'description')}
-              className="mt-6 max-w-2xl font-sans text-lg leading-relaxed text-pretty text-foreground/70 md:text-xl"
+              className="mt-6 max-w-2xl font-sans text-base leading-relaxed text-pretty text-foreground/70 sm:text-lg md:text-xl"
             >
               {page.description}
             </p>

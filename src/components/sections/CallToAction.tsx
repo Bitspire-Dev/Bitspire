@@ -42,7 +42,7 @@ function CallToActionContent({ page }: CallToActionProps) {
             <div className="flex flex-col items-start gap-8">
               <h2
                 data-tina-field={tinaField(cta, 'title')}
-                className="max-w-3xl font-heading text-3xl font-semibold tracking-tight text-balance text-foreground md:text-4xl lg:text-5xl"
+                className="max-w-3xl font-heading text-2xl font-semibold tracking-tight text-balance text-foreground sm:text-3xl md:text-4xl lg:text-5xl"
               >
                 {cta.title}
               </h2>
@@ -50,20 +50,23 @@ function CallToActionContent({ page }: CallToActionProps) {
               {cta.description ? (
                 <p
                   data-tina-field={tinaField(cta, 'description')}
-                  className="max-w-2xl font-sans text-lg leading-relaxed text-pretty text-muted-foreground md:text-xl lg:text-2xl"
+                  className="max-w-2xl font-sans text-base leading-relaxed text-pretty text-muted-foreground sm:text-lg md:text-xl lg:text-2xl"
                 >
                   {cta.description}
                 </p>
               ) : null}
 
-              <StaggerContainer className="flex flex-wrap gap-4" stagger={0.1}>
+              <StaggerContainer
+                className="flex flex-col gap-4 sm:flex-row sm:flex-wrap"
+                stagger={0.1}
+              >
                 {cta.primaryLabel ? (
                   <StaggerItem>
                     <Button
                       asChild
                       size="lg"
                       variant="default"
-                      className="h-11 px-6 text-base md:h-12 md:px-8 md:text-lg"
+                      className="h-11 w-full px-6 text-base sm:w-auto md:h-12 md:px-8 md:text-lg"
                     >
                       <Link
                         data-tina-field={tinaField(cta, 'primaryLabel')}
@@ -82,7 +85,7 @@ function CallToActionContent({ page }: CallToActionProps) {
                       asChild
                       size="lg"
                       variant="outline"
-                      className="h-11 px-6 text-base md:h-12 md:px-8 md:text-lg"
+                      className="h-11 w-full px-6 text-base sm:w-auto md:h-12 md:px-8 md:text-lg"
                     >
                       <Link
                         data-tina-field={tinaField(cta, 'secondaryLabel')}
@@ -100,7 +103,7 @@ function CallToActionContent({ page }: CallToActionProps) {
             {cta.showImage !== false ? (
               <FadeIn
                 delay={0.2}
-                className="relative aspect-2500/1555 w-full max-w-xl justify-self-end lg:block"
+                className="relative aspect-2500/1555 w-full max-w-md justify-self-center sm:max-w-lg md:max-w-xl lg:block lg:justify-self-end"
               >
                 <Image
                   src={gryfSrc}

@@ -71,7 +71,7 @@ interface BentoCardProps {
 function BentoCard({
   item,
   className,
-  imageMinHeight = 'min-h-48',
+  imageMinHeight = 'min-h-40 sm:min-h-48',
   titleClassName,
 }: BentoCardProps) {
   const rawSrc = normalizeImageSrc(item.image);
@@ -96,7 +96,7 @@ function BentoCard({
               alt={item.imageAlt ?? item.title}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-contain p-4"
+              className="object-contain p-2 sm:p-4"
             />
           </div>
         ) : (
@@ -212,7 +212,7 @@ export function WhyBitspire({ page }: WhyBitspireProps) {
         <FadeIn className="mb-10 max-w-2xl">
           <h2
             data-tina-field={tinaField(data, 'title')}
-            className="font-heading text-3xl font-semibold tracking-tight text-balance text-foreground md:text-4xl"
+            className="font-heading text-2xl font-semibold tracking-tight text-balance text-foreground sm:text-3xl md:text-4xl"
           >
             {data.title ?? ui.titleFallback}
           </h2>
@@ -220,7 +220,7 @@ export function WhyBitspire({ page }: WhyBitspireProps) {
           {data.description ? (
             <p
               data-tina-field={tinaField(data, 'description')}
-              className="mt-4 font-sans text-lg leading-relaxed text-pretty text-muted-foreground"
+              className="mt-4 font-sans text-base leading-relaxed text-pretty text-muted-foreground sm:text-lg"
             >
               {data.description}
             </p>
@@ -237,8 +237,8 @@ export function WhyBitspire({ page }: WhyBitspireProps) {
               <BentoCard
                 item={large}
                 className="flex-1"
-                imageMinHeight="min-h-64"
-                titleClassName="text-2xl font-bold"
+                imageMinHeight="min-h-48 sm:min-h-64"
+                titleClassName="text-xl font-bold sm:text-2xl"
               />
             ) : null}
 
@@ -249,8 +249,8 @@ export function WhyBitspire({ page }: WhyBitspireProps) {
                     key={item.title}
                     item={item}
                     className="flex-1"
-                    imageMinHeight="min-h-48"
-                    titleClassName="text-lg"
+                    imageMinHeight="min-h-40 sm:min-h-48"
+                    titleClassName="text-base sm:text-lg"
                   />
                 ))}
               </div>
@@ -263,8 +263,8 @@ export function WhyBitspire({ page }: WhyBitspireProps) {
                     key={item.title}
                     item={item}
                     className="flex-1"
-                    imageMinHeight="min-h-48"
-                    titleClassName="text-lg"
+                    imageMinHeight="min-h-40 sm:min-h-48"
+                    titleClassName="text-base sm:text-lg"
                   />
                 ))}
               </div>
@@ -275,8 +275,8 @@ export function WhyBitspire({ page }: WhyBitspireProps) {
             <BentoCard
               item={tall}
               className="lg:w-[36%]"
-              imageMinHeight="min-h-64"
-              titleClassName="text-xl"
+              imageMinHeight="min-h-48 sm:min-h-64"
+              titleClassName="text-lg sm:text-xl"
             />
           ) : null}
         </StaggerContainer>

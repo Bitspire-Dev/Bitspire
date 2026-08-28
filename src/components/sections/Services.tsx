@@ -46,7 +46,7 @@ function ServicesContent({ page }: ServicesProps) {
       <div className="container mx-auto max-w-360 px-4 py-16 md:px-6 md:py-24">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
           <FadeIn
-            className="relative h-80 min-h-0 w-full lg:col-start-1 lg:row-start-2 lg:h-full"
+            className="relative h-64 min-h-0 w-full sm:h-80 lg:col-start-1 lg:row-start-2 lg:h-full"
             delay={0.2}
           >
             <Image
@@ -60,7 +60,7 @@ function ServicesContent({ page }: ServicesProps) {
 
           <m.h2
             data-tina-field={tinaField(services, 'title')}
-            className="max-w-4xl font-heading text-3xl font-semibold tracking-tight text-balance text-foreground md:text-4xl lg:col-span-2 lg:col-start-1 lg:row-start-1"
+            className="max-w-4xl font-heading text-2xl font-semibold tracking-tight text-balance text-foreground sm:text-3xl md:text-4xl lg:col-span-2 lg:col-start-1 lg:row-start-1"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -104,19 +104,19 @@ function ServicesContent({ page }: ServicesProps) {
                       <AccordionTrigger
                         className={cn(
                           "**:data-[slot='accordion-trigger-icon']:hidden",
-                          'py-4 text-left md:py-6'
+                          'py-4 text-left sm:py-5 md:py-6'
                         )}
                       >
-                        <span className="flex flex-row items-center gap-4">
+                        <span className="flex flex-row items-center gap-3 sm:gap-4">
                           <span
-                            className="font-heading text-sm font-medium text-muted-foreground tabular-nums md:text-base"
+                            className="min-w-6 shrink-0 font-heading text-xs font-medium text-muted-foreground tabular-nums sm:text-sm md:text-base"
                             aria-hidden
                           >
                             {String(index + 1).padStart(2, '0')}
                           </span>
                           <span
                             data-tina-field={tinaField(item, 'title')}
-                            className="font-heading text-lg font-medium text-foreground transition-transform duration-300 group-hover/item:translate-x-1 md:text-xl"
+                            className="font-heading text-base font-medium text-foreground transition-transform duration-300 group-hover/item:translate-x-1 sm:text-lg md:text-xl"
                           >
                             {item.title}
                           </span>

@@ -37,20 +37,24 @@ export function Header({ locale, blogMap }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur">
       <div className="container mx-auto flex h-14 max-w-360 items-center justify-between px-4 md:px-6">
-        <div className="flex items-center gap-4">
+        <div className="flex min-w-0 items-center gap-3 md:gap-4">
           <MobileMenu locale={locale} links={navLinks} blogMap={blogMap} />
           <ThemeSwitcher className="md:hidden" />
 
-          <Link href={getPageHref('home') as Href} className="flex items-center gap-2">
+          <Link
+            href={getPageHref('home') as Href}
+            className="flex min-w-0 items-center gap-2"
+            aria-label="Bitspire"
+          >
             <Image
               src={logoSrc}
               alt="Bitspire"
               width={24}
               height={19}
-              className="h-5 w-auto"
+              className="h-5 w-auto shrink-0"
               unoptimized
             />
-            <span className="font-heading text-lg font-bold tracking-[0.2em] text-brand md:text-xl">
+            <span className="font-heading text-base font-bold tracking-widest text-brand sm:text-lg sm:tracking-[0.2em] md:text-xl">
               BITSPIRE
             </span>
           </Link>
@@ -159,14 +163,14 @@ function MobileMenu({
         onClick={() => setOpen(s => !s)}
         aria-label={open ? 'Close menu' : 'Open menu'}
         aria-expanded={open}
-        className="text-foreground/80"
+        className="size-11 text-foreground/80"
       >
         {open ? <X className="size-5" /> : <Menu className="size-5" />}
       </Button>
 
       <div
         className={cn(
-          'fixed inset-x-0 top-14 z-40 border-b border-border/40 bg-background/95 px-4 py-6 backdrop-blur transition-all duration-200 md:hidden',
+          'fixed inset-x-0 top-14 z-40 max-h-[calc(100dvh-3.5rem)] overflow-y-auto border-b border-border/40 bg-background/95 px-4 py-6 backdrop-blur transition-all duration-200 md:hidden',
           open ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-2 opacity-0'
         )}
       >
@@ -175,7 +179,7 @@ function MobileMenu({
             {links.map(link =>
               link.href === '/portfolio' ? (
                 <li key={link.label} className="w-full">
-                  <span className="block w-full rounded-lg py-2 font-sans text-sm font-medium text-foreground/80">
+                  <span className="block w-full rounded-lg py-3 font-sans text-base font-medium text-foreground/80">
                     {link.label}
                   </span>
                   <ul className="ml-4 flex flex-col gap-1 border-l border-border/40 pl-2">
@@ -183,7 +187,7 @@ function MobileMenu({
                       <Link
                         href={getCategoryHref(locale, 'websites')}
                         onClick={() => setOpen(false)}
-                        className="block w-full rounded-lg py-2 font-sans text-sm text-foreground/60 transition-colors hover:bg-muted hover:text-foreground"
+                        className="block w-full rounded-lg py-3 font-sans text-sm text-foreground/60 transition-colors hover:bg-muted hover:text-foreground"
                       >
                         {locale === 'pl' ? 'Strony internetowe' : 'Websites'}
                       </Link>
@@ -192,7 +196,7 @@ function MobileMenu({
                       <Link
                         href={getCategoryHref(locale, 'software')}
                         onClick={() => setOpen(false)}
-                        className="block w-full rounded-lg py-2 font-sans text-sm text-foreground/60 transition-colors hover:bg-muted hover:text-foreground"
+                        className="block w-full rounded-lg py-3 font-sans text-sm text-foreground/60 transition-colors hover:bg-muted hover:text-foreground"
                       >
                         {locale === 'pl' ? 'Oprogramowanie' : 'Software'}
                       </Link>
@@ -204,7 +208,7 @@ function MobileMenu({
                   <Link
                     href={link.href as Href}
                     onClick={() => setOpen(false)}
-                    className="block w-full rounded-lg py-2 font-sans text-sm text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
+                    className="block w-full rounded-lg py-3 font-sans text-base text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
                   >
                     {link.label}
                   </Link>
