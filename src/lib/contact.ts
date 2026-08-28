@@ -100,8 +100,7 @@ export function validateContactPayload(
   else if (payload.subject.length > MAX_FIELD_LENGTHS.subject) errors.subject = labels.fieldTooLong;
 
   if (!payload.message?.trim()) errors.message = labels.required;
-  else if (payload.message.length > MAX_FIELD_LENGTHS.message)
-    errors.message = labels.fieldTooLong;
+  else if (payload.message.length > MAX_FIELD_LENGTHS.message) errors.message = labels.fieldTooLong;
 
   return { valid: Object.keys(errors).length === 0, errors };
 }

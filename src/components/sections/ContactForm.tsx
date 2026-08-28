@@ -306,7 +306,9 @@ export function ContactForm({ locale, className }: ContactFormProps) {
                         >
                           <span className="truncate font-sans text-xs text-foreground">
                             {file.name}{' '}
-                            <span className="text-muted-foreground">({formatFileSize(file.size)})</span>
+                            <span className="text-muted-foreground">
+                              ({formatFileSize(file.size)})
+                            </span>
                           </span>
                           <button
                             type="button"
