@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
     removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
   },
   experimental: {
-    optimizePackageImports: ['lucide-react', 'motion', 'radix-ui', 'next-themes'],
+    optimizePackageImports: ['lucide-react', 'radix-ui', 'next-themes'],
   },
   images: {
     formats: ['image/avif', 'image/webp'],
