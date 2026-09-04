@@ -90,7 +90,7 @@ export function PortfolioPage({
                     fill
                     unoptimized
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-contain p-8 opacity-50 grayscale transition-all duration-300 group-hover/card:scale-105 group-hover/card:opacity-100 group-hover/card:grayscale-0"
+                    className="object-cover object-top transition-transform duration-300 group-hover/card:scale-105"
                   />
                 </AspectRatio>
                 <CardHeader className="items-start gap-2">

@@ -15,7 +15,7 @@ export const PORTFOLIO_CATEGORIES: PortfolioCategory[] = [
       pl: 'Nowoczesne strony internetowe i aplikacje webowe',
       en: 'Modern websites and web applications',
     },
-    image: '/logo-carousel/nextjs.svg',
+    image: '/portfolio/websites/eduvantage/eduvantage.png',
   },
   {
     id: 'software',
@@ -25,7 +25,7 @@ export const PORTFOLIO_CATEGORIES: PortfolioCategory[] = [
       pl: 'Dedykowane oprogramowanie i aplikacje desktopowe',
       en: 'Custom software and desktop applications',
     },
-    image: '/logo-carousel/react.svg',
+    image: '/portfolio/software/keybrix/keybrix.gif',
   },
 ];
 
