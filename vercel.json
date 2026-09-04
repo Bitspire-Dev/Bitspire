@@ -4,7 +4,6 @@
   "installCommand": "pnpm install --frozen-lockfile",
   "buildCommand": "cross-env NODE_ENV=production tinacms build -c \"next build\"",
   "devCommand": "pnpm dev",
-  "packageManager": "pnpm@11.25.0",
   "cleanUrls": true,
   "trailingSlash": false
 }
