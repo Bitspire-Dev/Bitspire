@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { PixiSceneEngine, type SceneTheme } from './engine';
 import { cn } from '@/lib/utils';
+import { runWhenIdle } from '@/lib/idle';
 
 type PixiSceneProps = {
   theme?: SceneTheme;
@@ -61,66 +62,79 @@ export function PixiScene({
     if (!container) return;
 
     let mounted = true;
-    const engine = new PixiSceneEngine(container, getTheme());
-
-    engine
-      .init()
-      .then(() => {
-        if (!mounted) {
-          engine.destroy();
-          return;
-        }
-
-        // Wait one extra frame so the first WebGL render has happened before
-        // revealing the canvas. This prevents the initial black/empty frame
-        // from flashing on screen while the scene is still initialising.
-        readyTimer.current = setTimeout(() => {
-          if (mounted) {
-            setIsReady(true);
-            onReadyRef.current?.();
-          }
-        }, 0);
-      })
-      .catch(error => {
-        console.warn('PixiScene failed to initialise, falling back to static background:', error);
-        if (mounted) {
-          setHasError(true);
-        }
-        onErrorRef.current?.();
-        engine.destroy();
-      });
-
-    engineRef.current = engine;
-
-    const observer = new MutationObserver(() => {
-      engineRef.current?.setTheme(getTheme());
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-
-    // Pause the WebGL ticker when the hero is offscreen. The visibilitychange
-    // event is not enough because the user can scroll the hero out of view
-    // without switching tabs. This stops the GPU/CPU work entirely for most
-    // of the session.
+    let engine: PixiSceneEngine | null = null;
+    let observer: MutationObserver | null = null;
     let intersectionObserver: IntersectionObserver | null = null;
-    if (typeof IntersectionObserver !== 'undefined') {
-      intersectionObserver = new IntersectionObserver(
-        entries => {
-          const isVisible = entries.some(entry => entry.isIntersecting);
-          engineRef.current?.setRunning(isVisible);
-        },
-        { threshold: 0, rootMargin: '50px 0px' }
-      );
-      intersectionObserver.observe(container);
-    }
+
+    // WebGL init (context creation + shader compilation) is heavy and would
+    // otherwise block the main thread while the LCP element waits to paint.
+    // Deferring it to an idle period lets the H1 render first — the static
+    // gradient fallback stays visible until the canvas fades in.
+    const start = () => {
+      if (!mounted) return;
+
+      engine = new PixiSceneEngine(container, getTheme());
+      engineRef.current = engine;
+
+      engine
+        .init()
+        .then(() => {
+          if (!mounted) {
+            engine?.destroy();
+            return;
+          }
+
+          // Wait one extra frame so the first WebGL render has happened before
+          // revealing the canvas. This prevents the initial black/empty frame
+          // from flashing on screen while the scene is still initialising.
+          readyTimer.current = setTimeout(() => {
+            if (mounted) {
+              setIsReady(true);
+              onReadyRef.current?.();
+            }
+          }, 0);
+        })
+        .catch(error => {
+          console.warn('PixiScene failed to initialise, falling back to static background:', error);
+          if (mounted) {
+            setHasError(true);
+          }
+          onErrorRef.current?.();
+          engine?.destroy();
+        });
+
+      observer = new MutationObserver(() => {
+        engineRef.current?.setTheme(getTheme());
+      });
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+      // Pause the WebGL ticker when the hero is offscreen. The visibilitychange
+      // event is not enough because the user can scroll the hero out of view
+      // without switching tabs. This stops the GPU/CPU work entirely for most
+      // of the session.
+      if (typeof IntersectionObserver !== 'undefined') {
+        intersectionObserver = new IntersectionObserver(
+          entries => {
+            const isVisible = entries.some(entry => entry.isIntersecting);
+            engineRef.current?.setRunning(isVisible);
+          },
+          { threshold: 0, rootMargin: '50px 0px' }
+        );
+        intersectionObserver.observe(container);
+      }
+    };
+
+    const cancelIdle = runWhenIdle(start);
 
     return () => {
       mounted = false;
+      cancelIdle();
       if (readyTimer.current) {
         clearTimeout(readyTimer.current);
       }
-      observer.disconnect();
+      observer?.disconnect();
       intersectionObserver?.disconnect();
-      engine.destroy();
+      engine?.destroy();
       engineRef.current = null;
     };
   }, [reducedMotion, hasError, getTheme]);

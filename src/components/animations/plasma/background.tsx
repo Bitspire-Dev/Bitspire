@@ -5,6 +5,7 @@ import { useTheme } from 'next-themes';
 import type { Application } from 'pixi.js';
 import { cn } from '@/lib/utils';
 import { getCssColor } from '@/lib/color';
+import { runWhenIdle } from '@/lib/idle';
 import type { PlasmaMesh } from './mesh';
 import { getPlasmaQuality } from './quality';
 
@@ -144,7 +145,9 @@ export function PlasmaBackground({ className }: PlasmaBackgroundProps) {
       };
     };
 
-    init();
+    // Defer WebGL init to an idle period so shader compilation doesn't block
+    // the main thread while the LCP element is waiting to paint.
+    const cancelIdle = runWhenIdle(() => init());
 
     const handleResize = () => {
       const app = appRef.current;
@@ -188,6 +191,7 @@ export function PlasmaBackground({ className }: PlasmaBackgroundProps) {
 
     return () => {
       destroyed = true;
+      cancelIdle();
       cancelAnimationFrame(rafId);
       clearTimeout(resizeTimer);
       resizeObserver.disconnect();
