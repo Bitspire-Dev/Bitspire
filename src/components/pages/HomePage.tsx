@@ -1,16 +1,31 @@
 'use client';
 
 import { memo, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { useLocale } from 'next-intl';
 import { useTina } from 'tinacms/dist/react';
 import type { PageQuery } from '@tina/__generated__/types';
 
 import { Hero } from '@/components/sections/Hero';
-import { TechnologyCarousel } from '@/components/sections/TechnologyCarousel';
-import { Services } from '@/components/sections/Services';
-import { WhyBitspire } from '@/components/sections/WhyBitspire';
-import { PortfolioHighlights } from '@/components/sections/PortfolioHighlights';
-import { CallToAction } from '@/components/sections/CallToAction';
+
+// Below-the-fold sections are code-split: their HTML still prerenders on
+// the server (SEO/content intact), but their JS — including the motion
+// animations they use — loads in separate chunks and hydrates lazily.
+// This keeps animation setup off the critical path that blocks the LCP
+// heading.
+const TechnologyCarousel = dynamic(() =>
+  import('@/components/sections/TechnologyCarousel').then(m => m.TechnologyCarousel)
+);
+const Services = dynamic(() => import('@/components/sections/Services').then(m => m.Services));
+const WhyBitspire = dynamic(() =>
+  import('@/components/sections/WhyBitspire').then(m => m.WhyBitspire)
+);
+const PortfolioHighlights = dynamic(() =>
+  import('@/components/sections/PortfolioHighlights').then(m => m.PortfolioHighlights)
+);
+const CallToAction = dynamic(() =>
+  import('@/components/sections/CallToAction').then(m => m.CallToAction)
+);
 
 interface HomePageProps {
   query: string;

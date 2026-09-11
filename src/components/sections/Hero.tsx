@@ -2,11 +2,9 @@
 
 import { memo, Suspense, useEffect, useRef, useState, type ComponentProps } from 'react';
 import dynamic from 'next/dynamic';
-import { m, useScroll, useTransform } from 'motion/react';
 import { useLocale } from 'next-intl';
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
-import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { ErrorBoundary } from '@/components/providers/error-boundary';
 import { Button } from '@/components/ui/primitives/button';
 import { Link } from '@/i18n/navigation';
@@ -42,7 +40,10 @@ interface HeroCTAProps {
 
 const HeroCTA = memo(function HeroCTA({ locale }: HeroCTAProps) {
   return (
-    <FadeIn delay={0.2}>
+    <div
+      className="hero-fade-in" // eslint-disable-line tailwindcss/no-custom-classname
+      style={{ animationDelay: '0.2s' }}
+    >
       <div className="mt-10 flex flex-col items-stretch justify-center gap-4 sm:flex-row sm:flex-wrap sm:items-center">
         <Button
           asChild
@@ -64,7 +65,7 @@ const HeroCTA = memo(function HeroCTA({ locale }: HeroCTAProps) {
           </Link>
         </Button>
       </div>
-    </FadeIn>
+    </div>
   );
 });
 
@@ -80,15 +81,39 @@ function HeroContent({ page }: HeroProps) {
   const locale = useLocale();
 
   const sectionRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const indicatorRef = useRef<HTMLDivElement>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start start', 'end start'],
-  });
+  // Scroll-linked parallax + fade for the hero content. A passive listener +
+  // rAF replaces motion's useScroll so the LCP element isn't gated behind
+  // the animation library hydrating — it paints on the very first frame.
+  useEffect(() => {
+    if (isReducedMotion) return;
+    const section = sectionRef.current;
+    const content = contentRef.current;
+    if (!section || !content) return;
 
-  const contentY = useTransform(scrollYProgress, [0, 1], [0, -80]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  const indicatorOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const rect = section.getBoundingClientRect();
+      const progress = Math.min(Math.max(-rect.top / rect.height, 0), 1);
+      content.style.transform = `translateY(${progress * -80}px)`;
+      content.style.opacity = `${1 - Math.min(progress / 0.6, 1)}`;
+      if (indicatorRef.current) {
+        indicatorRef.current.style.opacity = `${1 - Math.min(progress / 0.15, 1)}`;
+      }
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [isReducedMotion]);
 
   // Simple, local, one-time capability check. We enable the WebGL hero
   // background on any device that supports WebGL, isn't requesting reduced
@@ -139,34 +164,39 @@ function HeroContent({ page }: HeroProps) {
         aria-hidden="true"
       />
 
-      <m.div
-        style={{ y: contentY, opacity: contentOpacity }}
-        className="relative z-20 container mx-auto flex max-w-360 flex-col items-center px-4 py-16 text-center md:px-6 md:py-24"
+      <div
+        ref={contentRef}
+        className="relative z-20 container mx-auto flex max-w-360 flex-col items-center px-4 py-16 text-center will-change-transform md:px-6 md:py-24"
       >
-        <FadeIn>
+        <div
+          className="hero-fade-in" // eslint-disable-line tailwindcss/no-custom-classname
+        >
           <h1
             data-tina-field={tinaField(page, 'title')}
             className="max-w-4xl font-heading text-4xl leading-tight font-semibold tracking-tight text-balance text-foreground sm:text-5xl md:text-7xl"
           >
             {page.title ?? 'Bitspire'}
           </h1>
-        </FadeIn>
+        </div>
 
         {page.description && (
-          <FadeIn delay={0.1}>
+          <div
+            className="hero-fade-in" // eslint-disable-line tailwindcss/no-custom-classname
+            style={{ animationDelay: '0.1s' }}
+          >
             <p
               data-tina-field={tinaField(page, 'description')}
               className="mt-6 max-w-2xl font-sans text-base leading-relaxed text-pretty text-foreground/70 sm:text-lg md:text-xl"
             >
               {page.description}
             </p>
-          </FadeIn>
+          </div>
         )}
 
         <HeroCTA locale={locale} />
-      </m.div>
-      <m.div
-        style={{ opacity: indicatorOpacity }}
+      </div>
+      <div
+        ref={indicatorRef}
         className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2"
         aria-hidden="true"
       >
@@ -175,14 +205,12 @@ function HeroContent({ page }: HeroProps) {
             Scroll
           </span>
           <div className="flex h-10 w-6 justify-center rounded-full border border-muted-foreground/30 p-1">
-            <m.div
-              className="h-2 w-1 rounded-full bg-muted-foreground/50"
-              animate={{ y: [0, 12, 0] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+            <div
+              className="scroll-hint h-2 w-1 rounded-full bg-muted-foreground/50" // eslint-disable-line tailwindcss/no-custom-classname
             />
           </div>
         </div>
-      </m.div>
+      </div>
     </section>
   );
 }

@@ -213,7 +213,8 @@
 }
 
 /* ================================================================
- * 5. KEYFRAMES — marquee (technology carousel)
+ * 5. KEYFRAMES — marquee (technology carousel), hero entrance,
+ *    scroll hint
  * ================================================================ */
 @keyframes marquee {
   from {
@@ -222,6 +223,39 @@
   to {
     transform: translateX(-50%);
   }
+}
+
+/* Hero entrance — CSS-driven so the LCP heading paints on the first
+ * frame instead of waiting for the JS animation library to hydrate.
+ * (A motion component with initial opacity:0 kept the element invisible
+ * until bundle download + React hydration finished.) */
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-fade-in {
+  animation: hero-fade-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+@keyframes scroll-hint {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(12px);
+  }
+}
+
+.scroll-hint {
+  animation: scroll-hint 1.8s ease-in-out infinite;
 }
 
 /* ================================================================
@@ -336,7 +370,9 @@
   ::view-transition-new(root) {
     animation-duration: 0.01ms;
   }
-  .marquee-track {
+  .marquee-track,
+  .hero-fade-in,
+  .scroll-hint {
     animation: none !important;
   }
 }
