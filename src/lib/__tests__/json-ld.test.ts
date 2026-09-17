@@ -16,7 +16,7 @@ describe('organizationJsonLd', () => {
     expect(ld['@id']).toBe('https://example.com/#organization');
     expect(ld.name).toBe('Bitspire');
     expect(ld.url).toBe('https://example.com');
-    expect(ld.email).toBe('kontakt@bitspire.pl');
+    expect(ld.email).toBe('kontakt@bitspire.app');
     expect(ld.telephone).toBe('+48780926993');
     expect(ld.sameAs).toContain('https://www.linkedin.com/company/bitspire-one');
     expect(ld.address['@type']).toBe('PostalAddress');

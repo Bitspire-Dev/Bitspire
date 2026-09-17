@@ -8,7 +8,7 @@ lastUpdated: 24.08.2026
 
 The controller of your personal data is **Bitspire**, based in Poland.
 
-- Email: [kontakt@bitspire.pl](mailto:kontakt@bitspire.pl)
+- Email: [kontakt@bitspire.app](mailto:kontakt@bitspire.app)
 - Phone: [+48 780 926 993](tel:+48780926993)
 
 ## 2. What data do we collect and why?
@@ -65,7 +65,7 @@ You have the right to:
 - withdraw consent (where processing is based on consent),
 - lodge a complaint with the relevant supervisory authority.
 
-All requests can be sent to: [kontakt@bitspire.pl](mailto:kontakt@bitspire.pl).
+All requests can be sent to: [kontakt@bitspire.app](mailto:kontakt@bitspire.app).
 
 ## 8. Data security
 

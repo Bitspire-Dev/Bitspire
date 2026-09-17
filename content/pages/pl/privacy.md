@@ -8,7 +8,7 @@ lastUpdated: 24.08.2026
 
 Administratorem Twoich danych osobowych jest **Bitspire**, z siedzibą w Polsce.
 
-- E-mail: [kontakt@bitspire.pl](mailto:kontakt@bitspire.pl)
+- E-mail: [kontakt@bitspire.app](mailto:kontakt@bitspire.app)
 - Telefon: [+48 780 926 993](tel:+48780926993)
 
 ## 2. Jakie dane zbieramy i dlaczego?
@@ -65,7 +65,7 @@ Masz prawo do:
 - wycofania zgody (jeśli przetwarzanie odbywa się na podstawie zgody),
 - wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych.
 
-Wszystkie wnioski można kierować na adres: [kontakt@bitspire.pl](mailto:kontakt@bitspire.pl).
+Wszystkie wnioski można kierować na adres: [kontakt@bitspire.app](mailto:kontakt@bitspire.app).
 
 ## 8. Bezpieczeństwo danych
 

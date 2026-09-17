@@ -669,7 +669,7 @@ content/
 
 ### Environment variables
 
-- `NEXT_PUBLIC_SITE_URL` — kanoniczny URL strony (np. `https://bitspire.pl`)
+- `NEXT_PUBLIC_SITE_URL` — kanoniczny URL strony (np. `https://bitspire.app`)
 - `TINA_CLIENT_ID`, `TINA_TOKEN` — TinaCMS (opcjonalne dla local mode)
 
 ---

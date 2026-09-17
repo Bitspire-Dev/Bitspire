@@ -17,7 +17,7 @@ export interface CompanyData {
 
 export const COMPANY: CompanyData = {
   name: 'Bitspire',
-  email: 'kontakt@bitspire.pl',
+  email: 'kontakt@bitspire.app',
   phone: '+48 780 926 993',
   phoneRaw: '+48780926993',
   address: {

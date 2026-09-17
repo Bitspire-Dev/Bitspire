@@ -204,8 +204,8 @@ export function formatContactEmail(
   locale: string,
   attachments?: ContactAttachment[]
 ): ContactEmail {
-  const from = process.env.RESEND_FROM_EMAIL ?? 'Bitspire <kontakt@bitspire.pl>';
-  const to = process.env.RESEND_TO_EMAIL ?? 'kontakt@bitspire.pl';
+  const from = process.env.RESEND_FROM_EMAIL ?? 'Bitspire <kontakt@bitspire.app>';
+  const to = process.env.RESEND_TO_EMAIL ?? 'kontakt@bitspire.app';
   const prefix = locale === 'pl' ? 'Formularz kontaktowy' : 'Contact form';
   const subject = `[${prefix}] ${payload.subject}`;
 

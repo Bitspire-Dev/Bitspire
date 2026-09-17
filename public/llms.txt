@@ -6,35 +6,35 @@ Bitspire łączy nowoczesne technologie z dopracowanym designem, dostarczając p
 
 ## Główne strony
 
-- [Strona główna (PL)](https://bitspire.pl/pl): Polska wersja językowa — domyślna
-- [Strona główna (EN)](https://bitspire.pl/en): Angielska wersja językowa
-- [Portfolio](https://bitspire.pl/pl/portfolio): Wybrane realizacje — strony, aplikacje, oprogramowanie
-- [Blog](https://bitspire.pl/pl/blog): Artykuły techniczne i poradniki
-- [Kontakt](https://bitspire.pl/pl/contact): Formularz kontaktowy i dane firmy
-- [Polityka prywatności](https://bitspire.pl/pl/privacy): Dokument prawny
+- [Strona główna (PL)](https://bitspire.app/pl): Polska wersja językowa — domyślna
+- [Strona główna (EN)](https://bitspire.app/en): Angielska wersja językowa
+- [Portfolio](https://bitspire.app/pl/portfolio): Wybrane realizacje — strony, aplikacje, oprogramowanie
+- [Blog](https://bitspire.app/pl/blog): Artykuły techniczne i poradniki
+- [Kontakt](https://bitspire.app/pl/contact): Formularz kontaktowy i dane firmy
+- [Polityka prywatności](https://bitspire.app/pl/privacy): Dokument prawny
 
 ## Realizacje
 
-- [EduVantage](https://bitspire.pl/pl/portfolio/strony-internetowe/eduvantage): Landing page dla firmy korepetycyjnej
-- [Bezawaryjni](https://bitspire.pl/pl/portfolio/strony-internetowe/bezawaryjni): Strona warsztatu samochodowego
-- [Egzobeast](https://bitspire.pl/pl/portfolio/strony-internetowe/egzobeast): Wizytówka dla hodowcy gadów
-- [Składamy](https://bitspire.pl/pl/portfolio/strony-internetowe/skladamy): Strona serwisu laptopów i komputerów
-- [Keybrix](https://bitspire.pl/pl/portfolio/oprogramowanie/keybrix): Wizualny kreator makr i automatyzacji
+- [EduVantage](https://bitspire.app/pl/portfolio/strony-internetowe/eduvantage): Landing page dla firmy korepetycyjnej
+- [Bezawaryjni](https://bitspire.app/pl/portfolio/strony-internetowe/bezawaryjni): Strona warsztatu samochodowego
+- [Egzobeast](https://bitspire.app/pl/portfolio/strony-internetowe/egzobeast): Wizytówka dla hodowcy gadów
+- [Składamy](https://bitspire.app/pl/portfolio/strony-internetowe/skladamy): Strona serwisu laptopów i komputerów
+- [Keybrix](https://bitspire.app/pl/portfolio/oprogramowanie/keybrix): Wizualny kreator makr i automatyzacji
 
 ## Blog
 
-- [Architektura JAMstack](https://bitspire.pl/pl/blog/architektura-jamstack)
-- [Błędy w projektowaniu stron](https://bitspire.pl/pl/blog/bledy-w-projektowaniu-stron)
-- [Optymalizacja wydajności Next.js](https://bitspire.pl/pl/blog/optymalizacja-wydajnosci-nextjs)
-- [Przewodnik po stosie technologicznym](https://bitspire.pl/pl/blog/przewodnik-po-stosie-technologicznym)
-- [TypeScript kontra JavaScript](https://bitspire.pl/pl/blog/typescript-kontra-javascript)
+- [Architektura JAMstack](https://bitspire.app/pl/blog/architektura-jamstack)
+- [Błędy w projektowaniu stron](https://bitspire.app/pl/blog/bledy-w-projektowaniu-stron)
+- [Optymalizacja wydajności Next.js](https://bitspire.app/pl/blog/optymalizacja-wydajnosci-nextjs)
+- [Przewodnik po stosie technologicznym](https://bitspire.app/pl/blog/przewodnik-po-stosie-technologicznym)
+- [TypeScript kontra JavaScript](https://bitspire.app/pl/blog/typescript-kontra-javascript)
 
 ## Kontakt
 
-- E-mail: kontakt@bitspire.pl
+- E-mail: kontakt@bitspire.app
 - Telefon: +48 780 926 993
 - Godziny pracy: pn–pt 9:00–17:00
 
 ## Optional
 
-- [Technologie](https://bitspire.pl/pl): Next.js, React, TypeScript, Tailwind CSS, Node.js, Vite, Electron, TinaCMS, Vercel
+- [Technologie](https://bitspire.app/pl): Next.js, React, TypeScript, Tailwind CSS, Node.js, Vite, Electron, TinaCMS, Vercel
