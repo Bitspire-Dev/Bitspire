@@ -7,12 +7,12 @@ tags:
   - Jamstack
   - Architektura
   - Wydajność
-date: '2024-01-15'
+date: '2026-08-06'
 author:
   name: Bitspire Team
   role: Autor
   bio: Artykuł przygotowany przez Bitspire. Tworzymy szybkie i nowoczesne strony oraz aplikacje webowe.
-  link: /o-nas
+  link: /portfolio
 ---
 
 ## Wprowadzenie

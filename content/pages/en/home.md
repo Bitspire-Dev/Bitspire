@@ -1,6 +1,6 @@
 ---
-title: We build services and apps that drive your business.
-description: Highest-performance architecture, unique interfaces and dedicated code. We combine modern technologies with refined design, delivering products ready to scale.
+title: We build websites and web apps that drive your business
+description: Modern websites and web applications for businesses — fast, CMS-powered, built for SEO. See Bitspire's portfolio and let's talk about your project.
 services:
   title: Our services
   items:

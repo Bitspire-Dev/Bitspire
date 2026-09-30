@@ -7,12 +7,12 @@ tags:
   - UX
   - Design
   - Webdesign
-date: '2024-04-05'
+date: '2026-08-06'
 author:
   name: Bitspire Team
   role: Author
   bio: Article prepared by Bitspire. We build fast and modern websites and web applications.
-  link: /about
+  link: /portfolio
 ---
 
 ## Introduction

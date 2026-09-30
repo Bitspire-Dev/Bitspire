@@ -8,7 +8,7 @@ import { routing } from '@/i18n/routing';
 import { BlogArticle } from '@/components/pages/BlogArticlePage';
 import { buildBlogArticleMap, toRelatedItems, getBlogArticleHref } from '@/lib/blog';
 import { extractTocFromMarkdown } from '@/lib/toc';
-import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages } from '@/lib/site';
+import { localePathname, getDefaultOgImages, socialMetadata } from '@/lib/site';
 import { getPageHref } from '@/lib/routes';
 import {
   combineJsonLd,
@@ -58,27 +58,36 @@ export async function generateMetadata({
   const byLocale = buildBlogArticleMap(all.data).byCanonical[canonical] ?? {};
   const cover = post.cover ?? undefined;
   const defaultImages = getDefaultOgImages(locale);
+  const selfUrl = localePathname(locale, getBlogArticleHref(slug));
 
   return {
     title: post.title,
     description: post.description,
-    alternates: localeAlternates(locale, l => getBlogArticleHref(byLocale[l] ?? slug)),
-    openGraph: {
-      ...siteMetadata.openGraph,
-      type: 'article',
+    alternates: {
+      canonical: selfUrl,
+      languages: {
+        ...Object.fromEntries(
+          routing.locales
+            .filter(l => byLocale[l])
+            .map(l => [l, localePathname(l, getBlogArticleHref(byLocale[l]))])
+        ),
+        'x-default': byLocale[routing.defaultLocale]
+          ? localePathname(
+              routing.defaultLocale,
+              getBlogArticleHref(byLocale[routing.defaultLocale])
+            )
+          : selfUrl,
+      },
+    },
+    ...socialMetadata(locale, {
       title: post.title,
-      description: post.description ?? undefined,
+      description: post.description,
+      url: selfUrl,
+      type: 'article',
       publishedTime: post.date ?? undefined,
       authors: post.author?.name ? [post.author.name] : undefined,
       images: cover ? [{ url: cover, alt: post.title }] : defaultImages.openGraph,
-    },
-    twitter: {
-      ...siteMetadata.twitter,
-      card: 'summary_large_image',
-      title: post.title,
-      description: post.description ?? undefined,
-      images: cover ? [cover] : defaultImages.twitter,
-    },
+    }),
   };
 }
 

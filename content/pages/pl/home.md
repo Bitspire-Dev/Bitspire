@@ -1,6 +1,6 @@
 ---
-title: Tworzymy serwisy i aplikacje, które napędzają Twój biznes.
-description: Architektura o najwyższej wydajności, unikalne interfejsy i dedykowany kod. Łączymy nowoczesne technologie z dopracowanym designem, dostarczając produkty gotowe do skalowania.
+title: Tworzymy strony internetowe i aplikacje, które napędzają Twój biznes
+description: Strony internetowe i aplikacje webowe dla firm — szybkie, nowoczesne, przygotowane pod SEO. Zobacz portfolio Bitspire i porozmawiajmy o Twoim projekcie.
 services:
   title: Nasze usługi
   items:

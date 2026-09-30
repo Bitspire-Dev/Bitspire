@@ -91,7 +91,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: node.date ? new Date(node.date) : undefined,
         changeFrequency: 'yearly',
         priority: 0.6,
-        alternates: sitemapAlternates(l => getBlogArticleHref(byLocale[l] ?? slug)),
+        alternates: {
+          languages: {
+            ...Object.fromEntries(
+              routing.locales
+                .filter(l => byLocale[l])
+                .map(l => [l, localePathname(l, getBlogArticleHref(byLocale[l]))])
+            ),
+            'x-default': byLocale[routing.defaultLocale]
+              ? localePathname(
+                  routing.defaultLocale,
+                  getBlogArticleHref(byLocale[routing.defaultLocale])
+                )
+              : localePathname(locale, getBlogArticleHref(slug)),
+          },
+        },
       });
     }
 

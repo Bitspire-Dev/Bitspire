@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { getPage } from '@/lib/tina';
 import { ContactPage } from '@/components/pages/ContactPage';
 import { getPageFallbackTitle } from '@/lib/ui';
-import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages } from '@/lib/site';
+import { localeAlternates, localePathname, getDefaultOgImages, socialMetadata } from '@/lib/site';
 import { getPageHref } from '@/lib/routes';
 import { combineJsonLd, webPageJsonLd, breadcrumbListJsonLd } from '@/lib/json-ld';
 
@@ -24,8 +24,12 @@ export async function generateMetadata({
     title,
     description,
     alternates: localeAlternates(locale, () => getPageHref('contact')),
-    openGraph: { ...siteMetadata.openGraph, title, description, images: defaultImages.openGraph },
-    twitter: { ...siteMetadata.twitter, title, description, images: defaultImages.twitter },
+    ...socialMetadata(locale, {
+      title,
+      description,
+      url: localePathname(locale, getPageHref('contact')),
+      images: defaultImages.openGraph,
+    }),
   };
 }
 

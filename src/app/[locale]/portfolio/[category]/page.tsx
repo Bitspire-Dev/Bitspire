@@ -8,7 +8,7 @@ import {
   getCategoryBySlug,
   getCategoryUrlSlug,
 } from '@/lib/portfolio/categories';
-import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages } from '@/lib/site';
+import { localeAlternates, localePathname, getDefaultOgImages, socialMetadata } from '@/lib/site';
 import { getPageHref } from '@/lib/routes';
 import { combineJsonLd, webPageJsonLd, breadcrumbListJsonLd } from '@/lib/json-ld';
 
@@ -41,8 +41,15 @@ export async function generateMetadata({
       pathname: '/portfolio/[category]',
       params: { category: getCategoryUrlSlug(categoryData.id, l) },
     })),
-    openGraph: { ...siteMetadata.openGraph, title, description, images: defaultImages.openGraph },
-    twitter: { ...siteMetadata.twitter, title, description, images: defaultImages.twitter },
+    ...socialMetadata(locale, {
+      title,
+      description,
+      url: localePathname(locale, {
+        pathname: '/portfolio/[category]',
+        params: { category: getCategoryUrlSlug(categoryData.id, locale) },
+      }),
+      images: defaultImages.openGraph,
+    }),
   };
 }
 

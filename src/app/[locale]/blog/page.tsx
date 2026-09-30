@@ -3,7 +3,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { getBlogConnection, getPage } from '@/lib/tina';
 import { BlogPage } from '@/components/pages/BlogPage';
 import { getPageFallbackTitle } from '@/lib/ui';
-import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages } from '@/lib/site';
+import { localeAlternates, localePathname, getDefaultOgImages, socialMetadata } from '@/lib/site';
 import { getPageHref } from '@/lib/routes';
 import { combineJsonLd, webPageJsonLd, breadcrumbListJsonLd } from '@/lib/json-ld';
 
@@ -29,8 +29,12 @@ export async function generateMetadata({
     title,
     description,
     alternates: localeAlternates(locale, () => getPageHref('blog')),
-    openGraph: { ...siteMetadata.openGraph, title, description, images: defaultImages.openGraph },
-    twitter: { ...siteMetadata.twitter, title, description, images: defaultImages.twitter },
+    ...socialMetadata(locale, {
+      title,
+      description,
+      url: localePathname(locale, getPageHref('blog')),
+      images: defaultImages.openGraph,
+    }),
   };
 }
 

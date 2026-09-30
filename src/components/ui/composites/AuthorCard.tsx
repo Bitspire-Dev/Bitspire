@@ -1,6 +1,8 @@
 'use client';
 
+import type { ComponentProps } from 'react';
 import { cn } from '@/lib/utils';
+import { Link } from '@/i18n/navigation';
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/primitives/card';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { getAuthorCardUi } from '@/lib/ui';
@@ -67,15 +69,25 @@ export function AuthorCard({ author, tinaField, className, locale }: AuthorCardP
               size="sm"
               className="h-auto p-0 font-sans text-sm text-foreground hover:text-primary"
             >
-              <a
-                href={author.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1"
-              >
-                {ui.cta}
-                <ArrowRight className="size-3" />
-              </a>
+              {author.link.startsWith('/') ? (
+                <Link
+                  href={author.link as ComponentProps<typeof Link>['href']}
+                  className="inline-flex items-center gap-1"
+                >
+                  {ui.cta}
+                  <ArrowRight className="size-3" />
+                </Link>
+              ) : (
+                <a
+                  href={author.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1"
+                >
+                  {ui.cta}
+                  <ArrowRight className="size-3" />
+                </a>
+              )}
             </Button>
           </CardContent>
         ) : null}

@@ -10,7 +10,7 @@ import {
   PORTFOLIO_CATEGORIES,
   type PortfolioCategoryId,
 } from '@/lib/portfolio/categories';
-import { localeAlternates, localePathname, siteMetadata, getDefaultOgImages } from '@/lib/site';
+import { localeAlternates, localePathname, getDefaultOgImages, socialMetadata } from '@/lib/site';
 import { getPageHref } from '@/lib/routes';
 import { combineJsonLd, webPageJsonLd, articleJsonLd, breadcrumbListJsonLd } from '@/lib/json-ld';
 import { extractContentSlug } from '@/lib/string';
@@ -85,20 +85,19 @@ export async function generateMetadata({
         slug,
       },
     })),
-    openGraph: {
-      ...siteMetadata.openGraph,
+    ...socialMetadata(locale, {
+      title: project.title,
+      description: project.description,
+      url: localePathname(locale, {
+        pathname: '/portfolio/[category]/[slug]',
+        params: {
+          category: getCategoryUrlSlug(canonicalCategory, locale),
+          slug,
+        },
+      }),
       type: 'article',
-      title: project.title,
-      description: project.description ?? undefined,
       images: screenshot ? [{ url: screenshot, alt: project.title }] : defaultImages.openGraph,
-    },
-    twitter: {
-      ...siteMetadata.twitter,
-      card: 'summary_large_image',
-      title: project.title,
-      description: project.description ?? undefined,
-      images: screenshot ? [screenshot] : defaultImages.twitter,
-    },
+    }),
   };
 }
 

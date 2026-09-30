@@ -28,7 +28,7 @@ export function organizationJsonLd() {
     telephone: COMPANY.phoneRaw,
     address: {
       '@type': 'PostalAddress',
-      addressCountry: COMPANY.address.pl,
+      addressCountry: 'PL',
     },
     sameAs: COMPANY.socials.map(social => social.url),
   };

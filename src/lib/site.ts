@@ -22,6 +22,51 @@ export function getDefaultOgImages(locale: string) {
   };
 }
 
+const LOCALE_TO_OG: Record<string, string> = { pl: 'pl_PL', en: 'en_US' };
+
+export interface SocialMetadataOptions {
+  title?: string | null;
+  description?: string | null;
+  url: string;
+  type?: 'website' | 'article';
+  images?: { url: string; alt: string }[];
+  publishedTime?: string;
+  authors?: string[];
+}
+
+export function socialMetadata(
+  locale: string,
+  options: SocialMetadataOptions
+): Pick<Metadata, 'openGraph' | 'twitter'> {
+  const ogLocale = LOCALE_TO_OG[locale] ?? LOCALE_TO_OG[routing.defaultLocale];
+  const { title, description, url, type = 'website', images, publishedTime, authors } = options;
+
+  const openGraph: NonNullable<Metadata['openGraph']> = {
+    type,
+    siteName,
+    title: title ?? undefined,
+    description: description ?? undefined,
+    locale: ogLocale,
+    alternateLocale: routing.locales.map(l => LOCALE_TO_OG[l] ?? l).filter(l => l !== ogLocale),
+    url,
+    images,
+  };
+
+  if (type === 'article') {
+    Object.assign(openGraph, { publishedTime, authors });
+  }
+
+  return {
+    openGraph,
+    twitter: {
+      card: 'summary_large_image',
+      title: title ?? undefined,
+      description: description ?? undefined,
+      images: images?.map(image => image.url),
+    },
+  };
+}
+
 export function sitemapAlternates(pathForLocale: (locale: string) => LocalizedHref) {
   return {
     languages: {

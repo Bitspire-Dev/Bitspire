@@ -10,12 +10,16 @@ import { buildBlogArticleMap, type BlogArticleMap } from '@/lib/blog';
 import { inter, nippo, ibmPlexMono } from '@/lib/fonts';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { MotionProvider } from '@/components/providers/motion-provider';
-import { siteMetadata, siteName, localePathname, localeAlternates } from '@/lib/site';
+import {
+  siteMetadata,
+  siteName,
+  localePathname,
+  localeAlternates,
+  socialMetadata,
+} from '@/lib/site';
 import { getPageHref } from '@/lib/routes';
 import { combineJsonLd, organizationJsonLd, websiteJsonLd } from '@/lib/json-ld';
 import '@/app/globals.css';
-
-const LOCALE_TO_OG: Record<string, string> = { pl: 'pl_PL', en: 'en_US' };
 
 const DESCRIPTIONS: Record<string, string> = {
   pl: 'Bitspire — nowoczesne strony i aplikacje webowe. Projektujemy i budujemy szybkie, dopracowane produkty cyfrowe.',
@@ -49,21 +53,11 @@ export async function generateMetadata({
     },
     description,
     alternates: localeAlternates(locale, () => getPageHref('home')),
-    openGraph: {
-      ...siteMetadata.openGraph,
+    ...socialMetadata(locale, {
       title,
       description,
-      locale: LOCALE_TO_OG[locale] ?? 'pl_PL',
-      alternateLocale: routing.locales
-        .map(l => LOCALE_TO_OG[l] ?? l)
-        .filter(l => l !== LOCALE_TO_OG[locale]),
       url: localePathname(locale, getPageHref('home')),
-    },
-    twitter: {
-      ...siteMetadata.twitter,
-      title,
-      description,
-    },
+    }),
   };
 }
 

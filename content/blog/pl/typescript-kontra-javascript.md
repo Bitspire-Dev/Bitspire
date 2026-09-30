@@ -7,12 +7,12 @@ tags:
   - TypeScript
   - JavaScript
   - Frontend
-date: '2024-03-10'
+date: '2026-08-06'
 author:
   name: Bitspire Team
   role: Autor
   bio: Artykuł przygotowany przez Bitspire. Tworzymy szybkie i nowoczesne strony oraz aplikacje webowe.
-  link: /o-nas
+  link: /portfolio
 ---
 
 ## Wprowadzenie
