@@ -3,20 +3,20 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { readFile } from 'fs/promises';
 import path from 'path';
-import { getBlogConnection, getBlogPost } from '@/lib/tina';
+import { getBlogConnection, getBlogPost } from '@/lib/cms/client';
 import { routing } from '@/i18n/routing';
 import { BlogArticle } from '@/components/pages/BlogArticlePage';
-import { buildBlogArticleMap, toRelatedItems, getBlogArticleHref } from '@/lib/blog';
-import { extractTocFromMarkdown } from '@/lib/toc';
-import { localePathname, getDefaultOgImages, socialMetadata } from '@/lib/site';
-import { getPageHref } from '@/lib/routes';
+import { buildBlogArticleMap, toRelatedItems, getBlogArticleHref } from '@/lib/cms/blog';
+import { extractTocFromMarkdown } from '@/lib/cms/toc';
+import { localePathname, getDefaultOgImages, socialMetadata } from '@/lib/seo/metadata';
+import { getPageHref } from '@/lib/config/routes';
 import {
   combineJsonLd,
   webPageJsonLd,
   blogPostingJsonLd,
   breadcrumbListJsonLd,
-} from '@/lib/json-ld';
-import { extractContentSlug } from '@/lib/string';
+} from '@/lib/seo/json-ld';
+import { extractContentSlug } from '@/lib/cms/slug';
 
 interface BlogPageParams {
   locale: string;

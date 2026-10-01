@@ -1,4 +1,4 @@
-import { renderOgImage } from '@/lib/og-image';
+import { renderOgImage } from '@/lib/seo/og-image';
 
 export const size = {
   width: 1200,

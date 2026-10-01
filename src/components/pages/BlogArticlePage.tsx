@@ -10,7 +10,7 @@ import { ShareCard } from '@/components/ui/composites/ShareCard';
 import { TableOfContents, MobileTocBar } from '@/components/ui/composites/table-of-contents';
 import { Breadcrumb, type BreadcrumbItem } from '@/components/ui/navigation/breadcrumb';
 import type { ContentCardItem } from '@/components/ui/composites/content-card';
-import type { TocItem } from '@/lib/toc';
+import type { TocItem } from '@/lib/cms/toc';
 
 const UI: Record<string, Record<string, string>> = {
   pl: {

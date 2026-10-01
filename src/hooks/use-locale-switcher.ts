@@ -2,8 +2,8 @@
 
 import { useParams } from 'next/navigation';
 import { usePathname, useRouter } from '@/i18n/navigation';
-import { getCategoryBySlug, getCategoryUrlSlug } from '@/lib/portfolio/categories';
-import { getBlogArticleHref, type BlogArticleMap } from '@/lib/blog';
+import { getCategoryBySlug, getCategoryUrlSlug } from '@/lib/cms/portfolio';
+import { getBlogArticleHref, type BlogArticleMap } from '@/lib/cms/blog';
 
 interface UseLocaleSwitcherOptions {
   locale: string;

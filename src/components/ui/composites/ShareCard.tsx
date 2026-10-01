@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/cn';
 import { Card, CardContent, CardTitle } from '@/components/ui/primitives/card';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { Button } from '@/components/ui/primitives/button';

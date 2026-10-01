@@ -6,10 +6,10 @@ import type { ProjectQuery } from '@tina/__generated__/types';
 import { PortfolioProjectHeader } from '@/components/sections/PortfolioProjectHeader';
 import { PortfolioProjectBody } from '@/components/sections/PortfolioProjectBody';
 import { ContactCta } from '@/components/ui/composites/ContactCta';
-import { getCategoryHref, isPortfolioCategoryId } from '@/lib/portfolio/categories';
+import { getCategoryHref, isPortfolioCategoryId } from '@/lib/cms/portfolio';
 import { Breadcrumb, type BreadcrumbItem } from '@/components/ui/navigation/breadcrumb';
 import { Link } from '@/i18n/navigation';
-import { getPageHref } from '@/lib/routes';
+import { getPageHref } from '@/lib/config/routes';
 
 type Href = ComponentProps<typeof Link>['href'];
 

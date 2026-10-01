@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useMounted } from '@/lib/use-mounted';
+import { useMounted } from '@/hooks/use-mounted';
 
 const GRYF_PATTERN = /^(?:https:\/\/assets\.tina\.io\/[^/]+)?\/layout\/(gryf-[^/]+\.png)$/;
 const MODE_PATTERN = /(?:https:\/\/assets\.tina\.io\/[^/]+)?\/layout\/(light|dark)-mode\/(.+)$/;

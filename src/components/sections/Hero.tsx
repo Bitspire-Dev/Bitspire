@@ -8,8 +8,8 @@ import type { PagePartsFragment } from '@tina/__generated__/types';
 import { ErrorBoundary } from '@/components/providers/error-boundary';
 import { Button } from '@/components/ui/primitives/button';
 import { Link } from '@/i18n/navigation';
-import { getPageHref } from '@/lib/routes';
-import { useMounted } from '@/lib/use-mounted';
+import { getPageHref } from '@/lib/config/routes';
+import { useMounted } from '@/hooks/use-mounted';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
 type Href = ComponentProps<typeof Link>['href'];

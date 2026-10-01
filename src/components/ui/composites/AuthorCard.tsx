@@ -1,11 +1,11 @@
 'use client';
 
 import type { ComponentProps } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/cn';
 import { Link } from '@/i18n/navigation';
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/primitives/card';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
-import { getAuthorCardUi } from '@/lib/ui';
+import { getAuthorCardUi } from '@/lib/config/ui';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/primitives/avatar';
 import { Button } from '@/components/ui/primitives/button';
 import { ArrowRight } from 'lucide-react';

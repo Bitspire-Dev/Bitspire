@@ -4,8 +4,8 @@ import type { ComponentProps } from 'react';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/primitives/button';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
-import { getCityUi } from '@/lib/ui';
-import { getCityHref, getCityName } from '@/lib/cities';
+import { getCityUi } from '@/lib/config/ui';
+import { getCityHref, getCityName } from '@/lib/cms/cities';
 
 type Href = ComponentProps<typeof Link>['href'];
 

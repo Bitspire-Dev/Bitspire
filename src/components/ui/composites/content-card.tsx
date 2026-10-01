@@ -4,7 +4,7 @@ import Image from 'next/image';
 import type { ComponentProps, ReactNode } from 'react';
 import { useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/cn';
 import {
   Card,
   CardContent,
@@ -17,7 +17,7 @@ import { Badge } from '@/components/ui/primitives/badge';
 import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 import { Skeleton } from '@/components/ui/primitives/skeleton';
 import { Button } from '@/components/ui/primitives/button';
-import { isUnoptimizedImage } from '@/lib/image';
+import { isUnoptimizedImage } from '@/lib/utils/image';
 
 type Href = ComponentProps<typeof Link>['href'];
 

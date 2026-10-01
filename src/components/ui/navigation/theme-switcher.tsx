@@ -6,9 +6,9 @@ import { useTheme } from 'next-themes';
 import { Moon, Sun } from 'lucide-react';
 import { AnimatePresence, m } from 'motion/react';
 
-import { useMounted } from '@/lib/use-mounted';
+import { useMounted } from '@/hooks/use-mounted';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/primitives/button';
 import { Skeleton } from '@/components/ui/primitives/skeleton';
 

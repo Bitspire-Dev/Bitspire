@@ -1,7 +1,7 @@
 import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getProject, getProjectConnection } from '@/lib/tina';
+import { getProject, getProjectConnection } from '@/lib/cms/client';
 import { PortfolioProjectPage } from '@/components/pages/PortfolioProjectPage';
 import {
   getCategoryBySlug,
@@ -9,11 +9,21 @@ import {
   getCategoryUrlSlug,
   PORTFOLIO_CATEGORIES,
   type PortfolioCategoryId,
-} from '@/lib/portfolio/categories';
-import { localeAlternates, localePathname, getDefaultOgImages, socialMetadata } from '@/lib/site';
-import { getPageHref } from '@/lib/routes';
-import { combineJsonLd, webPageJsonLd, articleJsonLd, breadcrumbListJsonLd } from '@/lib/json-ld';
-import { extractContentSlug } from '@/lib/string';
+} from '@/lib/cms/portfolio';
+import {
+  localeAlternates,
+  localePathname,
+  getDefaultOgImages,
+  socialMetadata,
+} from '@/lib/seo/metadata';
+import { getPageHref } from '@/lib/config/routes';
+import {
+  combineJsonLd,
+  webPageJsonLd,
+  articleJsonLd,
+  breadcrumbListJsonLd,
+} from '@/lib/seo/json-ld';
+import { extractContentSlug } from '@/lib/cms/slug';
 
 interface ProjectPageParams {
   locale: string;

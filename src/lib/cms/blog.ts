@@ -1,6 +1,6 @@
 import type { BlogConnectionQuery } from '@tina/__generated__/types';
 import type { ContentCardItem } from '@/components/ui/composites/content-card';
-import { extractContentSlug } from '@/lib/string';
+import { extractContentSlug } from '@/lib/cms/slug';
 
 export interface BlogArticleMap {
   byCanonical: Record<string, Record<string, string>>;

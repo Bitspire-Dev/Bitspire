@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { PixiSceneEngine, type SceneTheme } from './engine';
-import { cn } from '@/lib/utils';
-import { runWhenIdle } from '@/lib/idle';
+import { cn } from '@/lib/utils/cn';
+import { runWhenIdle } from '@/components/animations/utils';
 
 type PixiSceneProps = {
   theme?: SceneTheme;

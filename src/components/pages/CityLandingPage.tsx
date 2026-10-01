@@ -12,7 +12,7 @@ import { CityProjects } from '@/components/sections/CityProjects';
 import { CityFaq } from '@/components/sections/CityFaq';
 import { CityNearby } from '@/components/sections/CityNearby';
 import { CityContact } from '@/components/sections/CityContact';
-import { getCityUi } from '@/lib/ui';
+import { getCityUi } from '@/lib/config/ui';
 
 interface CityLandingPageProps {
   query: string;

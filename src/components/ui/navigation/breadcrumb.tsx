@@ -1,8 +1,8 @@
 import { Link } from '@/i18n/navigation';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/cn';
 import { ChevronRight } from 'lucide-react';
 import type { ComponentProps } from 'react';
-import type { LocalizedHref } from '@/lib/routes';
+import type { LocalizedHref } from '@/lib/config/routes';
 
 export type BreadcrumbHref = LocalizedHref;
 

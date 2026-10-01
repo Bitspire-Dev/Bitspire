@@ -7,17 +7,17 @@ import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment, Project } from '@tina/__generated__/types';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/cn';
 import { Link } from '@/i18n/navigation';
 import {
   getProjectHref,
   isPortfolioCategoryId,
   type PortfolioCategoryId,
-} from '@/lib/portfolio/categories';
+} from '@/lib/cms/portfolio';
 import { Badge } from '@/components/ui/primitives/badge';
 import { Button } from '@/components/ui/primitives/button';
-import { isUnoptimizedImage } from '@/lib/image';
-import { extractContentSlug } from '@/lib/string';
+import { isUnoptimizedImage } from '@/lib/utils/image';
+import { extractContentSlug } from '@/lib/cms/slug';
 import {
   Card,
   CardDescription,

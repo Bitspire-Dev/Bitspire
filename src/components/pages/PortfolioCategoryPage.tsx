@@ -13,9 +13,9 @@ import {
   getProjectHref,
   isPortfolioCategoryId,
   type PortfolioCategoryId,
-} from '@/lib/portfolio/categories';
-import { extractContentSlug } from '@/lib/string';
-import { useContentList } from '@/lib/content-list';
+} from '@/lib/cms/portfolio';
+import { extractContentSlug } from '@/lib/cms/slug';
+import { useContentList } from '@/hooks/use-content-list';
 import { Breadcrumb, type BreadcrumbItem } from '@/components/ui/navigation/breadcrumb';
 
 const UI: Record<string, Record<string, string>> = {

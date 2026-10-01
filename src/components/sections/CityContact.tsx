@@ -4,7 +4,7 @@ import type { CityQuery } from '@tina/__generated__/types';
 import { ContactForm } from '@/components/sections/ContactForm';
 import { ContactDetails } from '@/components/sections/ContactDetails';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
-import { getCityUi } from '@/lib/ui';
+import { getCityUi } from '@/lib/config/ui';
 
 type City = NonNullable<CityQuery['city']>;
 

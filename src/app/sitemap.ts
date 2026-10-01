@@ -1,17 +1,17 @@
 import type { MetadataRoute } from 'next';
 import { routing } from '@/i18n/routing';
-import { localePathname, sitemapAlternates } from '@/lib/site';
+import { localePathname, sitemapAlternates } from '@/lib/seo/metadata';
 import {
   getBlogConnection,
   getPageConnection,
   getProjectConnection,
   getCityConnection,
-} from '@/lib/tina';
-import { buildBlogArticleMap, getBlogArticleHref } from '@/lib/blog';
-import { PORTFOLIO_CATEGORIES, getCategoryUrlSlug } from '@/lib/portfolio/categories';
-import { getCityHref } from '@/lib/cities';
-import { extractContentSlug } from '@/lib/string';
-import { dottedDateToIso } from '@/lib/date';
+} from '@/lib/cms/client';
+import { buildBlogArticleMap, getBlogArticleHref } from '@/lib/cms/blog';
+import { PORTFOLIO_CATEGORIES, getCategoryUrlSlug } from '@/lib/cms/portfolio';
+import { getCityHref } from '@/lib/cms/cities';
+import { extractContentSlug } from '@/lib/cms/slug';
+import { dottedDateToIso } from '@/lib/utils/date';
 
 const STATIC_PATHS = ['/', '/blog', '/portfolio', '/contact', '/privacy'] as const;
 

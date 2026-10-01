@@ -3,8 +3,8 @@
 import * as React from 'react';
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import type { TocItem } from '@/lib/toc';
+import { cn } from '@/lib/utils/cn';
+import type { TocItem } from '@/lib/cms/toc';
 import { Button } from '@/components/ui/primitives/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/primitives/card';
 import { FadeIn } from '@/components/animations/primitives/fade-in';

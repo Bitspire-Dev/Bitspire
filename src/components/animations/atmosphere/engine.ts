@@ -7,7 +7,7 @@ import { Application } from 'pixi.js';
 import { AtmosphereMesh } from './mesh';
 import { MouseController } from './mouse';
 import { getQualityConfig } from './quality';
-import { getCssColor } from '@/lib/color';
+import { getCssColor } from '@/components/animations/utils';
 
 export type SceneTheme = 'dark' | 'light';
 

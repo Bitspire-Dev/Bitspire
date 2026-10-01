@@ -3,11 +3,11 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
-import { getBlogConnection } from '@/lib/tina';
+import { getBlogConnection } from '@/lib/cms/client';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { buildBlogArticleMap, type BlogArticleMap } from '@/lib/blog';
-import { inter, nippo, ibmPlexMono } from '@/lib/fonts';
+import { buildBlogArticleMap, type BlogArticleMap } from '@/lib/cms/blog';
+import { inter, nippo, ibmPlexMono } from '@/lib/config/fonts';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { MotionProvider } from '@/components/providers/motion-provider';
 import {
@@ -16,9 +16,9 @@ import {
   localePathname,
   localeAlternates,
   socialMetadata,
-} from '@/lib/site';
-import { getPageHref } from '@/lib/routes';
-import { combineJsonLd, organizationJsonLd, websiteJsonLd } from '@/lib/json-ld';
+} from '@/lib/seo/metadata';
+import { getPageHref } from '@/lib/config/routes';
+import { combineJsonLd, organizationJsonLd, websiteJsonLd } from '@/lib/seo/json-ld';
 import '@/app/globals.css';
 
 const DESCRIPTIONS: Record<string, string> = {

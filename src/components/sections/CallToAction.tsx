@@ -7,7 +7,7 @@ import { tinaField } from 'tinacms/dist/react';
 import type { ComponentProps } from 'react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
 import { Link } from '@/i18n/navigation';
-import { getPageHref } from '@/lib/routes';
+import { getPageHref } from '@/lib/config/routes';
 import { Button } from '@/components/ui/primitives/button';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/primitives/stagger';

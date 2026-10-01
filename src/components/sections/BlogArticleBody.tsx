@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/composites/table-of-contents';
 import { MarkdownBody } from '@/components/ui/composites/MarkdownBody';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
-import type { TocItem } from '@/lib/toc';
+import type { TocItem } from '@/lib/cms/toc';
 
 interface BlogArticleBodyProps {
   body: React.ComponentProps<typeof MarkdownBody>['content'];

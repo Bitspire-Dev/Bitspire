@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
-import { useMounted } from '../use-mounted';
+import { useMounted } from './use-mounted';
 
 describe('useMounted', () => {
   it('returns true after the component mounts', async () => {

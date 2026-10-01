@@ -7,7 +7,7 @@ import {
   articleJsonLd,
   breadcrumbListJsonLd,
   combineJsonLd,
-} from '../json-ld';
+} from './json-ld';
 
 describe('organizationJsonLd', () => {
   it('returns a schema.org Organization graph', () => {

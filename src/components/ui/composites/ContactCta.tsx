@@ -2,8 +2,8 @@
 
 import type { ComponentProps } from 'react';
 import { Link } from '@/i18n/navigation';
-import { getPageHref } from '@/lib/routes';
-import { cn } from '@/lib/utils';
+import { getPageHref } from '@/lib/config/routes';
+import { cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/primitives/button';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 

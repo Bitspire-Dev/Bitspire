@@ -12,8 +12,8 @@ import {
 import { Separator } from '@/components/ui/primitives/separator';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { SocialIcon } from '@/components/ui/composites/social-icon';
-import { COMPANY, DEFAULT_EMAIL } from '@/lib/company';
-import { cn } from '@/lib/utils';
+import { COMPANY, DEFAULT_EMAIL } from '@/lib/config/company';
+import { cn } from '@/lib/utils/cn';
 import type { PageQuery } from '@tina/__generated__/types';
 
 type Contact = NonNullable<NonNullable<PageQuery['page']>['contact']>;

@@ -1,12 +1,17 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { getPage } from '@/lib/tina';
+import { getPage } from '@/lib/cms/client';
 import { PortfolioPage } from '@/components/pages/PortfolioPage';
-import { getPageFallbackTitle } from '@/lib/ui';
-import { localeAlternates, localePathname, getDefaultOgImages, socialMetadata } from '@/lib/site';
-import { getPageHref } from '@/lib/routes';
-import { combineJsonLd, webPageJsonLd, breadcrumbListJsonLd } from '@/lib/json-ld';
+import { getPageFallbackTitle } from '@/lib/config/ui';
+import {
+  localeAlternates,
+  localePathname,
+  getDefaultOgImages,
+  socialMetadata,
+} from '@/lib/seo/metadata';
+import { getPageHref } from '@/lib/config/routes';
+import { combineJsonLd, webPageJsonLd, breadcrumbListJsonLd } from '@/lib/seo/json-ld';
 
 export async function generateMetadata({
   params,

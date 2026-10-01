@@ -6,7 +6,7 @@ import { ContactHero } from '@/components/sections/ContactHero';
 import { MarkdownBody } from '@/components/ui/composites/MarkdownBody';
 import { Separator } from '@/components/ui/primitives/separator';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
-import { getPrivacyUi } from '@/lib/ui';
+import { getPrivacyUi } from '@/lib/config/ui';
 import { Breadcrumb, type BreadcrumbItem } from '@/components/ui/navigation/breadcrumb';
 
 interface PrivacyPageProps {

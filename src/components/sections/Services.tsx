@@ -8,9 +8,9 @@ import { ChevronDownIcon } from 'lucide-react';
 
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
-import { cn } from '@/lib/utils';
-import { slugify } from '@/lib/string';
-import { getServicesUi } from '@/lib/ui';
+import { cn } from '@/lib/utils/cn';
+import { slugify } from '@/lib/cms/slug';
+import { getServicesUi } from '@/lib/config/ui';
 import { useThemeImage } from '@/hooks/use-theme-image';
 import {
   Accordion,

@@ -7,7 +7,7 @@ import { ArticleHeader } from '@/components/ui/composites/ArticleHeader';
 import { ArticleMeta } from '@/components/ui/composites/article-meta';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { Link } from '@/i18n/navigation';
-import { getPageHref } from '@/lib/routes';
+import { getPageHref } from '@/lib/config/routes';
 
 type Href = ComponentProps<typeof Link>['href'];
 

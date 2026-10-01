@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/primitives/select';
 import { useLocaleSwitcher } from '@/hooks/use-locale-switcher';
-import type { BlogArticleMap } from '@/lib/blog';
+import type { BlogArticleMap } from '@/lib/cms/blog';
 import { routing } from '@/i18n/routing';
 
 const LOCALE_FLAG: Record<string, string> = {

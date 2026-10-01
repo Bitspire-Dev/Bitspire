@@ -1,11 +1,16 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { getPage } from '@/lib/tina';
+import { getPage } from '@/lib/cms/client';
 import { HomePage } from '@/components/pages/HomePage';
-import { localeAlternates, localePathname, getDefaultOgImages, socialMetadata } from '@/lib/site';
-import { getPageHref } from '@/lib/routes';
-import { combineJsonLd, webPageJsonLd } from '@/lib/json-ld';
+import {
+  localeAlternates,
+  localePathname,
+  getDefaultOgImages,
+  socialMetadata,
+} from '@/lib/seo/metadata';
+import { getPageHref } from '@/lib/config/routes';
+import { combineJsonLd, webPageJsonLd } from '@/lib/seo/json-ld';
 
 export async function generateMetadata({
   params,

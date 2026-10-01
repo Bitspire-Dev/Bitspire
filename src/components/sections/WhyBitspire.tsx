@@ -5,9 +5,9 @@ import { useLocale } from 'next-intl';
 import { ImageIcon } from 'lucide-react';
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
-import { getWhyBitspireUi } from '@/lib/ui';
+import { getWhyBitspireUi } from '@/lib/config/ui';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/cn';
 import { useThemeImage } from '@/hooks/use-theme-image';
 import {
   Card,

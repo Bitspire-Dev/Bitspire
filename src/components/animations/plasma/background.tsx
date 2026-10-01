@@ -3,9 +3,9 @@
 import { useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
 import type { Application } from 'pixi.js';
-import { cn } from '@/lib/utils';
-import { getCssColor } from '@/lib/color';
-import { runWhenIdle } from '@/lib/idle';
+import { cn } from '@/lib/utils/cn';
+import { getCssColor } from '@/components/animations/utils';
+import { runWhenIdle } from '@/components/animations/utils';
 import type { PlasmaMesh } from './mesh';
 import { getPlasmaQuality } from './quality';
 

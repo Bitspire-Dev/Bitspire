@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { routing } from '@/i18n/routing';
-import { COMPANY } from '@/lib/company';
-import { getLocalizedPath, type LocalizedHref } from '@/lib/routes';
+import { COMPANY } from '@/lib/config/company';
+import { getLocalizedPath, type LocalizedHref } from '@/lib/config/routes';
 
 export const siteName = COMPANY.name;
 

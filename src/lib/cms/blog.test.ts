@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { BlogConnectionQuery } from '@tina/__generated__/types';
-import { getBlogArticleHref, extractBlogSlug, buildBlogArticleMap, toRelatedItems } from '../blog';
+import { getBlogArticleHref, extractBlogSlug, buildBlogArticleMap, toRelatedItems } from './blog';
 
 function createBlogNode(overrides: {
   id?: string;

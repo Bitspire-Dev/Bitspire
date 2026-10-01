@@ -5,8 +5,8 @@ import type { CityQuery } from '@tina/__generated__/types';
 import { CardGrid } from '@/components/ui/composites/card-grid';
 import type { ContentCardItem } from '@/components/ui/composites/content-card';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
-import { getCityUi } from '@/lib/ui';
-import { getProjectHrefFromPath } from '@/lib/portfolio/categories';
+import { getCityUi } from '@/lib/config/ui';
+import { getProjectHrefFromPath } from '@/lib/cms/portfolio';
 
 type City = NonNullable<CityQuery['city']>;
 type RelatedProject = NonNullable<NonNullable<City['relatedProjects']>[number]>['project'];

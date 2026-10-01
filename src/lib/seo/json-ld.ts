@@ -1,6 +1,6 @@
-import { COMPANY } from '@/lib/company';
+import { COMPANY } from '@/lib/config/company';
 import { routing } from '@/i18n/routing';
-import { siteUrl } from '@/lib/site';
+import { siteUrl } from '@/lib/seo/metadata';
 
 const ORGANIZATION_ID = `${siteUrl}/#organization`;
 const WEBSITE_ID = `${siteUrl}/#website`;

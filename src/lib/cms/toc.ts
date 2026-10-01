@@ -1,4 +1,4 @@
-import { slugify } from '@/lib/string';
+import { slugify } from '@/lib/cms/slug';
 
 export interface TocItem {
   id: string;

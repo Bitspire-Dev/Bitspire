@@ -5,7 +5,7 @@ import {
   getDefaultOgImages,
   sitemapAlternates,
   localeAlternates,
-} from '../site';
+} from './metadata';
 
 describe('siteUrl', () => {
   it('exposes the normalized site URL from env', () => {

@@ -1,7 +1,7 @@
 import { defineConfig } from 'tinacms';
-import { extractContentSlug } from '../src/lib/string';
-import { getLocalizedPath } from '../src/lib/routes';
-import { getCategoryUrlSlug } from '../src/lib/portfolio/categories';
+import { extractContentSlug } from '../src/lib/cms/slug';
+import { getLocalizedPath } from '../src/lib/config/routes';
+import { getCategoryUrlSlug } from '../src/lib/cms/portfolio';
 
 // Your hosting provider likely exposes this as an environment variable
 const branch =

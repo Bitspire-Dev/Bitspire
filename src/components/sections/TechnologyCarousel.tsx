@@ -3,8 +3,8 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { m } from 'motion/react';
 
-import { cn } from '@/lib/utils';
-import { getTechnologyCarouselUi } from '@/lib/ui';
+import { cn } from '@/lib/utils/cn';
+import { getTechnologyCarouselUi } from '@/lib/config/ui';
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */

@@ -7,18 +7,18 @@ import { Link } from '@/i18n/navigation';
 import { ChevronDownIcon, Menu, X } from 'lucide-react';
 import { LocaleSwitcher } from '@/components/ui/navigation/locale-switcher';
 import { ThemeSwitcher } from '@/components/ui/navigation/theme-switcher';
-import { useMounted } from '@/lib/use-mounted';
-import { cn } from '@/lib/utils';
-import { getPageHref } from '@/lib/routes';
+import { useMounted } from '@/hooks/use-mounted';
+import { cn } from '@/lib/utils/cn';
+import { getPageHref } from '@/lib/config/routes';
 import { Button } from '@/components/ui/primitives/button';
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuList,
 } from '@/components/ui/primitives/navigation-menu';
-import { getCategoryHref } from '@/lib/portfolio/categories';
-import type { BlogArticleMap } from '@/lib/blog';
-import { MAIN_NAV_LINKS, type NavLink } from '@/lib/navigation';
+import { getCategoryHref } from '@/lib/cms/portfolio';
+import type { BlogArticleMap } from '@/lib/cms/blog';
+import { MAIN_NAV_LINKS, type NavLink } from '@/lib/config/navigation';
 
 type Href = ComponentProps<typeof Link>['href'];
 

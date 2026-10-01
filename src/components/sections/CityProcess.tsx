@@ -4,7 +4,7 @@ import { tinaField } from 'tinacms/dist/react';
 import type { CityQuery } from '@tina/__generated__/types';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/primitives/stagger';
-import { getCityUi } from '@/lib/ui';
+import { getCityUi } from '@/lib/config/ui';
 
 type City = NonNullable<CityQuery['city']>;
 

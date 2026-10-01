@@ -7,8 +7,8 @@ import { AspectRatio } from '@/components/ui/primitives/aspect-ratio';
 import { Separator } from '@/components/ui/primitives/separator';
 import { BackLink } from '@/components/ui/navigation/back-link';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
-import { cn } from '@/lib/utils';
-import { isUnoptimizedImage } from '@/lib/image';
+import { cn } from '@/lib/utils/cn';
+import { isUnoptimizedImage } from '@/lib/utils/image';
 
 type Href = ComponentProps<typeof Link>['href'];
 

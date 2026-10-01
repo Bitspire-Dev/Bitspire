@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { extractTocFromMarkdown } from '../toc';
+import { extractTocFromMarkdown } from './toc';
 
 describe('extractTocFromMarkdown', () => {
   it('extracts level 2 headings', () => {

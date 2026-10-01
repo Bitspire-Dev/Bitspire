@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { tinaQueryWithRetry, getPage, getBlogPost, getProject } from '../tina';
+import { tinaQueryWithRetry, getPage, getBlogPost, getProject } from './client';
 import client from '@tina/__generated__/client';
 
 vi.mock('@tina/__generated__/client', () => ({

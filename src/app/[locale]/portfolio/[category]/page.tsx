@@ -1,16 +1,17 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { getProjectConnection } from '@/lib/tina';
+import { getProjectConnection } from '@/lib/cms/client';
 import { PortfolioCategoryPage } from '@/components/pages/PortfolioCategoryPage';
+import { PORTFOLIO_CATEGORIES, getCategoryBySlug, getCategoryUrlSlug } from '@/lib/cms/portfolio';
 import {
-  PORTFOLIO_CATEGORIES,
-  getCategoryBySlug,
-  getCategoryUrlSlug,
-} from '@/lib/portfolio/categories';
-import { localeAlternates, localePathname, getDefaultOgImages, socialMetadata } from '@/lib/site';
-import { getPageHref } from '@/lib/routes';
-import { combineJsonLd, webPageJsonLd, breadcrumbListJsonLd } from '@/lib/json-ld';
+  localeAlternates,
+  localePathname,
+  getDefaultOgImages,
+  socialMetadata,
+} from '@/lib/seo/metadata';
+import { getPageHref } from '@/lib/config/routes';
+import { combineJsonLd, webPageJsonLd, breadcrumbListJsonLd } from '@/lib/seo/json-ld';
 
 export const dynamicParams = false;
 

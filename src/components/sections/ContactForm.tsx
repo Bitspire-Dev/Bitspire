@@ -9,14 +9,14 @@ import { Input } from '@/components/ui/primitives/input';
 import { Textarea } from '@/components/ui/primitives/textarea';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { Link } from '@/i18n/navigation';
-import { getPageHref } from '@/lib/routes';
+import { getPageHref } from '@/lib/config/routes';
 import {
   validateContactPayload,
   validateAttachment,
   MAX_FILE_SIZE,
   MAX_ATTACHMENTS,
 } from '@/lib/contact';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/cn';
 
 type Href = ComponentProps<typeof Link>['href'];
 

@@ -1,5 +1,5 @@
-import type { LocalizedHref } from '@/lib/routes';
-import { getPageHref } from '@/lib/routes';
+import type { LocalizedHref } from '@/lib/config/routes';
+import { getPageHref } from '@/lib/config/routes';
 
 export interface NavLink {
   label: string;

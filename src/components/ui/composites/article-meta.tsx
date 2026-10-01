@@ -1,7 +1,7 @@
 'use client';
 
 import { Badge } from '@/components/ui/primitives/badge';
-import { formatLongDate } from '@/lib/date';
+import { formatLongDate } from '@/lib/utils/date';
 
 interface ArticleMetaProps {
   date: string | null | undefined;

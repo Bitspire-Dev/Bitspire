@@ -6,7 +6,7 @@ import {
   getCategoryUrlSlug,
   getCategoryHref,
   getProjectHref,
-} from '../categories';
+} from './portfolio';
 
 describe('isPortfolioCategoryId', () => {
   it('returns true for valid category ids', () => {

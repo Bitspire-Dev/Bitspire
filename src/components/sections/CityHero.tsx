@@ -8,9 +8,9 @@ import { Badge } from '@/components/ui/primitives/badge';
 import { Button } from '@/components/ui/primitives/button';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { ErrorBoundary } from '@/components/providers/error-boundary';
-import { COMPANY } from '@/lib/company';
-import { getCityUi } from '@/lib/ui';
-import { useMounted } from '@/lib/use-mounted';
+import { COMPANY } from '@/lib/config/company';
+import { getCityUi } from '@/lib/config/ui';
+import { useMounted } from '@/hooks/use-mounted';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { Calendar, Phone } from 'lucide-react';
 

@@ -8,7 +8,7 @@ import {
   getServicesUi,
   getPrivacyUi,
   getWhyBitspireUi,
-} from '../ui';
+} from './ui';
 
 describe('getUi', () => {
   it('returns the value for the requested locale', () => {

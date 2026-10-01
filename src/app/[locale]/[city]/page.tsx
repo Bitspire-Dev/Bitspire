@@ -1,19 +1,24 @@
 import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getCity, getCityConnection } from '@/lib/tina';
+import { getCity, getCityConnection } from '@/lib/cms/client';
 import { CityLandingPage } from '@/components/pages/CityLandingPage';
-import { localeAlternates, localePathname, getDefaultOgImages, socialMetadata } from '@/lib/site';
-import { getPageHref } from '@/lib/routes';
-import { getCityHref } from '@/lib/cities';
+import {
+  localeAlternates,
+  localePathname,
+  getDefaultOgImages,
+  socialMetadata,
+} from '@/lib/seo/metadata';
+import { getPageHref } from '@/lib/config/routes';
+import { getCityHref } from '@/lib/cms/cities';
 import {
   combineJsonLd,
   webPageJsonLd,
   breadcrumbListJsonLd,
   faqPageJsonLd,
   serviceJsonLd,
-} from '@/lib/json-ld';
-import { extractContentSlug } from '@/lib/string';
+} from '@/lib/seo/json-ld';
+import { extractContentSlug } from '@/lib/cms/slug';
 
 interface CityPageParams {
   locale: string;

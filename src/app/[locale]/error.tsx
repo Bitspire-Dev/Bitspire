@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useLocale } from 'next-intl';
-import { getErrorUi } from '@/lib/ui';
+import { getErrorUi } from '@/lib/config/ui';
 import { Button } from '@/components/ui/primitives/button';
 
 interface ErrorProps {

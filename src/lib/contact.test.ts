@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { validateContactPayload, isRateLimited, formatContactEmail } from '../contact';
+import { validateContactPayload, isRateLimited, formatContactEmail } from './contact';
 
 describe('validateContactPayload', () => {
   it('passes for a valid payload', () => {

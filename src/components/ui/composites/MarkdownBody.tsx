@@ -4,8 +4,8 @@ import * as React from 'react';
 import Image from 'next/image';
 import type { Components, TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { TinaMarkdown } from 'tinacms/dist/rich-text';
-import { cn } from '@/lib/utils';
-import { isUnoptimizedImage } from '@/lib/image';
+import { cn } from '@/lib/utils/cn';
+import { isUnoptimizedImage } from '@/lib/utils/image';
 
 interface MarkdownBodyProps {
   content: unknown;

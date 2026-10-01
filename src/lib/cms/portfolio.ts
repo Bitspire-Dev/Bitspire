@@ -1,4 +1,4 @@
-import { extractContentSlug } from '@/lib/string';
+import { extractContentSlug } from '@/lib/cms/slug';
 
 export interface PortfolioCategory {
   id: 'websites' | 'software';

@@ -6,8 +6,8 @@ import type { BlogConnectionQuery } from '@tina/__generated__/types';
 import { ContentListView } from '@/components/sections/ContentListView';
 import { Breadcrumb, type BreadcrumbItem } from '@/components/ui/navigation/breadcrumb';
 import type { ContentCardItem } from '@/components/ui/composites/content-card';
-import { getBlogArticleHref, extractBlogSlug } from '@/lib/blog';
-import { useContentList } from '@/lib/content-list';
+import { getBlogArticleHref, extractBlogSlug } from '@/lib/cms/blog';
+import { useContentList } from '@/hooks/use-content-list';
 
 const UI: Record<string, Record<string, string>> = {
   pl: {

@@ -7,10 +7,10 @@ import { Separator } from '@/components/ui/primitives/separator';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
 import { Button } from '@/components/ui/primitives/button';
 import { SocialIcon } from '@/components/ui/composites/social-icon';
-import { COMPANY } from '@/lib/company';
-import { getPageHref } from '@/lib/routes';
-import { MAIN_NAV_LINKS, type NavLink } from '@/lib/navigation';
-import { CITIES, getCityHref } from '@/lib/cities';
+import { COMPANY } from '@/lib/config/company';
+import { getPageHref } from '@/lib/config/routes';
+import { MAIN_NAV_LINKS, type NavLink } from '@/lib/config/navigation';
+import { CITIES, getCityHref } from '@/lib/cms/cities';
 
 type Href = ComponentProps<typeof Link>['href'];
 
