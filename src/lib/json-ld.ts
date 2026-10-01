@@ -160,6 +160,47 @@ export function breadcrumbListJsonLd(items: BreadcrumbItem[]) {
   };
 }
 
+export interface FaqItem {
+  question?: string | null;
+  answer?: string | null;
+}
+
+export function faqPageJsonLd(items: (FaqItem | null)[]) {
+  const questions = (items ?? []).filter(
+    (item): item is Required<FaqItem> => !!item?.question && !!item?.answer
+  );
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: questions.map(item => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: { '@type': 'Answer', text: item.answer },
+    })),
+  };
+}
+
+export interface ServiceJsonLdOptions {
+  name: string;
+  description?: string | null;
+  url: string;
+  areaServed?: string | null;
+}
+
+export function serviceJsonLd({ name, description, url, areaServed }: ServiceJsonLdOptions) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${url}#service`,
+    name,
+    description: description ?? undefined,
+    url,
+    serviceType: 'Web development',
+    areaServed: areaServed ? { '@type': 'City', name: areaServed } : undefined,
+    provider: { '@id': ORGANIZATION_ID },
+  };
+}
+
 export function combineJsonLd(...graphs: Record<string, unknown>[]) {
   return {
     '@context': 'https://schema.org',

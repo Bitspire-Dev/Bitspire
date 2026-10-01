@@ -445,6 +445,165 @@ export default defineConfig({
           },
         ],
       },
+      {
+        name: 'city',
+        label: 'Cities',
+        path: 'content/cities',
+        format: 'md',
+        ui: {
+          router: ({ document }) => {
+            const [locale, filename] = document._sys.relativePath.split('/');
+            const slug = extractContentSlug(filename ?? '');
+            return getLocalizedPath(locale, {
+              pathname: '/[city]',
+              params: { city: slug },
+            });
+          },
+        },
+        fields: [
+          {
+            type: 'string',
+            name: 'title',
+            label: 'Meta title',
+            description: 'Used for the browser/SEO title and the hero H1.',
+            isTitle: true,
+            required: true,
+          },
+          {
+            type: 'string',
+            name: 'description',
+            label: 'Meta description',
+            ui: { component: 'textarea' },
+          },
+          {
+            type: 'string',
+            name: 'cityName',
+            label: 'City name',
+            description: 'Nominative form, e.g. "Słupsk".',
+            required: true,
+          },
+          {
+            type: 'string',
+            name: 'cityLocative',
+            label: 'City name — locative',
+            description: 'Locative form, e.g. "w Słupsku".',
+          },
+          {
+            type: 'string',
+            name: 'cityGenitive',
+            label: 'City name — genitive',
+            description: 'Genitive form, e.g. "ze Słupska".',
+          },
+          {
+            type: 'string',
+            name: 'region',
+            label: 'Region',
+            description: 'e.g. "woj. pomorskie".',
+          },
+          {
+            type: 'string',
+            name: 'heroSubtitle',
+            label: 'Hero lead',
+            ui: { component: 'textarea' },
+            description: 'Two-sentence value proposition shown under the H1.',
+          },
+          {
+            type: 'string',
+            name: 'trustStats',
+            label: 'Trust stats',
+            list: true,
+            description: 'Short proof items shown under the hero CTAs.',
+          },
+          {
+            type: 'object',
+            name: 'services',
+            label: 'Services',
+            list: true,
+            fields: [
+              {
+                type: 'string',
+                name: 'title',
+                label: 'Title',
+                required: true,
+              },
+              {
+                type: 'string',
+                name: 'description',
+                label: 'Description',
+                ui: { component: 'textarea' },
+              },
+            ],
+          },
+          {
+            type: 'object',
+            name: 'process',
+            label: 'Process steps',
+            list: true,
+            fields: [
+              {
+                type: 'string',
+                name: 'title',
+                label: 'Title',
+                required: true,
+              },
+              {
+                type: 'string',
+                name: 'description',
+                label: 'Description',
+                ui: { component: 'textarea' },
+              },
+            ],
+          },
+          {
+            type: 'object',
+            name: 'faq',
+            label: 'FAQ',
+            list: true,
+            fields: [
+              {
+                type: 'string',
+                name: 'question',
+                label: 'Question',
+                required: true,
+              },
+              {
+                type: 'string',
+                name: 'answer',
+                label: 'Answer',
+                ui: { component: 'textarea' },
+                required: true,
+              },
+            ],
+          },
+          {
+            type: 'string',
+            name: 'nearbyCities',
+            label: 'Nearby cities',
+            list: true,
+            description: 'Slugs of other city pages to link to, e.g. "kobylnica".',
+          },
+          {
+            type: 'object',
+            name: 'relatedProjects',
+            label: 'Projects from the area',
+            list: true,
+            fields: [
+              {
+                type: 'reference',
+                name: 'project',
+                label: 'Project',
+                collections: ['project'],
+              },
+            ],
+          },
+          {
+            type: 'rich-text',
+            name: 'body',
+            label: 'Body — unique city content',
+            isBody: true,
+          },
+        ],
+      },
     ],
   },
 });

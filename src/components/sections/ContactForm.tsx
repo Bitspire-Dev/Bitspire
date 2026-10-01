@@ -23,6 +23,7 @@ type Href = ComponentProps<typeof Link>['href'];
 interface ContactFormProps {
   locale: string;
   className?: string;
+  defaultSubject?: string;
 }
 
 const ACCEPT_ATTR = '.pdf,.png,.jpg,.jpeg,.gif,.webp,.txt';
@@ -78,12 +79,12 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-export function ContactForm({ locale, className }: ContactFormProps) {
+export function ContactForm({ locale, className, defaultSubject }: ContactFormProps) {
   const ui = UI[locale] ?? UI.pl;
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [subject, setSubject] = useState('');
+  const [subject, setSubject] = useState(defaultSubject ?? '');
   const [message, setMessage] = useState('');
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState('');
@@ -170,7 +171,7 @@ export function ContactForm({ locale, className }: ContactFormProps) {
         setSubmitStatus('success');
         setName('');
         setEmail('');
-        setSubject('');
+        setSubject(defaultSubject ?? '');
         setMessage('');
         setFiles([]);
         setErrors({});

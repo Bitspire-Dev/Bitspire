@@ -77,3 +77,11 @@ export const getBlogPost = cache((relativePath: string) =>
 export const getProject = cache((relativePath: string) =>
   withTinaNotFound(() => client.queries.project({ relativePath }), { project: null })()
 );
+
+export const getCityConnection = cache(() =>
+  tinaQueryWithRetry(() => client.queries.cityConnection())
+);
+
+export const getCity = cache((relativePath: string) =>
+  withTinaNotFound(() => client.queries.city({ relativePath }), { city: null })()
+);

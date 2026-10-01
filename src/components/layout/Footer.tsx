@@ -10,6 +10,7 @@ import { SocialIcon } from '@/components/ui/composites/social-icon';
 import { COMPANY } from '@/lib/company';
 import { getPageHref } from '@/lib/routes';
 import { MAIN_NAV_LINKS, type NavLink } from '@/lib/navigation';
+import { CITIES, getCityHref } from '@/lib/cities';
 
 type Href = ComponentProps<typeof Link>['href'];
 
@@ -22,6 +23,7 @@ interface FooterContent {
   tagline: string;
   headings: {
     navigation: string;
+    local: string;
     contact: string;
     legal: string;
   };
@@ -35,6 +37,7 @@ const FOOTER_CONTENT: Record<'pl' | 'en', FooterContent> = {
     tagline: 'Nowoczesne strony internetowe i oprogramowanie na miarę Twojego biznesu.',
     headings: {
       navigation: 'Nawigacja',
+      local: 'Obsługujemy lokalnie',
       contact: 'Kontakt',
       legal: 'Prawne',
     },
@@ -46,6 +49,7 @@ const FOOTER_CONTENT: Record<'pl' | 'en', FooterContent> = {
     tagline: 'Modern websites and tailor-made software for your business.',
     headings: {
       navigation: 'Navigation',
+      local: 'We serve locally',
       contact: 'Contact',
       legal: 'Legal',
     },
@@ -80,7 +84,7 @@ function FooterContent({ locale }: FooterProps) {
     <footer className="w-full border-t border-border/60 bg-background">
       <FadeIn className="w-full">
         <div className="container mx-auto max-w-360 px-4 py-12 md:px-6">
-          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5">
             {/* Brand */}
             <div className="flex flex-col gap-4">
               <span className="font-heading text-lg font-bold tracking-[0.2em] text-foreground">
@@ -123,6 +127,21 @@ function FooterContent({ locale }: FooterProps) {
                     </Link>
                   )
                 )}
+              </nav>
+            </FooterColumn>
+
+            {/* Local cities */}
+            <FooterColumn title={content.headings.local}>
+              <nav className="flex flex-col gap-2">
+                {CITIES.map(city => (
+                  <Link
+                    key={city.slug}
+                    href={getCityHref(city.slug) as Href}
+                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {city.name}
+                  </Link>
+                ))}
               </nav>
             </FooterColumn>
 

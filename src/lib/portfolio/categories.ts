@@ -1,3 +1,5 @@
+import { extractContentSlug } from '@/lib/string';
+
 export interface PortfolioCategory {
   id: 'websites' | 'software';
   slug: Record<string, string>;
@@ -65,4 +67,10 @@ export function getProjectHref(
     pathname: '/portfolio/[category]/[slug]' as const,
     params: { category, slug: projectSlug },
   };
+}
+
+export function getProjectHrefFromPath(locale: string, relativePath?: string) {
+  const [, category, filename] = relativePath?.split('/') ?? [];
+  if (!category || !filename || !isPortfolioCategoryId(category)) return undefined;
+  return getProjectHref(locale, category, extractContentSlug(filename));
 }

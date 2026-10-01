@@ -15,7 +15,11 @@ export function useLocaleSwitcher({ locale, blogMap }: UseLocaleSwitcherOptions)
   const params = useParams();
   const router = useRouter();
 
-  const { slug, category } = params as { slug?: string; category?: string };
+  const { slug, category, city } = params as {
+    slug?: string;
+    category?: string;
+    city?: string;
+  };
 
   return (targetLocale: string) => {
     if (
@@ -26,6 +30,17 @@ export function useLocaleSwitcher({ locale, blogMap }: UseLocaleSwitcherOptions)
       pathname === '/privacy'
     ) {
       router.replace(pathname, { locale: targetLocale });
+      return;
+    }
+
+    if (pathname === '/[city]') {
+      router.replace(
+        {
+          pathname: '/[city]',
+          params: { city: city ?? '' },
+        } as Parameters<typeof router.replace>[0],
+        { locale: targetLocale }
+      );
       return;
     }
 

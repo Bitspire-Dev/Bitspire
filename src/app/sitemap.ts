@@ -1,9 +1,15 @@
 import type { MetadataRoute } from 'next';
 import { routing } from '@/i18n/routing';
 import { localePathname, sitemapAlternates } from '@/lib/site';
-import { getBlogConnection, getPageConnection, getProjectConnection } from '@/lib/tina';
+import {
+  getBlogConnection,
+  getPageConnection,
+  getProjectConnection,
+  getCityConnection,
+} from '@/lib/tina';
 import { buildBlogArticleMap, getBlogArticleHref } from '@/lib/blog';
 import { PORTFOLIO_CATEGORIES, getCategoryUrlSlug } from '@/lib/portfolio/categories';
+import { getCityHref } from '@/lib/cities';
 import { extractContentSlug } from '@/lib/string';
 import { dottedDateToIso } from '@/lib/date';
 
@@ -134,6 +140,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             slug,
           },
         })),
+      });
+    }
+  } catch {
+    // Content backend unavailable at build time -- serve the static routes only.
+  }
+
+  try {
+    const cityData = await getCityConnection();
+    const cityEdges = cityData.data.cityConnection?.edges ?? [];
+
+    for (const edge of cityEdges) {
+      const node = edge?.node;
+      if (!node) continue;
+      const [locale, filename] = node._sys.relativePath.split('/');
+      if (!locale || !filename) continue;
+      const slug = extractContentSlug(filename);
+
+      entries.push({
+        url: localePathname(locale, getCityHref(slug)),
+        changeFrequency: 'monthly',
+        priority: 0.75,
+        alternates: sitemapAlternates(() => getCityHref(slug)),
       });
     }
   } catch {
