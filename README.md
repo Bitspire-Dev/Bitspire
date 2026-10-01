@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bitspire
 
-## Getting Started
+Dwujęzyczna (PL/EN) strona firmowa Bitspire — Next.js 15 (App Router, SSG) + TinaCMS.
 
-First, run the development server:
+## Stack
+
+- **Next.js 15.5** — App Router, static generation, `next-intl` (locales: `pl`, `en`)
+- **TinaCMS** — headless CMS, local mode, admin pod `/admin`, treść w `content/` (Markdown)
+- **Tailwind CSS v4** + Radix UI + CVA
+- **Animacje** — motion/react (Framer Motion), PixiJS 8 (WebGL: `atmosphere/`, `plasma/`)
+- **Testy** — Vitest + Testing Library
+
+## Komendy
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm dev           # dev server + TinaCMS lokalnie (next dev na :3000, datalayer :4001, admin :9000)
+pnpm build:local   # produkcyjny build: tinacms build --local + next build
+pnpm lint          # eslint
+pnpm test          # vitest
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Uwaga: nie uruchamiaj `build:local` / `next build` gdy działa `pnpm dev` — oba piszą do `.next` i uszkodzą dev-server (brakujące vendor-chunki). Zatrzymaj dev przed buildem.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Struktura
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+content/           # treść TinaCMS: pages/, blog/, portfolio/, cities/ (po locale)
+src/app/[locale]/  # strony: home, blog, portfolio, contact, privacy, [city] (podstrony lokalne)
+src/components/    # pages/ sections/ layout/ ui/ animations/
+src/lib/
+  cms/             # klient Tina (client.ts) + helpery kolekcji (blog, cities, portfolio, slug, toc)
+  seo/             # metadata.ts, json-ld.ts, og-image.tsx
+  config/          # company, navigation, routes, ui (copy PL/EN), fonts
+  utils/           # cn, date, image
+  contact.ts       # walidacja formularza, rate-limit, formatowanie e-mail
+src/hooks/         # use-locale-switcher, use-mounted, use-content-list, use-theme-image, ...
+tina/config.ts     # schemat kolekcji TinaCMS
+```
 
-## Learn More
+Szczegółowa mapa systemów i konwencji: [`NEW-SESSION.MD`](./NEW-SESSION.MD).
 
-To learn more about Next.js, take a look at the following resources:
+## Podstrony lokalne
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Route `/[locale]/[city]` (np. `/pl/slupsk`) renderuje podstrony SEO dla miast z `content/cities/`. `dynamicParams = false` — nieznane slugi dają 404. Nowe miasto = nowy plik `.md` w `content/cities/pl/` i `en/` + wpis w `src/lib/cms/cities.ts` (`CITIES`).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Zmienne środowiskowe
 
-## Deploy on Vercel
+- `NEXT_PUBLIC_SITE_URL` — kanoniczny URL (np. `https://bitspire.app`)
+- `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `RESEND_TO_EMAIL` — formularz kontaktowy
+- `TINA_CLIENT_ID`, `TINA_TOKEN` — TinaCloud (opcjonalne w local mode)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deploy
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Vercel — build przez `tinacms build` wypycha też schemat do TinaCloud.

@@ -47,94 +47,126 @@ Kompleksowa dokumentacja wszystkich systemów, bibliotek, helperów, komponentó
 
 ## src/lib — helpery, utils, dane
 
-Wszystkie pliki server-only chyba że oznaczone.
+Wszystkie pliki server-only chyba że oznaczone. Pogrupowane w podfoldery według odpowiedzialności:
 
-### `utils.ts`
+- **`cms/`** — warstwa treści TinaCMS (klient zapytań + helpery kolekcji)
+- **`seo/`** — metadata, JSON-LD, OG images
+- **`config/`** — statyczne dane strony (firma, nawigacja, routing, copy UI, fonty)
+- **`utils/`** — generyczne helpery bez domeny
+- **`contact.ts`** — feature kontaktowy (walidacja + rate-limit + e-mail)
+- testy jednostkowe leżą **obok źródeł** (`cms/blog.test.ts` itd.), nie w `__tests__/`
 
-- **`cn(...inputs)`** — łączy klasy CSS (clsx + tailwind-merge). Używaj wszędzie zamiast string concatenation.
+### `utils/` — generyczne helpery
 
-### `use-mounted.ts` _(use client)_
+#### `utils/cn.ts`
 
-- **`useMounted()`** — zwraca `boolean`, true po hydratacji. Używaj gdy komponent musi wykonać pracę tylko na kliencie.
+- **`cn(...inputs)`** — łączy klasy CSS (clsx + tailwind-merge). Używaj wszędzie zamiast string concatenation. Import: `@/lib/utils/cn`.
 
-### `fonts.ts`
+#### `utils/date.ts`
 
-- **`inter`** — font sans (body text)
-- **`nippo`** — font heading (nagłówki)
-- **`ibmPlexMono`** — font mono (code, techniczne)
+- **`formatLongDate(dateString, locale)`** — formatuje datę długą (np. "15 stycznia 2024")
+- **`dottedDateToIso(dotted)`** — konwertuje "DD.MM.YYYY" na ISO
 
-### `color.ts`
+#### `utils/image.ts`
 
-- **`hexToRgb(hex)`** — konwertuje HEX na `RgbTuple` [r,g,b] w zakresie 0-1
-- **`getCssColor(varName)`** — pobiera wartość zmiennej CSS z `document` (client) lub fallback. Używane przez shadery PixiJS do synchronizacji kolorów z motywem.
+- **`isUnoptimizedImage(src)`** — zwraca true dla SVG i GIF (nie optymalizuj przez Next/Image)
 
-### `company.ts`
+### `config/` — statyczne dane strony
+
+#### `config/company.ts`
 
 - **`COMPANY`** — obiekt z danymi firmy: nazwa, email, telefon, adres (pl/en), godziny (pl/en), social media (LinkedIn, GitHub, Instagram, Facebook), taxId, KRS
 - **`DEFAULT_EMAIL`** — domyślny email kontaktowy
 - **`CompanyData`**, **`CompanySocial`** — typy
 
-### `site.ts`
+#### `config/fonts.ts`
 
-- **`siteName`** — nazwa strony (z COMPANY)
-- **`siteUrl`** — kanoniczny URL (z `NEXT_PUBLIC_SITE_URL`, normalizowany — usuwa www., trailing slash)
-- **`siteMetadata`** — pełna konfiguracja `Metadata` Next.js (OG, Twitter, icons, robots, metadataBase)
-- **`localePathname(locale, pathname?)`** — buduje pełny URL z locale
-- **`localeAlternates(pathname)`** — generuje alternatywy językowe (hreflang) dla metadata
-- **`sitemapAlternates(pathname)`** — alternatywy dla sitemap.xml
-- **`getDefaultOgImages(locale)`** — domyślne obrazy OG
+- **`inter`** — font sans (body text)
+- **`nippo`** — font heading (nagłówki)
+- **`ibmPlexMono`** — font mono (code, techniczne)
+- Uwaga: ścieżki `src` w `localFont` są relatywne do tego pliku (`../../../public/fonts/...`)
 
-### `navigation.ts`
+#### `config/navigation.ts`
 
 - **`MAIN_NAV_LINKS`** — definicje linków nawigacji głównej (pl/en)
 - **`NavLink`** — typ
 
-### `image.ts`
+#### `config/routes.ts`
 
-- **`isUnoptimizedImage(src)`** — zwraca true dla SVG i GIF (nie optymalizuj przez Next/Image)
+- **`PageId`** = `'home' | 'blog' | 'portfolio' | 'contact' | 'privacy'`
+- **`LocalizedHref`** — typ href: string lub `{ pathname, params?, query? }`
+- **`getPageHref(page)`** — href dla strony statycznej
+- **`getPathname({ locale, href })`** — buduje pełny pathname z locale + podmienia `[param]` w dynamicznych ścieżkach
+- **`getLocalizedPath(locale, href)`** — alias getPathname (używany m.in. przez `tina/config.ts` routery)
 
-### `string.ts`
-
-- **`extractContentSlug(filename)`** — ekstrahuje slug z nazwy pliku TinaCMS (np. `pl/home.md` → `home`)
-- **`slugify(text)`** — konwertuje tekst na URL-friendly slug
-
-### `date.ts`
-
-- **`formatLongDate(dateString, locale)`** — formatuje datę długą (np. "15 stycznia 2024")
-- **`dottedDateToIso(dotted)`** — konwertuje "DD.MM.YYYY" na ISO
-
-### `blog.ts`
-
-- **`getBlogArticleHref(slug, locale)`** — generuje href dla artykułu bloga
-- **`extractBlogSlug(relativePath)`** — ekstrahuje slug z relativePath TinaCMS
-- **`buildBlogArticleMap(connection)`** — buduje mapę slugów dla LocaleSwitcher (klucz: canonical, wartość: {pl, en})
-- **`toRelatedItems(currentArticle, allArticles, locale, limit)`** — znajduje powiązane artykuły po tagach
-- **`BlogArticleMap`** — typ
-
-### `toc.ts`
-
-- **`extractTocFromMarkdown(markdown)`** — ekstrahuje nagłówki H2 z Markdown do `TocItem[]`
-- **`TocItem`** — typ `{ id, text }`
-
-### `content-list.ts`
-
-- **`useContentList(items, options)`** — hook do filtrowania listy treści po wyszukiwaniu. Opcje: `searchValue`, `searchKeys` (np. `['title', 'description', 'tags']`)
-- **`joinSearchTerms(item, keys)`** — łączy pola w jeden string do wyszukiwania
-
-### `ui.ts`
+#### `config/ui.ts`
 
 - **`Locale`** = `'pl' | 'en'`
-- **`getUi(locale)`** — zwraca zlokalizowane teksty UI
-- **`getPageFallbackTitle(pathname, locale)`** — fallback tytułu strony
-- **`getErrorUi(locale)`** — teksty błędów
-- **`getAuthorCardUi(locale)`** — teksty karty autora
-- **`getTechnologyCarouselUi(locale)`** — teksty karuzeli technologii
-- **`getServicesUi(locale)`** — teksty sekcji usług
-- **`getPrivacyUi(locale)`** — teksty strony prywatności
-- **`getWhyBitspireUi(locale)`** — teksty sekcji WhyBitspire
-- Stałe: `PAGE_FALLBACK_TITLES`, `ERROR_UI`, `AUTHOR_CARD_UI`, `TECHNOLOGY_CAROUSEL_UI`, `SERVICES_UI`, `PRIVACY_UI`, `WHY_BITSPIRE_UI`
+- **`getUi(locale, map)`** — zwraca zlokalizowane teksty z mapy `Record<Locale, T>` (fallback: `pl`)
+- **`getPageFallbackTitle(locale, page)`**, **`getErrorUi(locale)`**, **`getAuthorCardUi(locale)`**, **`getTechnologyCarouselUi(locale)`**, **`getServicesUi(locale)`**, **`getPrivacyUi(locale)`**, **`getWhyBitspireUi(locale)`**, **`getCityUi(locale)`**
+- Stałe: `PAGE_FALLBACK_TITLES`, `ERROR_UI`, `AUTHOR_CARD_UI`, `TECHNOLOGY_CAROUSEL_UI`, `SERVICES_UI`, `PRIVACY_UI`, `WHY_BITSPIRE_UI`, `CITY_UI` (teksty podstron lokalnych: hero badge, CTA, tytuły sekcji, prefiks tematu)
 
-### `json-ld.ts`
+### `cms/` — warstwa treści TinaCMS
+
+#### `cms/client.ts` _(dawniej `tina.ts`)_
+
+- **`tinaQueryWithRetry(query, { retries, delayMs })`** — wrapper z retry dla zapytań TinaCMS
+- **`getPage(relativePath)`** — pojedyncza strona (cache'd)
+- **`getPageConnection()`** — wszystkie strony (cache'd)
+- **`getBlogConnection()`** — wszystkie artykuły bloga (cache'd)
+- **`getBlogPost(relativePath)`** — artykuł (cache'd, 404 → null)
+- **`getProjectConnection()`** — wszystkie projekty (cache'd)
+- **`getProject(relativePath)`** — projekt (cache'd, 404 → null)
+- **`getCity(relativePath)`** — podstrona lokalna (cache'd, 404 → null)
+- **`getCityConnection()`** — wszystkie podstrony lokalne (cache'd)
+
+#### `cms/blog.ts`
+
+- **`getBlogArticleHref(slug)`** — generuje href `{ pathname: '/blog/[slug]', params }` dla artykułu
+- **`extractBlogSlug(relativePath)`** — ekstrahuje slug z relativePath TinaCMS
+- **`buildBlogArticleMap(data)`** — buduje mapę slugów dla LocaleSwitcher (klucz: canonical, wartość: `{pl, en}`)
+- **`toRelatedItems(currentSlug, locale, data)`** — znajduje powiązane artykuły po tagach (max 3)
+- **`BlogArticleMap`** — typ
+
+#### `cms/cities.ts`
+
+- **`CITIES`** — rejestr miast z podstronami lokalnymi (`{ slug, name }[]`): slupsk, ustka, lebork, bytow, kobylnica
+- **`getCityHref(slug)`** — href `{ pathname: '/[city]', params: { city: slug } }`
+- **`getCityName(slug)`** — nazwa miasta po polsku (fallback: slug)
+- Treść miast: `content/cities/{locale}/{slug}.md` (kolekcja `city` w Tina)
+
+#### `cms/portfolio.ts` _(dawniej `portfolio/categories.ts`)_
+
+- **`PORTFOLIO_CATEGORIES`** — lista kategorii: `websites`, `software` (z slug/label/description/image dla pl/en)
+- **`PortfolioCategory`**, **`PortfolioCategoryId`** — typy
+- **`isPortfolioCategoryId(id)`** — type guard
+- **`getCategoryById(id)`**, **`getCategoryBySlug(slug, locale)`**, **`getCategoryUrlSlug(categoryId, locale)`**, **`getCategoryHref(categoryId, locale)`**, **`getProjectHref(categoryId, slug)`**
+- **`getProjectHrefFromPath(relativePath)`** — konwertuje Tina relativePath (`{locale}/{category}/{slug}.md`) na href projektu — używane m.in. przez `relatedProjects` na podstronach miast
+
+#### `cms/slug.ts` _(dawniej `string.ts`)_
+
+- **`extractContentSlug(filename)`** — ekstrahuje slug z nazwy pliku TinaCMS (np. `home.md` → `home`)
+- **`slugify(text)`** — konwertuje tekst na URL-friendly slug (obsługuje polskie znaki)
+
+#### `cms/toc.ts`
+
+- **`extractTocFromMarkdown(markdown)`** — ekstrahuje nagłówki H2 z Markdown do `TocItem[]`
+- **`TocItem`** — typ `{ id, text, level }`
+
+### `seo/` — SEO
+
+#### `seo/metadata.ts` _(dawniej `site.ts`)_
+
+- **`siteName`** — nazwa strony (z COMPANY)
+- **`siteUrl`** — kanoniczny URL (z `NEXT_PUBLIC_SITE_URL`, normalizowany — usuwa www., trailing slash)
+- **`siteMetadata`** — pełna konfiguracja `Metadata` Next.js (OG, Twitter, icons, robots, metadataBase)
+- **`localePathname(locale, href)`** — buduje pełny URL z locale
+- **`localeAlternates(locale, hrefBuilder)`** — generuje alternatywy językowe (hreflang) dla metadata
+- **`sitemapAlternates(hrefBuilder)`** — alternatywy dla sitemap.xml
+- **`getDefaultOgImages(locale)`** — domyślne obrazy OG
+- **`socialMetadata(locale, options)`** — gotowy blok OG/Twitter dla `generateMetadata`
+
+#### `seo/json-ld.ts`
 
 - **`organizationJsonLd()`** — schema Organization
 - **`websiteJsonLd()`** — schema WebSite
@@ -142,34 +174,25 @@ Wszystkie pliki server-only chyba że oznaczone.
 - **`blogPostingJsonLd(options)`** — schema BlogPosting
 - **`articleJsonLd(options)`** — schema Article
 - **`breadcrumbListJsonLd(items)`** — schema BreadcrumbList
+- **`faqPageJsonLd(items)`** — schema FAQPage z `{ question, answer }[]` (podstrony miast)
+- **`serviceJsonLd(options)`** — schema Service z `areaServed` — używana zamiast LocalBusiness na podstronach miast (Bitspire nie ma tam adresu)
 - **`combineJsonLd(...things)`** — łączy wiele schematów w `@graph`
 - Typy: `JsonLdThing`, `BreadcrumbItem`, `WebPageJsonLdOptions`, `BlogPostingJsonLdOptions`, `ArticleJsonLdOptions`
 
-### `og-image.tsx`
+#### `seo/og-image.tsx`
 
-- **`renderOgImage(options)`** — generuje obraz OG przez Next.js ImageResponse (używa `fs/promises`)
-- **`OgImageOptions`** — typ
+- **`renderOgImage(locale, options)`** — generuje obraz OG przez Next.js ImageResponse (używa `fs/promises`)
+- **`OgImageOptions`** — typ `{ width?, height? }`
 
-### `tina.ts`
+### `contact.ts` — feature kontaktowy
 
-- **`tinaQueryWithRetry(query, { retries, delayMs })`** — wrapper z retry dla zapytań TinaCMS
-- **`getPage(relativePath)`** — pobiera pojedynczą stronę (cache'd)
-- **`getPageConnection()`** — pobiera wszystkie strony (cache'd)
-- **`getBlogConnection()`** — pobiera wszystkie artykuły bloga (cache'd)
-- **`getBlogPost(relativePath)`** — pobiera artykuł (cache'd, 404 → null)
-- **`getProjectConnection()`** — pobiera wszystkie projekty (cache'd)
-- **`getProject(relativePath)`** — pobiera projekt (cache'd, 404 → null)
-
-### `portfolio/categories.ts`
-
-- **`PORTFOLIO_CATEGORIES`** — lista kategorii: `websites`, `software` (z slug/label/description/image dla pl/en)
-- **`PortfolioCategory`**, **`PortfolioCategoryId`** — typy
-- **`isPortfolioCategoryId(id)`** — type guard
-- **`getCategoryById(id)`** — pobiera kategorię po ID
-- **`getCategoryBySlug(slug, locale)`** — pobiera kategorię po slug dla locale
-- **`getCategoryUrlSlug(categoryId, locale)`** — zwraca URL slug dla kategorii
-- **`getCategoryHref(categoryId, locale)`** — zwraca href dla kategorii (pathname + params)
-- **`getProjectHref(categoryId, slug, locale)`** — zwraca href dla projektu
+- **`validateContactPayload(payload, locale)`** — walidacja formularza (name, email, subject, message + limity długości)
+- **`validateAttachment(file, locale)`** — walidacja załączników (rozmiar, MIME whitelist, rozszerzenie)
+- **`sanitizeFilename(name)`** — basename + czyszczenie niebezpiecznych znaków
+- **`isRateLimited(ip)`** — in-memory rate limiting (5 req / 15 min)
+- **`formatContactEmail(payload, locale, attachments?)`** — buduje e-mail (text + HTML z escapingiem)
+- Stałe: `MAX_FILE_SIZE` (3 MB), `MAX_ATTACHMENTS` (3), `ALLOWED_MIME_TYPES`, `ALLOWED_EXTENSIONS`, `MAX_FIELD_LENGTHS`
+- Używane przez `ContactForm` (klient) i `src/app/api/contact/route.ts` (serwer, wysyłka przez Resend)
 
 ---
 
@@ -181,7 +204,7 @@ Wszystkie pliki server-only chyba że oznaczone.
   - `locales`: `['pl', 'en']`
   - `defaultLocale`: `'pl'`
   - `localePrefix`: `always`
-  - `pathnames`: mapowanie ścieżek URL dla PL/EN (np. `/portfolio` ↔ `/portfolio`)
+  - `pathnames`: mapowanie ścieżek URL dla PL/EN, w tym `'/[city]'` → `'/[city]'` (slugi miast współdzielone między językami, np. `/pl/slupsk` ↔ `/en/slupsk`)
 
 ### `navigation.ts`
 
@@ -193,7 +216,17 @@ Wszystkie pliki server-only chyba że oznaczone.
 
 ### `request.ts`
 
-- Default export `getRequestConfig` — waliduje locale z requestu, zwraca messages (obecnie puste — teksty UI są w `src/lib/ui.ts`)
+- Default export `getRequestConfig` — waliduje locale z requestu, zwraca messages (obecnie puste — teksty UI są w `src/lib/config/ui.ts`)
+
+### Podstrony lokalne (`src/app/[locale]/[city]/page.tsx`)
+
+- Route `/{locale}/{city}` (np. `/pl/slupsk`) — jednosegmentowy dynamiczny segment; statyczne trasy (`/pl/blog` itd.) mają pierwszeństwo
+- `dynamicParams = false` + `generateStaticParams` z `getCityConnection` → nieznane slugi (np. `/pl/warszawa`) zwracają 404
+- `generateMetadata`: unikalny title/description per miasto, canonical, hreflang
+- JSON-LD stack: `WebPage` + `BreadcrumbList` + `Service` (z `areaServed: City`) + opcjonalnie `FAQPage`
+- Treść: kolekcja `city` w Tina (`content/cities/{locale}/*.md`), edytowalna w `/admin`
+- Rejestr slugów miast: `src/lib/cms/cities.ts` (`CITIES` — footer, chips sąsiednich miast)
+- UWAGA SEO: każde miasto musi mieć realnie unikalną treść (`body`, FAQ, relatedProjects) — podmiana samej nazwy miasta w szablonie = doorway pages i ryzyko kary Google
 
 ---
 
@@ -203,7 +236,16 @@ Wszystkie hooki są `'use client'`.
 
 ### `use-locale-switcher.ts`
 
-- **`useLocaleSwitcher(locale, blogMap)`** — zwraca funkcję `(targetLocale) => void` do zmiany języka. Obsługuje translację slugów artykułów blogowych i kategorii portfolio.
+- **`useLocaleSwitcher(locale, blogMap)`** — zwraca funkcję `(targetLocale) => void` do zmiany języka. Obsługuje translację slugów artykułów blogowych, kategorii portfolio oraz podstron `'/[city]'` (slug miasta przenoszony 1:1).
+
+### `use-mounted.ts`
+
+- **`useMounted()`** — zwraca `boolean`, true po hydratacji. Używaj gdy komponent musi wykonać pracę tylko na kliencie (np. detekcja WebGL w Hero/CityHero).
+
+### `use-content-list.ts`
+
+- **`useContentList(connection, locale, search, pathPrefix, matches, map)`** — hook do filtrowania/mapaowania connection TinaCMS (np. `blogConnection.edges`) na `ContentCardItem[]` z wyszukiwaniem.
+- **`joinSearchTerms(values)`** — łączy pola w jeden lower-case string do wyszukiwania.
 
 ### `use-reduced-motion.ts`
 
@@ -238,7 +280,7 @@ Wszystkie providery są `'use client'`. Montowane w `src/app/[locale]/layout.tsx
 
 ## src/components/ui/primitives — prymitywy UI
 
-Komponenty oparte na Radix UI + CVA. Wszystkie używają `cn()` z `src/lib/utils.ts`.
+Komponenty oparte na Radix UI + CVA. Wszystkie używają `cn()` z `@/lib/utils/cn`.
 
 ### Layout / kontenery
 
@@ -393,6 +435,14 @@ System animowanego tła z chmurami i gwiazdami. 8 plików:
 | `glsl/shaders.ts` | Moduł                | `ATMOSPHERE_VERTEX`, `ATMOSPHERE_FRAGMENT` | Vertex + fragment shadery                                                                                                                                        |
 | `index.ts`        | Re-export            | `PixiScene`, `SceneTheme`                  | Barrel export                                                                                                                                                    |
 
+Używana przez `Hero` (strona główna) i `CityHero` (podstrony miast) — w obu przez `next/dynamic` z `ssr: false` + guardy (WebGL, save-data, reduced-motion) i statycznym gradientowym fallbackiem.
+
+### `utils.ts` — współdzielone helpery animacji
+
+- **`hexToRgb(hex, fallback)`** — konwertuje HEX na `RgbTuple` [r,g,b] 0-1
+- **`getCssColor(name, fallback)`** — odczytuje zmienną CSS z `document` (client) lub fallback — synchronizacja kolorów shaderów z motywem
+- **`runWhenIdle(callback, timeout?)`** — `requestIdleCallback` z polyfillem na timeout (Safari); odsuwa inicjalizację WebGL z critical render path
+
 ### `plasma/` — tło plasma (Contact)
 
 System diagonalnego plasma beam. 6 plików:
@@ -444,7 +494,21 @@ Wszystkie `'use client'`. Większość przyjmuje `page: PagePartsFragment` (dane
 | ---------------- | --------------------------------- | -------------------------------------------------------------------- |
 | `ContactHero`    | `page`                            | Nagłówek strony kontaktowej                                          |
 | `ContactDetails` | `contact`, `locale`, `className?` | Karta z danymi kontaktowymi (email, telefon, adres, godziny, social) |
-| `ContactForm`    | `contact`, `locale`, `className?` | Formularz kontaktowy (mailto:)                                       |
+| `ContactForm`    | `contact`, `locale`, `className?`, `defaultSubject?` | Formularz → POST `/api/contact` (Resend, załączniki, walidacja z `@/lib/contact`). `defaultSubject` pre-filla temat (np. `Strona www — Słupsk` na podstronach miast)                                       |
+
+### Sekcje podstron lokalnych (`/[locale]/[city]`)
+
+Używane przez `CityLandingPage`. Zamiast `page` przyjmują pola dokumentu `city` (TinaCMS) + teksty z `CITY_UI` (`getCityUi`).
+
+| Komponent      | Props                             | Opis                                                                                                       |
+| -------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `CityHero`     | `city`, `locale`, `ui`            | Hero z animacją `PixiScene` (atmosphere) za tekstem, badge miasta, H1, CTA (wycena/tel/Cal.com), trust bar |
+| `CityServices` | `city`, `locale`, `ui`            | Grid kart usług z lokalnymi wariantami fraz                                                                |
+| `CityProcess`  | `city`, `locale`, `ui`            | 4-krokowy proces współpracy                                                                                |
+| `CityProjects` | `city`, `locale`, `ui`            | Karty projektów z `relatedProjects` (referencje Tina → linki przez `getProjectHrefFromPath`)               |
+| `CityFaq`      | `city`, `locale`, `ui`            | Accordion FAQ (sparowane z `FAQPage` JSON-LD)                                                              |
+| `CityNearby`   | `city`, `locale`, `ui`            | Chipy-linki do sąsiednich miast (mesh internal linking)                                                    |
+| `CityContact`  | `city`, `locale`, `ui`, `contact` | Re-używa `ContactForm` z `defaultSubject` + `ContactDetails`                                               |
 
 ### Sekcje uniwersalne
 
@@ -465,9 +529,9 @@ Wszystkie `'use client'`. Większość przyjmuje `page: PagePartsFragment` (dane
 
 ### `Footer.tsx` _(server, memo)_
 
-- **`Footer`** — stopka z nawigacją, danymi kontaktowymi, linkami prawnymi.
+- **`Footer`** — stopka z nawigacją, danymi kontaktowymi, linkami prawnymi oraz kolumną „Obsługujemy lokalnie" z linkami do podstron miast (`CITIES` + `getCityHref`) — internal linking dla SEO lokalnego.
 - Props: `locale`
-- Używa: `Link`, `Separator`, `FadeIn`, `Button`, `SocialIcon`, `COMPANY`, `MAIN_NAV_LINKS`
+- Używa: `Link`, `Separator`, `FadeIn`, `Button`, `SocialIcon`, `COMPANY`, `MAIN_NAV_LINKS`, `CITIES`
 
 ---
 
@@ -485,6 +549,7 @@ Wszystkie `'use client'`. Wszystkie używają `useTina` do integracji z TinaCMS.
 | `PortfolioProjectPage`  | `locale`, `category`, `jsonLd?`, `breadcrumbs?`       | Pojedynczy projekt z nagłówkiem, treścią, CTA               |
 | `ContactPage`           | `locale`, `jsonLd?`, `breadcrumbs?`                   | Strona kontaktowa z formularzem, danymi, tłem plasma        |
 | `PrivacyPage`           | `locale`, `jsonLd?`, `breadcrumbs?`                   | Strona polityki prywatności z Markdown                      |
+| `CityLandingPage`       | `locale`, `citySlug`, `jsonLd?`, `breadcrumbs?`      | Podstrona lokalna miasta (np. `/pl/slupsk`) — sekcje `City*` |
 
 **Wspólny wzorzec props:**
 
@@ -492,7 +557,7 @@ Wszystkie `'use client'`. Wszystkie używają `useTina` do integracji z TinaCMS.
 {
   query: string;        // zapytanie GraphQL TinaCMS
   variables: { relativePath: string };
-  data: PageQuery | BlogQuery | ProjectQuery;
+  data: PageQuery | BlogQuery | ProjectQuery | CityQuery;
   locale: string;
   jsonLd?: object;      // structured data
   breadcrumbs?: BreadcrumbItem[];
@@ -509,7 +574,7 @@ Wszystkie `'use client'`. Wszystkie używają `useTina` do integracji z TinaCMS.
 - **Media:** `mediaRoot: '/'`, `publicFolder: 'public'`
 - **Build output:** `admin/` folder (dostępny pod `/admin`)
 
-### Kolekcje (3)
+### Kolekcje (4)
 
 #### `page` — strony
 
@@ -548,13 +613,32 @@ Wszystkie `'use client'`. Wszystkie używają `useTina` do integracji z TinaCMS.
   - `tagline?`, `description?`, `technologies?` (string[]), `websiteUrl?`, `screenshot?` (image)
   - `body?` (rich-text, isBody)
 
+#### `city` — podstrony lokalne (SEO)
+
+- **Path:** `content/cities/{locale}/`
+- **Format:** `.md`
+- **Router:** `/{locale}/{slug}` (np. `/pl/slupsk`)
+- **Pola:**
+  - `title` (required, isTitle — meta title + H1), `description?`
+  - `cityName`, `cityLocative` ("w Słupsku"), `cityGenitive` ("Słupska"), `region`
+  - `heroSubtitle?` (textarea)
+  - `trustStats?` (string[]) — liczby pod hero
+  - `services?` → `{ title, description }[]`
+  - `process?` → `{ title, description }[]`
+  - `faq?` → `{ question, answer }[]` (sparowane z `FAQPage` JSON-LD)
+  - `nearbyCities?` (string[] slugów)
+  - `relatedProjects?` → `{ project: reference }[]` (referencje do kolekcji `project`)
+  - `body?` (rich-text, isBody) — **unikalna** treść per miasto (Google karze za doorway/scaled content)
+- Miasta: slupsk, ustka, lebork, bytow, kobylnica
+
 ### Struktura contentu
 
 ```
 content/
 ├── pages/{en,pl}/     — home, blog, portfolio, contact, privacy
 ├── blog/{en,pl}/      — artykuły (5 per locale)
-└── portfolio/{en,pl}/ — websites/, software/
+├── portfolio/{en,pl}/ — websites/, software/
+└── cities/{en,pl}/    — slupsk, ustka, lebork, bytow, kobylnica
 ```
 
 ### Typy TypeScript (`tina/__generated__/types.ts`)
@@ -565,10 +649,11 @@ content/
 - **`PagePartsFragment`** — fragment GraphQL dla wszystkich pól strony (używany w sekcjach)
 - **`BlogPartsFragment`** — fragment dla artykułu
 - **`ProjectPartsFragment`** — fragment dla projektu
-- Connection types: `PageConnection`, `BlogConnection`, `ProjectConnection`
-- Filter types: `PageFilter`, `BlogFilter`, `ProjectFilter`
+- **`CityQuery`** / **`CityConnectionQuery`** — typy zapytań kolekcji `city`
+- Connection types: `PageConnection`, `BlogConnection`, `ProjectConnection`, `CityConnection`
+- Filter types: `PageFilter`, `BlogFilter`, `ProjectFilter`, `CityFilter`
 
-### Helpery zapytań (`src/lib/tina.ts`)
+### Helpery zapytań (`src/lib/cms/client.ts`)
 
 - `getPage(relativePath)` — pojedyncza strona (cache'd)
 - `getPageConnection()` — wszystkie strony
@@ -576,6 +661,8 @@ content/
 - `getBlogPost(relativePath)` — pojedynczy artykuł (404 → null)
 - `getProjectConnection()` — wszystkie projekty
 - `getProject(relativePath)` — pojedynczy projekt (404 → null)
+- `getCity(relativePath)` — podstrona lokalna (404 → null)
+- `getCityConnection()` — wszystkie podstrony lokalne
 - `tinaQueryWithRetry(query, { retries, delayMs })` — wrapper z retry
 
 ### Integracja z komponentami
@@ -595,7 +682,7 @@ content/
 - **imageSizes:** `[16, 32, 48, 64, 96, 128, 256, 384]`
 - **remotePatterns:** `assets.tina.io` (TinaCMS media)
 
-### `src/lib/image.ts`
+### `src/lib/utils/image.ts`
 
 - **`isUnoptimizedImage(src)`** — zwraca true dla SVG i GIF. Używaj z `<Image unoptimized={isUnoptimizedImage(src)}>`.
 
@@ -614,13 +701,13 @@ content/
 
 ## SEO — metadata, JSON-LD, sitemap, robots
 
-### Metadata (`src/lib/site.ts`)
+### Metadata (`src/lib/seo/metadata.ts`)
 
 - **`siteMetadata`** — pełna konfiguracja `Metadata` Next.js (OG, Twitter, icons, robots, metadataBase)
 - **`localeAlternates(pathname)`** — generuje hreflang alternatywy dla metadata
 - Każda strona w `src/app/[locale]/` ma `generateMetadata` z alternatami
 
-### JSON-LD (`src/lib/json-ld.ts`)
+### JSON-LD (`src/lib/seo/json-ld.ts`)
 
 - `organizationJsonLd()` — Organization schema (w layout)
 - `websiteJsonLd()` — WebSite schema (w layout)
@@ -628,11 +715,13 @@ content/
 - `blogPostingJsonLd(options)` — BlogPosting schema (artykuły)
 - `articleJsonLd(options)` — Article schema (projekty)
 - `breadcrumbListJsonLd(items)` — BreadcrumbList schema
+- `faqPageJsonLd(items)` — FAQPage schema (podstrony miast)
+- `serviceJsonLd(options)` — Service schema z `areaServed: City` (podstrony miast; celowo bez LocalBusiness — brak fizycznego adresu)
 - `combineJsonLd(...things)` — łączy w `@graph`
 
 ### Sitemap (`src/app/sitemap.ts`)
 
-- Dynamiczna sitemap.xml ze wszystkimi stronami, kategoriami, artykułami, projektami
+- Dynamiczna sitemap.xml ze wszystkimi stronami, kategoriami, artykułami, projektami i podstronami miast (`getCityConnection`, priority 0.75)
 - Alternatywy językowe dla każdej strony
 - `lastModified` z daty aktualizacji contentu
 
@@ -645,7 +734,7 @@ content/
 
 - `src/app/[locale]/opengraph-image.tsx` — dynamiczny OG image (1200x630 PNG)
 - `src/app/[locale]/twitter-image.tsx` — dynamiczny Twitter image (1200x630 PNG)
-- `src/lib/og-image.tsx` — `renderOgImage(options)` helper
+- `src/lib/seo/og-image.tsx` — `renderOgImage(locale, options)` helper
 
 ---
 
@@ -680,7 +769,7 @@ content/
 
 1. **'use client'** — dodaj jeśli komponent używa hooków React (useState, useEffect, useTina, etc.) lub `motion/react`
 2. **memo** — używaj `memo()` dla komponentów, które re-renderują się często z tymi samymi propsami (szczególnie sekcje)
-3. **cn()** — zawsze używaj `cn()` z `src/lib/utils.ts` do łączenia klas CSS
+3. **cn()** — zawsze używaj `cn()` z `@/lib/utils/cn` do łączenia klas CSS
 4. **tinaField** — dodaj `data-tina-field={tinaField(page, 'fieldName')}` do edytowalnych elementów
 5. **useTina** — używaj w komponentach stron: `const { data } = useTina({ query, variables, data })`
 6. **FadeIn** — owijaj sekcje w `<FadeIn>` dla animacji wejścia
@@ -699,7 +788,7 @@ import { useLocale } from 'next-intl';
 import { tinaField } from 'tinacms/dist/react';
 import type { PagePartsFragment } from '@tina/__generated__/types';
 import { FadeIn } from '@/components/animations/primitives/fade-in';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/cn';
 
 interface MySectionProps {
   page: PagePartsFragment;
@@ -724,7 +813,7 @@ export const MySection = memo(MySectionContent);
 
 ```tsx
 // src/app/[locale]/my-page/page.tsx (server component)
-import { getPage } from '@/lib/tina';
+import { getPage } from '@/lib/cms/client';
 import { MyPage } from '@/components/pages/MyPage';
 
 export async function generateMetadata({ params }) {
